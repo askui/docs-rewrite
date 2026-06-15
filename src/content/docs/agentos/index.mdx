@@ -1,0 +1,61 @@
+---
+title: AgentOS Overview
+description: What AgentOS is, why it exists, and the key concepts you need to know.
+---
+
+import { Card, CardGrid, LinkCard, Aside } from '@astrojs/starlight/components';
+
+AgentOS is the runtime layer that gives AI agents direct control over a
+machine's operating system — keyboard, mouse, screen, and system-level
+functions. It sits between the agent and the OS, handling the low-level
+interactions so agents can focus on tasks.
+
+**Designed for everyone, not just developers.** AgentOS is built so that
+non-technical users can install it and get it running without writing code or
+configuring system internals. The UI installer guides you through setup, and
+sensible defaults mean you don't need to touch configuration files to start.
+
+**Platform independent.** AgentOS runs on Windows, macOS, and Linux. In
+[Companion Mode](/agentos/understanding/control-modes/), it can also control
+Android devices, iOS Simulators (experimental), and any machine reachable
+through hardware interfaces — regardless of what OS the target runs.
+
+## How it works
+
+AgentOS operates in two **control modes**:
+
+- **Host Mode** — AgentOS runs directly on the target machine as software. It
+  controls the desktop via OS-level APIs with full access to screenshots,
+  input, windows, and processes.
+- **Companion Mode** — AgentOS runs on an external device (e.g. Raspberry Pi)
+  and controls the target through hardware interfaces (USB, Bluetooth, HDMI
+  capture). No software installation on the target required.
+
+Both modes expose the same **capabilities** — the building blocks for screen
+reading, input simulation, and window management.
+
+## Why AgentOS?
+
+Building a Computer Use Agent proof-of-concept is straightforward. Getting it
+to **production** is a different story. The gap between "works on my machine"
+and "runs reliably at scale" is where most teams get stuck — especially in
+CI/CD, where VMs start at the logon screen, automation needs an interactive
+session, and OS security blocks input injection from non-interactive
+processes. AgentOS solves session management, login automation, and privilege
+escalation so the agent can do its work.
+
+<CardGrid>
+  <LinkCard title="vs Automation Libraries" href="/agentos/understanding/concepts/"
+    description="PyAutoGUI, RobotJS, xdotool — and why they fall short in production." />
+  <LinkCard title="vs Remote Control Software" href="/agentos/understanding/concepts/"
+    description="RDP, TeamViewer, VNC — built for humans, not agents." />
+</CardGrid>
+
+## What's next?
+
+<CardGrid>
+  <LinkCard title="Quickstart" href="/agentos/installation/standalone/"
+    description="Get AgentOS running in under 5 minutes." />
+  <LinkCard title="Concepts" href="/agentos/understanding/concepts/"
+    description="Control modes, runtime modes, and capabilities." />
+</CardGrid>

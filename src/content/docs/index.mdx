@@ -1,0 +1,48 @@
+---
+title: AskUI Documentation
+description: Author and run AI-driven UI tests with AskUI Desktop and the AskUI CLI.
+template: splash
+hero:
+  tagline: Author and run AI-driven UI tests — on the desktop and from the command line.
+  image:
+    dark: ../../assets/logo-dark.svg
+    light: ../../assets/logo-light.svg
+  actions:
+    - text: Get started
+      link: /get-started/install-desktop/
+      icon: right-arrow
+    - text: Prompting best practices
+      link: /using-askui-desktop/prompting-best-practices/
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Where to start
+
+<CardGrid stagger>
+  <Card title="AskUI Desktop" icon="laptop">
+    The local host for authoring and running AI-driven UI tests. Build a test
+    Project, write prompts, and watch runs execute on your machine.
+
+    [Install AskUI Desktop →](/get-started/install-desktop/)
+  </Card>
+  <Card title="AskUI CLI" icon="seti:powershell">
+    Run the same Projects headless — in CI, on a schedule, or across many
+    devices.
+
+    [Install the CLI →](/get-started/install-cli/)
+  </Card>
+  <Card title="Prompting best practices" icon="pencil">
+    How to structure a Project's prompts so runs are reliable, reusable, and
+    debuggable.
+
+    [Read the guide →](/using-askui-desktop/prompting-best-practices/)
+  </Card>
+  <Card title="AgentOS" icon="setting">
+    The runtime layer that gives agents direct control over a machine's OS —
+    keyboard, mouse, screen, and system functions.
+
+    [Explore AgentOS →](/agentos/)
+  </Card>
+</CardGrid>

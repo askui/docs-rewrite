@@ -1,0 +1,31 @@
+---
+title: Agents & prompts
+description: How AskUI Desktop turns a Project's prompt files into a running test agent.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+When you run a test, AskUI Desktop assembles an autonomous testing agent from
+your Project's `prompts/` folder. The agent reads the screen, acts via clicks
+and keystrokes, verifies expected results, and writes a report.
+
+## What the agent is made of
+
+The four prompt parts are composed into the agent at run start:
+
+| File | Role |
+| --- | --- |
+| `system_capabilities.md` | Who the agent is and the rules it always follows. |
+| `device_information.md` | The machine it controls — OS, displays, coordinates. |
+| `ui_information.md` | Your application — navigation, state, quirks. |
+| `report_format.md` | The structure and status vocabulary of its report. |
+
+Per-folder `rules.md`, `setup.md`, and `teardown.md` are layered on top for the
+tests in that folder.
+
+<Aside type="note">
+This page is a stub in the scaffold. The full version walks through editing
+each prompt part in the AskUI Desktop UI with screenshots. The principles
+behind the structure are covered in
+[Prompting best practices](/using-askui-desktop/prompting-best-practices/).
+</Aside>

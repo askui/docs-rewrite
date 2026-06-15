@@ -1,0 +1,75 @@
+---
+/**
+ * RunEmbed — embeds a self-contained AskUI Desktop run export (.html)
+ * inside a docs page.
+ *
+ * The exports are whole React apps (~2 MB each, assets inlined), so we:
+ *   - serve them as untouched static files from /public,
+ *   - render them in a sandboxed iframe (their own document → no CSS/JS
+ *     collision with the docs site),
+ *   - default to a CLICK-TO-LOAD facade so the 2 MB only loads on demand
+ *     (keeps Core Web Vitals green; iframe content isn't indexed anyway,
+ *     so this is purely a performance win, not an SEO concern).
+ *
+ * Props:
+ *   src     — path under /public, e.g. "/runs/first-test.html"
+ *   title   — caption shown under/over the run
+ *   height  — iframe height in px (default 640)
+ *   lazy    — if true, skip the facade and use a native lazy iframe
+ */
+interface Props {
+  src: string;
+  title?: string;
+  height?: number;
+  lazy?: boolean;
+}
+const { src, title = 'AskUI Desktop run', height = 640, lazy = false } = Astro.props;
+// allow-scripts (it runs React/Babel) but NOT allow-same-origin → isolated.
+const sandbox = 'allow-scripts allow-popups';
+---
+
+<div class="run-embed" data-run-embed data-src={src} data-height={height}>
+  {lazy ? (
+    <iframe
+      class="run-embed__frame"
+      src={src}
+      title={title}
+      height={height}
+      loading="lazy"
+      sandbox={sandbox}
+    ></iframe>
+  ) : (
+    <button class="run-embed__facade" type="button" data-run-facade style={`min-height:${Math.min(height, 220)}px`}>
+      <span class="run-embed__facade-inner">
+        <span class="run-embed__play" aria-hidden="true">▶</span>
+        <span class="run-embed__facade-text">
+          <strong>Open interactive run</strong>
+          <span>{title} — loads the live export (~2 MB) in your browser</span>
+        </span>
+      </span>
+    </button>
+  )}
+  <span class="run-embed__caption">
+    <span>{title}</span>
+    <a href={src} target="_blank" rel="noopener">Open fullscreen ↗</a>
+  </span>
+</div>
+
+<script>
+  // Click-to-load: swap the facade for the real iframe on first click.
+  for (const root of document.querySelectorAll<HTMLElement>('[data-run-embed]')) {
+    const facade = root.querySelector<HTMLButtonElement>('[data-run-facade]');
+    if (!facade) continue;
+    facade.addEventListener('click', () => {
+      const src = root.dataset.src!;
+      const height = root.dataset.height ?? '640';
+      const frame = document.createElement('iframe');
+      frame.className = 'run-embed__frame';
+      frame.src = src;
+      frame.height = height;
+      frame.setAttribute('sandbox', 'allow-scripts allow-popups');
+      frame.title = 'AskUI Desktop run';
+      facade.replaceWith(frame);
+    });
+  }
+</script>

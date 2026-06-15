@@ -1,0 +1,66 @@
+/* AskUI brand theme for Starlight.
+   Primary brand navy: #282650 */
+:root {
+  --sl-color-accent-low: #1c1b33;
+  --sl-color-accent: #4f4d8a;
+  --sl-color-accent-high: #c7c5e8;
+}
+:root[data-theme='light'] {
+  --sl-color-accent-low: #dcdbf0;
+  --sl-color-accent: #282650;
+  --sl-color-accent-high: #1a1933;
+}
+
+/* RunEmbed component ------------------------------------------------ */
+.run-embed {
+  margin: 1.5rem 0;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--sl-color-black);
+}
+.run-embed__facade {
+  position: relative;
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  background:
+    linear-gradient(135deg, #282650 0%, #0a3b2e 100%);
+  color: #fff;
+  text-align: left;
+  font: inherit;
+}
+.run-embed__facade-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 2.5rem 1.75rem;
+}
+.run-embed__play {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 1.25rem;
+}
+.run-embed__facade-text strong { display: block; font-size: 1.05rem; }
+.run-embed__facade-text span { opacity: 0.8; font-size: 0.85rem; }
+.run-embed__frame {
+  display: block;
+  width: 100%;
+  border: 0;
+}
+.run-embed__caption {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
+  color: var(--sl-color-gray-3);
+  background: var(--sl-color-gray-6);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}

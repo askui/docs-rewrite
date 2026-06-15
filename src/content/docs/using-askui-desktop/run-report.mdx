@@ -1,0 +1,32 @@
+---
+title: Reading a run report
+description: How to read the report AskUI Desktop produces after a test run, including the embedded interactive run viewer.
+---
+
+import RunEmbedComp from '../../../components/RunEmbed.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+Every run produces a report: a per-step record of what the agent did, what it
+expected, what it observed, and a screenshot of each step. You can open the
+interactive report right here.
+
+<RunEmbedComp src="/runs/first-test.html" title="AskUI Desktop run report" />
+
+## Status vocabulary
+
+Each step — and the run overall — carries one status:
+
+- **PASSED** — actual result matches expected.
+- **FAILED** — step executed but the result didn't match.
+- **SKIPPED** — intentionally not executed (e.g. precondition not met).
+- **WARN** — passed, but with a caveat (slow response, minor visual deviation).
+- **BROKEN** — could not execute due to a crash or infrastructure failure.
+
+The overall status is the worst of its steps: `BROKEN` if any step broke, else
+`FAILED` if any failed, else `WARN`, else `SKIPPED` if all skipped, otherwise
+`PASSED`.
+
+<Aside type="tip">
+Report artifacts (the Markdown report and `step_N.png` screenshots) are written
+into a per-test subdirectory, so a run's evidence stays together.
+</Aside>

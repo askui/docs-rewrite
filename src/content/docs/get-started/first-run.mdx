@@ -1,0 +1,41 @@
+---
+title: Your first test run
+description: Create a Project, write a simple test, and run it in AskUI Desktop.
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+import RunEmbed from '../../../components/RunEmbed.astro';
+
+Let's run a test end to end. This assumes you've
+[installed AskUI Desktop](/get-started/install-desktop/) and
+[signed in](/get-started/onboarding/).
+
+<Steps>
+
+1. **Create a Project.** AskUI Desktop scaffolds the standard folders for you —
+   `tests/`, `prompts/`, `procedures/`, `plans/`, `secrets/` — pre-seeded with
+   an example login test and the four prompt parts.
+
+2. **Fill in `ui_information.md`.** Tell the agent about your app: its primary
+   screens, how to tell it's signed in, and any dialog quirks. This is the most
+   valuable prompt to get right — see
+   [Prompting best practices](/using-askui-desktop/prompting-best-practices/).
+
+3. **Open the example test** in `tests/` and adjust the steps to your app.
+
+4. **Run it.** AskUI Desktop launches the agent, which acts on the screen step
+   by step and writes a report with a screenshot per step.
+
+</Steps>
+
+## The result
+
+A finished run looks like this — open it to step through what the agent did:
+
+<RunEmbed src="/runs/first-test.html" title="Your first AskUI Desktop run" />
+
+<Aside type="tip">
+The report's overall status is the worst of its steps. See
+[Reading a run report](/using-askui-desktop/run-report/) for the full status
+vocabulary.
+</Aside>

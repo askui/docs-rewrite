@@ -1,0 +1,57 @@
+---
+title: Concepts
+description: The key concepts behind AgentOS — how control modes, runtime modes, and capabilities fit together.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+AgentOS has three core concepts that determine what it can do and how it
+connects to a target machine. While they involve OS-level services, kernel
+drivers, and hardware interfaces, **you don't need to understand these
+internals to use AgentOS** — the installer handles the complexity.
+
+AgentOS is **platform independent** — Windows, macOS, Linux, Android, and iOS
+Simulators (experimental), so the same configuration works across operating
+systems.
+
+## Control modes
+
+Control modes define **how AgentOS connects to the target machine**:
+
+- **Host Mode** — AgentOS runs directly on the target as software, using
+  OS-level APIs for screenshots, input, and window management. The most common
+  setup.
+- **Companion Mode** — AgentOS runs on a separate device and controls the
+  target through hardware (USB, Bluetooth, HDMI capture) or device bridges
+  (ADB, IDB). No software installation on the target is needed.
+
+[Learn more about Control Modes →](/agentos/understanding/control-modes/)
+
+## Runtime modes
+
+Runtime modes define **how AgentOS runs on the machine it's installed on**:
+
+- **Standalone** — runs as a regular process in the user's session. Best for
+  local development and testing.
+- **OS Service** — runs as a system service with elevated privileges. Best for
+  CI/CD, headless VMs, and enterprise deployments.
+
+Runtime mode is independent of control mode — both Host and Companion mode can
+run Standalone or as an OS Service. Higher privileges unlock additional
+capabilities such as RDP resilience and access to the Windows logon screen.
+
+[Learn more about Runtime Modes →](/agentos/understanding/runtime-modes/)
+
+## Capabilities
+
+Both control modes expose the same **capabilities** to the agent: screen
+reading (screenshots, pixel and element access), input simulation (mouse,
+keyboard, gestures), and window/process management. The agent uses these as
+building blocks regardless of how AgentOS is connected to the target.
+
+[Learn more about Capabilities →](/agentos/understanding/capabilities/)
+
+<Aside type="note">
+Ported from the previous documentation. The Python SDK references from the
+original have been removed — AgentOS is now driven by AskUI Desktop and the CLI.
+</Aside>

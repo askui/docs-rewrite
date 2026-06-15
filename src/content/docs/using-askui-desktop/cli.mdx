@@ -1,0 +1,22 @@
+---
+title: Running from the CLI
+description: Run AskUI Projects headless with the CLI — in CI, on a schedule, or across many devices.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+The CLI runs the exact Projects you build in AskUI Desktop. The same `tests/`,
+`prompts/`, `plans/`, and `procedures/` drive both surfaces — author in the
+app, run anywhere with the CLI.
+
+```bash
+# scaffold — final flags TBD
+askui run --project ./my-project --plan smoke
+```
+
+<Aside type="note">
+Stub page. Covers running a plan, selecting a device, passing secrets, and
+collecting reports in CI. See [Install the CLI](/get-started/install-cli/) to
+set it up, and [AgentOS CI deployment](/agentos/how-to-guides/deployment-ci/)
+for the runtime side.
+</Aside>

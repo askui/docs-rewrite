@@ -1,0 +1,134 @@
+---
+title: Prompting best practices
+description: How to structure a Project's prompts so AskUI Desktop runs are reliable, reusable, and debuggable.
+---
+
+import { Aside, Card, CardGrid, FileTree, Tabs, TabItem } from '@astrojs/starlight/components';
+import RunEmbed from '../../../components/RunEmbed.astro';
+
+Good test runs come from well-structured prompts — not longer ones. AskUI
+Desktop splits a Project's prompting into a few small files, each with one
+job. This page explains **why** that structure exists and how to use it.
+
+<Aside type="tip" title="The one-sentence version">
+Separate **what the agent can do** from **the machine it runs on**, from
+**your application's quirks**, from **how it reports** — and tune behaviour in
+per-folder `rules.md`, never by editing the system prompt.
+</Aside>
+
+## 1. Split the prompt into four parts
+
+Every Project gets a `prompts/` folder with four files. Each changes at a
+different rate and is reused across every test in the Project — keeping them
+separate is what makes prompts stable and debuggable.
+
+<FileTree>
+- prompts/
+  - system_capabilities.md   who the agent is + execution discipline
+  - device_information.md     the machine — OS, displays, coordinates
+  - ui_information.md          your app — navigation, state, quirks
+  - report_format.md           status semantics + report structure
+</FileTree>
+
+<CardGrid>
+  <Card title="system_capabilities.md" icon="seti:lock">
+    Who the agent is and the rules it always follows. Stable — you rarely edit
+    this. Defines the agent as an autonomous tester that acts via screenshots,
+    clicks, and typing, plus strict error-handling discipline (below).
+  </Card>
+  <Card title="device_information.md" icon="laptop">
+    Facts about the machine under test: OS version, how many displays and
+    which one to use, that coordinates start at `(0,0)` top-left. Swap this
+    file to retarget a run at a different machine.
+  </Card>
+  <Card title="ui_information.md" icon="puzzle">
+    **Where the agent learns *your* app** — primary areas, navigation, state
+    indicators (e.g. "green dot top-right = signed in"), and dialog quirks.
+    This is the file you invest the most in.
+  </Card>
+  <Card title="report_format.md" icon="document">
+    The report the agent writes: Markdown structure plus the status vocabulary
+    — `PASSED`, `FAILED`, `SKIPPED`, `WARN`, `BROKEN`.
+  </Card>
+</CardGrid>
+
+**Why split, not one big prompt?** Each part has a different lifecycle.
+`system_capabilities` is essentially constant. `device_information` changes
+per machine. `ui_information` grows as you learn the app. `report_format` is
+shared org-wide. Keeping them apart means a change to one never risks the
+others, and when a run misbehaves you know exactly which file to inspect.
+
+## 2. Tune behaviour in `rules.md`, per folder — not in the system prompt
+
+Each test folder can carry conventional files that the runner picks up
+**automatically** for every test inside it:
+
+- `rules.md` — execution rules for this folder (interaction style, error
+  handling, credential policy).
+- `setup.md` — runs **before** every test in the folder (outer folders first).
+- `teardown.md` — runs **after** every test (innermost folder first).
+
+This cascades with folder nesting, so shared behaviour lives at the top and
+specific overrides live deeper — without ever touching the system prompt.
+
+<Aside type="caution" title="Don't edit the system prompt to change one suite">
+If a suite needs different behaviour, add a `rules.md` in its folder. Editing
+`system_capabilities.md` changes behaviour for *every* test in the Project.
+</Aside>
+
+## 3. Never put credentials in tests
+
+Test files are shared and version-controlled — secrets must not be. Reference
+them by name and let the agent read them at run time:
+
+```markdown
+# In a test step
+Sign in using the QA credentials.
+```
+
+The agent resolves "the QA credentials" by reading `secrets/credentials.txt`
+with its file tools at execution time. Real credentials never appear in
+`tests/*.md` or the prompts.
+
+## 4. Be strict about errors — no retry loops
+
+The default `system_capabilities` enforces discipline that keeps runs honest
+and fast:
+
+- **Max 2 attempts per step.** No third try, no creative workarounds, no
+  navigating back to retry a sequence.
+- **`FAILED` vs `BROKEN` are different.** A step whose result doesn't match the
+  expectation is `FAILED`. An *infrastructure* error (connection lost, session
+  expired, RPC error) is `BROKEN` — the agent writes the report and calls the
+  `exception_tool` to abort, because no further test can pass on broken
+  infrastructure.
+
+<Aside type="note">
+This is why your run reports are trustworthy: a green run means the steps
+actually passed, not that the agent improvised its way to "done".
+</Aside>
+
+## 5. Reuse sequences with procedures
+
+Common multi-step sequences (signing in, seeding data) live once in
+`procedures/` — e.g. `procedures/login_to_ui.md` — and are invoked from a test
+step instead of being copy-pasted. Fix the login flow in one place and every
+test that uses it updates.
+
+## See it end to end
+
+Here's a real run produced by a Project structured this way — prompts on the
+left of the app, the executed steps and screenshots on the right:
+
+<RunEmbed src="/runs/first-test.html" title="Example AskUI Desktop run" />
+
+## Checklist
+
+Before you commit a Project's prompts, confirm:
+
+- [ ] `prompts/` has all four parts, each scoped to its one job.
+- [ ] App-specific knowledge lives in `ui_information.md`, not the system prompt.
+- [ ] Folder behaviour is tuned in `rules.md` / `setup.md` / `teardown.md`.
+- [ ] No credentials in any `tests/` or `prompts/` file — only in `secrets/`.
+- [ ] `report_format.md` uses the standard status vocabulary.
+- [ ] Repeated sequences are extracted into `procedures/`.

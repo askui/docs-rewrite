@@ -1,0 +1,47 @@
+---
+title: How a Project is organized
+description: The folder structure of an AskUI Desktop Project and how tests, plans, prompts, procedures and utils fit together.
+---
+
+import { FileTree, Aside } from '@astrojs/starlight/components';
+
+A **Project** is the unit of work in AskUI Desktop. Everything for a body of
+testing lives in one Project folder, split into a few well-known areas.
+
+<FileTree>
+- my-project/
+  - tests/            test suites, cases and steps (Markdown / CSV)
+    - rules.md         execution rules for this folder
+    - setup.md         runs before every test in this folder
+    - teardown.md      runs after every test in this folder
+  - prompts/          the four prompt parts ([best practices](/using-askui-desktop/prompting-best-practices/))
+  - procedures/       reusable step sequences (e.g. login_to_ui.md)
+  - plans/            which suites/cases to run (e.g. smoke.md)
+  - secrets/          credentials — never referenced inline in tests
+  - utils/            custom tools, MCP servers, skills, CLI hooks
+</FileTree>
+
+## The domain model
+
+- **Tests** decompose into **suites → cases → steps**. A step describes an
+  action and its expected result. Cases may carry a **precondition** and
+  **postcondition**; suites may carry **setup** and **teardown**.
+- A **step** can invoke a **procedure** (a reusable sequence) or a **util** (a
+  tool, MCP server, skill, or CLI command).
+- **Plans** select what runs — e.g. a `smoke` plan that runs a subset of
+  suites for a quick check.
+
+<Aside type="tip">
+Start from the scaffold: a new Project comes pre-seeded with the four prompt
+parts, an example login test, a `smoke` plan, and a `secrets/` README. Fill in
+the placeholders rather than starting from a blank page.
+</Aside>
+
+## Where to go next
+
+- [Agents & prompts](/using-askui-desktop/agents-and-prompts/) — the prompt
+  parts in detail.
+- [Prompting best practices](/using-askui-desktop/prompting-best-practices/) —
+  how to structure them well.
+- [Reading a run report](/using-askui-desktop/run-report/) — what a run
+  produces.
