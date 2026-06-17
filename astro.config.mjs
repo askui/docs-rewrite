@@ -2,9 +2,43 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
+const BASE = '/docs-rewrite';
+
+/**
+ * Rewrite root-absolute links/images in Markdown & MDX (`/agentos/…`,
+ * `/runs/…`) to include the GitHub Pages base path, so they don't 404 when
+ * the site is served from askui.github.io/docs-rewrite. External links (http,
+ * //, mailto, #) and already-prefixed links are left alone.
+ * (Starlight already base-prefixes the logo, favicon, and sidebar links;
+ * component props like <LinkCard href> and <RunEmbed src> are handled in the
+ * pages/components directly.)
+ */
+function rehypeBasePaths() {
+  const fix = (v) =>
+    typeof v === 'string' &&
+    v.startsWith('/') &&
+    !v.startsWith('//') &&
+    !v.startsWith(BASE + '/') &&
+    v !== BASE
+      ? BASE + v
+      : v;
+  const walk = (node) => {
+    if (node.properties) {
+      if (node.properties.href) node.properties.href = fix(node.properties.href);
+      if (node.properties.src) node.properties.src = fix(node.properties.src);
+    }
+    (node.children || []).forEach(walk);
+  };
+  return (tree) => walk(tree);
+}
+
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://docs.askui.com',
+  site: 'https://askui.github.io',
+  base: BASE,
+  markdown: {
+    rehypePlugins: [rehypeBasePaths],
+  },
   integrations: [
     starlight({
       title: 'AskUI Docs',
