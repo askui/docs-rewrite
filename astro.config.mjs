@@ -8,12 +8,13 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'AskUI Docs',
+      favicon: '/favicon.svg',
       description:
         'Documentation for AskUI Desktop and the AskUI CLI — author and run AI-driven UI tests.',
       logo: {
         light: './src/assets/logo-light.svg',
         dark: './src/assets/logo-dark.svg',
-        replacesTitle: false,
+        replacesTitle: true,
       },
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/askui' },
@@ -41,6 +42,7 @@ export default defineConfig({
             { label: 'How a Project is organized', slug: 'using-askui-desktop/project-structure' },
             { label: 'Agents & prompts', slug: 'using-askui-desktop/agents-and-prompts' },
             { label: 'Prompting best practices', slug: 'using-askui-desktop/prompting-best-practices' },
+            { label: 'Engineering a good system prompt', slug: 'using-askui-desktop/system-prompt' },
             { label: 'Reading a run report', slug: 'using-askui-desktop/run-report' },
             { label: 'Running from the CLI', slug: 'using-askui-desktop/cli' },
           ],

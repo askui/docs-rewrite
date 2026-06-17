@@ -1,12 +1,50 @@
 ---
-title: Control modes
-description: Host Mode vs Companion Mode — how AgentOS connects to a target machine.
+title: Control Modes
+description: "How AgentOS connects to and controls target machines — Host Mode vs Companion Mode."
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-**Host Mode** runs AgentOS on the target as software. **Companion Mode** runs it on a separate device and controls the target over hardware interfaces.
+AgentOS operates in two control modes that determine *how* it connects to and controls a target machine. Both modes expose the same core concepts (screenshots, input, automation) — but the connection method differs.
 
-<Aside type="note">
-Stub page in the scaffold — fill in during the full content migration.
-</Aside>
+## Host Mode
+
+AgentOS runs directly **on the target machine** as software. It controls the desktop via OS-level APIs.
+
+- Agent code and AgentOS run on the same machine (or connect over the network).
+- Full access to OS-level features: window management, process control, multi-display support.
+- Can run as a [Windows service](/agentos/installation/service/) for SYSTEM privileges, RDP resilience, and logon screen control.
+- Supports Windows, macOS, and Linux.
+
+**Best for:** Desktop automation, CI/CD pipelines, enterprise VMs.
+
+## Companion Mode
+
+AgentOS runs on an **external device** and controls the target through hardware interfaces. No software needs to be installed on the target.
+
+- Input is sent via USB or Bluetooth HID (keyboard and mouse emulation).
+- Screen capture happens via HDMI-to-USB capture devices.
+- Mobile devices are controlled via ADB (Android) or IDB (iOS, planned).
+
+**Best for:** Locked-down environments, embedded systems, kiosks, mobile devices, and any target where you cannot install software.
+
+## Comparison
+
+| | Host Mode | Companion Mode |
+| --- | --- | --- |
+| **Where AgentOS runs** | On the target machine | On an external device |
+| **Connection to target** | OS-level APIs | Hardware (USB, Bluetooth, HDMI) or device bridge (ADB/IDB) |
+| **Software on target** | Required | Not required |
+| **OS service support** | Yes (Windows) | No |
+| **Platform support** | Windows, macOS, Linux | Any device with USB/HDMI/Bluetooth; Android (ADB), iOS (IDB planned) |
+
+For a detailed breakdown of what each mode can do, see [Capabilities](/agentos/understanding/capabilities/).
+
+## What's Next?
+
+<CardGrid>
+  <LinkCard title="Capabilities" href="/agentos/understanding/capabilities/" description="Full list of capabilities by control mode." />
+  <LinkCard title="Deployment" href="/agentos/how-to-guides/deployment-scenarios/" description="Find the right setup for your target." />
+  <LinkCard title="Runtime Modes" href="/agentos/understanding/runtime-modes/" description="Standalone vs OS service — choose the right runtime." />
+  <LinkCard title="Install as Service" href="/agentos/installation/service/" description="Set up AgentOS as a Windows service for CI/CD and enterprise." />
+</CardGrid>

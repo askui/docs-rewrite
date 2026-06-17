@@ -1,12 +1,98 @@
 ---
-title: Multi-device deployment
-description: Drive runs across many devices with AgentOS.
+title: Multi-Device Setups
+description: "Control multiple targets from a single agent or pipeline."
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+You need to automate across multiple targets — desktops, VMs, mobile devices, or hardware. In multi-device setups, AskUI Desktop and the CLI connect to **each AgentOS instance separately** via gRPC. There is no AgentOS-to-AgentOS communication.
 
-Use Companion Mode and the CLI to fan a Project's runs across a fleet of devices.
+## Windows + Mobile Device
 
-<Aside type="note">
-Stub page in the scaffold — fill in during the full content migration.
-</Aside>
+Automate a Windows desktop and a mobile device from the same pipeline.
+
+**When to use:** Cross-platform testing — e.g., a web app on Windows and its companion mobile app.
+
+```mermaid
+graph LR
+    subgraph CI Runner
+        A[AskUI Desktop / CLI]
+    end
+    A -->|gRPC| B
+    A -->|gRPC| C
+    subgraph Windows VM
+        B[AgentOS<br/>OS Service] --> D[Desktop]
+    end
+    C[AgentOS<br/>Standalone] -->|ADB / IDB| E[Android / iOS]
+```
+
+The client manages two independent gRPC connections: one to the AgentOS OS Service on the Windows VM, and one to a local AgentOS instance that controls the mobile device.
+
+## Multiple Windows VMs
+
+Scale desktop automation across several Windows VMs in parallel.
+
+**When to use:** Running the same tests across different Windows configurations, or distributing a large test suite across machines for faster execution.
+
+```mermaid
+graph LR
+    subgraph CI Runner
+        A[AskUI Desktop / CLI]
+    end
+    A -->|gRPC| B1
+    A -->|gRPC| B2
+    A -->|gRPC| B3
+    subgraph VM 1
+        B1[AgentOS<br/>OS Service] --> C1[Desktop]
+    end
+    subgraph VM 2
+        B2[AgentOS<br/>OS Service] --> C2[Desktop]
+    end
+    subgraph VM 3
+        B3[AgentOS<br/>OS Service] --> C3[Desktop]
+    end
+```
+
+Each VM runs its own AgentOS OS Service. The client connects to all of them independently. Your pipeline code decides which commands go to which VM.
+
+## Multiple Mobile Devices
+
+Automate several Android (or iOS) devices connected to the same machine.
+
+**When to use:** Testing across different device models, screen sizes, or OS versions in parallel.
+
+```mermaid
+graph LR
+    subgraph CI Runner
+        A[AskUI Desktop / CLI]
+    end
+    A -->|gRPC| B1
+    A -->|gRPC| B2
+    A -->|gRPC| B3
+    B1[AgentOS 1] -->|ADB| D1[Android Device 1]
+    B2[AgentOS 2] -->|ADB| D2[Android Device 2]
+    B3[AgentOS 3] -->|ADB| D3[Android Device 3]
+```
+
+Each device gets its own AgentOS instance. The client connects to each one over gRPC and routes commands to the right device.
+
+## Desktop + KVM Device
+
+Combine software-based desktop control with hardware-based control of an external device.
+
+**When to use:** Testing interactions between a desktop application and a physical device that can't have software installed (e.g., an embedded system, kiosk, or industrial controller).
+
+```mermaid
+graph LR
+    A[AskUI Desktop / CLI] -->|gRPC| B[AgentOS<br/>Host Mode]
+    A -->|gRPC| C[AgentOS<br/>Companion Mode]
+    B --> D[Local Desktop]
+    C -->|USB / Bluetooth<br/>Keyboard + Mouse| E[Target Device]
+    E -->|HDMI Capture<br/>Screenshots| C
+    subgraph Your Machine
+        A
+        B
+        C
+        D
+    end
+```
+
+Two AgentOS instances run on the same machine, each in a different [control mode](/agentos/understanding/control-modes/): one controls the local desktop (Host Mode), the other controls the external device through hardware (Companion Mode). The client connects to both independently.

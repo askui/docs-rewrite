@@ -1,12 +1,101 @@
 ---
 title: Troubleshooting
-description: Common AgentOS issues and how to resolve them.
+description: "Diagnose and fix common AgentOS issues."
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 
-Diagnostics for permissions, connectivity, and runtime errors.
+<Aside type="note">The troubleshooting steps below apply to AgentOS running as a **Windows service**. For standalone mode on macOS or Linux, check the terminal output for errors.</Aside>
 
-<Aside type="note">
-Stub page in the scaffold — fill in during the full content migration.
+## Logs
+
+The AskUI Core Service and the Remote Device Controller write to two separate locations. For troubleshooting, collect logs from **both**:
+
+**Remote Device Controller** (runs in the interactive user session):
+
+```
+%userprofile%\.askui\Logs
+```
+
+**AskUI Core Service** (runs as SYSTEM):
+
+```
+C:\Windows\System32\config\systemprofile\.askui\logs
+```
+
+## Common Issues
+
+### Restart the AgentOS service
+
+Many issues are resolved by restarting the service. To restart it via Task Manager:
+
+1. Open **Task Manager** (`Ctrl+Shift+Esc`).
+2. Switch to the **Services** tab (the puzzle-piece icon).
+3. Search for **`AskuiCoreService`**.
+4. Right-click the entry and choose **Restart**.
+
+### Agent can't press CTRL+ALT+DEL
+
+The login/lock screen cannot be automated unless the local security policy allows services to simulate a Secure Attention Sequence (SAS). To enable it:
+
+1. Open the **Group Policy Editor** (`gpedit.msc`).
+2. Navigate to **Computer Configuration → Administrative Templates → Windows Components → Windows Logon Options**.
+3. Set **Disable or enable software Secure Attention Sequence** to **Enabled**.
+
+Also verify that `SERVICE_ENABLE_SAS` is set to `1` (default) in the [Silent installer parameters](/agentos/installation/silent/#parameters).
+
+<Aside type="caution">
+The service includes a `windows.forceSas` option that overrides group policies. This is **not recommended** as it may trigger system integrity checks. Configure the GPE policy instead.
+</Aside>
+
+### AgentOS returns empty images or shuts down when the RDP Client window is minimized
+
+Minimizing the RDP Client window simulates a display disconnect on the remote machine. The Remote Device Controller loses access to the display — depending on the state, it either returns empty screenshots or shuts itself down entirely, ending any running automation.
+
+Mitigate with one of the following:
+
+- Start the job while RDP is connected and the window is maximized.
+- Disconnect the RDP session (rather than minimizing it) before starting the job.
+- On the **RDP client machine** (the one running `mstsc`), set a registry value to keep the session active when minimized:
+
+  Open `regedit`, navigate to `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Terminal Server Client`, and create a `DWORD` value named `RemoteDesktop_SuppressWhenMinimized` with data `2`.
+
+### Agent can't interact with apps running as Administrator
+
+Windows prevents non-elevated processes from sending input to elevated (Run as Administrator) applications. If your agent can't click or type into an app running as Administrator, you need to start the Remote Device Controller in elevated mode.
+
+To enable elevated mode:
+
+- **Service Installer (GUI)**: Open **Windows Add/Remove Programs**, find AskUI AgentOS, click **Modify**, and enable the elevated execution engine option. Alternatively, reinstall AgentOS with the option enabled.
+- **Silent Installer**: Set `SERVICE_EXECUTION_ENGINE_ELEVATED` to `1` — see [Silent installer parameters](/agentos/installation/silent/#parameters).
+
+<Aside type="caution">
+Running the execution engine elevated grants it higher privileges. Only enable this when you need to automate applications that run as Administrator.
+</Aside>
+
+### `ipv4:127.0.0.1:23000 unavailable` in Standalone mode
+
+If the client fails to connect with an error like `ipv4:127.0.0.1:23000 unavailable` while running in **Standalone** runtime mode, autostart of the local AgentOS instance is likely disabled.
+
+Check the `ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART` environment variable — if it is set to `false`, the client will not start AgentOS automatically and there is nothing listening on port `23000`. Either unset the variable or set it to `true`:
+
+<Tabs>
+  <TabItem label="Windows PowerShell">
+    ```powershell
+    $env:ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART="true"
+    ```
+  </TabItem>
+  <TabItem label="macOS/Linux">
+    ```bash
+    export ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART=true
+    ```
+  </TabItem>
+</Tabs>
+
+This variable is intentionally set to `false` when connecting to a remote AgentOS instance — see [Remote Windows VM](/agentos/how-to-guides/deployment-ci/#remote-windows-vm).
+
+### Need to reinstall or remove
+
+<Aside type="caution">
+**Do not** stop or remove the service from Windows Services manually. Always **uninstall the full AskUI AgentOS application** via Windows Add/Remove Programs. This ensures proper cleanup so the client falls back to standalone mode.
 </Aside>

@@ -1,12 +1,49 @@
 ---
 title: Plans & billing
-description: AskUI plans, usage, and billing.
+description: How AskUI plans, subscriptions, and usage metering work.
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
-Manage your plan, view usage, and handle billing. Sourced from the AskUI Hub.
+Billing is handled per **workspace** in the AskUI Hub. Each workspace has a
+**subscription** to a plan, and your runs are metered against it.
+
+## Subscriptions
+
+A subscription has one or more **items** (the plans/products you're paying for)
+and a current billing period:
+
+- **Trial** — new subscriptions may start in a trial. The Hub shows whether
+  you're on a trial and when it ends.
+- **Billing period** — each subscription has a current period (start → end).
+  Usage and renewals are tracked against this period.
+- **Allowed usage** — each plan grants an amount of included usage for the
+  period.
+
+## Usage metering
+
+Every run records **usage events** against the workspace. Each event is
+attributed to:
+
+- the **workspace** it ran in,
+- the **user** or **access token** that triggered it, and
+- a **timestamp**.
+
+This is what lets you see usage in the Hub broken down by who (or which CI
+token) is consuming it. Runs from the CLI in CI are attributed to the
+[access token](/account-billing/workspaces/#access-tokens) that authenticated
+them.
+
+## Plans
+
+Plans differ by price and included usage:
+
+- **Product / name** — what the plan is.
+- **Price** — an amount and currency, billed on a recurring interval.
+- **Included usage** — the allowance per period before overage applies.
 
 <Aside type="note">
-Stub page in the scaffold — fill in during the full content migration.
+This page describes the billing model from the AskUI Hub. Specific plan names,
+prices, and the enterprise/on-prem options are filled in during the Hub content
+pass — for enterprise terms see [AgentOS → Enterprise](/agentos/reference/enterprise/).
 </Aside>

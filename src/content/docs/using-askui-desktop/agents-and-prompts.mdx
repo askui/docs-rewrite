@@ -1,31 +1,128 @@
 ---
 title: Agents & prompts
-description: How AskUI Desktop turns a Project's prompt files into a running test agent.
+description: How AskUI Desktop assembles a testing agent from a Project's prompt files, with the real default prompts explained part by part.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, FileTree, Tabs, TabItem } from '@astrojs/starlight/components';
 
 When you run a test, AskUI Desktop assembles an autonomous testing agent from
 your Project's `prompts/` folder. The agent reads the screen, acts via clicks
-and keystrokes, verifies expected results, and writes a report.
+and keystrokes, verifies expected results, and writes a report. This page walks
+through each prompt part using the **real defaults** a new Project ships with.
+
+<Aside type="tip">
+New to the structure? Start with
+[How a Project is organized](/using-askui-desktop/project-structure/), then the
+[Prompting best practices](/using-askui-desktop/prompting-best-practices/) for
+the principles behind it.
+</Aside>
 
 ## What the agent is made of
 
-The four prompt parts are composed into the agent at run start:
+The four prompt parts are composed into the agent at run start, then per-folder
+`rules.md` / `setup.md` / `teardown.md` are layered on top for the tests in that
+folder.
 
-| File | Role |
+<FileTree>
+- prompts/
+  - system_capabilities.md
+  - device_information.md
+  - ui_information.md
+  - report_format.md
+</FileTree>
+
+## `system_capabilities.md` — who the agent is
+
+Defines the agent's identity and the discipline it always follows. You rarely
+edit this. The default establishes an autonomous tester that acts through
+screenshots and input, and — critically — that **does not improvise**:
+
+> **Error handling.** You have a maximum of **2 attempts per step**. If a step
+> does not succeed after 2 attempts, stop immediately. Do not try a third
+> time… Never try creative or alternative ways to accomplish a step that
+> didn't work as written.
+
+> **Infrastructure errors.** Tool errors that indicate infrastructure failures
+> (connection lost, session expired, RPC errors) are fundamentally different
+> from test failures. Write the report with status **BROKEN** and call the
+> `exception_tool` to abort — retrying cannot fix broken infrastructure.
+
+It also sets two conventions the agent relies on:
+
+- **Credentials** are never embedded in a test. When a step references "the QA
+  credentials", the agent reads them from `secrets/credentials.txt` at run time.
+- **Scratchpad** — the agent can persist information across steps with
+  `scratchpad_write_tool` / `scratchpad_read_tool`, but only when explicitly
+  prompted to.
+
+## `device_information.md` — the machine
+
+Facts about the machine under test. Swap this file to retarget a run. The
+default is a placeholder you fill in:
+
+```markdown
+You are controlling a desktop computer.
+
+* Operating system: FILL IN (e.g. Windows 11, macOS 15)
+* Displays: FILL IN (e.g. one built-in display; always execute on display 1)
+* Screen coordinates are in pixels, starting from (0, 0) at the top-left.
+* Always verify the current screen state before performing interactions.
+```
+
+## `ui_information.md` — your application
+
+Where the agent learns **your** app: its areas, how to read state, and its
+quirks. This is the file you invest the most in.
+
+```markdown
+## Navigation
+The application has these primary areas: Dashboard, Records, Settings…
+
+## State indicators
+"Login state is shown top-right: a green dot means signed in, red means the
+session expired — sign in again."
+
+## Dialogs & quirks
+"Destructive actions open a centered confirmation dialog that must be confirmed
+or dismissed before continuing."
+```
+
+## `report_format.md` — how it reports
+
+The structure and status vocabulary of the report the agent writes after each
+case. The default statuses:
+
+| Status | Meaning |
 | --- | --- |
-| `system_capabilities.md` | Who the agent is and the rules it always follows. |
-| `device_information.md` | The machine it controls — OS, displays, coordinates. |
-| `ui_information.md` | Your application — navigation, state, quirks. |
-| `report_format.md` | The structure and status vocabulary of its report. |
+| `PASSED` | Actual result matches expected. |
+| `FAILED` | Step executed but result didn't match. |
+| `SKIPPED` | Intentionally not executed (e.g. precondition not met). |
+| `WARN` | Passed with a caveat (slow response, minor visual deviation). |
+| `BROKEN` | Could not execute — crash or infrastructure failure. |
 
-Per-folder `rules.md`, `setup.md`, and `teardown.md` are layered on top for the
-tests in that folder.
+The overall status is the worst of its steps. See
+[Reading a run report](/using-askui-desktop/run-report/) to see one rendered.
+
+## Per-folder behaviour
+
+Don't edit `system_capabilities.md` to change one suite. Instead drop a
+`rules.md` into the test folder — every test inside picks it up automatically:
+
+<Tabs>
+  <TabItem label="rules.md">
+    Execution rules for this folder: interaction style, error-handling policy,
+    and the credential convention. Cascades with folder nesting.
+  </TabItem>
+  <TabItem label="setup.md">
+    Runs **before** every test in the folder — outer folders first.
+  </TabItem>
+  <TabItem label="teardown.md">
+    Runs **after** every test in the folder — innermost folder first.
+  </TabItem>
+</Tabs>
 
 <Aside type="note">
-This page is a stub in the scaffold. The full version walks through editing
-each prompt part in the AskUI Desktop UI with screenshots. The principles
-behind the structure are covered in
-[Prompting best practices](/using-askui-desktop/prompting-best-practices/).
+The full UI walkthrough (editing these files inside AskUI Desktop with
+screenshots) lands with the desktop-app screenshots pass. The structure and
+defaults above are stable.
 </Aside>

@@ -1,16 +1,53 @@
 ---
 title: Sign in & onboarding
-description: Sign in to AskUI, set up your workspace, and get ready to run your first test.
+description: Create an AskUI account, set up your workspace, and connect AskUI Desktop and the CLI.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Steps, Aside, LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-AskUI Desktop and the CLI sign in with your AskUI account (Auth0). Your
-account belongs to a **workspace**, which is where runs, usage, and billing
-are tracked.
+AskUI Desktop and the CLI sign in with your AskUI account. Your account belongs
+to a **workspace** — the unit that owns your access tokens, usage, and billing.
+You manage all of this in the **AskUI Hub**.
+
+## Create your account
+
+<Steps>
+
+1. **Sign up** at the AskUI Hub with your email.
+
+2. **Accept the terms and privacy policy.** You can't continue without
+   consenting — this is a one-time step.
+
+3. **Verify your email.** We send a verification link; open it to activate your
+   account. (You can resend it from the prompt if it doesn't arrive.)
+
+4. **Land in the Hub.** The Hub is onboarding-first — it guides you through
+   setup, then becomes your reference for **tokens** and **settings**.
+
+</Steps>
 
 <Aside type="note">
-Stub page. Onboarding content is sourced from the AskUI Hub. This covers
-creating an account, joining or creating a workspace, and connecting AskUI
-Desktop to it. See [Workspaces](/account-billing/workspaces/).
+Authentication uses Auth0 (OIDC). The same login works across AskUI Desktop,
+the CLI, and the Hub.
 </Aside>
+
+## Connect your tools
+
+<CardGrid>
+  <LinkCard title="Sign in to AskUI Desktop" href="/get-started/install-desktop/"
+    description="Launch the app and sign in with your AskUI account." />
+  <LinkCard title="Authenticate the CLI" href="/get-started/install-cli/"
+    description="Create a workspace access token in the Hub and give it to the CLI." />
+</CardGrid>
+
+<Aside type="tip">
+For headless/CI use, the CLI authenticates with a **workspace access token**
+rather than an interactive login. Create one under
+[Workspaces → access tokens](/account-billing/workspaces/).
+</Aside>
+
+## Next
+
+- [Your first test run](/get-started/first-run/)
+- [Workspaces](/account-billing/workspaces/)
+- [Plans & billing](/account-billing/billing/)

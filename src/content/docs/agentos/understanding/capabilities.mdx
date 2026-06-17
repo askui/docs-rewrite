@@ -1,12 +1,71 @@
 ---
 title: Capabilities
-description: "The building blocks AgentOS exposes to agents: screen reading, input, and window management."
+description: "A unified overview of all AgentOS capabilities across control modes and runtime modes."
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+AgentOS provides a set of capabilities for controlling machines. What's available depends on the [control mode](/agentos/understanding/control-modes/) and [runtime mode](/agentos/understanding/runtime-modes/) you use.
 
-AgentOS exposes a common set of capabilities — screen reading, input simulation, and window/process management — to the agent regardless of control or runtime mode.
+## Desktop Control
 
-<Aside type="note">
-Stub page in the scaffold — fill in during the full content migration.
-</Aside>
+| Capability | Host Mode | Companion Mode | Description |
+| --- | --- | --- | --- |
+| Screenshots | Available | Available (via HDMI capture) | Capture the current screen state. |
+| GPU-accelerated screenshots | Available | — | Take screenshots on GPU for better performance. |
+| Keyboard input | Available | Available (via USB / Bluetooth HID) | Simulate key presses and combinations. |
+| Real Unicode typing | Available | — | Native Unicode input (not clipboard-based). |
+| Mouse input | Available | Available (via USB / Bluetooth HID) | Click, move, drag, and scroll. |
+| Multi-display support | Available | — | Interact with multiple monitors. |
+| Window management | Available | — | Select, resize, move, and focus windows. |
+| Process management | Available | — | Start, stop, and monitor OS processes. |
+| Automation recovery | Available | — | Recover automatically from display changes. |
+| CLI | Available | — | Enhanced command-line interface. |
+
+## Windows Service (OS Service Mode Only)
+
+These capabilities require AgentOS to be installed as a [Windows service](/agentos/installation/service/).
+
+| Capability | Status | Description |
+| --- | --- | --- |
+| SYSTEM-level service | Available | Run as a Windows service with SYSTEM privileges. |
+| RDP disconnect recovery | Available | Keep automation running when RDP sessions disconnect. |
+| Login screen automation | Available | Interact with the Windows logon screen. |
+| Secure Attention Sequence | Available | Send CTRL+ALT+DEL programmatically. |
+| Background session automation | Available | Automate sessions that are not in the foreground. |
+| Multi-user session control | Planned | Control multiple user sessions on the same machine. |
+| Virtual display | Planned | Create virtual displays for headless environments. |
+
+## Mobile Devices
+
+| Capability | Status | Description |
+| --- | --- | --- |
+| ADB (Android) | Available | Control Android devices via USB. |
+| IDB (iOS) | Experimental | Control iOS Simulators (macOS only). |
+
+## Hardware (Companion Mode Only)
+
+| Capability | Status | Description |
+| --- | --- | --- |
+| HID over USB | Available | Simulate keyboard and mouse via USB connection. |
+| HID over Bluetooth | Available | Simulate keyboard and mouse via Bluetooth. |
+| Screenshot via media stream | Available | Capture screen output via HDMI-to-USB dongle or webcam. |
+| Raspberry Pi support | Planned | Use a Raspberry Pi as the companion device. |
+
+## Platform Support
+
+| Platform | Host Mode | Companion Mode |
+| --- | --- | --- |
+| Windows 10 22H2+ | Available | — |
+| Windows 11 | Available | — |
+| Windows Server 2019+ | Available | — |
+| Windows 10 < 22H2 | Available | — |
+| macOS | Available | — |
+| Linux | Available | — |
+| Android | — | Available (ADB) |
+| iOS | — | Experimental (IDB, Simulators only) |
+
+## Future
+
+| Capability | Status | Description |
+| --- | --- | --- |
+| C# API | Planned | Native C# interface for .NET integrations. |
+| Future automation APIs | Planned | Integration with emerging OS automation frameworks. |

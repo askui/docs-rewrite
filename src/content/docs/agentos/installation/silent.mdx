@@ -1,12 +1,63 @@
 ---
-title: Silent install
-description: Unattended AgentOS installation for fleet and enterprise rollouts.
+title: Silent (exe)
+description: "Silent installation parameters and runtime configuration for the AgentOS Windows service."
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-Silent installation lets you deploy AgentOS across many machines without interactive prompts.
+Install AgentOS as a Windows service unattended — for scripts, CI/CD pipelines, or automated provisioning.
 
-<Aside type="note">
-Stub page in the scaffold — fill in during the full content migration.
-</Aside>
+## Download
+
+<CardGrid>
+  <LinkCard title="AMD64 (x86_64)" href="https://files.askui.com/releases/Installer/Latest/AskUI-Agent-OS-Latest-Service-Installer-Win-AMD64.exe" description="Standard 64-bit Windows systems." />
+  <LinkCard title="ARM64" href="https://files.askui.com/releases/Installer/Latest/AskUI-Agent-OS-Latest-Service-Installer-Win-ARM64.exe" description="ARM-based Windows devices." />
+</CardGrid>
+
+## Quick Start
+
+Run from an **elevated** command prompt (Run as administrator):
+
+```bash
+"AskUI-Agent-OS-<version>-Service-Installer-Win-AMD64.exe" /qn
+```
+
+<Aside type="note">Replace `<version>` with the actual version number (e.g. `26.2.1.3`).</Aside>
+
+With custom options (replace `<installer_path>` with the full path to where you downloaded the installer):
+
+```bash
+"<installer_path>" /qn APPDIR="C:\ASKUI" /l*vx installer.log
+```
+
+<Aside type="tip">Append `/l*vx installer.log` to any command to write detailed installer logs.</Aside>
+
+## Parameters
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `APPDIR` | `C:\Program Files\askui GmbH\AskUI AgentOS` | Install location. Must be accessible to all users. |
+| `SERVICE_SUBNET` | `127.0.0.1` | Network subnet the service listens on. |
+| `SERVICE_LISTENING_PORT` | `26000` | Main service port. |
+| `SERVICE_LOG_LEVEL` | `Debug` | Log verbosity: `Info` or `Debug`. |
+| `SERVICE_ENABLE_SAS` | `1` | Enable Secure Attention Sequence (CTRL+ALT+DEL). `0` to disable. |
+| `SERVICE_EXECUTION_ENGINE_ELEVATED` | `0` | Run execution engine with elevated privileges. `1` to enable. |
+| `SERVICE_EXECUTION_ENGINE_LISTENING_PORT` | `23000` | Execution engine port. |
+| `SERVICE_EXECUTION_ENGINE_VISIBLE` | `0` | Show execution engine UI/process. `1` to make visible. |
+| `SERVICE_TRANSFER_SESSION_ON_DISCONNECT` | `1` | Transfer remote sessions on disconnect (RDP resilience). `0` to disable. |
+
+**Example with multiple parameters:**
+
+```bash
+"<installer_path>" /qn SERVICE_LISTENING_PORT=27000 SERVICE_LOG_LEVEL=Info SERVICE_ENABLE_SAS=1 /l*vx installer.log
+```
+
+## Runtime Configuration
+
+After installation, the service can be tuned by editing:
+
+```
+C:\Program Files\askui GmbH\AskUI AgentOS\Configs\AskuiCoreService.json
+```
+
+<Aside type="caution">After changing this file, **restart the computer** for changes to take effect.</Aside>

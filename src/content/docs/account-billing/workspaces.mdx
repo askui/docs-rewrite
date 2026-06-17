@@ -1,12 +1,52 @@
 ---
 title: Workspaces
-description: How AskUI workspaces organize runs, members, and usage.
+description: How AskUI workspaces organize members, access tokens, runs, and usage.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, Steps } from '@astrojs/starlight/components';
 
-A workspace groups your members, Projects, runs, and usage. Sourced from the AskUI Hub.
+A **workspace** is the top-level container for your AskUI usage. It owns:
+
+- **Members** — the people with access, each with a privilege level.
+- **Access tokens** — credentials that let AskUI Desktop and the CLI act on
+  behalf of the workspace.
+- **Usage & billing** — runs are metered against the workspace's plan (see
+  [Plans & billing](/account-billing/billing/)).
+
+You manage workspaces in the **AskUI Hub**.
+
+## Members & invites
+
+Invite teammates from the Hub; each member belongs to the workspace with a
+privilege level that governs what they can do. Pending invites appear until
+accepted.
+
+## Access tokens
+
+Access tokens authenticate non-interactive clients — most importantly the
+**CLI in CI**, where there's no browser to log in with.
+
+<Steps>
+
+1. In the Hub, open **Tokens** and create a new token.
+
+2. Give it a **name** (e.g. `ci-smoke-runner`) and an **expiry**. Tokens can be
+   long-lived or time-boxed — prefer an expiry for CI.
+
+3. **Copy the token value immediately** — only its name and a hash are stored,
+   so the raw value is shown once and can't be retrieved later.
+
+4. Provide it to the CLI (e.g. via an environment variable in your pipeline) —
+   see [Running from the CLI](/using-askui-desktop/cli/).
+
+</Steps>
+
+<Aside type="caution">
+Treat access tokens like passwords. Store them in your CI secret store, never in
+a Project's files. Rotate by creating a new token and deleting the old one.
+</Aside>
 
 <Aside type="note">
-Stub page in the scaffold — fill in during the full content migration.
+This page summarizes workspace concepts from the AskUI Hub. Exact screens and
+privilege names are filled in during the Hub content pass.
 </Aside>

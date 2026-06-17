@@ -1,12 +1,20 @@
 ---
-title: Release notes
-description: What changed in each AgentOS release.
+title: Release Notes
+description: "AgentOS versioning scheme and release notes."
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+## Versioning
 
-Version history and changes for AgentOS.
+AgentOS follows [CalVer](https://calver.org/) (Calendar Versioning) with the format **`YY.MM.PATCH`**:
 
-<Aside type="note">
-Stub page in the scaffold — fill in during the full content migration.
-</Aside>
+- **YY** — two-digit year (e.g. `26` for 2026)
+- **MM** — month (e.g. `2` for February)
+- **PATCH** — incremental patch number within that month
+
+Example: **26.2.2** = 2026, February, patch 2.
+
+**AgentOS uses the same version as the installer and the `askui-agent-os` pip package.** If you install the service with version **26.2.2**, the included AgentOS is also **26.2.2**.
+
+## Releases
+
+For a full list of versions and changes, see the [release history on PyPI](https://pypi.org/project/askui-agent-os/#history).

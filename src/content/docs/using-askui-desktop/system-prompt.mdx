@@ -1,0 +1,165 @@
+---
+title: Engineering a good system prompt
+description: The five parts of a strong AskUI system prompt, the criteria to judge each part, and a complete worked example.
+---
+
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+
+System prompts are one of your biggest levers on agent reliability. If there
+are test cases where the agent consistently fails, engineering the system
+prompt is often the fix. Our recommendation: a prompt structured as **XML**,
+composed of **five parts** — System Capabilities, Device Information, UI
+Information, Report Format, and (optionally) Additional Rules. A consistent,
+detailed, contradiction-free prompt lets the agent reason, plan, and act more
+reliably.
+
+<Aside type="note" title="How this maps to your Project">
+In AskUI Desktop these five parts are the files in your Project's `prompts/`
+folder plus per-folder `rules.md`. This page is the *why* and *how to write
+each part well*; [Prompting best practices](/using-askui-desktop/prompting-best-practices/)
+covers how they live in the Project, and [Agents & prompts](/using-askui-desktop/agents-and-prompts/)
+shows the real defaults.
+</Aside>
+
+## Why system prompts matter
+
+A system prompt is one of the most important control surfaces in modern AI
+engineering. Rather than fine-tuning model weights, it effectively reprograms
+the model for the duration of a run — shaping how it produces every subsequent
+token under a new set of constraints, priorities, and abilities.
+
+Simple tasks (drafting an email, describing an image) need little or no system
+prompt. But an AskUI agent must plan and execute **multi-step interactions on
+UIs it may never have seen**, across devices with completely different input
+models (scroll vs. swipe), correctly identifying interaction affordances. A
+good system prompt is how you induce the instructions and knowledge the agent
+needs to do that.
+
+## The five parts
+
+<CardGrid>
+  <Card title="1 · System Capabilities" icon="seti:lock">
+    What the agent should do, how it should behave, and how it unblocks itself.
+    **Stick to the AskUI default here** — small changes can cause unexpected
+    behaviour. Edit with care.
+  </Card>
+  <Card title="2 · Device Information" icon="laptop">
+    The device under test: desktop, Android phone, iPhone, in-car HMI? Windows,
+    Linux, macOS, iOS, Android? Any device-specific constraints? Defaults exist
+    for Desktop and Android.
+  </Card>
+  <Card title="3 · UI Information" icon="puzzle">
+    The most important part you own. Nobody knows your UI better than you —
+    pass it as much as possible (below).
+  </Card>
+  <Card title="4 · Report Format" icon="document">
+    How the agent should report after a run — Markdown, JSON, or plain text.
+    Be explicit about structure. If you want no report, say so here.
+  </Card>
+</CardGrid>
+
+### 3 · UI Information — what to include
+
+This is where you teach the agent *your* application. Explain:
+
+- **How interactions work** on your interface.
+- **Where relevant functions are located.**
+- **Which interaction patterns are non-standard.**
+- **Where first-time users commonly get lost.**
+
+Crucially, also call out **common pitfalls and what *not* to do** when
+operating your UI.
+
+### 5 · Additional Rules (optional)
+
+Patches for specific cases the agent regularly struggles with. For example, if
+it consistently fails to click your *Save* button, describe in detail where it
+is, what it looks like, and what to do when asked to click it. Include:
+
+- how the agent can **identify** the stuck situation,
+- what it **should do**, and
+- what it **should not do**.
+
+Think of this as patching a single bug in your program.
+
+## Best practices for every part
+
+<CardGrid>
+  <Card title="Be consistent with language" icon="translate">
+    Stick to clear English throughout — the prompt, test cases, all inputs.
+    Other languages or mixed languages degrade performance.
+  </Card>
+  <Card title="Avoid contradictions" icon="warning">
+    Contradicting rules inevitably produce undefined behaviour.
+  </Card>
+  <Card title="Use a structured format" icon="seti:config">
+    Wrap each part in an XML tag and use bullet-point lists within each part.
+  </Card>
+  <Card title="Be (overly) specific" icon="magnifier">
+    If you feel you're being far too detailed, you're doing it right. Only you
+    know your UI — pass all relevant information.
+  </Card>
+</CardGrid>
+
+## A complete example
+
+A minimal system prompt with all five parts, for a web-search agent:
+
+```xml
+<SYSTEM_CAPABILITIES>
+* You are an autonomous AI agent that operates User Interfaces such as apps, websites, or software.
+* Your primary goal is to execute tasks efficiently and reliably while
+  maintaining system stability.
+* Operate independently and make informed decisions without requiring
+  user input.
+* When you cannot find something (application window, ui element etc.) on
+  the currently selected/active display/screen, check the other available
+  displays by listing them and checking which one is currently active and
+  then going through the other displays one by one until you find it or
+  you have checked all of them.
+* When using your function calls, they take a while to run and send back
+  to you. Where possible/feasible, try to chain multiple of these calls
+  all into one function calls request.
+</SYSTEM_CAPABILITIES>
+<DEVICE_INFORMATION>
+Here are some details on the device you will be operating:
+* Device Type: Personal Computer
+* Operating System: macOS
+* Internet Access: Available
+</DEVICE_INFORMATION>
+<UI_INFORMATION>
+* When asked to perform web tasks try to open the browser (firefox,
+  chrome, safari, ...) if not already open. Often you can find the
+  browser icons in the toolbars of the operating systems.
+* When viewing a page it can be helpful to zoom out/in so that you can
+  see everything on the page. Either that, or make sure you scroll
+  down/up to see everything before deciding something isn't available.
+* Uses single-page navigation with URL updates
+</UI_INFORMATION>
+<REPORT_INFORMATION>
+* Provide a clear and concise summary of actions taken
+* Use Markdown formatting for better readability
+* Include any relevant observations or findings
+* Highlight any issues or errors encountered
+</REPORT_INFORMATION>
+<ADDITIONAL_RULES>
+* If asked to open a browser window, tab or website, always make sure that you open a new window. If you cannot see a window you just opened, it might have appeared on another screen than you are currently looking at
+**DO NEVER:**
+  - Complete a Purchase without explicit user confirmation
+  - submit any payment information
+  - delete any items from saved lists
+</ADDITIONAL_RULES>
+```
+
+## Summary
+
+The system prompt is among the most powerful tools for improving your agent's
+performance. Use the five-part structure to make sure you give the agent all
+relevant information, and review each part against the criteria above to assert
+prompt quality.
+
+<Aside type="tip">
+Once your prompt is solid, run it from the [CLI](/using-askui-desktop/cli/) to
+evaluate it across your test suite, and read the
+[run report](/using-askui-desktop/run-report/) to see where to tighten it.
+</Aside>

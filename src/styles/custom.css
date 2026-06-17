@@ -1,21 +1,91 @@
-/* AskUI brand theme for Starlight.
-   Primary brand navy: #282650 */
+/* ====================================================================
+ * AskUI Corporate Identity → Starlight theme
+ * Source: github.com/askui/askui-coperate-identity
+ *   - Accent: green  #16a34a (light) / #22c55e (dark)
+ *   - Neutrals: Zinc scale (bg #fff / #09090b, muted #f4f4f5 / #27272a,
+ *     border #e4e4e7 / #27272a)
+ *   - Logo purple #282650 is reserved for the logo only
+ *   - Type: Inter
+ * ==================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  --sl-color-accent-low: #1c1b33;
-  --sl-color-accent: #4f4d8a;
-  --sl-color-accent-high: #c7c5e8;
-}
-:root[data-theme='light'] {
-  --sl-color-accent-low: #dcdbf0;
-  --sl-color-accent: #282650;
-  --sl-color-accent-high: #1a1933;
+  --sl-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+  --askui-radius: 8px;
+  --askui-radius-lg: 12px;
 }
 
-/* RunEmbed component ------------------------------------------------ */
+/* Never allow horizontal overflow to slide the fixed nav / "On this page"
+   ToC over the page content. This happens when rem-based layout columns
+   outgrow Starlight's px/rem-default responsive breakpoints — e.g. under an
+   enlarged browser/OS default font size or a minimum-font-size setting — so
+   the right-sidebar column collapses and the page scrolls sideways. `clip`
+   (not `hidden`) leaves vertical scroll untouched and keeps the sticky header
+   and ToC working. */
+html,
+body,
+.page {
+  overflow-x: clip;
+}
+
+/* ── Dark theme (Starlight default :root) ─────────────────────────── */
+:root {
+  /* Accent — green */
+  --sl-color-accent-low: #14442a;
+  --sl-color-accent: #22c55e;
+  --sl-color-accent-high: #bbf7d0;
+
+  /* Neutrals — Zinc */
+  --sl-color-white: #fafafa; /* highest-contrast text */
+  --sl-color-gray-1: #f4f4f5;
+  --sl-color-gray-2: #d4d4d8;
+  --sl-color-gray-3: #a1a1aa; /* muted foreground */
+  --sl-color-gray-4: #52525b;
+  --sl-color-gray-5: #3f3f46;
+  --sl-color-gray-6: #27272a; /* muted bg / borders */
+  --sl-color-black: #09090b; /* page background */
+}
+
+/* ── Light theme ──────────────────────────────────────────────────── */
+:root[data-theme='light'] {
+  /* Accent — green */
+  --sl-color-accent-low: #dcfce7;
+  --sl-color-accent: #16a34a;
+  --sl-color-accent-high: #14532d;
+
+  /* Neutrals — Zinc (inverted) */
+  --sl-color-white: #09090b; /* highest-contrast text */
+  --sl-color-gray-1: #18181b;
+  --sl-color-gray-2: #27272a;
+  --sl-color-gray-3: #52525b; /* secondary text */
+  --sl-color-gray-4: #71717a; /* muted foreground */
+  --sl-color-gray-5: #d4d4d8;
+  --sl-color-gray-6: #e4e4e7; /* borders */
+  --sl-color-gray-7: #f4f4f5; /* muted bg */
+  --sl-color-black: #ffffff; /* page background */
+}
+
+/* Links pick up the green accent; keep headings on the neutral scale. */
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--sl-color-text-accent);
+  font-weight: 500;
+}
+
+/* Rounder corners on cards/asides to match the CI radius. */
+.sl-markdown-content .starlight-aside,
+.card {
+  border-radius: var(--askui-radius-lg);
+}
+
+/* ====================================================================
+ * RunEmbed component
+ * ==================================================================== */
 .run-embed {
   margin: 1.5rem 0;
   border: 1px solid var(--sl-color-gray-5);
-  border-radius: 0.5rem;
+  border-radius: var(--askui-radius-lg);
   overflow: hidden;
   background: var(--sl-color-black);
 }
@@ -26,8 +96,8 @@
   border: 0;
   padding: 0;
   cursor: pointer;
-  background:
-    linear-gradient(135deg, #282650 0%, #0a3b2e 100%);
+  /* Logo purple → brand green: ties the logo mark to the accent. */
+  background: linear-gradient(135deg, #282650 0%, #16a34a 100%);
   color: #fff;
   text-align: left;
   font: inherit;
@@ -45,11 +115,18 @@
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.18);
   font-size: 1.25rem;
 }
-.run-embed__facade-text strong { display: block; font-size: 1.05rem; }
-.run-embed__facade-text span { opacity: 0.8; font-size: 0.85rem; }
+.run-embed__facade-text strong {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.run-embed__facade-text span {
+  opacity: 0.85;
+  font-size: 0.85rem;
+}
 .run-embed__frame {
   display: block;
   width: 100%;

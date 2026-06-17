@@ -1,12 +1,55 @@
 ---
-title: Service
-description: Install AgentOS as an OS service for CI/CD, headless VMs, and enterprise deployments.
+title: OS Service (exe)
+description: "Install AgentOS as a Windows system service for enterprise and CI/CD."
 ---
 
-import { Aside } from '@astrojs/starlight/components';
-
-Running AgentOS as a system service unlocks SYSTEM privileges, RDP resilience, and logon-screen access.
+import { Aside, Steps } from '@astrojs/starlight/components';
 
 <Aside type="note">
-Stub page in the scaffold — fill in during the full content migration.
+AgentOS is proprietary software, **free for non-commercial use**. For commercial deployments, a license is required. See [pricing](https://www.askui.com/enterprise) for details.
 </Aside>
+
+## Prerequisites
+
+- **Windows** (Windows 10, Windows 11, Windows Server 2019+) — see [System Requirements](/agentos/reference/system-requirements/) for supported versions.
+- **Administrator rights**
+
+<Aside type="note">
+To automate the login/lock screen (Secure Attention Sequence), a Group Policy setting must be enabled. See [Troubleshooting](/agentos/how-to-guides/troubleshooting/#agent-cant-press-ctrlaltdel) for details.
+</Aside>
+
+## Installation
+
+<Steps>
+
+1. **Download the installer**
+
+   - [AMD64 (x86_64)](https://files.askui.com/releases/Installer/Latest/AskUI-Agent-OS-Latest-Service-Installer-Win-AMD64.exe)
+   - [ARM64](https://files.askui.com/releases/Installer/Latest/AskUI-Agent-OS-Latest-Service-Installer-Win-ARM64.exe)
+
+2. **Run the installer**
+
+   Run the EXE and approve the administrator elevation request.
+
+3. **Configure the service (optional)**
+
+   The installer includes a **Service Configuration** screen:
+
+   - **Connection Scope:** Use **Public (0.0.0.0)** if AgentOS needs to be reachable from another machine (e.g. a remote CI runner). Keep **Private (127.0.0.1)** for local use only.
+   - **Log Level:** `Info` for production, `Debug` for troubleshooting.
+   - **Allow CTRL+ALT+DEL:** Enable to automate the Windows lock/login screen (requires Group Policy — see [Troubleshooting](/agentos/how-to-guides/troubleshooting/#agent-cant-press-ctrlaltdel)).
+   - **Allow control of administrative applications:** Enable only if you need to automate apps running as administrator.
+
+   Click **Next**, then **Install**.
+
+4. **Reboot if prompted**
+
+   If the installer asks to reboot, restart the machine so all changes take effect.
+
+</Steps>
+
+AskUI Desktop and the CLI automatically detect the service and use it instead of standalone mode. For silent/unattended installation, see [Silent (exe)](/agentos/installation/silent/).
+
+## Uninstalling
+
+Always uninstall via **Windows Add/Remove Programs**. Do not remove the service from Windows Services manually.

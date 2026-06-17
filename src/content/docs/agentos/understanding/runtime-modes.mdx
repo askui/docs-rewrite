@@ -1,12 +1,45 @@
 ---
-title: Runtime modes
-description: Standalone vs OS Service — how AgentOS runs on its host machine.
+title: Runtime Modes
+description: "Standalone vs OS Service — choose the right AgentOS runtime mode."
 ---
 
 import { Aside } from '@astrojs/starlight/components';
 
-**Standalone** runs in the user session. **OS Service** runs with elevated privileges for CI, headless VMs, and enterprise deployments.
+AgentOS can run in two modes. Choose based on your use case.
 
-<Aside type="note">
-Stub page in the scaffold — fill in during the full content migration.
+## Standalone
+
+AgentOS runs as a regular process in the current user's session.
+
+**Best for:** Local development, interactive desktop use, and manual testing.
+
+```bash
+pip install askui-agent-os
+```
+
+That's it — AskUI Desktop and the CLI use the local AgentOS instance automatically.
+
+## OS Service
+
+AgentOS runs as a Windows system service with SYSTEM privileges.
+
+**Best for:** Enterprise deployments, CI/CD pipelines, headless VMs, and scenarios where RDP sessions may disconnect.
+
+The OS service requires the [Windows installer](/agentos/installation/service/). Once installed, AskUI Desktop and the CLI automatically use the service instead of standalone mode.
+
+## Feature Comparison
+
+| Feature | Standalone | OS Service |
+| --- | --- | --- |
+| **Primary use** | Local dev / desktop | Enterprise / CI/CD |
+| **CI/CD ready (Windows)** | No (requires OS service) | Yes (unattended/headless) |
+| **CI/CD ready (macOS/Linux)** | Yes | — |
+| **RDP resilience** | No (session locks on disconnect) | Yes (session transfer) |
+| **Logon screen control** | No | Yes |
+| **Send CTRL+ALT+DEL** | No | Yes (Secure Attention Sequence) |
+| **Privileges** | Current user | SYSTEM |
+| **Install method** | `pip install` | Windows installer |
+
+<Aside type="tip">
+**Not sure which to pick?** Start with **standalone** for development. Move to the **OS service** when you need CI/CD, headless VMs, or RDP resilience.
 </Aside>

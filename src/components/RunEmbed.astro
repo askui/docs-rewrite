@@ -3,11 +3,12 @@
  * RunEmbed — embeds a self-contained AskUI Desktop run export (.html)
  * inside a docs page.
  *
- * The exports are whole React apps (~2 MB each, assets inlined), so we:
+ * The exports are self-contained run views (real Conversation Log markup +
+ * inlined conversation-log.css from AskUI Desktop), so we:
  *   - serve them as untouched static files from /public,
  *   - render them in a sandboxed iframe (their own document → no CSS/JS
  *     collision with the docs site),
- *   - default to a CLICK-TO-LOAD facade so the 2 MB only loads on demand
+ *   - default to a CLICK-TO-LOAD facade so the embed only loads on demand
  *     (keeps Core Web Vitals green; iframe content isn't indexed anyway,
  *     so this is purely a performance win, not an SEO concern).
  *
@@ -44,7 +45,7 @@ const sandbox = 'allow-scripts allow-popups';
         <span class="run-embed__play" aria-hidden="true">▶</span>
         <span class="run-embed__facade-text">
           <strong>Open interactive run</strong>
-          <span>{title} — loads the live export (~2 MB) in your browser</span>
+          <span>{title} — loads the live, interactive run export in your browser</span>
         </span>
       </span>
     </button>
