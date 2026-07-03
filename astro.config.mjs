@@ -67,6 +67,7 @@ export default defineConfig({
             { label: 'Install AskUI Desktop', slug: 'get-started/install-desktop' },
             { label: 'Install the CLI', slug: 'get-started/install-cli' },
             { label: 'Sign in & onboarding', slug: 'get-started/onboarding' },
+            { label: 'Activate with a license key', slug: 'get-started/licensing' },
             { label: 'Your first test run', slug: 'get-started/first-run' },
           ],
         },
@@ -75,6 +76,7 @@ export default defineConfig({
           items: [
             { label: 'How a Project is organized', slug: 'using-askui-desktop/project-structure' },
             { label: 'Agents & prompts', slug: 'using-askui-desktop/agents-and-prompts' },
+            { label: 'Model providers (BYOM)', slug: 'using-askui-desktop/model-providers' },
             { label: 'Prompting best practices', slug: 'using-askui-desktop/prompting-best-practices' },
             { label: 'Engineering a good system prompt', slug: 'using-askui-desktop/system-prompt' },
             { label: 'Reading a run report', slug: 'using-askui-desktop/run-report' },
