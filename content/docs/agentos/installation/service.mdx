@@ -1,0 +1,61 @@
+---
+title: OS Service (exe)
+description: "Install AgentOS as a Windows system service for enterprise and CI/CD."
+---
+
+<Callout title="Note">
+AgentOS is proprietary software, **free for non-commercial use**. For commercial deployments, a license is required. See [pricing](https://www.askui.com/enterprise) for details.
+</Callout>
+
+## Prerequisites
+
+- **Windows** (Windows 10, Windows 11, Windows Server 2019+) — see [System Requirements](/docs/agentos/reference/system-requirements) for supported versions.
+- **Administrator rights**
+
+<Callout title="Note">
+To automate the login/lock screen (Secure Attention Sequence), a Group Policy setting must be enabled. See [Troubleshooting](/docs/agentos/how-to-guides/troubleshooting#agent-cant-press-ctrlaltdel) for details.
+</Callout>
+
+## Installation
+
+<Steps>
+
+<Step>
+**Download the installer**
+
+- [AMD64 (x86_64)](https://files.askui.com/releases/Installer/Latest/AskUI-Agent-OS-Latest-Service-Installer-Win-AMD64.exe)
+- [ARM64](https://files.askui.com/releases/Installer/Latest/AskUI-Agent-OS-Latest-Service-Installer-Win-ARM64.exe)
+</Step>
+
+<Step>
+**Run the installer**
+
+Run the EXE and approve the administrator elevation request.
+</Step>
+
+<Step>
+**Configure the service (optional)**
+
+The installer includes a **Service Configuration** screen:
+
+- **Connection Scope:** Use **Public (0.0.0.0)** if AgentOS needs to be reachable from another machine (e.g. a remote CI runner). Keep **Private (127.0.0.1)** for local use only.
+- **Log Level:** `Info` for production, `Debug` for troubleshooting.
+- **Allow CTRL+ALT+DEL:** Enable to automate the Windows lock/login screen (requires Group Policy — see [Troubleshooting](/docs/agentos/how-to-guides/troubleshooting#agent-cant-press-ctrlaltdel)).
+- **Allow control of administrative applications:** Enable only if you need to automate apps running as administrator.
+
+Click **Next**, then **Install**.
+</Step>
+
+<Step>
+**Reboot if prompted**
+
+If the installer asks to reboot, restart the machine so all changes take effect.
+</Step>
+
+</Steps>
+
+AskUI Desktop and the CLI automatically detect the service and use it instead of standalone mode. For silent/unattended installation, see [Silent (exe)](/docs/agentos/installation/silent).
+
+## Uninstalling
+
+Always uninstall via **Windows Add/Remove Programs**. Do not remove the service from Windows Services manually.

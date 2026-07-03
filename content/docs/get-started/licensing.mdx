@@ -1,0 +1,67 @@
+---
+title: Activate with a license key
+description: Run AskUI Desktop without an AskUI account by activating a license key and bringing your own model provider.
+---
+
+There are two ways to run AskUI Desktop:
+
+| Mode | How you get in | Where inference runs |
+| --- | --- | --- |
+| **AskUI account** | [Sign in](/docs/get-started/onboarding) with your AskUI account (Auth0) | AskUI hub, billed to your workspace |
+| **License key** | Activate a local license key — no account needed | **Your own model provider** (you add it during activation) |
+
+License mode is for teams that run against their **own** Anthropic or
+OpenAI‑compatible endpoint and don't want inference to route through the AskUI
+hub — air‑gapped setups, self‑hosted models, or an existing model contract.
+
+<Callout title="Note">
+Because License mode never talks to the AskUI hub for inference, it **requires**
+a model provider. Activation walks you straight into
+[connecting one](/docs/using-askui-desktop/model-providers).
+</Callout>
+
+## Activate
+
+<Steps>
+<Step>
+**Open AskUI Desktop.** On the welcome screen choose **Activate with a
+license key** instead of signing in.
+</Step>
+
+<Step>
+**Paste your license key** and select **Continue**. The key is validated and
+stored **encrypted on this device** — it never leaves the machine.
+</Step>
+
+<Step>
+**Add your model provider.** License mode runs on your own model, so the next
+step is the [model provider form](/docs/using-askui-desktop/model-providers).
+Enter your endpoint and key, then **Finish & open AskUI**.
+</Step>
+</Steps>
+
+You're now in the app. AskUI Desktop remembers the license and model provider,
+so subsequent launches open straight into your projects.
+
+## Managing your license
+
+- Your license and its plan tier are shown in the **profile menu** (top‑right).
+- To switch machines or hand the seat back, **remove the license key** from the
+  profile menu. Removing it returns you to the welcome screen.
+- If you later sign in with an AskUI account, the account takes precedence over a
+  stored license key.
+
+<Callout title="Tip">
+Not sure which mode you want? If you don't already operate your own model
+endpoint, [sign in with an AskUI account](/docs/get-started/onboarding) instead —
+it's the zero‑config path.
+</Callout>
+
+## Next
+
+<Cards>
+  <Card title="Connect a model provider" href="/docs/using-askui-desktop/model-providers"
+    description="Point AskUI Desktop at Anthropic, an OpenAI-compatible API, or a self-hosted model." />
+  <Card title="Your first test run" href="/docs/get-started/first-run"
+    description="Author a test and run it on a device." />
+</Cards>

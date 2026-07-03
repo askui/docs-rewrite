@@ -1,0 +1,47 @@
+---
+title: How a Project is organized
+description: The folder structure of an AskUI Desktop Project and how tests, plans, prompts, procedures and utils fit together.
+---
+
+A **Project** is the unit of work in AskUI Desktop. Everything for a body of
+testing lives in one Project folder, split into a few well-known areas.
+
+<Files>
+  <Folder name="my-project">
+    <Folder name="tests">
+      <File name="rules.md" />
+      <File name="setup.md" />
+      <File name="teardown.md" />
+    </Folder>
+    <Folder name="prompts" />
+    <Folder name="procedures" />
+    <Folder name="plans" />
+    <Folder name="secrets" />
+    <Folder name="utils" />
+  </Folder>
+</Files>
+
+## The domain model
+
+- **Tests** decompose into **suites → cases → steps**. A step describes an
+  action and its expected result. Cases may carry a **precondition** and
+  **postcondition**; suites may carry **setup** and **teardown**.
+- A **step** can invoke a **procedure** (a reusable sequence) or a **util** (a
+  tool, MCP server, skill, or CLI command).
+- **Plans** select what runs — e.g. a `smoke` plan that runs a subset of
+  suites for a quick check.
+
+<Callout title="Tip">
+Start from the scaffold: a new Project comes pre-seeded with the four prompt
+parts, an example login test, a `smoke` plan, and a `secrets/` README. Fill in
+the placeholders rather than starting from a blank page.
+</Callout>
+
+## Where to go next
+
+- [Agents & prompts](/docs/using-askui-desktop/agents-and-prompts) — the prompt
+  parts in detail.
+- [Prompting best practices](/docs/using-askui-desktop/prompting-best-practices) —
+  how to structure them well.
+- [Reading a run report](/docs/using-askui-desktop/run-report) — what a run
+  produces.
