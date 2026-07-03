@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightThemeNova from 'starlight-theme-nova';
 
 const BASE = '/docs-rewrite';
 
@@ -41,6 +42,9 @@ export default defineConfig({
   },
   integrations: [
     starlight({
+      // Nova — a modern redesign of the default layout (top nav bar, polished
+      // light/dark, enhanced code blocks). Swap/remove to compare looks.
+      plugins: [starlightThemeNova()],
       title: 'AskUI Docs',
       favicon: '/favicon.svg',
       description:
