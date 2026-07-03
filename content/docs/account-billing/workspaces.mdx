@@ -1,0 +1,53 @@
+---
+title: Workspaces
+description: How AskUI workspaces organize members, access tokens, runs, and usage.
+---
+
+A **workspace** is the top-level container for your AskUI usage. It owns:
+
+- **Members** — the people with access, each with a privilege level.
+- **Access tokens** — credentials that let AskUI Desktop and the CLI act on
+  behalf of the workspace.
+- **Usage & billing** — runs are metered against the workspace's plan (see
+  [Plans & billing](/docs/account-billing/billing)).
+
+You manage workspaces in the **AskUI Hub**.
+
+## Members & invites
+
+Invite teammates from the Hub; each member belongs to the workspace with a
+privilege level that governs what they can do. Pending invites appear until
+accepted.
+
+## Access tokens
+
+Access tokens authenticate non-interactive clients — most importantly the
+**CLI in CI**, where there's no browser to log in with.
+
+<Steps>
+<Step>
+In the Hub, open **Tokens** and create a new token.
+</Step>
+<Step>
+Give it a **name** (e.g. `ci-smoke-runner`) and an **expiry**. Tokens can be
+long-lived or time-boxed — prefer an expiry for CI.
+</Step>
+<Step>
+**Copy the token value immediately** — only its name and a hash are stored,
+so the raw value is shown once and can't be retrieved later.
+</Step>
+<Step>
+Provide it to the CLI (e.g. via an environment variable in your pipeline) —
+see [Running from the CLI](/docs/using-askui-desktop/cli).
+</Step>
+</Steps>
+
+<Callout type="warn">
+Treat access tokens like passwords. Store them in your CI secret store, never in
+a Project's files. Rotate by creating a new token and deleting the old one.
+</Callout>
+
+<Callout title="Note">
+This page summarizes workspace concepts from the AskUI Hub. Exact screens and
+privilege names are filled in during the Hub content pass.
+</Callout>
