@@ -1,20 +1,207 @@
 ---
 title: Running from the CLI
-description: Run AskUI Projects headless with the CLI — in CI, on a schedule, or across many devices.
+description: The askui run command reference — targets, plans, surfaces, model selection, caching, reports, and CI usage.
 ---
 
 The CLI runs the exact Projects you build in AskUI Desktop. The same `tests/`,
-`prompts/`, `plans/`, and `procedures/` drive both surfaces — author in the
-app, run anywhere with the CLI.
+`prompts/`, `plans/`, and `procedures/` drive both — author in the app, run
+anywhere with the CLI. See [Install the CLI](/docs/get-started/install-cli) for
+setup and authentication.
 
 ```bash
-# scaffold — final flags TBD
-askui run --project ./my-project --plan smoke
+askui run [<target>] [options]
 ```
 
-<Callout title="Note">
-Stub page. Covers running a plan, selecting a device, passing secrets, and
-collecting reports in CI. See [Install the CLI](/docs/get-started/install-cli) to
-set it up, and [AgentOS CI deployment](/docs/agentos/how-to-guides/deployment-ci)
-for the runtime side.
+Run from your Project root (or pass `--project-root`). Without arguments,
+`askui run` executes the whole `tests/` folder against your local desktop.
+
+## What a run does
+
+For every test, the agent works in **phases**: the folder's `setup.md` (if
+present) runs first, then the tests, then `teardown.md` — with any `rules.md`
+applied throughout. Each phase is one autonomous agent execution that reads
+the test file, drives the UI, and writes a report with screenshots. When you
+target a nested folder tree, setups run top-down, teardowns bottom-up, and
+`rules.*` accumulate per level; a failing setup blocks the tests it guards.
+
+### The target
+
+| Target | Behavior |
+| --- | --- |
+| *(none)* | Runs the Project's `tests/` folder. |
+| A folder | Runs every test in the folder recursively, with per-folder setup/teardown lifecycle. |
+| A single file | Runs one test — its ancestor folders' setups still run first (top-down) and teardowns after (bottom-up). |
+
+Relative targets resolve against `--project-root`. Supported test file types:
+`.txt`, `.md`, `.pdf`, `.csv`, `.json`.
+
+### Plans
+
+```bash
+askui run --plan smoke
+```
+
+`--plan <name>` loads `plans/<name>` (any supported extension) and lets the
+agent select the matching tests before running them — e.g. a `smoke` plan
+that names a subset of suites. See
+[How a Project is organized](/docs/using-askui-desktop/project-structure).
+
+## Run options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `--plan <name>` | — | Plan file (without extension) from the Project's `plans/` directory. |
+| `--project-root <dir>` | current directory | The Project root (`tests/`, `prompts/`, `procedures/`, `plans/`, `helpers/`). |
+| `--workspace <dir>` | `<project-root>/agent_workspace/<UTC timestamp>` | Output directory for reports, screenshots, and the HTML log. |
+
+## Surface options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `--surface <s>` | `agent-os` | What the agent drives: `agent-os` (desktop), `web` (browser), or `android`. |
+| `--controller-host <host>` | `localhost` | [AgentOS](/docs/agentos) host (`agent-os` only). A local (loopback) AgentOS is started automatically; remote hosts are attached to. |
+| `--controller-port <port>` | `23000` | AgentOS gRPC port (`agent-os` only). |
+| `--display <n>` | `1` | Display to operate on (`agent-os` only). |
+| `--device-serial <serial>` | first `adb` device | Android device serial (`android` only). |
+
+```bash
+# Drive a remote machine's AgentOS on its second display
+askui run --controller-host 192.168.1.42 --display 2
+
+# Run the suite against a browser
+askui run --surface web
+
+# Run against a specific Android device
+askui run --surface android --device-serial emulator-5554
+```
+
+## Model options
+
+By default, inference runs through the **AskUI hub**, billed to your
+workspace and authenticated with `ASKUI_WORKSPACE_ID`/`ASKUI_TOKEN` — nothing
+to configure. The hub serves more than one model, and you can also bring your
+own provider (the CLI counterpart of
+[Model providers (BYOM)](/docs/using-askui-desktop/model-providers)).
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `--model-provider <p>` | `askui` | `askui`, `anthropic`, `openai`, or `openai-compatible`. |
+| `--model-id <id>` | provider default | The model to use. With `askui`, selects the hosted model — e.g. `gemini-3.5-flash`; default is the workspace's Claude model. |
+| `--api-key <key>` | — | API key (BYOM providers only). |
+| `--endpoint-url <url>` | — | Custom base/endpoint URL. Required for `openai-compatible`; a URL ending in `/chat/completions` is used as-is, a base URL gets the path appended. |
+
+```bash
+# Hosted models on the AskUI hub
+askui run                                   # workspace default (Claude)
+askui run --model-id gemini-3.5-flash       # hosted Gemini
+
+# Bring your own model
+askui run --model-provider anthropic --api-key $ANTHROPIC_API_KEY
+askui run --model-provider openai-compatible \
+  --endpoint-url http://localhost:8000/v1 \
+  --model-id Qwen/Qwen3-VL-30B-A3B-Instruct
+```
+
+<Callout type="warn">
+The agent drives the UI from **screenshots**, so BYOM models must be
+**vision-capable** — a text-only model will connect but can't see the screen.
 </Callout>
+
+## Caching options
+
+Runs record the agent's action trajectory and **replay** it on the next run of
+the same test — dramatically faster and cheaper than re-deciding every step
+with the model. Replayed steps are visually validated against the recorded
+screenshots (perceptual hashing); when the UI has drifted too far, the run
+falls back to the model.
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `--cache-strategy <s>` | `auto` | `auto` (replay when cached, record otherwise) or `none` (disable caching). |
+| `--cache-dir <dir>` | `.askui_cache` | Directory for cache files, relative to the working directory. |
+| `--cache-delay-between-actions <seconds>` | `1` | Delay between replayed actions. |
+| `--cache-skip-visual-validation` | off | Skip visual validation during replay. |
+| `--cache-visual-validation-threshold <n>` | `10` | Max perceptual-hash (Hamming) distance for visual validation. |
+| `--cache-parameter-identification-strategy <s>` | `llm` | How dynamic values (dates, order numbers, …) are identified when recording: `llm` or `preset`. |
+| `--cache-visual-verification-method <m>` | `phash` | Hash method for visual verification: `phash`, `ahash`, or `none`. |
+| `--cache-visual-validation-region-size <px>` | `100` | Screenshot region size around each action used for validation. |
+
+```bash
+# First run records, later runs replay
+askui run --plan smoke
+
+# Force a fully model-driven run
+askui run --cache-strategy none
+```
+
+## Credentials and `.env`
+
+The CLI loads a `.env` file from the Project root at the start of every run —
+variables already set in the environment win. This carries the hub
+credentials (`ASKUI_WORKSPACE_ID`, `ASKUI_TOKEN`) and anything your own
+[helper tools](#helper-tools) read.
+
+<Callout type="warn">
+Treat access tokens like passwords: in CI, inject them from the secret store
+instead of committing a `.env` file. See
+[Workspaces & access tokens](/docs/account-billing/workspaces).
+</Callout>
+
+## Helper tools
+
+The CLI extends the agent with your Project's custom tools: every `*.dll` in
+`<project-root>/helpers/` is loaded, and each public tool class in it becomes
+available to the agent next to the built-in ones. A broken assembly never
+takes down the run — the problem is reported and the rest keeps loading.
+
+## What a run produces
+
+Each run gets its own workspace folder (see `--workspace`), containing:
+
+- **Per-test artifacts** — `<test_name>/<test_name>_report.md` with the
+  verdict and step-by-step results, plus `step_<n>.png` screenshots.
+- **`summary_report.md`** — one table over all executed tests with
+  pass/fail/broken counts. Tests a plan selected but the run never reached
+  appear as broken, so nothing goes missing silently.
+- **The HTML log** — the full agent conversation with screenshots, the same
+  report you know from
+  [Reading a run report](/docs/using-askui-desktop/run-report).
+
+The console shows each phase as it starts and finishes
+(`[test] tests/login.md -> PASSED`) and ends with the totals.
+
+## Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| `0` | All executed tests passed. |
+| `1` | At least one test failed or broke, or the run produced no verdict. |
+| `2` | Usage or configuration error (bad flags, missing project/target, unreachable surface). |
+| `130` | Interrupted (Ctrl+C) — partial reports and the summary are preserved. |
+
+## Running in CI
+
+The exit codes make `askui run` CI-native: the job fails exactly when tests
+fail. A minimal GitHub Actions job:
+
+```yaml title=".github/workflows/ui-tests.yml"
+jobs:
+  ui-tests:
+    runs-on: [self-hosted, askui]   # a runner with AgentOS installed
+    env:
+      ASKUI_WORKSPACE_ID: ${{ vars.ASKUI_WORKSPACE_ID }}
+      ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: askui run --plan smoke --workspace ./run-artifacts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: askui-run
+          path: ./run-artifacts
+```
+
+Pin `--workspace` to a fixed path so the artifact upload finds the reports,
+and upload with `if: always()` so failing runs keep their evidence. For
+setting up the machine under test, see
+[AgentOS CI deployment](/docs/agentos/how-to-guides/deployment-ci).
