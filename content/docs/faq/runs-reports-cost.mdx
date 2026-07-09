@@ -1,0 +1,33 @@
+---
+title: Runs & reports
+description: Understanding run statuses and caching behavior.
+---
+
+### What is the difference between a failed and a broken status?
+
+- **`FAILED`** — the agent completed the step but the outcome did not match
+  expectations. This typically points to a bug in the application under test:
+  a button did not appear, a value was wrong, a transition did not happen.
+  Investigate the app.
+- **`BROKEN`** — the run could not complete a step due to an infrastructure or
+  environment issue: AgentOS unreachable, step limit reached, model error, or
+  network timeout. Investigate the environment, not the app. Check the
+  [Troubleshooting guide](/docs/support/troubleshooting) first.
+- **`WARN`** — the step completed but something unexpected was noted. The run
+  continues.
+
+See [Reading a run report](/docs/using-askui-desktop/run-report) for the full
+status reference.
+
+### Should I use caching, and when should I clear it?
+
+Caching stores context between steps so the agent can re-use it without
+recapturing the full screen. It makes long runs faster and cheaper.
+
+**Clear the cache when:**
+- You deploy an update to the application under test.
+- The UI layout or visual design changes.
+- A run produces passes on actions that should have failed (a sign of stale
+  cache returning an outdated screen state).
+
+Rule of thumb: **clear before any run that follows a deployment.**

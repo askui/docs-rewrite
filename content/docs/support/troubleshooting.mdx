@@ -1,0 +1,303 @@
+---
+title: Troubleshooting
+description: Diagnose and fix common issues with AskUI Desktop, AgentOS, and runs.
+---
+
+## Logs
+
+The AskUI Core Service and the Remote Device Controller write to two separate locations. For troubleshooting, collect logs from **both**:
+
+**Remote Device Controller** (runs in the interactive user session):
+
+```
+%userprofile%\.askui\Logs
+```
+
+**AskUI Core Service** (runs as SYSTEM):
+
+```
+C:\Windows\System32\config\systemprofile\.askui\logs
+```
+
+---
+
+## Connection & session issues
+
+### Connection error or session mismatch at run start
+
+Connection errors and session mismatches happen when AgentOS and Desktop have
+lost sync — most often after a machine restart or sleep cycle.
+
+**Correct restart order for multi-machine setups:**
+1. Restart AgentOS on the target machine(s) first.
+2. Then reconnect from AskUI Desktop.
+
+If the error persists, use the **Restart** button on the Devices page in the
+Desktop sidebar to force a clean session reset. If the problem recurs after
+restarts, check whether the target machine received a new IP address from DHCP
+— see the entry below.
+
+### Tests won't start after a reboot or power outage
+
+Work through this checklist:
+
+1. **Verify all services are running.** Open the Devices page in AskUI Desktop
+   and confirm every connected machine shows a green status.
+2. **Check for IP address changes.** DHCP can reassign addresses after a
+   restart, breaking a stored connection. Use hostnames instead of static
+   IPs wherever possible.
+3. **Look for stale configuration.** Old connection settings in your project
+   or workspace config may point to a previous address. Update or remove them
+   and re-add the device.
+
+### Run stops when RDP session is disconnected or screen is locked
+
+- **Remote Desktop (Windows) — session disconnect:** Disconnecting an RDP
+  session suspends the virtual display. AgentOS in Host Mode loses its view of
+  the screen and the run ends. Either keep the RDP session connected and the
+  window visible during the run, or run AgentOS as a **system service** so it
+  operates independently of the interactive session — see
+  [Running as a service](/docs/agentos/installation/service).
+- **Remote Desktop (Windows) — window minimized:** Minimizing the RDP client
+  window (`mstsc`) simulates a display disconnect on the remote machine. The
+  Remote Device Controller loses access to the display and may return empty
+  screenshots or shut down. To prevent this, set a registry value on the
+  machine running the RDP client:
+
+  Open `regedit`, navigate to
+  `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Terminal Server Client`, and create a
+  `DWORD` value named `RemoteDesktop_SuppressWhenMinimized` with data `2`.
+
+- **Locked screen:** A locked session hides the display on both Windows and
+  macOS. Either keep the machine unlocked during unattended runs, or use a
+  virtual display tool that persists across lock events.
+
+For fully unattended CI scenarios, the recommended setup is AgentOS as an OS
+service — see [CI/CD integration](/docs/agentos/deployment/ci).
+
+---
+
+## Agent behavior
+
+### Agent clicks the wrong element or misses small buttons
+
+Vague element descriptions are the most common cause. Make descriptions
+specific:
+
+- **Use spatial anchors:** "the button in the bottom-right corner, below the
+  Save dialog" is far more reliable than "the button".
+- **Include distinguishing features:** label text, color, icon shape, or
+  position relative to a unique landmark on the screen.
+- **For very small targets:** explicitly instruct the agent to zoom before
+  acting — for example, "zoom in on the toolbar area, then click the small
+  red X icon".
+
+See [Prompting best practices](/docs/using-askui-desktop/prompting-best-practices)
+for a full guide on writing reliable element descriptions.
+
+### Agent misinterprets a screen state
+
+The agent has no built-in knowledge of your application's UI. Add that
+knowledge to `ui_information.md` in your project's `prompts/` folder.
+Describe screens the agent commonly confuses — loading overlays, login walls,
+modal dialogs, error banners. Example:
+
+```
+A grey semi-transparent overlay with a spinner in the centre means the page
+is loading. Wait for it to disappear completely before taking any action.
+```
+
+See [Agents and prompts](/docs/using-askui-desktop/agents-and-prompts) for the
+full prompt structure.
+
+### Agent stops in the middle of a long test
+
+Each run has a step limit that prevents runaway executions. If a test hits
+that limit, it ends with status `BROKEN`.
+
+To avoid this:
+- **Extract procedures:** move repeated sequences (e.g. "log in") into
+  `procedures/` and call them by name from your tests.
+- **Split large tests:** break a long end-to-end flow into smaller focused
+  test cases, each with its own clear goal.
+
+See [Project structure](/docs/using-askui-desktop/project-structure) for how
+procedures and test files are organised.
+
+---
+
+## Performance & cost
+
+### Run cost increased unexpectedly
+
+Common drivers:
+
+| Driver | What to check |
+|--------|--------------|
+| Stale screenshot cache | Cache holds old, large screenshots re-sent each step. Clear the cache after any UI change. |
+| Oversized images or logs | Very large screen captures or log files raise the token count per step. |
+| Retry loops | A failing step the agent retries many times multiplies cost. Look for high step counts on single actions in the run report. |
+
+Open the run report and check the token count per step — the costliest steps
+are usually the ones to optimize. For a cross-run view, see the
+[Usage dashboard](/docs/account-billing/usage-dashboard).
+
+### Run got slower or crashed during a very long execution
+
+Log and trace files grow continuously over a run. Very large files can exhaust
+memory or significantly slow the host machine.
+
+Mitigations:
+- Keep test cases short and focused — split a large suite into smaller cases,
+  each producing its own report.
+- Archive or delete old run artifacts from the `reports/` folder in your
+  project periodically.
+- If a run must be long, monitor disk and memory usage on the AgentOS host
+  and set up log rotation if your OS supports it.
+
+---
+
+## AgentOS service issues (Windows)
+
+<Callout title="Note">The steps in this section apply to AgentOS running as a **Windows system service**. For standalone mode on macOS or Linux, check the terminal output for errors.</Callout>
+
+### Restart the AgentOS service
+
+Many issues are resolved by restarting the service. To restart it via Task Manager:
+
+1. Open **Task Manager** (`Ctrl+Shift+Esc`).
+2. Switch to the **Services** tab (the puzzle-piece icon).
+3. Search for **`AskuiCoreService`**.
+4. Right-click the entry and choose **Restart**.
+
+### Agent can't press CTRL+ALT+DEL
+
+The login/lock screen cannot be automated unless the local security policy allows services to simulate a Secure Attention Sequence (SAS). To enable it:
+
+1. Open the **Group Policy Editor** (`gpedit.msc`).
+2. Navigate to **Computer Configuration → Administrative Templates → Windows Components → Windows Logon Options**.
+3. Set **Disable or enable software Secure Attention Sequence** to **Enabled**.
+
+Also verify that `SERVICE_ENABLE_SAS` is set to `1` (default) in the [Silent installer parameters](/docs/agentos/installation/silent/#parameters).
+
+<Callout type="warn">
+The service includes a `windows.forceSas` option that overrides group policies. This is **not recommended** as it may trigger system integrity checks. Configure the GPE policy instead.
+</Callout>
+
+### Agent can't interact with apps running as Administrator
+
+Windows prevents non-elevated processes from sending input to elevated (Run as Administrator) applications. If your agent can't click or type into an app running as Administrator, you need to start the Remote Device Controller in elevated mode.
+
+To enable elevated mode:
+
+- **Service Installer (GUI)**: Open **Windows Add/Remove Programs**, find AskUI AgentOS, click **Modify**, and enable the elevated execution engine option. Alternatively, reinstall AgentOS with the option enabled.
+- **Silent Installer**: Set `SERVICE_EXECUTION_ENGINE_ELEVATED` to `1` — see [Silent installer parameters](/docs/agentos/installation/silent/#parameters).
+
+<Callout type="warn">
+Running the execution engine elevated grants it higher privileges. Only enable this when you need to automate applications that run as Administrator.
+</Callout>
+
+### `ipv4:127.0.0.1:23000 unavailable` in Standalone mode
+
+If the client fails to connect with an error like `ipv4:127.0.0.1:23000 unavailable` while running in **Standalone** runtime mode, autostart of the local AgentOS instance is likely disabled.
+
+Check the `ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART` environment variable — if it is set to `false`, the client will not start AgentOS automatically and there is nothing listening on port `23000`. Either unset the variable or set it to `true`:
+
+<Tabs items={['Windows PowerShell', 'macOS/Linux']}>
+  <Tab value="Windows PowerShell">
+    ```powershell
+    $env:ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART="true"
+    ```
+  </Tab>
+  <Tab value="macOS/Linux">
+    ```bash
+    export ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART=true
+    ```
+  </Tab>
+</Tabs>
+
+This variable is intentionally set to `false` when connecting to a remote AgentOS instance — see [Remote Windows VM](/docs/agentos/deployment/ci/#remote-windows-vm).
+
+### Need to reinstall or remove
+
+<Callout type="warn">
+**Do not** stop or remove the service from Windows Services manually. Always **uninstall the full AskUI AgentOS application** via Windows Add/Remove Programs. This ensures proper cleanup so the client falls back to standalone mode.
+</Callout>
+
+---
+
+## Proxy and SSL
+
+### Configure a proxy
+
+AskUI Desktop and the CLI respect the standard proxy environment variables.
+Set them before launching:
+
+<Tabs items={['Windows PowerShell', 'macOS/Linux']}>
+  <Tab value="Windows PowerShell">
+    ```powershell
+    $env:HTTP_PROXY="http://proxy.example.com:8080"
+    $env:HTTPS_PROXY="http://proxy.example.com:8080"
+    $env:NO_PROXY="localhost,127.0.0.1"
+    ```
+  </Tab>
+  <Tab value="macOS/Linux">
+    ```bash
+    export HTTP_PROXY="http://proxy.example.com:8080"
+    export HTTPS_PROXY="http://proxy.example.com:8080"
+    export NO_PROXY="localhost,127.0.0.1"
+    ```
+  </Tab>
+</Tabs>
+
+### Deep-packet-inspection proxies (Zscaler and similar)
+
+Some corporate proxies intercept HTTPS traffic and inject a custom root
+certificate. This can cause SSL errors like:
+
+```
+SSL: CERTIFICATE_VERIFY_FAILED
+```
+
+**Solution:** Disable SSL verification as a temporary workaround while you
+get the proxy certificate added to your system trust store:
+
+<Tabs items={['Windows PowerShell', 'macOS/Linux']}>
+  <Tab value="Windows PowerShell">
+    ```powershell
+    $env:ASKUI_HTTP_SSL_VERIFICATION="false"
+    ```
+  </Tab>
+  <Tab value="macOS/Linux">
+    ```bash
+    export ASKUI_HTTP_SSL_VERIFICATION=false
+    ```
+  </Tab>
+</Tabs>
+
+<Callout type="warn">
+Disabling SSL verification reduces security. Re-enable it once your proxy
+certificate is trusted by the OS certificate store.
+</Callout>
+
+The permanent fix is to add your proxy's root certificate to the system
+certificate store. Contact your IT/network team for the certificate file and
+import instructions for your OS.
+
+---
+
+## Debugging run failures
+
+The fastest way to debug a failing run:
+
+1. Open the run report (`.md` file in your project's `reports/` folder or
+   inline in AskUI Desktop).
+2. Find the first step with status `FAILED` or `BROKEN` — that is where to
+   focus.
+3. Check the screenshot for that step. `FAILED` means the expected outcome
+   didn't match; `BROKEN` means an infrastructure problem (connection lost,
+   session expired) stopped the run.
+4. For AgentOS issues, check the [logs](#logs) for more detail.
+
+If you cannot resolve the issue yourself, see [Get help](/docs/support/get-help)
+for how to generate a diagnostic report and contact support.

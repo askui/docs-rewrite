@@ -1,0 +1,59 @@
+---
+title: Technical
+description: CI/CD, model providers, virtual machines, proxy, and installation requirements.
+---
+
+### Can I use AskUI in CI/CD pipelines?
+
+Yes. The AskUI CLI (`askui run`) runs your test projects headless in any CI
+environment. See [CI examples](/docs/agentos/deployment/ci-examples) for
+GitHub Actions, GitLab CI, and Azure DevOps pipeline configurations.
+
+### Which AI models does AskUI use?
+
+By default, AskUI routes through the AskUI Hub's inference service. You can
+also bring your own model provider (Claude, Gemini, OpenAI, or a custom
+endpoint) — see [Model providers](/docs/using-askui-desktop/model-providers).
+
+### Does AskUI work with virtual machines?
+
+Yes. AgentOS works on VMware, VirtualBox, Hyper-V, and cloud VMs (AWS, Azure,
+GCP). For headless VM scenarios in CI, use AgentOS as an OS service —
+see [CI/CD integration](/docs/agentos/deployment/ci).
+
+### Does AskUI work behind a corporate firewall or proxy?
+
+Yes. Set the standard `HTTP_PROXY` / `HTTPS_PROXY` environment variables
+before running. For deep-packet-inspection proxies (e.g. Zscaler), see
+[Proxy and SSL troubleshooting](/docs/support/troubleshooting#proxy-and-ssl).
+For the list of domains to allowlist, see
+[Network requirements](/docs/reference/network-requirements).
+
+### What does our IT team need to allow for AskUI to work?
+
+All AskUI traffic uses standard HTTPS (port 443). The full list of domains and
+ports to allowlist is in [Network requirements](/docs/reference/network-requirements)
+— that page is written so it can be shared directly with an IT department.
+
+Key notes for IT:
+- Both IPv4 and IPv6 are supported; no non-standard ports are required.
+- If the network uses deep-packet inspection (e.g. Zscaler), the AskUI
+  certificate chain must be trusted — see
+  [Proxy and SSL troubleshooting](/docs/support/troubleshooting#proxy-and-ssl).
+- Contact [support@askui.com](mailto:support@askui.com) to request a
+  one-pager formatted for IT firewall review.
+
+### I don't have admin rights on the target machine. Can I still install and run AskUI?
+
+AskUI Desktop installs per-user on Windows and macOS and does not require
+administrator rights for the standard installation.
+
+Limitations without admin rights:
+- **AgentOS in Host Mode** requires OS-level permission to simulate keyboard
+  and mouse input. On locked-down machines, IT may need to whitelist the
+  AgentOS process or grant input-simulation permissions.
+- **Running AgentOS as a system service** (for unattended or CI use) does
+  require elevated privileges.
+
+If your machines are managed centrally, contact your IT team to request the
+necessary input-simulation permissions for the AgentOS executable.
