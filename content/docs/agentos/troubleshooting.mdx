@@ -90,10 +90,84 @@ Check the `ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART` environment variable — if
   </Tab>
 </Tabs>
 
-This variable is intentionally set to `false` when connecting to a remote AgentOS instance — see [Remote Windows VM](/docs/agentos/how-to-guides/deployment-ci/#remote-windows-vm).
+This variable is intentionally set to `false` when connecting to a remote AgentOS instance — see [Remote Windows VM](/docs/agentos/deployment/ci/#remote-windows-vm).
 
 ### Need to reinstall or remove
 
 <Callout type="warn">
 **Do not** stop or remove the service from Windows Services manually. Always **uninstall the full AskUI AgentOS application** via Windows Add/Remove Programs. This ensures proper cleanup so the client falls back to standalone mode.
 </Callout>
+
+## Proxy and SSL
+
+### Configure a proxy
+
+AskUI Desktop and the CLI respect the standard proxy environment variables.
+Set them before launching:
+
+<Tabs items={['Windows PowerShell', 'macOS/Linux']}>
+  <Tab value="Windows PowerShell">
+    ```powershell
+    $env:HTTP_PROXY="http://proxy.example.com:8080"
+    $env:HTTPS_PROXY="http://proxy.example.com:8080"
+    $env:NO_PROXY="localhost,127.0.0.1"
+    ```
+  </Tab>
+  <Tab value="macOS/Linux">
+    ```bash
+    export HTTP_PROXY="http://proxy.example.com:8080"
+    export HTTPS_PROXY="http://proxy.example.com:8080"
+    export NO_PROXY="localhost,127.0.0.1"
+    ```
+  </Tab>
+</Tabs>
+
+### Deep-packet-inspection proxies (Zscaler and similar)
+
+Some corporate proxies intercept HTTPS traffic and inject a custom root
+certificate. This can cause SSL errors like:
+
+```
+SSL: CERTIFICATE_VERIFY_FAILED
+```
+
+**Solution:** Disable SSL verification as a temporary workaround while you
+get the proxy certificate added to your system trust store:
+
+<Tabs items={['Windows PowerShell', 'macOS/Linux']}>
+  <Tab value="Windows PowerShell">
+    ```powershell
+    $env:ASKUI_HTTP_SSL_VERIFICATION="false"
+    ```
+  </Tab>
+  <Tab value="macOS/Linux">
+    ```bash
+    export ASKUI_HTTP_SSL_VERIFICATION=false
+    ```
+  </Tab>
+</Tabs>
+
+<Callout type="warn">
+Disabling SSL verification reduces security. Re-enable it once your proxy
+certificate is trusted by the OS certificate store.
+</Callout>
+
+The permanent fix is to add your proxy's root certificate to the system
+certificate store. Contact your IT/network team for the certificate file and
+import instructions for your OS.
+
+## Debugging run failures
+
+The fastest way to debug a failing run:
+
+1. Open the run report (`.md` file in your project's `reports/` folder or
+   inline in AskUI Desktop).
+2. Find the first step with status `FAILED` or `BROKEN` — that is where to
+   focus.
+3. Check the screenshot for that step. `FAILED` means the expected outcome
+   didn't match; `BROKEN` means an infrastructure problem (connection lost,
+   session expired) stopped the run.
+4. For AgentOS issues, check the [logs](#logs) for more detail.
+
+If you cannot resolve the issue yourself, see [Get help](/docs/support/get-help)
+for how to generate a diagnostic report and contact support.

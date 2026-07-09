@@ -1,0 +1,126 @@
+---
+title: FAQ
+description: Frequently asked questions about AskUI.
+---
+
+## General
+
+### What is AskUI?
+
+AskUI is an AI-driven UI automation platform. You describe what to do in plain
+language, and an AI agent acts on the real screen — clicking, typing, and
+navigating — then produces a step-by-step report with screenshots. No
+selectors, no recording, no code required.
+
+### What makes AskUI different from other automation tools?
+
+Traditional tools rely on CSS selectors, XPath, or element IDs that break when
+the UI changes. AskUI reads the screen visually, so tests are resilient to
+layout changes and work across any interface — including embedded UIs and
+legacy apps where the DOM is inaccessible.
+
+### What platforms and interfaces does AskUI support?
+
+- **Desktop:** Windows, macOS, Linux
+- **Mobile:** Android, iOS (Simulators, experimental)
+- **Web:** Any browser
+- **Embedded / hardware:** Devices without software access via Companion Mode
+
+### Is AskUI secure?
+
+Yes. AskUI is ISO 27001 certified and GDPR compliant. On-premise and
+air-gapped deployment options are available for customers who need their data
+to stay within their own infrastructure. See the
+[Trust Center](https://trust.askui.com) for details.
+
+---
+
+## Getting started
+
+### How do I get started?
+
+Follow the [Quickstart](/docs/quickstart) — it takes under 10 minutes and
+covers account creation, installation, and running a first test.
+
+### Do I need to write code?
+
+No. Tests are written in plain Markdown. There is no API to learn and no
+programming language required.
+
+### Can I try AskUI for free?
+
+Yes. Sign up at the [AskUI Hub](https://hub.askui.com) to start a free trial
+with full feature access.
+
+---
+
+## Technical questions
+
+### Can I use AskUI in CI/CD pipelines?
+
+Yes. The AskUI CLI (`askui run`) runs your test projects headless in any CI
+environment. See [CI examples](/docs/agentos/deployment/ci-examples) for
+GitHub Actions, GitLab CI, and Azure DevOps pipeline configurations.
+
+### Which AI models does AskUI use?
+
+By default, AskUI routes through the AskUI Hub's inference service. You can
+also bring your own model provider (Claude, Gemini, OpenAI, or a custom
+endpoint) — see [Model providers](/docs/using-askui-desktop/model-providers).
+
+### Does AskUI work with virtual machines?
+
+Yes. AgentOS works on VMware, VirtualBox, Hyper-V, and cloud VMs (AWS, Azure,
+GCP). For headless VM scenarios in CI, use AgentOS as an OS service —
+see [CI/CD integration](/docs/agentos/deployment/ci).
+
+### Does AskUI work behind a corporate firewall or proxy?
+
+Yes. Set the standard `HTTP_PROXY` / `HTTPS_PROXY` environment variables
+before running. For deep-packet-inspection proxies (e.g. Zscaler), see
+[Proxy and SSL troubleshooting](/docs/agentos/troubleshooting#proxy-and-ssl).
+For the list of domains to allowlist, see
+[Network requirements](/docs/reference/network-requirements).
+
+---
+
+## Pricing and licensing
+
+### How is AskUI priced?
+
+AskUI offers a free trial, team plans (pay-per-use), and enterprise plans with
+custom pricing and SLA. Contact [sales@askui.com](mailto:sales@askui.com) for
+enterprise terms.
+
+### Is there an on-premise option?
+
+Yes. Enterprise customers can deploy AskUI fully on-premise or in an
+air-gapped environment. Contact your account manager or
+[sales@askui.com](mailto:sales@askui.com).
+
+---
+
+## Common use cases
+
+### What can I automate with AskUI?
+
+End-to-end testing, regression testing, cross-browser and mobile testing, RPA
+workflows, legacy system integration, data entry automation, and any scenario
+where the interface is the source of truth.
+
+### Can AskUI automate embedded or proprietary UIs?
+
+Yes. Because AskUI reads the screen rather than the DOM, it works on any
+interface that produces a visible output — including embedded HMI screens,
+industrial control panels, and legacy applications with no accessible
+automation API.
+
+---
+
+## Getting help
+
+### Where can I get help?
+
+- [Troubleshooting guides](/docs/agentos/troubleshooting)
+- [support@askui.com](mailto:support@askui.com)
+- [Get help](/docs/support/get-help)

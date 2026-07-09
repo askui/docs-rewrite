@@ -1,0 +1,32 @@
+---
+title: Environment variables
+description: All environment variables recognised by AskUI Desktop, the CLI, and AgentOS.
+---
+
+## Authentication
+
+| Variable | Description |
+|----------|-------------|
+| `ASKUI_WORKSPACE_ID` | Your workspace identifier. Required when using the AskUI Hub as the model provider. |
+| `ASKUI_TOKEN` | Your workspace access token. Required when using the AskUI Hub as the model provider. See [Workspaces](/docs/account-billing/workspaces). |
+
+## AgentOS connection
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART` | `true` | Set to `false` to prevent the CLI from starting a local AgentOS instance automatically. Use this when connecting to a remote AgentOS. |
+| `ASKUI_CONTROLLER_CLIENT_SERVER_ADDRESS` | `localhost:23000` | Address of the AgentOS gRPC server to connect to. Override when using a remote AgentOS instance. |
+
+## Proxy
+
+| Variable | Description |
+|----------|-------------|
+| `HTTP_PROXY` | URL of an HTTP proxy server (e.g. `http://proxy.example.com:8080`). |
+| `HTTPS_PROXY` | URL of an HTTPS proxy server. |
+| `NO_PROXY` | Comma-separated list of hosts that should bypass the proxy (e.g. `localhost,127.0.0.1`). |
+
+## TLS/SSL
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ASKUI_HTTP_SSL_VERIFICATION` | `true` | Set to `false` to disable SSL certificate verification. Use only as a last resort in environments with deep-packet-inspection proxies. See [Proxy and SSL troubleshooting](/docs/agentos/troubleshooting#proxy-and-ssl). |

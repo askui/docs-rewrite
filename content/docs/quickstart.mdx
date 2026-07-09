@@ -1,0 +1,136 @@
+---
+title: Quickstart
+description: Go from zero to a passing AskUI test in under 10 minutes.
+---
+
+This guide takes you from a blank machine to a passing test in under 10 minutes.
+You will create an AskUI account, install the Desktop App, and run your first
+test — no selectors, no code, just plain language.
+
+<Callout title="What you need">
+A Windows or macOS machine. No prior automation experience required.
+</Callout>
+
+---
+
+## Step 1 — Create your account (2 min)
+
+<Steps>
+<Step>
+**Go to the AskUI Hub** and sign up with your work email.
+</Step>
+<Step>
+**Accept the terms and privacy policy.** One-time step — required to continue.
+</Step>
+<Step>
+**Verify your email.** We send a link to your inbox; click it to activate your
+account. (Didn't arrive? You can resend from the prompt.)
+</Step>
+<Step>
+**You land in the Hub.** The Hub is where you manage your workspace, access
+tokens, and usage. Leave it open — you will come back to it in a moment.
+</Step>
+</Steps>
+
+---
+
+## Step 2 — Install AskUI Desktop (3 min)
+
+<Steps>
+<Step>
+**Download the installer** from your AskUI Hub account page.
+</Step>
+<Step>
+**Run the installer** for your platform.
+
+<Tabs items={['Windows', 'macOS']}>
+  <Tab value="Windows">
+    Run the `.exe` and follow the guided setup. The installer is
+    self-contained — no additional runtimes required.
+  </Tab>
+  <Tab value="macOS">
+    Open the `.dmg` and drag AskUI Desktop into Applications. On first launch,
+    grant **Accessibility** and **Screen Recording** permissions under
+    **System Settings → Privacy & Security**. These allow the agent to read
+    your screen and control input.
+  </Tab>
+</Tabs>
+</Step>
+<Step>
+**Launch AskUI Desktop** and sign in with the account you just created.
+</Step>
+</Steps>
+
+---
+
+## Step 3 — Run your first test (5 min)
+
+<Steps>
+<Step>
+**Create a new Project.** AskUI Desktop scaffolds the standard folder structure
+for you — `tests/`, `prompts/`, `procedures/`, `plans/`, `secrets/` — and
+pre-seeds it with an example test.
+</Step>
+<Step>
+**Open `prompts/ui_information.md`** and describe your app in a few sentences:
+what its main screens are, how you can tell you are signed in, and any quirks
+(e.g. "a loading spinner appears for 2–3 seconds after login"). This is the
+single most important file for reliable runs.
+
+```markdown
+# About this app
+A web app for managing support tickets.
+The main view is a table of open tickets.
+A green badge in the top-right shows the logged-in user's name.
+```
+</Step>
+<Step>
+**Open the example test** in `tests/` and read through it. The steps are
+written in plain Markdown — no code, no XPath. Adjust a step or two to match
+your own app.
+
+```markdown
+# Login test
+
+## Steps
+
+1. Open the app at https://app.example.com
+2. Sign in using the QA credentials.
+3. Verify the green badge appears with the user's name.
+```
+</Step>
+<Step>
+**Click Run.** AskUI Desktop launches the agent, which acts on the screen step
+by step and writes a report with a screenshot per step.
+</Step>
+<Step>
+**Read the report.** Each step shows its status (`PASSED`, `FAILED`, `WARN`,
+`SKIPPED`, or `BROKEN`) and a screenshot. A green run means every step
+actually passed — the agent doesn't improvise.
+</Step>
+</Steps>
+
+---
+
+## What's next
+
+You have a working project. Here is where to go from here:
+
+<Cards>
+  <Card title="Prompting best practices" href="/docs/using-askui-desktop/prompting-best-practices">
+    Learn how to structure prompts so your runs stay reliable as your test suite
+    grows — the four-file layout, `rules.md`, and how to avoid brittle tests.
+  </Card>
+  <Card title="Project structure" href="/docs/using-askui-desktop/project-structure">
+    Understand what each folder in a Project does and how the runner picks up
+    setup, teardown, and shared procedures automatically.
+  </Card>
+  <Card title="Run from the CLI" href="/docs/get-started/install-cli">
+    Once your project runs locally, move it to CI in minutes with `askui run`.
+    Works with GitHub Actions, GitLab CI, and any headless environment.
+  </Card>
+  <Card title="AgentOS setup" href="/docs/agentos">
+    Running tests on a remote machine or in a multi-device fleet? Learn how to
+    install and configure AgentOS as a background service.
+  </Card>
+</Cards>

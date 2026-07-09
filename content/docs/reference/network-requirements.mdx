@@ -1,0 +1,52 @@
+---
+title: Network requirements
+description: Domains and ports that must be reachable for AskUI to function.
+---
+
+AskUI requires outbound HTTPS access (port 443) to the following domains.
+If your environment uses a firewall or corporate proxy, add these to your
+allowlist.
+
+## Required domains
+
+| Domain | Purpose |
+|--------|---------|
+| `*.askui.com` | Catch-all for all AskUI services |
+| `hub.askui.com` | AskUI Hub: account, billing, workspace management |
+| `workspaces.askui.com` | Workspace API and access token validation |
+| `inference.askui.com` | AI inference for screen understanding |
+| `files.askui.com` | Asset and installer downloads |
+| `tracking.askui.com` | Anonymous usage telemetry |
+| `tracking-cdn.askui.com` | Telemetry CDN |
+
+All connections use **HTTPS on port 443**. No inbound ports are required.
+
+## Proxy configuration
+
+If your network routes traffic through a proxy, set the standard proxy
+environment variables before running AskUI Desktop or the CLI:
+
+```bash
+export HTTP_PROXY="http://proxy.example.com:8080"
+export HTTPS_PROXY="http://proxy.example.com:8080"
+export NO_PROXY="localhost,127.0.0.1"
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:HTTP_PROXY="http://proxy.example.com:8080"
+$env:HTTPS_PROXY="http://proxy.example.com:8080"
+$env:NO_PROXY="localhost,127.0.0.1"
+```
+
+For deep-packet-inspection proxies (e.g. Zscaler) that inject custom SSL
+certificates, see
+[Proxy and SSL troubleshooting](/docs/agentos/troubleshooting#proxy-and-ssl).
+
+## Air-gapped and on-premise deployments
+
+Enterprise customers can deploy AskUI in air-gapped environments or
+on-premise. In these setups the inference endpoint is hosted internally and
+no external network access is required. Contact your account manager for
+details.

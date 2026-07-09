@@ -1,0 +1,41 @@
+---
+title: Legacy SDKs
+description: The AskUI Python SDK and TypeScript SDK are no longer supported. Use AskUI Desktop and the CLI instead.
+---
+
+<Callout type="warn" title="These SDKs are no longer supported">
+The Python SDK and TypeScript SDK are legacy products. They receive no bug
+fixes, security updates, or new features. We strongly recommend migrating to
+**AskUI Desktop** and the **AskUI CLI**.
+</Callout>
+
+AskUI previously offered two code-based SDKs for authoring UI automation:
+
+- **Python SDK** — write automation scripts in Python against the AskUI runtime.
+- **TypeScript SDK** — write automation scripts in TypeScript/Node.js against the AskUI runtime.
+
+Both SDKs required writing code to interact with the AskUI agent. They are no
+longer actively developed or supported.
+
+## Why we moved on
+
+The SDK approach required users to learn an API, manage a language runtime, and
+maintain code as their UI changed. AskUI Desktop replaces all of that with
+plain-language prompts that describe what to do rather than how to do it — no
+selectors, no boilerplate, no SDK version upgrades.
+
+## What to use instead
+
+<Cards>
+  <Card title="AskUI Desktop" href="/docs/get-started/install-desktop">
+    Author tests in plain Markdown and run them interactively on your machine.
+    No code, no selectors, no SDK.
+  </Card>
+  <Card title="AskUI CLI" href="/docs/get-started/install-cli">
+    Run the same projects headless in CI or on a schedule with a single
+    command. Ships with the Desktop App installer.
+  </Card>
+  <Card title="Quickstart" href="/docs/quickstart">
+    Get from zero to a passing test in under 10 minutes.
+  </Card>
+</Cards>

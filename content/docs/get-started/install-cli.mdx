@@ -13,13 +13,14 @@ produces. Use it locally for scripted runs, in CI, or on a schedule.
 <Step>
 **Install the CLI**
 
-The CLI ships with the AskUI installer, alongside AskUI Desktop and
-[AgentOS](/docs/agentos).
+The CLI ships with the **AskUI Desktop installer** — installing AskUI Desktop
+also installs the `askui` CLI on your machine. Follow the
+[Install AskUI Desktop](/docs/get-started/install-desktop) guide if you
+haven't done that yet.
 
-<Callout title="Note">
-Per-platform download links land here once the release pipeline is live. If
-you received a preview build, place the `askui` executable somewhere on your
-`PATH`.
+<Callout title="Standalone CLI installer coming soon">
+A standalone CLI installer (without the Desktop App) is in progress. For now,
+the CLI is only available as part of the Desktop App installation.
 </Callout>
 </Step>
 
@@ -50,7 +51,7 @@ You should see the `askui run` usage with its options.
   </Tab>
   <Tab value="Android">
     `adb` must be on your `PATH` and the device (or emulator) visible to
-    `adb devices`. See the [ADB setup guide](/docs/agentos/how-to-guides/deployment-local#android-setting-up-adb).
+    `adb devices`. See the [ADB setup guide](/docs/agentos/deployment/local#android-setting-up-adb).
   </Tab>
 </Tabs>
 </Step>

@@ -1,0 +1,65 @@
+---
+title: Uninstall AskUI
+description: Remove AskUI Desktop and the CLI from Windows or macOS.
+---
+
+Uninstalling AskUI Desktop also removes the `askui` CLI, as both ship together
+in the same installer.
+
+<Tabs items={['Windows', 'macOS']}>
+  <Tab value="Windows">
+    <Steps>
+    <Step>
+    Open **Settings** and go to **Apps** (or open **Control Panel** and go to
+    **Programs and Features**).
+    </Step>
+    <Step>
+    Find **AskUI Desktop** in the list of installed applications.
+    </Step>
+    <Step>
+    Select it and click **Uninstall**, then follow the prompts.
+    </Step>
+    </Steps>
+
+    The uninstaller removes AskUI Desktop, the CLI, and AgentOS. It also cleans
+    up environment variables and the `.askui` folder in your user profile.
+
+    **Silent uninstall (Windows):**
+
+    ```powershell
+    "<installer_path>" /qn
+    ```
+
+    To write a detailed log during uninstall:
+
+    ```powershell
+    "<installer_path>" /qn /l*vx uninstall.log
+    ```
+  </Tab>
+  <Tab value="macOS">
+    <Steps>
+    <Step>
+    Open **Finder** and go to **Applications**.
+    </Step>
+    <Step>
+    Drag **AskUI Desktop** to the Trash, or right-click and select
+    **Move to Trash**.
+    </Step>
+    <Step>
+    Empty the Trash to complete the removal.
+    </Step>
+    </Steps>
+
+    To also remove configuration files and logs from your home directory:
+
+    ```bash
+    rm -rf ~/.askui
+    ```
+  </Tab>
+</Tabs>
+
+<Callout title="Note">
+After uninstalling, the `askui` command will no longer be available in your
+terminal. Reinstall via the
+[AskUI Desktop installer](/docs/get-started/install-desktop) to get it back.
+</Callout>

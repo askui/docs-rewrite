@@ -1,0 +1,47 @@
+---
+title: Usage dashboard
+description: How to read the AskUI Hub usage dashboard and track execution metrics.
+---
+
+The usage dashboard in the AskUI Hub gives you a live view of how your
+workspace is consuming its plan allowance. Find it under **Billing** in the
+Hub.
+
+## Key metrics
+
+At the top of the dashboard you will see three summary cards:
+
+| Metric | What it shows |
+|--------|--------------|
+| **Total Events** | Total executions in the selected date range |
+| **Unique Users** | Number of distinct users or access tokens that triggered runs |
+| **Avg. Events per Day** | Daily average over the selected period |
+
+Below the summary cards you will also see your subscription limit and the
+current renewal date.
+
+## Filtering by date range
+
+Use the date picker in the top-right corner of the dashboard to select a
+custom date range. This lets you compare usage across billing periods or zoom
+in on a particular sprint or release cycle.
+
+## Usage over time chart
+
+The chart shows execution volume per user per day. Each user (or CI access
+token) is represented by a distinct color. Use the checkboxes below the chart
+to show or hide individual users — select **All** or **None** to toggle
+quickly.
+
+This view is useful for:
+
+- Identifying peak activity periods
+- Seeing which users or CI tokens are consuming the most usage
+- Spotting unexpected spikes that might indicate a misconfigured pipeline
+
+## Usage by access token
+
+Runs triggered from CI via an access token appear in the chart attributed to
+that token. If you have multiple CI pipelines, give each pipeline its own
+access token (see [Workspaces and access tokens](/docs/account-billing/workspaces))
+so you can distinguish their usage in the dashboard.

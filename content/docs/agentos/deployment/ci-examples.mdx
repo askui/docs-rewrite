@@ -1,0 +1,129 @@
+---
+title: CI pipeline examples
+description: Ready-to-use pipeline configurations for running AskUI tests in GitHub Actions, GitLab CI, and Azure DevOps.
+---
+
+These examples show how to run `askui run` in the most common CI environments.
+All examples assume:
+
+- The AskUI Desktop installer has been run on the CI machine (or a
+  self-hosted runner with AskUI installed), since the CLI ships with the
+  Desktop installer.
+- `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN` are stored as CI secrets.
+- Your test project is checked into the repository.
+
+<Callout title="AgentOS on Windows CI runners">
+Desktop automation on Windows requires AgentOS running as a service. Install
+it via the AskUI Desktop installer on your runner before running the pipeline.
+See [CI/CD integration](/docs/agentos/deployment/ci) for setup
+details.
+</Callout>
+
+## GitHub Actions
+
+```yaml
+# .github/workflows/askui.yml
+name: AskUI Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: windows-latest  # or macos-latest for macOS desktop / web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run AskUI tests
+        env:
+          ASKUI_WORKSPACE_ID: ${{ secrets.ASKUI_WORKSPACE_ID }}
+          ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
+        run: askui run
+
+      - name: Upload run reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: askui-reports
+          path: reports/
+```
+
+## GitLab CI
+
+```yaml
+# .gitlab-ci.yml
+askui-tests:
+  stage: test
+  tags:
+    - windows  # use a self-hosted runner with AskUI installed
+  variables:
+    ASKUI_WORKSPACE_ID: $ASKUI_WORKSPACE_ID
+    ASKUI_TOKEN: $ASKUI_TOKEN
+  script:
+    - askui run
+  artifacts:
+    when: always
+    paths:
+      - reports/
+    expire_in: 7 days
+```
+
+## Azure DevOps
+
+```yaml
+# azure-pipelines.yml
+trigger:
+  - main
+
+pool:
+  vmImage: windows-latest  # or a self-hosted agent with AskUI installed
+
+steps:
+  - checkout: self
+
+  - script: askui run
+    displayName: Run AskUI tests
+    env:
+      ASKUI_WORKSPACE_ID: $(ASKUI_WORKSPACE_ID)
+      ASKUI_TOKEN: $(ASKUI_TOKEN)
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      pathToPublish: reports/
+      artifactName: askui-reports
+```
+
+## Connecting to a remote AgentOS
+
+If your CI runner is not the machine being automated (e.g. a Linux runner
+automating a separate Windows VM), disable AgentOS autostart and point the
+CLI at the remote instance:
+
+```bash
+export ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART=false
+export ASKUI_CONTROLLER_CLIENT_SERVER_ADDRESS=<vm-ip>:26000
+askui run
+```
+
+See [Remote Windows VM](/docs/agentos/deployment/ci#remote-windows-vm)
+for the full setup.
+
+## Storing credentials
+
+Never hardcode `ASKUI_WORKSPACE_ID` or `ASKUI_TOKEN` in your pipeline files.
+Use your CI platform's secret store:
+
+| Platform | Where to add secrets |
+|----------|---------------------|
+| GitHub Actions | Repository Settings → Secrets and variables → Actions |
+| GitLab CI | Settings → CI/CD → Variables |
+| Azure DevOps | Pipeline → Edit → Variables |
+
+Create a dedicated access token per pipeline so you can rotate or revoke
+individual pipelines without affecting others. See
+[Workspaces](/docs/account-billing/workspaces).

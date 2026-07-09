@@ -13,7 +13,7 @@ AgentOS is proprietary software, **free for non-commercial use**. For commercial
 - **Administrator rights**
 
 <Callout title="Note">
-To automate the login/lock screen (Secure Attention Sequence), a Group Policy setting must be enabled. See [Troubleshooting](/docs/agentos/how-to-guides/troubleshooting#agent-cant-press-ctrlaltdel) for details.
+To automate the login/lock screen (Secure Attention Sequence), a Group Policy setting must be enabled. See [Troubleshooting](/docs/agentos/troubleshooting#agent-cant-press-ctrlaltdel) for details.
 </Callout>
 
 ## Installation
@@ -40,7 +40,7 @@ The installer includes a **Service Configuration** screen:
 
 - **Connection Scope:** Use **Public (0.0.0.0)** if AgentOS needs to be reachable from another machine (e.g. a remote CI runner). Keep **Private (127.0.0.1)** for local use only.
 - **Log Level:** `Info` for production, `Debug` for troubleshooting.
-- **Allow CTRL+ALT+DEL:** Enable to automate the Windows lock/login screen (requires Group Policy — see [Troubleshooting](/docs/agentos/how-to-guides/troubleshooting#agent-cant-press-ctrlaltdel)).
+- **Allow CTRL+ALT+DEL:** Enable to automate the Windows lock/login screen (requires Group Policy — see [Troubleshooting](/docs/agentos/troubleshooting#agent-cant-press-ctrlaltdel)).
 - **Allow control of administrative applications:** Enable only if you need to automate apps running as administrator.
 
 Click **Next**, then **Install**.

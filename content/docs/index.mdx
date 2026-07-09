@@ -1,37 +1,60 @@
 ---
 title: AskUI Documentation
-description: Author and run AI-driven UI tests with AskUI Desktop and the AskUI CLI.
+description: AI-driven UI automation — author tests in plain language, run them on desktop, browser, or Android, and scale to CI and multi-device fleets.
 ---
 
-Author and run AI-driven UI tests — on the desktop and from the command line.
+**AskUI** lets you automate any UI by describing what to do in plain language. There is no selector to write and no recording to maintain — you describe a step ("click the login button", "fill in the email field with the QA credentials"), an AI agent carries it out on the real screen, and a report shows you exactly what happened and why.
 
-[Get started](/docs/get-started/install-desktop) · [Prompting best practices](/docs/using-askui-desktop/prompting-best-practices)
+You can author and run tests interactively in the **Desktop App**, drive the same tests headlessly from the **CLI** (locally or in CI), and rely on **AgentOS** as the low-level runtime that gives the agent direct OS control — keyboard, mouse, and screen.
 
-## Where to start
+## How these docs are organized
 
 <Cards>
-  <Card title="AskUI Desktop" href="/docs/get-started/install-desktop">
-    The local host for authoring and running AI-driven UI tests. Build a test
-    Project, write prompts, and watch runs execute on your machine.
+  <Card title="Quickstart" href="/docs/quickstart">
+    Go from zero to a passing test in under 10 minutes. Covers account creation,
+    installation, and your first run.
 
-    [Install AskUI Desktop →](/docs/get-started/install-desktop)
+    [Start here →](/docs/quickstart)
   </Card>
-  <Card title="AskUI CLI" href="/docs/get-started/install-cli">
-    Run the same Projects headless — in CI, on a schedule, or across many
-    devices.
+  <Card title="Desktop App" href="/docs/get-started/install-desktop">
+    Everything about AskUI Desktop: installation, projects, prompts, model
+    providers, and reading run reports.
 
-    [Install the CLI →](/docs/get-started/install-cli)
+    [Install Desktop →](/docs/get-started/install-desktop)
   </Card>
-  <Card title="Prompting best practices" href="/docs/using-askui-desktop/prompting-best-practices">
-    How to structure a Project's prompts so runs are reliable, reusable, and
-    debuggable.
+  <Card title="CLI" href="/docs/get-started/install-cli">
+    Run projects headless in CI, on a schedule, or across many devices. The CLI
+    ships with the Desktop App installer.
 
-    [Read the guide →](/docs/using-askui-desktop/prompting-best-practices)
+    [CLI docs →](/docs/get-started/install-cli)
   </Card>
   <Card title="AgentOS" href="/docs/agentos">
-    The runtime layer that gives agents direct control over a machine's OS —
-    keyboard, mouse, screen, and system functions.
+    The runtime layer that gives agents direct OS control. Installation,
+    deployment modes, and enterprise configuration.
 
     [Explore AgentOS →](/docs/agentos)
   </Card>
+  <Card title="Guides" href="/docs/guides">
+    Best-practice guides for prompting, structuring projects, and getting
+    reliable runs — with more to come.
+
+    [Browse guides →](/docs/guides)
+  </Card>
+  <Card title="Account & Billing" href="/docs/account-billing/workspaces">
+    Workspaces, access tokens, and plans.
+
+    [Manage account →](/docs/account-billing/workspaces)
+  </Card>
 </Cards>
+
+## The three components
+
+| Component | What it is | When you need it |
+|-----------|-----------|-----------------|
+| **AskUI Desktop** | GUI app for authoring and running tests | Always — this is where you write and review tests |
+| **AskUI CLI** | Headless runner (`askui run`) | CI pipelines, scheduled runs, multi-device fleets |
+| **AgentOS** | OS-level control runtime | Desktop and Android targets (installed automatically for local runs) |
+
+## Not sure where to start?
+
+Go to the **[Quickstart](/docs/quickstart)** — it walks you through account creation, installation, and a first passing test in under 10 minutes.
