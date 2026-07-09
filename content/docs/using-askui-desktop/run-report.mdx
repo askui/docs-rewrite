@@ -1,29 +1,158 @@
 ---
 title: Reading a run report
-description: How to read the report AskUI Desktop produces after a test run, including the embedded interactive run viewer.
+description: The three report artifacts a run produces — per-test Markdown reports, a cross-run summary, and a portable HTML log — and how to read each one.
 ---
 
-Every run produces a report: a per-step record of what the agent did, what it
-expected, what it observed, and a screenshot of each step. You can open the
-interactive report right here.
+Every run writes its output into a timestamped workspace folder under
+`agent_workspace/`. Three types of artifact are produced:
 
-<RunEmbed src="/runs/first-test.html" title="AskUI Desktop run report" />
+```
+agent_workspace/
+└── 2025-11-12_14-30-00/        ← one folder per run
+    ├── summary_report.md        ← run-level table
+    ├── conversation.html        ← portable HTML log
+    ├── conversation.json        ← raw data (used by the app)
+    └── login_test/              ← one folder per test
+        ├── login_test_report.md
+        ├── step_1.png
+        └── step_2.png
+```
+
+The default workspace path is `<project-root>/agent_workspace/<UTC timestamp>`.
+You can override it with `--workspace` when running from the CLI.
+
+---
+
+## Markdown report
+
+Each test gets its own subdirectory with a `<test_name>_report.md` and a
+`step_<n>.png` screenshot for every step. The agent writes this report as it
+executes — it is the primary record of what the agent did, what it expected,
+and what it actually observed.
+
+```markdown
+# Test Case Report: login_test
+
+**Test Case ID:** login_test
+**Date:** 2025-11-12
+**Status:** PASSED
+
+## Summary
+
+The agent successfully logged in using the QA credentials and verified
+the dashboard was shown.
+
+## Preconditions
+
+1. Application is running and the login page is visible.
+
+## Test Steps
+
+1. **Navigate to the login page** — Status: **PASSED**
+   - **Agent Interpretation:** Opened browser and navigated to the login URL.
+   - **Expected:** Login form visible.
+   - **Actual:** Login form visible with username and password fields.
+   - ![Step 1](step_1.png)
+
+2. **Enter QA credentials and submit** — Status: **PASSED**
+   - **Agent Interpretation:** Filled the form using the QA credentials file.
+   - **Expected:** Dashboard page shown after successful sign-in.
+   - **Actual:** Dashboard loaded with the welcome banner.
+   - ![Step 2](step_2.png)
+
+## Postconditions
+
+1. User is signed in and the dashboard is visible.
+
+## Issues
+
+No issues encountered.
+
+## Conclusion
+
+All steps passed. The login flow works as expected with the current QA credentials.
+```
+
+Each step carries its own status. The **overall status** of the test is derived
+from the worst step status — see [Status vocabulary](#status-vocabulary) below.
+
+---
+
+## Summary report
+
+`summary_report.md` in the run folder contains one Markdown table across all
+tests in the run, with status and execution time per test.
+
+```markdown
+# Run Summary
+
+| ID | Name | Status | Duration |
+|---|---|---|---|
+| login_test | login_test | PASSED | 1m 12s |
+| settings_test | settings_test | PASSED | 0m 48s |
+| checkout_test | checkout_test | FAILED | 2m 03s |
+
+**Total: 3 · Passed: 2 · Failed: 1 · Broken: 0**
+```
+
+Tests that a plan selected but the run never reached are listed as `BROKEN`
+so nothing goes missing silently. The Dashboard and Runs pages in AskUI Desktop
+derive their pass/fail counters from this table.
+
+<Callout title="Counting rules">
+`WARN` counts as passed (tracked separately in the warning total). `SKIPPED`
+tests never executed and are excluded from the total. `BROKEN` tests without
+an execution time in the summary (tests that never started) are also excluded
+from the total — they show in the table but don't affect the pass rate.
+</Callout>
+
+---
+
+## HTML report
+
+`conversation.html` is a self-contained, portable file that captures the full
+agent conversation — every message, tool call, and screenshot — in a single
+file you can open in any browser, send to a colleague, or attach to a bug
+report without any extra tooling.
+
+<RunEmbed src="/runs/first-test.html" title="AskUI Desktop HTML report" />
+
+The HTML report and the raw `conversation.json` are written when the run
+completes (or is cancelled — partial reports are preserved). In CI, upload
+the whole workspace folder as a build artifact so the HTML report stays
+attached to the run even when tests fail:
+
+```yaml title=".github/workflows/ui-tests.yml"
+- uses: actions/upload-artifact@v4
+  if: always()
+  with:
+    name: askui-run
+    path: ./run-artifacts
+```
+
+---
+
+## Live run viewer
+
+While a run is in progress, AskUI Desktop shows the agent conversation in
+real time on the **Runs** page — the same data that is later persisted to
+`conversation.html`, but streaming as each step completes. Use it to watch
+the agent act and catch unexpected behaviour early.
+
+---
 
 ## Status vocabulary
 
-Each step — and the run overall — carries one status:
+Each step — and the test overall — carries one status:
 
-- **PASSED** — actual result matches expected.
-- **FAILED** — step executed but the result didn't match.
-- **SKIPPED** — intentionally not executed (e.g. precondition not met).
-- **WARN** — passed, but with a caveat (slow response, minor visual deviation).
-- **BROKEN** — could not execute due to a crash or infrastructure failure.
+| Status | Meaning |
+| --- | --- |
+| `PASSED` | Actual result matches expected. |
+| `FAILED` | Step executed but the result didn't match. |
+| `SKIPPED` | Intentionally not executed (e.g. precondition not met). |
+| `WARN` | Passed, but with a caveat (slow response, minor visual deviation). |
+| `BROKEN` | Could not execute — crash or infrastructure failure. |
 
-The overall status is the worst of its steps: `BROKEN` if any step broke, else
-`FAILED` if any failed, else `WARN`, else `SKIPPED` if all skipped, otherwise
-`PASSED`.
-
-<Callout title="Tip">
-Report artifacts (the Markdown report and `step_N.png` screenshots) are written
-into a per-test subdirectory, so a run's evidence stays together.
-</Callout>
+The overall test status is the worst of its steps: `BROKEN` if any step broke,
+else `FAILED` if any failed, else `WARN`, else `SKIPPED` if all skipped,
+otherwise `PASSED`.

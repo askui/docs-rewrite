@@ -32,7 +32,7 @@ Two built-in conventions the agent relies on:
   credentials", the agent reads them from a local credentials file at run time.
 - **Scratchpad** — the agent can persist information across steps with
   `scratchpad_write_tool` / `scratchpad_read_tool`, but only when a test
-  explicitly instructs it to.
+  explicitly instructs it to. This might be necessary if you need to persist information across tests.
 
 ## `device_information.md`
 
@@ -51,8 +51,8 @@ Swap this file when retargeting a Project at a different machine.
 
 ## `ui_information.md`
 
-Where the agent learns your application. The default ships empty — this is the
-file you invest the most in:
+Where the agent learns your application. The default ships empty — **this is the
+file you invest the most in**:
 
 ```markdown
 ## Navigation
@@ -82,17 +82,17 @@ The structure and status vocabulary of the report the agent writes. Default stat
 The overall test status is the worst status of its steps. See
 [Reading a run report](/docs/using-askui-desktop/run-report).
 
-## Per-folder files
+## Per-Suite files
 
 <Tabs items={['rules.md', 'setup.md', 'teardown.md']}>
   <Tab value="rules.md">
-    Execution rules for this folder — patches the system prompt for this suite
-    only. Cascades with folder nesting.
+    Execution rules for this suite — patches the system prompt for this suite
+    only. Cascades with suite nesting.
   </Tab>
   <Tab value="setup.md">
-    Runs **before** every test in the folder — outer folders first.
+    Runs **before** every test in the suite — parent suites first.
   </Tab>
   <Tab value="teardown.md">
-    Runs **after** every test in the folder — innermost folder first.
+    Runs **after** every test in the suite — innermost suites first.
   </Tab>
 </Tabs>

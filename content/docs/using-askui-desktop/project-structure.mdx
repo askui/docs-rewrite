@@ -1,6 +1,6 @@
 ---
 title: How a Project is organized
-description: The folder structure of an AskUI Desktop Project and how tests, plans, prompts, procedures and utils fit together.
+description: The structure of an AskUI Desktop Project and how tests, plans, prompts, procedures and utils fit together.
 ---
 
 A **Project** is the unit of work in AskUI Desktop. Everything for a body of
@@ -24,15 +24,14 @@ testing lives in one Project folder, split into a few well-known areas.
 
 - **Tests** decompose into **suites → cases → steps**. A step describes an
   action and its expected result. Cases may carry a **precondition** and
-  **postcondition**; suites may carry **setup** and **teardown**.
-- A **step** can invoke a **procedure** (a reusable sequence) or a **util** (a
+  **postcondition**; suites may carry **setup** and **teardown**. Suites can have subsuites saved as subfolders.
+- A **step** can invoke one or more **procedures** (a reusable sequence), or **utils** (a
   tool, MCP server, skill, or CLI command).
-- **Plans** select what runs — e.g. a `smoke` plan that runs a subset of
+- **Plans** select what runs, e.g. a `smoke` plan that runs a subset of
   suites for a quick check.
 
 <Callout title="Tip">
-Start from the scaffold: a new Project comes pre-seeded with the four prompt
-parts, an example login test, and a `smoke` plan. Fill in
+Start from the scaffold: a new Project comes pre-seeded with all necessary parts. we recommend filling in
 the placeholders rather than starting from a blank page.
 </Callout>
 
