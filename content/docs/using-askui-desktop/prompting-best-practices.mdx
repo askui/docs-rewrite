@@ -90,7 +90,7 @@ them by name and let the agent read them at run time:
 Sign in using the QA credentials.
 ```
 
-The agent resolves "the QA credentials" by reading `secrets/credentials.txt`
+The agent resolves "the QA credentials" by reading a local credentials file
 with its file tools at execution time. Real credentials never appear in
 `tests/*.md` or the prompts.
 
@@ -133,6 +133,7 @@ Before you commit a Project's prompts, confirm:
 - [ ] `prompts/` has all four parts, each scoped to its one job.
 - [ ] App-specific knowledge lives in `ui_information.md`, not the system prompt.
 - [ ] Folder behaviour is tuned in `rules.md` / `setup.md` / `teardown.md`.
-- [ ] No credentials in any `tests/` or `prompts/` file — only in `secrets/`.
+- [ ] No credentials in any `tests/` or `prompts/` file — keep them in a local
+  file the agent reads at run time.
 - [ ] `report_format.md` uses the standard status vocabulary.
 - [ ] Repeated sequences are extracted into `procedures/`.

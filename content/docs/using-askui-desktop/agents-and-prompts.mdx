@@ -49,7 +49,7 @@ screenshots and input, and — critically — that **does not improvise**:
 It also sets two conventions the agent relies on:
 
 - **Credentials** are never embedded in a test. When a step references "the QA
-  credentials", the agent reads them from `secrets/credentials.txt` at run time.
+  credentials", the agent reads them from a local credentials file at run time.
 - **Scratchpad** — the agent can persist information across steps with
   `scratchpad_write_tool` / `scratchpad_read_tool`, but only when explicitly
   prompted to.

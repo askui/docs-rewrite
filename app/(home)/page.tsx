@@ -94,32 +94,40 @@ export default function HomePage() {
     <div className="flex flex-col">
 
       {/* Hero */}
-      <section className="flex flex-col items-center text-center px-6 pt-20 pb-16">
-        <p className="text-xs font-semibold tracking-widest uppercase text-fd-muted-foreground mb-5">
-          AskUI Documentation
-        </p>
-        <h1
-          className="text-5xl font-bold tracking-tight mb-5 text-fd-foreground text-balance max-w-2xl"
-        >
-          UI automation in plain language
-        </h1>
-        <p className="text-lg text-fd-muted-foreground mb-8 max-w-xl text-balance">
-          Describe what to do. AskUI's AI agent acts on the real screen and returns a step-by-step
-          report with screenshots. No selectors, no recording, no code.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Link
-            href="/docs/quickstart"
-            className="inline-flex items-center justify-center rounded-md bg-fd-primary text-fd-primary-foreground px-6 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            Quickstart (10 min)
-          </Link>
-          <Link
-            href="/docs"
-            className="inline-flex items-center justify-center rounded-md border border-fd-border px-6 py-2.5 text-sm font-medium hover:bg-fd-accent transition-colors"
-          >
-            Browse docs
-          </Link>
+      <section className="relative overflow-hidden px-6 pt-24 pb-20">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-[440px]"
+          style={{
+            background:
+              'radial-gradient(55% 100% at 50% 0%, color-mix(in oklab, var(--color-fd-primary) 13%, transparent), transparent 72%)',
+          }}
+        />
+        <div className="relative flex flex-col items-center text-center">
+          <p className="text-xs font-semibold tracking-widest uppercase text-fd-primary mb-5">
+            AskUI Documentation
+          </p>
+          <h1 className="text-5xl sm:text-6xl font-bold tracking-tight leading-[1.05] mb-6 text-fd-foreground text-balance max-w-3xl">
+            One agent for every interface
+          </h1>
+          <p className="text-lg sm:text-xl text-fd-muted-foreground mb-9 max-w-2xl text-balance leading-relaxed">
+            AskUI drives web, desktop, mobile, and embedded screens from plain-language steps
+            &mdash; no selectors, no recording. Every run comes back as a screenshot-backed report.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/docs/quickstart"
+              className="inline-flex items-center justify-center rounded-md bg-fd-primary text-fd-primary-foreground px-6 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              Quickstart (10 min)
+            </Link>
+            <Link
+              href="/docs"
+              className="inline-flex items-center justify-center rounded-md border border-fd-border px-6 py-2.5 text-sm font-medium hover:bg-fd-accent transition-colors"
+            >
+              Browse docs
+            </Link>
+          </div>
         </div>
       </section>
 
