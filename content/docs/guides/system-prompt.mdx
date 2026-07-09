@@ -36,13 +36,13 @@ reliably.
 The AskUI default is a good starting point — edit it with care, as small
 changes can cause unexpected behaviour across every test.
 
-The most important thing to get right here is **error discipline**:
+Two examples of things that go into this prompt part:
 
-- **Max 2 attempts per step.** After two failures, the agent stops and marks
+- **Error Handling.** After two failures, the agent stops and marks
   the step `FAILED`. No third try, no creative workarounds, no navigating back
   to retry. This keeps runs honest — a result of `PASSED` means the steps
   actually passed.
-- **`FAILED` vs `BROKEN` are different.** A step whose result does not match
+- **Infering test status.** A step whose result does not match
   the expectation is `FAILED` — a problem with the app under test. An
   infrastructure error (connection lost, session expired, RPC error) is
   `BROKEN` — the agent writes the report and calls `exception_tool` to abort,
@@ -80,6 +80,7 @@ test. Include:
   surprise a first-time user.
 - **State indicators** — what "logged in", "loading", "error" look like
   visually so the agent can read the screen correctly.
+- **Naming conventions** — how specific areas or views are called so that you can refer to these in the tests.
 - **Common pitfalls and what not to do** — if there is a destructive action
   that's easy to trigger accidentally, say so explicitly.
 
@@ -88,9 +89,9 @@ overlay as a blank page, for example), add a description here. The agent has
 no built-in knowledge of your app — everything it needs to recognise must be
 written down.
 
-### 4 · Report format — make output predictable
+### 4 · Report format — tailor reports to your needs
 
-`report_format.md` tells the agent how to structure its output. Be explicit:
+`report_format.md` tells the agent how to structure its reports. Be explicit:
 Markdown or JSON, required sections, and the status vocabulary. Using the
 standard AskUI status vocabulary (`PASSED`, `FAILED`, `SKIPPED`, `WARN`,
 `BROKEN`) ensures run reports are readable by AskUI Desktop's report viewer.
