@@ -1,0 +1,155 @@
+---
+title: Writing good tests
+description: How to write clear, reliable test steps — element descriptions, credentials, procedures, and setup/teardown.
+---
+
+A test file is a plain Markdown file listing the steps and verifications the
+agent should carry out. The agent reads it, acts on the real screen, and writes
+a report. Whether that run is reliable depends almost entirely on how clearly
+the steps are written.
+
+## One goal per test file
+
+Each test file should describe **one coherent scenario** with a clear,
+verifiable outcome. Tests with multiple independent goals are harder to debug
+— when the run fails, you cannot tell which goal it failed on.
+
+```markdown
+<!-- Good: one goal, clear pass condition -->
+# Verify that a new user can complete registration
+
+Navigate to the registration page.
+Fill in the registration form with valid data.
+Submit the form.
+Verify that the confirmation page is shown.
+```
+
+```markdown
+<!-- Avoid: two independent goals in one file -->
+# Registration and login
+
+Register a new account, then log in with the new credentials.
+```
+
+## Write steps the agent can act on reliably
+
+The agent identifies UI elements from screenshots. Vague descriptions force it
+to guess; specific descriptions make each step unambiguous.
+
+**Use spatial anchors.** Describe where an element is relative to something
+stable on screen:
+
+```markdown
+<!-- Vague -->
+Click the button.
+
+<!-- Specific -->
+Click the Save button in the bottom-right corner of the dialog, below the
+comment field.
+```
+
+**Include distinguishing features.** Name the label, color, icon, or position
+that makes the element unique:
+
+```markdown
+<!-- Vague -->
+Click the icon.
+
+<!-- Specific -->
+Click the red trash-can icon to the right of the row labelled "Draft report".
+```
+
+**Instruct the agent to zoom for small targets.** If a button or icon is
+small, say so explicitly:
+
+```markdown
+Zoom in on the toolbar area, then click the small pencil icon on the far right.
+```
+
+**State what to verify, not just what to do.** A step without a verification
+always passes:
+
+```markdown
+<!-- No verification — passes even if the page is wrong -->
+Click Submit.
+
+<!-- With verification -->
+Click Submit. Verify that the success banner "Changes saved" appears at the
+top of the page.
+```
+
+## Never embed credentials in test files
+
+Test files are version-controlled. Credentials must not be. Reference them by
+name and let the agent read them from a local file at run time:
+
+```markdown
+<!-- Correct: reference by name -->
+Sign in using the QA admin credentials.
+
+<!-- Wrong: never do this -->
+Sign in with username "admin@example.com" and password "hunter2".
+```
+
+The agent resolves named credentials by reading a local credentials file with
+its file tools at execution time. See
+[What goes where](/docs/guides/prompting-best-practices) for the Project
+structure that supports this.
+
+## Use procedures for repeated sequences
+
+When the same multi-step sequence appears in more than one test — signing in,
+navigating to a starting state, seeding data — extract it into a procedure:
+
+```markdown
+# procedures/sign_in.md
+Navigate to https://app.example.com/login.
+Enter the QA username and password.
+Click Sign in and wait for the dashboard to appear.
+```
+
+Call it from any test or setup file:
+
+```markdown
+Sign in using the QA credentials.
+```
+
+Procedures keep tests short and focused. They also mean a changed flow (a new
+login page, a renamed field) only needs fixing in one place.
+
+## Use setup and teardown for shared state
+
+**Setup files** run before every test in a folder. Use them for preconditions
+that every test in that folder needs:
+
+- Logging in
+- Navigating to a known starting page
+- Seeding or resetting test data
+
+**Teardown files** run after every test. Use them for cleanup:
+
+- Logging out
+- Deleting data created during the test
+- Resetting application state
+
+If a precondition is needed by every test in a folder, put it in `setup.md`
+rather than at the top of each test file. If a step is needed by only some
+tests, keep it inline.
+
+<Callout title="Note">
+Setup and teardown are not the same as procedures. Setup/teardown run
+automatically for every test in the folder; procedures are called explicitly
+from a test step.
+</Callout>
+
+## Checklist
+
+Before committing test files:
+
+- [ ] Each test file has one clear goal with a verifiable outcome.
+- [ ] Steps use spatial anchors and distinguishing features — no bare "click the button".
+- [ ] Every step that does something verifiable includes an explicit verification.
+- [ ] No credentials in any test file — only named references.
+- [ ] Repeated sequences are in `procedures/`, not copy-pasted.
+- [ ] Shared preconditions are in `setup.md`, not duplicated across tests.
+- [ ] Shared cleanup is in `teardown.md`.

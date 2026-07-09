@@ -1,1 +1,1 @@
-{ "title": "Guides", "pages": ["index"] }
+{ "title": "Guides", "pages": ["index", "prompting-best-practices", "system-prompt", "writing-tests"] }

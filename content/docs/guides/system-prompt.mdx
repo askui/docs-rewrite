@@ -1,0 +1,192 @@
+---
+title: Writing a good system prompt
+description: What to write in each part of the AskUI system prompt — UI information, error discipline, Additional Rules, and a complete worked example.
+---
+
+System prompts are one of your biggest levers on agent reliability. If test
+cases consistently fail, engineering the system prompt is often the fix. This
+page covers **what to write in each of the five parts** — the theory, content
+criteria, and a complete worked example.
+
+For an overview of which file each part lives in, see
+[What goes where](/docs/guides/prompting-best-practices).
+
+## Why system prompts matter
+
+A system prompt is one of the most important control surfaces in modern AI
+engineering. Rather than fine-tuning model weights, it effectively reprograms
+the model for the duration of a run — shaping how it produces every subsequent
+token under a new set of constraints, priorities, and abilities.
+
+Simple tasks need little or no system prompt. But an AskUI agent must plan and
+execute **multi-step interactions on UIs it may never have seen**, across
+devices with completely different input models (scroll vs. swipe), correctly
+identifying interaction affordances. A good system prompt is how you give the
+agent the instructions and knowledge it needs.
+
+## The five parts
+
+Structure the prompt as **XML**, with one tag per part. A consistent,
+detailed, contradiction-free prompt lets the agent reason, plan, and act more
+reliably.
+
+### 1 · System capabilities — set error discipline
+
+`system_capabilities.md` defines the agent's identity and its always-on rules.
+The AskUI default is a good starting point — edit it with care, as small
+changes can cause unexpected behaviour across every test.
+
+The most important thing to get right here is **error discipline**:
+
+- **Max 2 attempts per step.** After two failures, the agent stops and marks
+  the step `FAILED`. No third try, no creative workarounds, no navigating back
+  to retry. This keeps runs honest — a result of `PASSED` means the steps
+  actually passed.
+- **`FAILED` vs `BROKEN` are different.** A step whose result does not match
+  the expectation is `FAILED` — a problem with the app under test. An
+  infrastructure error (connection lost, session expired, RPC error) is
+  `BROKEN` — the agent writes the report and calls `exception_tool` to abort,
+  because no further test can pass on broken infrastructure.
+
+<Callout title="Note">
+This discipline is why run reports are trustworthy: a green run means the
+steps actually passed, not that the agent improvised its way to "done".
+</Callout>
+
+### 2 · Device information — describe the machine
+
+`device_information.md` tells the agent what it is operating on. Keep it
+factual and specific:
+
+- Device type (desktop, Android phone, in-car HMI)
+- Operating system and version
+- Number of displays and which one to use
+- Any device-specific input constraints
+
+Swap this file to retarget a Project at a different machine without touching
+anything else.
+
+### 3 · UI information — your biggest lever
+
+`ui_information.md` is where you teach the agent your application. This is
+the part you invest the most in, and the part most likely to fix a failing
+test. Include:
+
+- **How interactions work** on your interface (single-page navigation, lazy
+  loading, drag-and-drop patterns).
+- **Where relevant functions are located** — primary areas, navigation
+  structure, where key actions live.
+- **Which interaction patterns are non-standard** — anything that would
+  surprise a first-time user.
+- **State indicators** — what "logged in", "loading", "error" look like
+  visually so the agent can read the screen correctly.
+- **Common pitfalls and what not to do** — if there is a destructive action
+  that's easy to trigger accidentally, say so explicitly.
+
+If the agent consistently misinterprets a screen state (treating a loading
+overlay as a blank page, for example), add a description here. The agent has
+no built-in knowledge of your app — everything it needs to recognise must be
+written down.
+
+### 4 · Report format — make output predictable
+
+`report_format.md` tells the agent how to structure its output. Be explicit:
+Markdown or JSON, required sections, and the status vocabulary. Using the
+standard AskUI status vocabulary (`PASSED`, `FAILED`, `SKIPPED`, `WARN`,
+`BROKEN`) ensures run reports are readable by AskUI Desktop's report viewer.
+
+### 5 · Additional rules — patch specific issues
+
+Additional rules are per-folder `rules.md` files that patch the system prompt
+for one suite without touching the Project-wide files. Use them when the agent
+consistently struggles with a specific situation.
+
+A good additional rule describes:
+- **How the agent identifies the stuck situation** — what it sees on screen.
+- **What it should do** — the exact sequence to follow.
+- **What it should not do** — rule out the wrong approach explicitly.
+
+Think of each rule as a targeted bug fix. For example, if the agent
+consistently misses a small *Save* button, describe exactly where it is, what
+it looks like, and what to do when asked to click it.
+
+---
+
+## Style principles
+
+<Cards>
+  <Card title="Use a structured format">
+    Wrap each part in an XML tag and use bullet-point lists within each part.
+    Structured prompts are easier to audit and easier for the model to parse.
+  </Card>
+  <Card title="Be consistent with language">
+    Stick to clear English throughout — the prompt, test cases, all inputs.
+    Mixed languages degrade performance.
+  </Card>
+  <Card title="Avoid contradictions">
+    Contradicting rules produce undefined behaviour. Review each part against
+    the others before committing.
+  </Card>
+  <Card title="Be (overly) specific">
+    If you feel you are being too detailed, you are doing it right. Only you
+    know your UI — pass all relevant information.
+  </Card>
+</Cards>
+
+---
+
+## A complete example
+
+A minimal system prompt with all five parts, for a web-search agent:
+
+```xml
+<SYSTEM_CAPABILITIES>
+* You are an autonomous AI agent that operates User Interfaces such as apps, websites, or software.
+* Your primary goal is to execute tasks efficiently and reliably while
+  maintaining system stability.
+* Operate independently and make informed decisions without requiring
+  user input.
+* When you cannot find something (application window, ui element etc.) on
+  the currently selected/active display/screen, check the other available
+  displays by listing them and checking which one is currently active and
+  then going through the other displays one by one until you find it or
+  you have checked all of them.
+* When using your function calls, they take a while to run and send back
+  to you. Where possible/feasible, try to chain multiple of these calls
+  all into one function calls request.
+</SYSTEM_CAPABILITIES>
+<DEVICE_INFORMATION>
+Here are some details on the device you will be operating:
+* Device Type: Personal Computer
+* Operating System: macOS
+* Internet Access: Available
+</DEVICE_INFORMATION>
+<UI_INFORMATION>
+* When asked to perform web tasks try to open the browser (firefox,
+  chrome, safari, ...) if not already open. Often you can find the
+  browser icons in the toolbars of the operating systems.
+* When viewing a page it can be helpful to zoom out/in so that you can
+  see everything on the page. Either that, or make sure you scroll
+  down/up to see everything before deciding something isn't available.
+* Uses single-page navigation with URL updates.
+</UI_INFORMATION>
+<REPORT_INFORMATION>
+* Provide a clear and concise summary of actions taken.
+* Use Markdown formatting for better readability.
+* Include any relevant observations or findings.
+* Highlight any issues or errors encountered.
+</REPORT_INFORMATION>
+<ADDITIONAL_RULES>
+* If asked to open a browser window, tab or website, always make sure that you open a new window. If you cannot see a window you just opened, it might have appeared on another screen than you are currently looking at.
+**DO NEVER:**
+  - Complete a purchase without explicit user confirmation.
+  - Submit any payment information.
+  - Delete any items from saved lists.
+</ADDITIONAL_RULES>
+```
+
+<Callout title="Tip">
+Once your prompt is solid, run it from the [CLI](/docs/using-askui-desktop/cli)
+across your test suite and read the
+[run report](/docs/using-askui-desktop/run-report) to see where to tighten it.
+</Callout>

@@ -1,0 +1,147 @@
+---
+title: What goes where
+description: Understand which content belongs in system prompt files, test files, setup/teardown, and procedures — and why.
+---
+
+AskUI Desktop separates three concerns that are easy to mix up:
+
+- **Who the agent is** — the system prompt (`prompts/` folder): capabilities, device facts, app knowledge, report format.
+- **What to do on this run** — test files (`tests/`): the specific steps for each scenario.
+- **Shared lifecycle** — setup, teardown, and rules: actions that run before or after groups of tests.
+
+Getting this right is what makes Projects maintainable. When a run misbehaves, you know exactly which file to look at.
+
+## The system prompt (`prompts/`)
+
+The system prompt is assembled once at run start and applies to every test in the Project. It lives in four files:
+
+<Files>
+  <Folder name="prompts">
+    <File name="system_capabilities.md" />
+    <File name="device_information.md" />
+    <File name="ui_information.md" />
+    <File name="report_format.md" />
+  </Folder>
+</Files>
+
+<Cards>
+  <Card title="system_capabilities.md">
+    Who the agent is and the rules it always follows. Stable — you rarely edit
+    this. Defines the agent as an autonomous tester that acts via screenshots,
+    clicks, and typing, plus error-handling discipline.
+  </Card>
+  <Card title="device_information.md">
+    Facts about the machine under test: OS version, how many displays and which
+    one to use, coordinate origin. Swap this file to retarget a run at a
+    different machine.
+  </Card>
+  <Card title="ui_information.md">
+    **Where the agent learns your app** — primary areas, navigation, state
+    indicators, and dialog quirks. This is the file you invest the most in.
+  </Card>
+  <Card title="report_format.md">
+    The report the agent writes: Markdown structure plus the status vocabulary —
+    `PASSED`, `FAILED`, `SKIPPED`, `WARN`, `BROKEN`.
+  </Card>
+</Cards>
+
+Each file has a different lifecycle: `system_capabilities` is essentially
+constant; `device_information` changes per machine; `ui_information` grows as
+you learn the app; `report_format` is typically shared org-wide. Keeping them
+separate means a change to one never risks the others.
+
+For what to actually write in each file, see
+[Writing a good system prompt](/docs/guides/system-prompt).
+
+## Test files (`tests/`)
+
+Each file in `tests/` (or a subfolder) is one test case — a plain Markdown
+file listing the steps the agent should carry out and verify. A test file
+describes **what to do in this specific scenario**, not how the agent works or
+what the app looks like.
+
+**What belongs in a test file:**
+- The steps for this scenario, in natural language
+- Expected results the agent should verify
+- References to credentials by name (never the credentials themselves)
+- Calls to procedures by name for repeated sequences
+
+**What does not belong in a test file:**
+- App knowledge or UI descriptions → `ui_information.md`
+- Device facts → `device_information.md`
+- Shared steps that run for every test → setup/teardown
+- Repeated multi-step sequences → procedures
+
+For how to write steps the agent acts on reliably, see
+[Writing good tests](/docs/guides/writing-tests).
+
+## Setup, teardown, and rules
+
+Each test folder can carry three conventional files the runner picks up
+automatically for every test inside it:
+
+<Cards>
+  <Card title="setup.md">
+    Runs **before** every test in the folder — outer folders first. Use it for
+    shared preconditions: logging in, navigating to a starting page, seeding
+    test data.
+  </Card>
+  <Card title="teardown.md">
+    Runs **after** every test in the folder — innermost folder first. Use it
+    for cleanup: logging out, resetting state, deleting test data.
+  </Card>
+  <Card title="rules.md">
+    Execution rules that patch the system prompt for this folder only —
+    interaction style, error-handling overrides, credential conventions. Use
+    this instead of editing `system_capabilities.md` when one suite needs
+    different behaviour.
+  </Card>
+</Cards>
+
+Setup and teardown cascade with folder nesting: a top-level `setup.md` runs
+before a subfolder's `setup.md`, which runs before each test. Teardown
+unwinds in reverse.
+
+<Callout type="warn">
+If a suite needs different behaviour, add a `rules.md` in its folder — not by
+editing `system_capabilities.md`, which changes behaviour for every test in
+the Project.
+</Callout>
+
+## Procedures (`procedures/`)
+
+A procedure is a reusable multi-step sequence stored in `procedures/` and
+called by name from a test step:
+
+```markdown
+# tests/checkout.md
+Sign in using the QA credentials.
+Add the first product to the cart.
+Complete checkout.
+```
+
+```markdown
+# procedures/sign_in.md
+Navigate to the login page.
+Enter the QA username and password.
+Click Sign in and wait for the dashboard.
+```
+
+Use a procedure whenever the same sequence appears in more than one test or
+setup file. Fix it once and every caller updates automatically.
+
+---
+
+## Quick reference
+
+| What | File |
+|------|------|
+| Agent identity and global rules | `prompts/system_capabilities.md` |
+| Target machine facts | `prompts/device_information.md` |
+| App-specific UI knowledge | `prompts/ui_information.md` |
+| Report structure and status vocabulary | `prompts/report_format.md` |
+| Folder-level behaviour patches | `<folder>/rules.md` |
+| Shared preconditions | `<folder>/setup.md` |
+| Shared cleanup | `<folder>/teardown.md` |
+| Reusable step sequences | `procedures/<name>.md` |
+| Individual test scenarios | `tests/<name>.md` |

@@ -1,40 +1,20 @@
 ---
 title: Agents & prompts
-description: How AskUI Desktop assembles a testing agent from a Project's prompt files, with the real default prompts explained part by part.
+description: The real default prompt files AskUI Desktop creates for a new Project — what each one contains and what to change.
 ---
 
-When you run a test, AskUI Desktop assembles an autonomous testing agent from
-your Project's `prompts/` folder. The agent reads the screen, acts via clicks
-and keystrokes, verifies expected results, and writes a report. This page walks
-through each prompt part using the **real defaults** a new Project ships with.
+When you create a Project, AskUI Desktop scaffolds the `prompts/` folder with
+sensible defaults. This page shows what each file contains out of the box and
+what you are expected to customise.
 
-<Callout title="Tip">
-New to the structure? Start with
-[How a Project is organized](/docs/using-askui-desktop/project-structure), then the
-[Prompting best practices](/docs/using-askui-desktop/prompting-best-practices) for
-the principles behind it.
-</Callout>
+For the structural overview of what goes in each file and why, see
+[What goes where](/docs/guides/prompting-best-practices). For writing guidance,
+see [Writing a good system prompt](/docs/guides/system-prompt).
 
-## What the agent is made of
+## `system_capabilities.md`
 
-The four prompt parts are composed into the agent at run start, then per-folder
-`rules.md` / `setup.md` / `teardown.md` are layered on top for the tests in that
-folder.
-
-<Files>
-  <Folder name="prompts">
-    <File name="system_capabilities.md" />
-    <File name="device_information.md" />
-    <File name="ui_information.md" />
-    <File name="report_format.md" />
-  </Folder>
-</Files>
-
-## `system_capabilities.md` — who the agent is
-
-Defines the agent's identity and the discipline it always follows. You rarely
-edit this. The default establishes an autonomous tester that acts through
-screenshots and input, and — critically — that **does not improvise**:
+Defines the agent's identity and error-handling discipline. You rarely edit
+this — the defaults are designed to keep runs honest:
 
 > **Error handling.** You have a maximum of **2 attempts per step**. If a step
 > does not succeed after 2 attempts, stop immediately. Do not try a third
@@ -44,20 +24,19 @@ screenshots and input, and — critically — that **does not improvise**:
 > **Infrastructure errors.** Tool errors that indicate infrastructure failures
 > (connection lost, session expired, RPC errors) are fundamentally different
 > from test failures. Write the report with status **BROKEN** and call the
-> `exception_tool` to abort — retrying cannot fix broken infrastructure.
+> `exception_tool` to abort.
 
-It also sets two conventions the agent relies on:
+Two built-in conventions the agent relies on:
 
 - **Credentials** are never embedded in a test. When a step references "the QA
   credentials", the agent reads them from a local credentials file at run time.
 - **Scratchpad** — the agent can persist information across steps with
-  `scratchpad_write_tool` / `scratchpad_read_tool`, but only when explicitly
-  prompted to.
+  `scratchpad_write_tool` / `scratchpad_read_tool`, but only when a test
+  explicitly instructs it to.
 
-## `device_information.md` — the machine
+## `device_information.md`
 
-Facts about the machine under test. Swap this file to retarget a run. The
-default is a placeholder you fill in:
+Facts about the machine under test. The default is a placeholder you fill in:
 
 ```markdown
 You are controlling a desktop computer.
@@ -68,10 +47,12 @@ You are controlling a desktop computer.
 * Always verify the current screen state before performing interactions.
 ```
 
-## `ui_information.md` — your application
+Swap this file when retargeting a Project at a different machine.
 
-Where the agent learns **your** app: its areas, how to read state, and its
-quirks. This is the file you invest the most in.
+## `ui_information.md`
+
+Where the agent learns your application. The default ships empty — this is the
+file you invest the most in:
 
 ```markdown
 ## Navigation
@@ -86,10 +67,9 @@ session expired — sign in again."
 or dismissed before continuing."
 ```
 
-## `report_format.md` — how it reports
+## `report_format.md`
 
-The structure and status vocabulary of the report the agent writes after each
-case. The default statuses:
+The structure and status vocabulary of the report the agent writes. Default statuses:
 
 | Status | Meaning |
 | --- | --- |
@@ -99,18 +79,15 @@ case. The default statuses:
 | `WARN` | Passed with a caveat (slow response, minor visual deviation). |
 | `BROKEN` | Could not execute — crash or infrastructure failure. |
 
-The overall status is the worst of its steps. See
-[Reading a run report](/docs/using-askui-desktop/run-report) to see one rendered.
+The overall test status is the worst status of its steps. See
+[Reading a run report](/docs/using-askui-desktop/run-report).
 
-## Per-folder behaviour
-
-Don't edit `system_capabilities.md` to change one suite. Instead drop a
-`rules.md` into the test folder — every test inside picks it up automatically:
+## Per-folder files
 
 <Tabs items={['rules.md', 'setup.md', 'teardown.md']}>
   <Tab value="rules.md">
-    Execution rules for this folder: interaction style, error-handling policy,
-    and the credential convention. Cascades with folder nesting.
+    Execution rules for this folder — patches the system prompt for this suite
+    only. Cascades with folder nesting.
   </Tab>
   <Tab value="setup.md">
     Runs **before** every test in the folder — outer folders first.
@@ -119,9 +96,3 @@ Don't edit `system_capabilities.md` to change one suite. Instead drop a
     Runs **after** every test in the folder — innermost folder first.
   </Tab>
 </Tabs>
-
-<Callout title="Note">
-The full UI walkthrough (editing these files inside AskUI Desktop with
-screenshots) lands with the desktop-app screenshots pass. The structure and
-defaults above are stable.
-</Callout>
