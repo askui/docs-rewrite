@@ -1,0 +1,49 @@
+---
+title: Agent behavior
+description: Fix wrong clicks, screen misinterpretation, and runs stopping mid-test.
+---
+
+### Agent clicks the wrong element or misses small buttons
+
+Vague element descriptions are the most common cause. Make descriptions
+specific:
+
+- **Use spatial anchors:** "the button in the bottom-right corner, below the
+  Save dialog" is far more reliable than "the button".
+- **Include distinguishing features:** label text, color, icon shape, or
+  position relative to a unique landmark on the screen.
+- **For very small targets:** explicitly instruct the agent to zoom before
+  acting — for example, "zoom in on the toolbar area, then click the small
+  red X icon".
+
+See [Prompting best practices](/docs/guides/prompting-best-practices)
+for a full guide on writing reliable element descriptions.
+
+### Agent misinterprets a screen state
+
+The agent has no built-in knowledge of your application's UI. Add that
+knowledge to `ui_information.md` in your project's `prompts/` folder.
+Describe screens the agent commonly confuses — loading overlays, login walls,
+modal dialogs, error banners. Example:
+
+```
+A grey semi-transparent overlay with a spinner in the centre means the page
+is loading. Wait for it to disappear completely before taking any action.
+```
+
+See [Agents and prompts](/docs/using-askui-desktop/agents-and-prompts) for the
+full prompt structure.
+
+### Agent stops in the middle of a long test
+
+Each run has a step limit that prevents runaway executions. If a test hits
+that limit, it ends with status `BROKEN`.
+
+To avoid this:
+- **Extract procedures:** move repeated sequences (e.g. "log in") into
+  `procedures/` and call them by name from your tests.
+- **Split large tests:** break a long end-to-end flow into smaller focused
+  test cases, each with its own clear goal.
+
+See [Project structure](/docs/using-askui-desktop/project-structure) for how
+procedures and test files are organised.
