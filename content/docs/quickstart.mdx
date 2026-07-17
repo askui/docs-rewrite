@@ -1,11 +1,12 @@
 ---
 title: Quickstart
-description: Go from zero to a passing AskUI test in under 10 minutes.
+description: Find your first bug in 10 minutes.
 ---
 
-This guide takes you from a blank machine to a passing test in under 10 minutes.
-You will create an AskUI account, install the Desktop App, and run your first
-test — no selectors, no code, just plain language.
+Find your first bug in 10 minutes. This guide takes you from a blank machine to
+your first test run — no selectors, no code, just plain language. Four steps:
+download AskUI Desktop, sign in, walk the onboarding wizard, and run the
+template's example test on your own machine.
 
 <Callout title="What you need">
 A Windows or macOS machine. No prior automation experience required.
@@ -13,102 +14,120 @@ A Windows or macOS machine. No prior automation experience required.
 
 ---
 
-## Step 1 — Create your account (2 min)
+## Step 1 — Download AskUI Desktop (2 min)
 
-<Steps>
-<Step>
-**Go to the AskUI Hub** and sign up with your work email.
-</Step>
-<Step>
-**Accept the terms and privacy policy.** One-time step — required to continue.
-</Step>
-<Step>
-**Verify your email.** We send a link to your inbox; click it to activate your
-account. (Didn't arrive? You can resend from the prompt.)
-</Step>
-<Step>
-**You land in the Hub.** The Hub is where you manage your workspace, access
-tokens, and usage. Leave it open — you will come back to it in a moment.
-</Step>
-</Steps>
+Grab the installer for your platform and run it. It's self-contained — no
+extra runtimes needed.
 
----
-
-## Step 2 — Install AskUI Desktop (3 min)
-
-<Steps>
-<Step>
-**Download the installer** from your AskUI Hub account page.
-</Step>
-<Step>
-**Run the installer** for your platform.
+<Cards>
+  <Card
+    title="Windows (x64)"
+    href="https://files.askui.com/releases/AskUIDesktop/0.5.0/AskUI-Desktop-0.5.0-Installer-Win-AMD64.exe"
+    description="AskUI-Desktop-0.5.0-Installer-Win-AMD64.exe — signed, self-contained."
+  />
+  <Card
+    title="macOS (Apple Silicon)"
+    href="https://files.askui.com/releases/AskUIDesktop/0.5.0/AskUI-Desktop-0.5.0-Installer-Mac-ARM64.dmg"
+    description="AskUI-Desktop-0.5.0-Installer-Mac-ARM64.dmg — notarized."
+  />
+</Cards>
 
 <Tabs items={['Windows', 'macOS']}>
   <Tab value="Windows">
-    Run the `.exe` and follow the guided setup. The installer is
-    self-contained — no additional runtimes required.
+    Run the `.exe` and follow the guided setup.
   </Tab>
   <Tab value="macOS">
-    Open the `.dmg` and drag AskUI Desktop into Applications. On first launch,
-    grant **Accessibility** and **Screen Recording** permissions under
-    **System Settings → Privacy & Security**. These allow the agent to read
-    your screen and control input.
+    Open the `.dmg` and drag AskUI Desktop into Applications. You'll grant
+    screen and input permissions during the onboarding wizard in Step 3.
   </Tab>
 </Tabs>
+
+<Callout title="Always the latest">
+These links point to the current release (v0.5.0). The
+[Releases page](https://github.com/askui/integrated-task-platform/releases/latest)
+always lists the newest installers, and they're also on your
+[AskUI Hub](https://hub.askui.com) account page.
+</Callout>
+
+---
+
+## Step 2 — Sign up or log in (2 min)
+
+Launch AskUI Desktop and sign in with your AskUI account.
+
+<Steps>
+<Step>
+**New to AskUI?** Click **Sign up** to create an account with your work email,
+accept the terms, and verify your email from the link we send. Accounts and
+billing live in the [AskUI Hub](https://hub.askui.com).
 </Step>
 <Step>
-**Launch AskUI Desktop** and sign in with the account you just created.
+**Already have an account?** Click **Log in** and authenticate in your browser.
+The same login works across Desktop, the CLI, and the Hub.
+</Step>
+</Steps>
+
+<Callout title="Note">
+Authentication uses Auth0 (OIDC) and opens in your system browser.
+</Callout>
+
+---
+
+## Step 3 — Walk the onboarding wizard (3 min)
+
+On first launch, AskUI Desktop opens a short setup wizard.
+
+<Steps>
+<Step>
+**Welcome.** A quick tour of what AskUI does — click **Get started**.
+</Step>
+<Step>
+**Grant system permissions** *(macOS only).* Allow **Screen Recording** and
+**Accessibility** so the agent can see the screen and control input. The status
+flips green automatically once granted.
+</Step>
+<Step>
+**Create your first project — Start from template.** Choose **Start from
+template** (recommended) and pick an empty folder. AskUI scaffolds the default
+template: `tests/`, `prompts/`, `procedures/`, and `plans/`, pre-filled with an
+example test, a smoke plan, and the agent prompts — ready to run.
+</Step>
+<Step>
+**You're set.** The final screen maps out where everything lives. Click
+**Start testing** to open your new project.
 </Step>
 </Steps>
 
 ---
 
-## Step 3 — Run your first test (5 min)
+## Step 4 — Run your first test locally (3 min)
+
+The default template ships with a runnable example test — run it against your
+own machine to see a full pass end to end.
 
 <Steps>
 <Step>
-**Create a new Project.** AskUI Desktop scaffolds the standard folder structure
-for you — `tests/`, `prompts/`, `procedures/`, `plans/` — and
-pre-seeds it with an example test.
+**Open the example test** in `tests/`. It's plain Markdown — readable steps, no
+code or selectors. Leave it as-is for this first run.
 </Step>
 <Step>
-**Open `prompts/ui_information.md`** and describe your app in a few sentences:
-what its main screens are, how you can tell you are signed in, and any quirks
-(e.g. "a loading spinner appears for 2–3 seconds after login"). This is the
-single most important file for reliable runs.
-
-```markdown
-# About this app
-A web app for managing support tickets.
-The main view is a table of open tickets.
-A green badge in the top-right shows the logged-in user's name.
-```
-</Step>
-<Step>
-**Open the example test** in `tests/` and read through it. The steps are
-written in plain Markdown — no code, no XPath. Adjust a step or two to match
-your own app.
-
-```markdown
-# Login test
-
-## Steps
-
-1. Open the app at https://app.example.com
-2. Sign in using the QA credentials.
-3. Verify the green badge appears with the user's name.
-```
-</Step>
-<Step>
-**Click Run.** AskUI Desktop launches the agent, which acts on the screen step
-by step and writes a report with a screenshot per step.
+**Run it locally.** Start the run against your local machine (this computer).
+AskUI Desktop launches the agent, which acts on the screen step by step and
+streams progress into **Live Run**.
 </Step>
 <Step>
 **Read the report.** Each step shows its status (`PASSED`, `FAILED`, `WARN`,
-`SKIPPED`, or `BROKEN`) and a screenshot. A green run means every step
-actually passed — the agent doesn't improvise.
+`SKIPPED`, or `BROKEN`) and a screenshot. A green run means every step actually
+passed — the agent doesn't improvise its way to done.
 </Step>
 </Steps>
+
+<Callout title="Make it yours">
+Once the example passes, open `prompts/ui_information.md` and describe your own
+app — its main screens, how to tell you're signed in, and any quirks. It's the
+single most important file for reliable runs. See
+[Prompting best practices](/docs/guides/prompting-best-practices).
+</Callout>
 
 ---
 

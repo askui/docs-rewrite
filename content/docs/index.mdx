@@ -1,11 +1,11 @@
 ---
 title: AskUI Documentation
-description: AI-driven UI automation — author tests in plain language, run them on desktop, browser, or Android, and scale to CI and multi-device fleets.
+description: Agentic UI test automation based on Computer Use Agents — author tests in plain language and run them on Desktop, Mobile & Web, from your local machine to CI and multi-device fleets.
 ---
 
-**AskUI** lets you automate any UI by describing what to do in plain language. There is no selector to write and no recording to maintain — you describe a step ("click the login button", "fill in the email field with the QA credentials"), an AI agent carries it out on the real screen, and a report shows you exactly what happened and why.
+**AskUI** is agentic UI test automation based on **Computer Use Agents (CUA)**. It lets non-technical people automate **Desktop, Mobile & Web** applications without writing code — there is no selector to write and no recording to maintain. You describe a step in plain language ("click the login button", "fill in the email field with the QA credentials"), a CUA agent carries it out on the real screen, and a report shows you exactly what happened and why.
 
-You can author and run tests interactively in the **Desktop App**, drive the same tests headlessly from the **CLI** (locally or in CI), and rely on **AgentOS** as the low-level runtime that gives the agent direct OS control — keyboard, mouse, and screen.
+You author and run tests in the **Desktop App**, integrate everything into your CI and development workflow with the **AskUI CLI**, rely on **AgentOS** to make any OS available to the CUA agent, and manage your workspace centrally in the **AskUI Hub**.
 
 ## How these docs are organized
 
@@ -13,47 +13,36 @@ You can author and run tests interactively in the **Desktop App**, drive the sam
   <Card title="Quickstart" href="/docs/quickstart">
     Go from zero to a passing test in under 10 minutes. Covers account creation,
     installation, and your first run.
-
-    [Start here →](/docs/quickstart)
   </Card>
   <Card title="Desktop App" href="/docs/get-started/install-desktop">
     Everything about AskUI Desktop: installation, projects, prompts, model
     providers, and reading run reports.
-
-    [Install Desktop →](/docs/get-started/install-desktop)
   </Card>
   <Card title="CLI" href="/docs/get-started/install-cli">
-    Run projects headless in CI, on a schedule, or across many devices. The CLI
-    ships with the Desktop App installer.
-
-    [CLI docs →](/docs/get-started/install-cli)
+    Run projects headless in CI, on a schedule, or across many devices.
+    Coming soon.
   </Card>
   <Card title="AgentOS" href="/docs/agentos">
-    The runtime layer that gives agents direct OS control. Installation,
-    deployment modes, and enterprise configuration.
-
-    [Explore AgentOS →](/docs/agentos)
+    The runtime layer that makes any OS available to the CUA agent.
+    Installation, deployment modes, and enterprise configuration.
   </Card>
   <Card title="Guides" href="/docs/guides">
     Best-practice guides for prompting, structuring projects, and getting
     reliable runs — with more to come.
-
-    [Browse guides →](/docs/guides)
   </Card>
   <Card title="Account & Billing" href="/docs/account-billing/workspaces">
-    Workspaces, access tokens, and plans.
-
-    [Manage account →](/docs/account-billing/workspaces)
+    Workspaces, access tokens, and plans in the AskUI Hub.
   </Card>
 </Cards>
 
-## The three components
+## The four components
 
 | Component | What it is | When you need it |
 |-----------|-----------|-----------------|
-| **AskUI Desktop** | GUI app for authoring and running tests | Always — this is where you write and review tests |
-| **AskUI CLI** | Headless runner (`askui run`) | CI pipelines, scheduled runs, multi-device fleets |
-| **AgentOS** | OS-level control runtime | Desktop and Android targets (installed automatically for local runs) |
+| **AskUI Desktop** | GUI app for editing and running tests on your local environment — with one-click device management & provisioning and scheduled runs | Always — this is where you write and review tests |
+| **AskUI CLI** | Headless runner (`askui run`) that integrates AskUI into your CI and development workflow | CI pipelines, scheduled runs, multi-device fleets |
+| **AgentOS** | Makes any OS available to the CUA agent — keyboard, mouse, and screen | Desktop and Android targets (installed automatically for local runs) |
+| **AskUI Hub** | The central management platform — workspace, members, access tokens, and usage | Account setup, tokens for CI, billing |
 
 ## Not sure where to start?
 

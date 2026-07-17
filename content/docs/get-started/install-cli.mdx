@@ -11,17 +11,11 @@ produces. Use it locally for scripted runs, in CI, or on a schedule.
 <Steps>
 
 <Step>
-**Install the CLI**
+**Install the CLI** *(coming soon)*
 
-The CLI ships with the **AskUI Desktop installer** — installing AskUI Desktop
-also installs the `askui` CLI on your machine. Follow the
-[Install AskUI Desktop](/docs/get-started/install-desktop) guide if you
-haven't done that yet.
-
-<Callout title="Standalone CLI installer coming soon">
-A standalone CLI installer (without the Desktop App) is in progress. For now,
-the CLI is only available as part of the Desktop App installation.
-</Callout>
+The CLI is **not yet publicly available** — the installer is in progress. This
+page documents what running it looks like so you can plan your CI setup; the
+steps below apply once the CLI ships.
 </Step>
 
 <Step>
@@ -67,14 +61,10 @@ export ASKUI_WORKSPACE_ID="<your workspace id>"
 export ASKUI_TOKEN="<your access token>"
 ```
 
-Create the access token in the Hub — see
+Create the access token in the [AskUI Hub](https://hub.askui.com) — see
 [Workspaces & access tokens](/docs/account-billing/workspaces). Instead of
 exporting, you can also put both lines in a `.env` file in your Project root;
 the CLI loads it on every run (variables already set in the environment win).
-
-Running in [License mode](/docs/get-started/licensing) instead? Skip the hub
-credentials and pass your own model with the `--model-provider` flags — see
-[Running from the CLI](/docs/using-askui-desktop/cli#model-options).
 </Step>
 
 <Step>

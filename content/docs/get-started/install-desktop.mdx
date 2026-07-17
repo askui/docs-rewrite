@@ -3,39 +3,48 @@ title: Install AskUI Desktop
 description: Download and install the AskUI Desktop app on Windows or macOS.
 ---
 
-AskUI Desktop is the key entry point for authoring and running AI-driven UI tests.
-It runs on Windows and macOS.
+The entry point for authoring and running AI-driven UI tests. Runs on Windows
+and macOS.
 
 <Steps>
 
 <Step>
-**Download the installer** for your platform from your AskUI account.
+**Download the installer** for your platform:
+
+<Cards>
+  <Card
+    title="Windows (x64)"
+    href="https://files.askui.com/releases/AskUIDesktop/0.5.0/AskUI-Desktop-0.5.0-Installer-Win-AMD64.exe"
+    description="Signed, self-contained."
+  />
+  <Card
+    title="macOS (Apple Silicon)"
+    href="https://files.askui.com/releases/AskUIDesktop/0.5.0/AskUI-Desktop-0.5.0-Installer-Mac-ARM64.dmg"
+    description="Notarized."
+  />
+</Cards>
+
+Also on your [AskUI Hub](https://hub.askui.com) account and the
+[Releases page](https://github.com/askui/integrated-task-platform/releases/latest)
+(always newest).
 </Step>
 
 <Step>
-**Run the installer** and follow the guided setup. The installer includes both
-AskUI Desktop and the `askui` CLI.
+**Run the installer.**
 
 <Tabs items={['Windows', 'macOS']}>
-  <Tab value="Windows">
-    Run the `.exe` and accept the prompts. The installer is self-contained —
-    no additional runtimes required.
-  </Tab>
-  <Tab value="macOS">
-    Drag AskUI Desktop to Applications. On first launch,
-    grant **Accessibility** and **Screen Recording** permissions under
-    **System Settings → Privacy & Security** so the agent can read the
-    screen and control input.
-  </Tab>
+  <Tab value="Windows">Run the `.exe` and accept the prompts.</Tab>
+  <Tab value="macOS">Open the `.dmg` and drag AskUI Desktop to Applications.</Tab>
 </Tabs>
 </Step>
 
 <Step>
-**Sign in** with your AskUI account — see [Sign in & onboarding](/docs/get-started/onboarding).
+**Launch and sign in** with your AskUI account. On first launch the onboarding
+wizard sets up permissions and your first project.
 </Step>
 
 <Step>
-**Open or create a Project** and run [your first test](/docs/get-started/first-run).
+**Run [your first test](/docs/get-started/first-run).**
 </Step>
 
 </Steps>

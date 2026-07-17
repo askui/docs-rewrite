@@ -1,17 +1,15 @@
 ---
 title: Reading a run report
-description: The three report artifacts a run produces — per-test Markdown reports, a cross-run summary, and a portable HTML log — and how to read each one.
+description: The report artifacts a run produces — per-test Markdown reports and a cross-run summary — and how to read each one.
 ---
 
 Every run writes its output into a timestamped workspace folder under
-`agent_workspace/`. Three types of artifact are produced:
+`agent_workspace/`. Two types of report are produced:
 
 ```
 agent_workspace/
 └── 2025-11-12_14-30-00/        ← one folder per run
     ├── summary_report.md        ← run-level table
-    ├── conversation.html        ← portable HTML log
-    ├── conversation.json        ← raw data (used by the app)
     └── login_test/              ← one folder per test
         ├── login_test_report.md
         ├── step_1.png
@@ -29,6 +27,46 @@ Each test gets its own subdirectory with a `<test_name>_report.md` and a
 `step_<n>.png` screenshot for every step. The agent writes this report as it
 executes — it is the primary record of what the agent did, what it expected,
 and what it actually observed.
+
+<Tabs items={['Rendered', 'Markdown source']}>
+<Tab value="Rendered">
+<div className="rounded-lg border bg-fd-card px-6 py-5 text-sm leading-relaxed">
+  <p className="text-xl font-semibold">Test Case Report: login_test</p>
+  <p className="mt-3"><b>Test Case ID:</b> login_test<br /><b>Date:</b> 2025-11-12<br /><b>Status:</b> <span className="font-semibold text-fd-primary">PASSED</span></p>
+  <p className="mt-4 border-b pb-1 text-lg font-semibold">Summary</p>
+  <p className="mt-2">The agent successfully logged in using the QA credentials and verified the dashboard was shown.</p>
+  <p className="mt-4 border-b pb-1 text-lg font-semibold">Preconditions</p>
+  <p className="mt-2">1. Application is running and the login page is visible.</p>
+  <p className="mt-4 border-b pb-1 text-lg font-semibold">Test Steps</p>
+  <div className="mt-2 flex flex-col gap-4">
+    <div>
+      <p><b>1. Navigate to the login page</b> — Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
+      <ul className="mt-1 list-disc pl-6 text-fd-muted-foreground">
+        <li><b>Agent Interpretation:</b> Opened browser and navigated to the login URL.</li>
+        <li><b>Expected:</b> Login form visible.</li>
+        <li><b>Actual:</b> Login form visible with username and password fields.</li>
+      </ul>
+      <div className="mt-2 flex h-24 w-44 items-center justify-center rounded border bg-fd-muted text-xs text-fd-muted-foreground">step_1.png</div>
+    </div>
+    <div>
+      <p><b>2. Enter QA credentials and submit</b> — Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
+      <ul className="mt-1 list-disc pl-6 text-fd-muted-foreground">
+        <li><b>Agent Interpretation:</b> Filled the form using the QA credentials file.</li>
+        <li><b>Expected:</b> Dashboard page shown after successful sign-in.</li>
+        <li><b>Actual:</b> Dashboard loaded with the welcome banner.</li>
+      </ul>
+      <div className="mt-2 flex h-24 w-44 items-center justify-center rounded border bg-fd-muted text-xs text-fd-muted-foreground">step_2.png</div>
+    </div>
+  </div>
+  <p className="mt-4 border-b pb-1 text-lg font-semibold">Postconditions</p>
+  <p className="mt-2">1. User is signed in and the dashboard is visible.</p>
+  <p className="mt-4 border-b pb-1 text-lg font-semibold">Issues</p>
+  <p className="mt-2">No issues encountered.</p>
+  <p className="mt-4 border-b pb-1 text-lg font-semibold">Conclusion</p>
+  <p className="mt-2">All steps passed. The login flow works as expected with the current QA credentials.</p>
+</div>
+</Tab>
+<Tab value="Markdown source">
 
 ```markdown
 # Test Case Report: login_test
@@ -73,6 +111,9 @@ No issues encountered.
 All steps passed. The login flow works as expected with the current QA credentials.
 ```
 
+</Tab>
+</Tabs>
+
 Each step carries its own status. The **overall status** of the test is derived
 from the worst step status — see [Status vocabulary](#status-vocabulary) below.
 
@@ -106,21 +147,8 @@ an execution time in the summary (tests that never started) are also excluded
 from the total — they show in the table but don't affect the pass rate.
 </Callout>
 
----
-
-## HTML report
-
-`conversation.html` is a self-contained, portable file that captures the full
-agent conversation — every message, tool call, and screenshot — in a single
-file you can open in any browser, send to a colleague, or attach to a bug
-report without any extra tooling.
-
-<RunEmbed src="/runs/first-test.html" title="AskUI Desktop HTML report" />
-
-The HTML report and the raw `conversation.json` are written when the run
-completes (or is cancelled — partial reports are preserved). In CI, upload
-the whole workspace folder as a build artifact so the HTML report stays
-attached to the run even when tests fail:
+In CI, upload the whole workspace folder as a build artifact so the reports
+and screenshots stay attached to the run even when tests fail:
 
 ```yaml title=".github/workflows/ui-tests.yml"
 - uses: actions/upload-artifact@v4
@@ -132,12 +160,12 @@ attached to the run even when tests fail:
 
 ---
 
-## Live run viewer
+## Watching a run live
 
-While a run is in progress, AskUI Desktop shows the agent conversation in
-real time on the **Runs** page — the same data that is later persisted to
-`conversation.html`, but streaming as each step completes. Use it to watch
-the agent act and catch unexpected behaviour early.
+While a run is in progress, the **Runs** page in AskUI Desktop shows the
+agent conversation in real time — every message, tool call, and screenshot,
+streaming as each step completes. Use it to watch the agent act and catch
+unexpected behaviour early.
 
 ---
 
