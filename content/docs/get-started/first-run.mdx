@@ -12,7 +12,12 @@ agent did. This assumes you've
 <Steps>
 <Step>
 **Open or create a project.** Use the project from the onboarding wizard, or
-create a new one from the template.
+create a new one from the template. If you land on a "No project open" screen,
+it offers three options: **Open folder** (use an existing folder), **Start
+from template** (get pre-filled example tests and prompts), or **Clone from
+Git** (enter a repository URL).
+
+![The "No project open" screen in AskUI Desktop, showing Open folder, Start from template, and Clone from Git options](./first-run-no-project-open.png)
 </Step>
 <Step>
 **Go to Tests** in the sidebar.
@@ -37,7 +42,7 @@ create a new one from the template.
 ```
 </Step>
 <Step>
-**Run it.** With the test open, click **Run · Local** — the agent runs on **this
+**Run it.** With the test open, click **Run · Local**: the agent runs on **this
 machine** via the built-in `Local` device profile. (The Run button is a split
 button; use its dropdown to pick another device.)
 </Step>
@@ -56,7 +61,7 @@ finishes.
 ### Conversation log
 
 The **conversation log** is the run's detailed **test execution log**: it shows
-how the agent worked through your test case, step by step — like watching a
+how the agent worked through your test case, step by step, like watching a
 tester do it and think out loud. It's the same view Live Run shows while a run
 is in progress. Here's what the `hello_world` run looks like:
 
@@ -140,7 +145,7 @@ is in progress. Here's what the `hello_world` run looks like:
         <img src="/docs-rewrite/screenshots/hello-world-notepad.png" alt="Notepad showing the text Hello World, captured by the agent" className="mt-1 max-w-full rounded-md border border-fd-border shadow-sm sm:max-w-md" />
         <div className="relative py-1 text-[13px] leading-snug text-fd-foreground">
           <span className="absolute -left-[25px] top-[10px] h-1.5 w-1.5 rounded-full bg-fd-border" />
-          The note shows "Hello World" — step verified.
+          The note shows "Hello World": step verified.
         </div>
       </div>
     </div>
@@ -187,7 +192,7 @@ is in progress. Here's what the `hello_world` run looks like:
   { "role": "user",      "content": { "type": "tool_result", "content": "clicked" } },
   { "role": "assistant", "content": { "type": "tool_use", "name": "type", "input": { "text": "Hello World" } } },
   { "role": "user",      "content": { "type": "tool_result", "content": "typed" } },
-  { "role": "assistant", "content": { "type": "text", "text": "The note shows 'Hello World' — step verified." } },
+  { "role": "assistant", "content": { "type": "text", "text": "The note shows 'Hello World': step verified." } },
   { "role": "user",      "content": { "type": "act", "kind": "teardown", "file": "teardown.md" } },
   { "role": "assistant", "content": { "type": "tool_use", "name": "click", "input": { "x": 1884, "y": 21 } } },
   { "role": "user",      "content": { "type": "tool_result", "content": "clicked" } }
@@ -199,29 +204,29 @@ is in progress. Here's what the `hello_world` run looks like:
 
 Follow it top to bottom, like watching over a colleague's shoulder:
 
-The run starts with **① Setup, ② Test, ③ Teardown** — the same three phases you
+The run starts with **① Setup, ② Test, ③ Teardown**: the same three phases you
 know from any test run, each a numbered block with a **Pass / Fail** badge. In
 our run, act ① put the desktop into the starting state, then act ② picked up
 `hello_world.md`.
 
-Inside act ②, the agent first **tells you its plan** in plain language — *"I'll
+Inside act ②, the agent first **tells you its plan** in plain language: *"I'll
 open Notes from the Start menu, create a note, and type the text."* These text
 lines are the agent thinking out loud; read them like a colleague narrating
 their work.
 
-Then it **acts on the screen** — the smaller rows, its *tool calls*. It takes a
+Then it **acts on the screen**: the smaller rows, its *tool calls*. It takes a
 **screenshot** to see the desktop, **clicks** at position `134, 174` (where it
-spotted the Notes icon — the agent works in screen coordinates, like a human
+spotted the Notes icon; the agent works in screen coordinates, like a human
 aiming the mouse), clicks again for a new note, and **types** `Hello World`.
 Every tool call shows its result (`→ clicked`); a failed one turns red with the
 error.
 
-Then it **checks its work**: a final screenshot — expanded so you see exactly
-what the agent saw — and its conclusion, *"The note shows Hello World — step
+Then it **checks its work**: a final screenshot, expanded so you see exactly
+what the agent saw, and its conclusion, *"The note shows Hello World: step
 verified."* That screenshot is your proof the pass is real.
 
 Act ③ cleans up (closing Notes), and the dashed **④ Upcoming** row at the bottom
-is the agent **predicting its next step** — during a live run you always see
+is the agent **predicting its next step**. During a live run you always see
 where it's heading before it gets there.
 
 If it's too much detail, switch from **Detailed** to **Quiet** for just the
@@ -232,7 +237,7 @@ to what the agent is doing right now.
 ### Test report
 
 Where the conversation log is the **test execution log**, the report is the
-**test execution report**: the structured record of one test case — its
+**test execution report**: the structured record of one test case, its
 result, the evidence behind it, and any deviations. It follows the shape you
 know from manual test documentation. Here's the report for the `hello_world`
 run:
@@ -249,7 +254,7 @@ run:
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Test Steps</p>
   <div className="mt-2 flex flex-col gap-4">
     <div>
-      <p><b>1. Open the Notes app</b> — Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
+      <p><b>1. Open the Notes app</b> · Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
       <ul className="mt-1 list-disc pl-6 text-fd-muted-foreground">
         <li><b>Agent Interpretation:</b> Located the Notes icon on the taskbar and clicked it.</li>
         <li><b>Expected:</b> The Notes app opens.</li>
@@ -257,7 +262,7 @@ run:
       </ul>
     </div>
     <div>
-      <p><b>2. Create a new note</b> — Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
+      <p><b>2. Create a new note</b> · Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
       <ul className="mt-1 list-disc pl-6 text-fd-muted-foreground">
         <li><b>Agent Interpretation:</b> Clicked the new-tab button to start an empty note.</li>
         <li><b>Expected:</b> An empty note is focused.</li>
@@ -265,7 +270,7 @@ run:
       </ul>
     </div>
     <div>
-      <p><b>3. Type "Hello World"</b> — Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
+      <p><b>3. Type "Hello World"</b> · Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
       <ul className="mt-1 list-disc pl-6 text-fd-muted-foreground">
         <li><b>Agent Interpretation:</b> Typed the text and took a screenshot to verify.</li>
         <li><b>Expected:</b> The note shows "Hello World".</li>
@@ -302,17 +307,17 @@ All steps passed; one incident was resolved during execution (see Issues).
 
 ## Test Steps
 
-1. **Open the Notes app** — Status: **PASSED**
+1. **Open the Notes app** · Status: **PASSED**
    - **Agent Interpretation:** Located the Notes icon on the taskbar and clicked it.
    - **Expected:** The Notes app opens.
    - **Actual:** Notes opened; a "What's new" popup appeared and was dismissed.
 
-2. **Create a new note** — Status: **PASSED**
+2. **Create a new note** · Status: **PASSED**
    - **Agent Interpretation:** Clicked the new-tab button to start an empty note.
    - **Expected:** An empty note is focused.
    - **Actual:** A new empty tab opened with the cursor in the text area.
 
-3. **Type "Hello World"** — Status: **PASSED**
+3. **Type "Hello World"** · Status: **PASSED**
    - **Agent Interpretation:** Typed the text and took a screenshot to verify.
    - **Expected:** The note shows "Hello World".
    - **Actual:** The note shows "Hello World".
@@ -339,32 +344,32 @@ popup was the only deviation.
 
 Section by section:
 
-**Header:** Test case ID, execution date, overall status — your at-a-glance answer.\
+**Header:** Test case ID, execution date, overall status: your at-a-glance answer.\
 **Summary:** The result in one or two sentences. Start here.\
-**Preconditions:** The entry criteria the agent verified before executing — rules out an environment problem in disguise.\
+**Preconditions:** The entry criteria the agent verified before executing. This rules out an environment problem in disguise.\
 **Test Steps:** Per step: status, **expected vs. actual result**, screenshot as evidence. This is where you localize which step diverged.\
 **Postconditions:** The exit state the test asserted.\
-**Issues:** Your incident log — deviations the agent hit during execution, including ones it resolved itself, like the "What's new" popup above, an unexpected dialog, or leftover data it had to delete first. A test can be `PASSED` and still list issues, and they often point at real findings a green checkmark would hide — review this section even when everything is green.\
+**Issues:** Your incident log: deviations the agent hit during execution, including ones it resolved itself, like the "What's new" popup above, an unexpected dialog, or leftover data it had to delete first. A test can be `PASSED` and still list issues, and they often point at real findings a green checkmark would hide. Review this section even when everything is green.\
 **Conclusion:** The overall result and its justification.
 
-Five statuses exist, for steps and for the test overall — the test takes the
+Five statuses exist, for steps and for the test overall. The test takes the
 worst status of its steps:
 
-**`PASSED`** — the actual result matched the expected one. The agent never bends
+**`PASSED`**: the actual result matched the expected one. The agent never bends
 a test to reach a pass.\
-**`WARN`** — passed, but with a caveat worth your attention (slow response, minor
+**`WARN`**: passed, but with a caveat worth your attention (slow response, minor
 visual deviation).\
-**`FAILED`** — the step executed, but the actual result didn't match the
+**`FAILED`**: the step executed, but the actual result didn't match the
 expected one.\
-**`SKIPPED`** — intentionally not executed, e.g. a precondition wasn't met.\
-**`BROKEN`** — couldn't execute at all: a crash or an infrastructure problem,
+**`SKIPPED`**: intentionally not executed, e.g. a precondition wasn't met.\
+**`BROKEN`**: couldn't execute at all: a crash or an infrastructure problem,
 not a functional result.
 
 For details and the cross-run summary report, see
 [Reading a run report](/docs/using-askui-desktop/run-report).
 
-And when the log or report shows the agent got something wrong — clicked the
-wrong element, misread a screen, drew the wrong conclusion — you don't debug
+And when the log or report shows the agent got something wrong (clicked the
+wrong element, misread a screen, drew the wrong conclusion), you don't debug
 code, you **teach it**: sharpen the wording of the test case, add a rule, or
 give it the missing knowledge in the prompts. How test cases, rules, and
 prompts work together is covered in
@@ -375,7 +380,11 @@ prompts work together is covered in
 
 <Callout title="Make it yours">
 Once the example passes, open `prompts/ui_information.md` and describe your own
-app — its main screens, how to tell you're signed in, and any quirks. It's the
-single most important file for reliable runs. See
-[Prompting best practices](/docs/guides/prompting-best-practices).
+app: its main screens, how to tell you're signed in, and any quirks. It's the
+single most important file for reliable runs. The template ships with
+placeholders showing the kind of detail to include (sample Navigation, State
+indicators, and Dialogs & quirks sections) to replace with your own app's
+details. See [Prompting best practices](/docs/guides/prompting-best-practices).
+
+![The ui_information.md template, showing placeholder text and example structure for Navigation, State indicators, and Dialogs & quirks](./first-run-ui-information.png)
 </Callout>
