@@ -9,28 +9,73 @@ Let's run a test end to end. This assumes you've
 
 <Steps>
 <Step>
-**Create a Project.** AskUI Desktop scaffolds the standard folders for you —
-`tests/`, `prompts/`, `procedures/`, `plans/`, `secrets/` — pre-seeded with
-an example login test and the four prompt parts.
+**Create a Project.** After signing in, you'll see a "No project open"
+screen with three ways to start:
+
+- **Open folder**: use an existing folder as your project root.
+- **Start from template**: pick a folder location and get it pre-filled
+  with example tests, prompts, and procedures.
+- **Clone from Git**: enter a repository URL, then pick where to clone it.
+
+![The "No project open" screen in AskUI Desktop, showing Open folder, Start from template, and Clone from Git options](./first-run-no-project-open.png)
+
+<Callout title="Tip">
+New to AskUI? **Start from template** is the easiest way in: it scaffolds
+`tests/`, `prompts/`, `procedures/`, `plans/`, and `secrets/` for you,
+pre-seeded with an example login test and the four prompt parts. Not sure
+what a filled-in Project should look like? See the
+[AskUI Demo Project](https://github.com/askui/AskUI-Demo-Project) on GitHub
+for a real example.
+</Callout>
 </Step>
 <Step>
-**Fill in `ui_information.md`.** Tell the agent about your app: its primary
-screens, how to tell it's signed in, and any dialog quirks. This is the most
-valuable prompt to get right — see
-[Prompting best practices](/docs/using-askui-desktop/prompting-best-practices).
+**Fill in `ui_information.md`.** This is the file you'll invest the most in.
+Tell the agent about your app:
+
+- Its primary screens
+- How to tell it's signed in
+- Any dialog quirks
+
+The template ships with placeholders for this (sample Navigation, State
+indicators, and Dialogs & quirks sections), replace them with your own
+app's details.
+
+See [Agents & prompts](/docs/using-askui-desktop/agents-and-prompts) for the
+full breakdown of this and the other three prompt files, and
+[Prompting best practices](/docs/using-askui-desktop/prompting-best-practices)
+for how to structure them well.
+
+![The ui_information.md template, showing placeholder text and example structure for Navigation, State indicators, and Dialogs & quirks](./first-run-ui-information.png)
 </Step>
 <Step>
-**Open the example test** in `tests/` and adjust the steps to your app.
+**Open the example tests** in `tests/`. The template includes more than one:
+
+- **`example_login_test.md`**: a login smoke test.
+- **`example_cross_platform_test.md`**: a cross-platform example, marked
+  with a `platforms:` line so it only runs on a Cross-platform device
+  profile.
+- **`example_test_data.csv`**: structured test data.
+
+Alongside them sit `rules.md`, `setup.md`, and `teardown.md`. See
+[How a Project is organized](/docs/using-askui-desktop/project-structure)
+for what each one does.
+
+Start with the login test and adjust its steps to your app.
+
+![The tests/ folder in a new Project, showing example_login_test.md, example_cross_platform_test.md, example_test_data.csv, and rules.md/setup.md/teardown.md](./first-run-example-tests.png)
 </Step>
 <Step>
-**Run it.** AskUI Desktop launches the agent, which acts on the screen step
-by step and writes a report with a screenshot per step.
+**Run it.** Click **Run · Local** in the top right of the test file view.
+The agent acts on the screen step by step and writes a report with a
+screenshot per step.
+
+![The test file view in AskUI Desktop, showing the "Run · Local" button in the top right](./first-run-run-button.png)
 </Step>
 </Steps>
 
 ## The result
 
-A finished run looks like this — open it to step through what the agent did:
+A finished run looks like this. Open it to step through what the agent did:
 
 <RunEmbed src="/runs/first-test.html" title="Your first AskUI Desktop run" />
 
