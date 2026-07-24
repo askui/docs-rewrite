@@ -5,7 +5,7 @@ description: The askui run command reference — targets, plans, surfaces, model
 
 The CLI runs the exact Projects you build in AskUI Desktop. The same `tests/`,
 `prompts/`, `plans/`, and `procedures/` drive both — author in the app, run
-anywhere with the CLI. See [Install the CLI](/docs/get-started/install-cli) for
+anywhere with the CLI. See [Install the CLI](/docs/running-tests/install-cli) for
 setup and authentication.
 
 ```bash
@@ -44,7 +44,7 @@ askui run --plan smoke
 `--plan <name>` loads `plans/<name>` (any supported extension) and lets the
 agent select the matching tests before running them — e.g. a `smoke` plan
 that names a subset of suites. See
-[How a Project is organized](/docs/using-askui-desktop/project-structure).
+[How a Project is organized](/docs/projects).
 
 ## Run options
 
@@ -163,7 +163,7 @@ Each run gets its own workspace folder (see `--workspace`), containing:
   appear as broken, so nothing goes missing silently.
 - **The HTML log** — the full agent conversation with screenshots, the same
   report you know from
-  [Reading a run report](/docs/using-askui-desktop/run-report).
+  [Reading a run report](/docs/results/run-report).
 
 The console shows each phase as it starts and finishes
 (`[test] tests/login.md -> PASSED`) and ends with the totals.

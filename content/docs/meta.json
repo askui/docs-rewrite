@@ -1,1 +1,1 @@
-{ "pages": ["index", "quickstart", "get-started", "using-askui-desktop", "agentos", "guides", "account-billing", "reference", "faq", "troubleshooting", "support", "legacy"] }
+{ "pages": ["index", "quickstart", "get-started", "concepts", "guides", "projects", "devices", "writing-tests", "running-tests", "results", "extending", "best-practices", "agentos", "account-billing", "reference", "faq", "troubleshooting", "support", "legacy"] }

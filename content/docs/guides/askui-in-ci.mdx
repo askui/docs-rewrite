@@ -1,0 +1,34 @@
+---
+icon: Workflow
+title: AskUI in CI
+description: End-to-end — run your project's suites headless on every pull request or nightly.
+---
+
+The project your team authors in AskUI Desktop runs unchanged on a build
+server — same testware, headless execution.
+
+## 1 · Get the CLI onto the runner
+
+[Install the CLI](/docs/running-tests/install-cli) and provide credentials as
+environment variables: `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN` (create the
+token in the [Hub](/docs/account-billing/workspaces)).
+
+## 2 · Give it a device
+
+A [headless browser](/docs/devices/web-browser) runs on the bare runner.
+Desktop targets need a test machine with
+[AgentOS](/docs/agentos/deployment/ci) the runner can reach.
+
+## 3 · Run a plan
+
+```bash
+askui run --plan smoke --project-root .
+```
+
+Gate the pipeline on the exit code, and archive `agent_workspace/` as the
+build artifact — reports and screenshots included; the
+[CLI reference](/docs/running-tests/cli) shows the report-path and CI
+options.
+
+Which team runs what in CI — and who owns the results — is a working-model
+question: [AskUI in your organization](/docs/concepts/team-setups).

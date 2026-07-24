@@ -1,0 +1,42 @@
+---
+title: Running a test
+description: Start a run from the Tests page and watch the agent execute it live.
+---
+
+## Start a run
+
+1. Open the test on the **Tests** page.
+2. Pick a connected device in the **Run on** dropdown
+   (see [Devices](/docs/devices)).
+3. Press **Run** — or use its split menu to run the whole folder or a
+   [plan](/docs/writing-tests/plans-and-procedures).
+
+<img
+  src="/docs-rewrite/screenshots/desktop-tests-run.png"
+  alt="A test open on the Tests page with the Run on picker and Run split button"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+## What a run does
+
+The agent works in phases: the folder's `setup.md` first, then the tests,
+then `teardown.md`, with `rules.md` applied throughout. Each phase is one
+agent execution: read the file, drive the UI, write a report with
+screenshots. A failing setup records its tests as broken — the entry
+criteria weren't met.
+
+## Watch it live
+
+The **Runs** page streams the agent conversation while it works — every
+message, tool call, and screenshot. This is the test execution log; use it to
+catch unexpected behaviour before the report exists.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-runs-live.png"
+  alt="The Runs page showing an agent conversation with messages, tool calls, and step screenshots"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+After the run: [read the report](/docs/results/run-report). Recurring runs:
+[Scheduling](/docs/running-tests/scheduling). Headless / CI:
+[CLI](/docs/running-tests/cli).

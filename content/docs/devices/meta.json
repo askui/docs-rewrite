@@ -1,0 +1,1 @@
+{ "title": "Devices", "icon": "MonitorSmartphone", "pages": ["index", "remote-computer", "web-browser", "android-emulator", "android-phone", "ios-simulator", "multi-computer", "cross-platform"] }

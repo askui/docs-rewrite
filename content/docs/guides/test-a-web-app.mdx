@@ -1,0 +1,35 @@
+---
+icon: Chrome
+title: Test a web app
+description: End-to-end — browser profile, start URL, write the case, run it headless or visible.
+---
+
+The same journey as [Android](/docs/guides/test-an-android-app), for the web.
+
+## 1 · Define the browser
+
+[Create a Web browser profile](/docs/devices/web-browser): pick Chromium,
+Firefox, or WebKit and set the **Start URL** to your application — one
+profile per environment (`Staging web app`, `Prod smoke`) keeps the same
+tests reusable across them.
+
+## 2 · Connect
+
+**Connect** on the profile card — the first connect downloads the browser
+bundle once. No AgentOS, no further setup.
+
+## 3 · Write the test case
+
+[Create the case](/docs/writing-tests) and name the browser profile in it.
+Web-specific craft: describe elements as the user sees them ("the blue
+Checkout button in the cart"), state the expected page or dialog after every
+navigation, and put login into a
+[procedure](/docs/writing-tests/plans-and-procedures) with the credentials as
+[secrets](/docs/extending/secrets).
+
+## 4 · Run and analyze
+
+**Run on** the browser profile — headless keeps your screen free, a visible
+window lets you watch alongside the
+[live conversation](/docs/running-tests#watch-it-live). Failures land in the
+[run report](/docs/results/run-report) with a screenshot per step.

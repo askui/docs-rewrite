@@ -1,0 +1,110 @@
+---
+icon: SquarePen
+title: Working with test cases
+description: Create, organize, run, and delete test cases on the Tests page — and where setup, teardown, rules, and secrets fit in.
+---
+
+Test cases live as files under `tests/` and are managed on the **Tests**
+page: a file tree on the left, the editor and Run controls on the right.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-tests-run.png"
+  alt="The Tests page with the file tree, an open test, and the Run controls"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+## Create a test case
+
+1. Right-click in the file tree → **New Markdown** (or **New CSV**).
+2. Name the file and write the case: steps with expected results — see
+   [Writing good tests](/docs/best-practices/writing-good-tests).
+
+A new file starts from this template — the three sections are the shape of
+every case:
+
+```md
+# New test
+
+## Preconditions
+- Describe what must already be true (app open, user logged out, …)
+
+## Steps
+1. Describe each action the agent should take, paired with what to expect.
+2. If the test needs credentials, reference them — never write them here.
+3. Reusable sequences live in procedures/ — call them like
+   `login_to_ui[username, password]`.
+
+## Postconditions
+- Describe what success looks like at the end.
+```
+
+Formats: `.md` is the default; `.csv` holds one case per row (data-driven
+testing); `.txt`, `.pdf`, and `.json` files are executed too — an exported
+specification can run as-is. A **New folder** groups cases into a suite.
+
+## setup.md, teardown.md, rules.md
+
+The right-click menu also offers **New setup.md / teardown.md / rules.md**
+when a folder doesn't have them:
+
+| File | When to use it |
+| --- | --- |
+| `setup.md` | Entry criteria the suite needs before any case runs: log in, reset data, open the application. Runs once, first — a failing setup records the suite's cases as broken instead of executing them against a bad state |
+| `teardown.md` | Cleanup after the suite: sign out, delete created records. Runs last, even after failures |
+| `rules.md` | Standing instructions that apply to every phase: "never change the language setting", "treat error dialogs as failures". Not a test — context |
+
+In nested suites, setups run top-down, teardowns bottom-up, and rules
+accumulate per level.
+
+Each quick-create seeds a template with `FILL IN` placeholders — replace
+those, keep the shape:
+
+```md title="setup.md — runs BEFORE every test in the folder"
+## Setup Steps
+
+1. FILL IN: open the application under test and wait until it is fully visible.
+2. Log in using the `login_to_ui` procedure with the QA username and password secrets.
+3. Verify the start screen has loaded before any test starts.
+```
+
+```md title="teardown.md — runs AFTER every test in the folder"
+## Teardown Steps
+
+1. FILL IN: close the application under test.
+2. Clear any temporary files created during testing.
+```
+
+```md title="rules.md — picked up automatically by every test in the folder"
+# Execution rules for this folder
+
+## Interaction
+- Use the desktop computer to execute these tests.
+
+## Error handling
+- On an infrastructure error (connection lost, session expired): mark the
+  testcase BROKEN, write the report, abort.
+- On an application error: mark the testcase FAILED and abort.
+```
+
+## Use secrets in a test
+
+Never write credentials into a case — reference
+[named secrets](/docs/extending/secrets) instead:
+
+```md
+Sign in with the QA credentials — the secrets named
+`QA_USERNAME` and `QA_PASSWORD`.
+```
+
+## Run a test case
+
+Pick a connected device in **Run on** and press **Run** — or right-click any
+file or folder → **Run on** → a profile. Details in
+[Running a test](/docs/running-tests).
+
+## Duplicate, rename, delete
+
+Right-click the file: **Duplicate** copies a case as a starting point,
+**Rename** and **Delete** do what they say. All of it is plain file
+operations — visible in Git like any other change to your
+[testware](/docs/projects).

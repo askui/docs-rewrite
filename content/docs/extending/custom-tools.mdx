@@ -1,0 +1,52 @@
+---
+title: Custom tools
+description: Give the agent a project-specific ability by dropping a C# file into utils/custom_tools/ — compiled at run start, with NuGet packages per file.
+---
+
+A **custom tool** is one C# file in `utils/custom_tools/`. It joins the
+agent's toolbox for every run of the project — for anything no built-in
+covers: your product's admin API, seeding a database, checking a file on the
+machine under test.
+
+```csharp title="utils/custom_tools/list_remote_files.cs"
+public sealed class ListRemoteFilesTool : Tool
+{
+    private readonly IAgentOs _agentOs;
+
+    public ListRemoteFilesTool(IAgentOs agentOs)
+        : base(
+            name: "list_remote_files",
+            description: "Lists the files in a folder on the machine under test.",
+            inputSchema: new JsonObject
+            {
+                ["type"] = "object",
+                ["properties"] = new JsonObject
+                {
+                    ["path"] = new JsonObject { ["type"] = "string" },
+                },
+                ["required"] = new JsonArray("path"),
+            })
+    {
+        _agentOs = agentOs;
+    }
+
+    public override async ValueTask<ToolResult> InvokeAsync(
+        JsonObject input, CancellationToken cancellationToken = default)
+    {
+        var files = await _agentOs.GetFileNamesAsync(
+            input["path"]!.GetValue<string>(), cancellationToken);
+        return ToolResult.FromText(string.Join("\n", files));
+    }
+}
+```
+
+| | |
+| --- | --- |
+| **No boilerplate** | Common namespaces (`System`, `System.Text.Json.Nodes`, the AskUI tool types) work without `using` directives |
+| **Device access** | A constructor asking for `IAgentOs` (desktop), `IWebAgentOs` (browser), `IAndroidAgentOs`, or `IIosAgentOs` gets the run's device layer injected. Parameterless = works on every run; wrong device = skipped with a warning |
+| **NuGet packages** | Declared per file at the top — `#:package Npgsql@8.0.3` — resolved through your normal `NuGet.config`, so enterprise feeds work unchanged |
+| **Secrets** | Never hard-code credentials — use [named secrets](/docs/extending/secrets) |
+
+Files compile when a run starts (cached; unchanged files cost nothing). A
+file that doesn't compile **aborts the run**, with the error as the first
+entry in the conversation log — a broken tool is a broken test environment.

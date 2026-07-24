@@ -1,4 +1,4 @@
-import { getPageImage, getPageMarkdownUrl, source } from '@/lib/source';
+import { getPageImage, getPageMarkdownUrl, resolveIcon, source } from '@/lib/source';
 import {
   DocsBody,
   DocsDescription,
@@ -20,10 +20,18 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
 
   const MDX = page.data.body;
   const markdownUrl = getPageMarkdownUrl(page).url;
+  const icon = resolveIcon(page.data.icon);
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
+      <DocsTitle className="flex items-center gap-3">
+        {icon && (
+          <span className="inline-flex shrink-0 items-center justify-center rounded-md border bg-fd-muted p-1.5 text-fd-muted-foreground [&_svg]:size-5">
+            {icon}
+          </span>
+        )}
+        {page.data.title}
+      </DocsTitle>
       <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
       <div className="flex flex-row gap-2 items-center border-b pb-6">
         <MarkdownCopyButton markdownUrl={markdownUrl} />

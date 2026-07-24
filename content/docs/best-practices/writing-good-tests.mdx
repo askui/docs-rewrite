@@ -81,20 +81,19 @@ top of the page.
 ## Never embed credentials in test files
 
 Test files are version-controlled. Credentials must not be. Reference them by
-name and let the agent read them from a local file at run time:
+name and keep the values in the app's encrypted secret store:
 
 ```markdown
 <!-- Correct: reference by name -->
-Sign in using the QA admin credentials.
+Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
 
 <!-- Wrong: never do this -->
 Sign in with username "admin@example.com" and password "hunter2".
 ```
 
-The agent resolves named credentials by reading a local credentials file with
-its file tools at execution time. See
-[What goes where](/docs/guides/prompting-best-practices) for the Project
-structure that supports this.
+Add the values once under **Utils → Secrets**; the real value is substituted
+at execution time, hidden from the model and redacted from logs and reports.
+See [Secrets](/docs/extending/secrets) for the full mechanics.
 
 ## Use procedures for repeated sequences
 
@@ -153,3 +152,16 @@ Before committing test files:
 - [ ] Repeated sequences are in `procedures/`, not copy-pasted.
 - [ ] Shared preconditions are in `setup.md`, not duplicated across tests.
 - [ ] Shared cleanup is in `teardown.md`.
+
+## Working with non-deterministic execution
+
+Two runs of the same case can take different paths — by design; the
+background is in [How a run executes](/docs/concepts/how-a-run-executes#why-execution-differs).
+For a tester this means:
+
+| | |
+| --- | --- |
+| **Judge the result, not the path** | The report's expected vs. actual per step is the contract. The exact clicks are the execution log, not the specification |
+| **Precise expected results = stable outcomes** | The agent has freedom in *how*; your steps define *what must be true afterwards*. The tighter the expected result, the less room for a wrong interpretation |
+| **Rules constrain the freedom** | `rules.md` removes paths you never want taken ("never change settings", "abort on error dialogs") |
+| **Watch a run when in doubt** | The [live conversation log](/docs/running-tests#watch-it-live) shows the path the agent chose and why |

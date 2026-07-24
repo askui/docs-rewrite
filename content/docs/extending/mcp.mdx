@@ -1,0 +1,43 @@
+---
+title: MCP servers
+description: Plug an existing MCP tool server into the agent's toolbox.
+---
+
+A capability that already exists as an [MCP](https://modelcontextprotocol.io)
+server — a Jira bridge, an internal API gateway — doesn't need rebuilding as
+a custom tool. Register it; its tools join the agent's toolbox.
+
+## Add a server
+
+1. Open **Utils → MCP Servers**.
+2. Click **Add MCP server**.
+3. Enter **Name**, **URL** (SSE or HTTP), and optional **Headers** — one per
+   line, e.g. `Authorization: Bearer ${MCP_TOKEN}`.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-utils-mcp.png"
+  alt="The MCP Servers tab on the Utils page with the registered servers list"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+This writes `utils/mcp.json` in the project — the whole team and the
+[CLI in CI](/docs/running-tests/cli) get the same server list:
+
+```json title="utils/mcp.json"
+{
+  "servers": {
+    "issue-tracker": {
+      "url": "https://mcp.example.com/sse",
+      "headers": { "Authorization": "Bearer ${TRACKER_TOKEN}" }
+    }
+  }
+}
+```
+
+`${VAR}` values resolve from the environment at run start — the token never
+lands in the file.
+
+Servers connect when a run starts. An unreachable server is retried once,
+then the run continues **without** it, with a warning in the log — an
+unavailable helper doesn't fail the suite, and the warning explains any
+missing tool.

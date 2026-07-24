@@ -160,12 +160,45 @@ and screenshots stay attached to the run even when tests fail:
 
 ---
 
-## Watching a run live
+## Conversation log
 
-While a run is in progress, the **Runs** page in AskUI Desktop shows the
-agent conversation in real time — every message, tool call, and screenshot,
-streaming as each step completes. Use it to watch the agent act and catch
-unexpected behaviour early.
+Beside the written reports, every run keeps its full conversation log — each
+agent message, tool call, and screenshot in order. Where the report gives the
+result, the log is the complete execution record: open it when a status alone
+doesn't explain what happened.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-conversation-log.png"
+  alt="The conversation log of a finished run — agent messages, tool calls, and screenshots in order"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+During a run the same view streams live — see
+[Watch it live](/docs/running-tests#watch-it-live).
+
+---
+
+## Dashboard
+
+Where a run report covers a single execution, the **Dashboard** rolls every run
+in the project into one view — the closest thing to a test execution status
+report across your whole suite. Open it when you want the trend rather than one
+result.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-dashboard.png"
+  alt="The Dashboard in AskUI Desktop showing total runs, average pass rate, per-status counters, and a test-status-over-time chart"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+| Tile | Meaning |
+| --- | --- |
+| **Total runs** | Runs recorded in this project |
+| **Avg pass rate** | Share of passed tests across all runs. Warnings count as passed; broken tests that never executed are excluded |
+| **Passed / Failed / Broken (latest)** | The same tally for the most recent run only |
+| **Warnings (all)** | Tests that passed but flagged something, across every run |
+| **Test status over time** | One bar per run — green passed, red failed. A regression = a red bar breaking a green streak |
+| **Pass rate over time / Latest run** | The trend, and a shortcut into the newest run's report |
 
 ---
 

@@ -1,0 +1,50 @@
+---
+icon: Users
+title: AskUI in your organization
+description: Three working models — a testing team, developers in their dev workflow, or both on shared testware.
+---
+
+A [Project](/docs/projects) is plain files in Git — so AskUI fits wherever
+your organization keeps its testing: with QA, with development, or shared.
+Three working models, in practice:
+
+## Testers own it
+
+The classic setup: the QA team owns the testware repository. Testers author
+and maintain cases in **AskUI Desktop**, run against the team's
+[devices](/docs/devices), and [schedule](/docs/running-tests/scheduling)
+recurring suites. Failures go to development as
+[run reports](/docs/results/run-report) — per-step expected vs. actual with
+screenshots, an incident log developers can act on without reproducing first.
+
+What it needs: AskUI Desktop per tester, a shared Git repository for the
+project, and the test environments as device profiles — which travel with
+the repository, so every tester connects to the same list.
+
+## Developers own it
+
+UI tests live **next to the application code** — the project folder inside
+the app repository. Developers author in plain Markdown alongside the
+feature, run locally with Desktop or the [CLI](/docs/running-tests/cli), and
+CI executes the suite on every pull request
+([AskUI in CI](/docs/guides/askui-in-ci)). A failed UI test blocks the merge
+like a failed unit test.
+
+What it needs: the CLI on the build runner with `ASKUI_WORKSPACE_ID` /
+`ASKUI_TOKEN`, and a device the runner can reach — a
+[headless browser](/docs/devices/web-browser) needs nothing else; desktop
+targets need [AgentOS](/docs/agentos/deployment/ci) on a test machine.
+
+## Development + Testing together
+
+The shared model: one testware repository, two roles. Testers curate the
+suites, expected results, and [plans](/docs/writing-tests/plans-and-procedures);
+developers wire the smoke plan into CI and fix against the reports. Git is
+the collaboration layer — test changes arrive as pull requests that either
+side can review, and
+[configuration management of the testware](/docs/projects#testware-under-configuration-management)
+comes for free.
+
+A natural split: developers gate merges with the fast `smoke` plan; the
+testing team runs the full regression [on a schedule](/docs/running-tests/scheduling)
+and owns the results.

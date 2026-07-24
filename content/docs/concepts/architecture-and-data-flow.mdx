@@ -1,0 +1,79 @@
+---
+icon: Waypoints
+title: Architecture & data flow
+description: What runs where, what talks to what, what leaves your network, and what is stored where.
+---
+
+The evaluation questions first: screenshots of your applications go to an AI
+model for the agent's decisions; everything else — testware, reports,
+secrets — stays on your machines. Here is the full picture.
+
+```mermaid
+flowchart LR
+  subgraph your network
+    D[AskUI Desktop / CLI]
+    A1[AgentOS<br/>desktop machines]
+    B[Browser<br/>Playwright]
+    P[Android device<br/>adb]
+    F[(Project folder<br/>testware + reports)]
+  end
+  M[Model provider<br/>AskUI hub or BYOM]
+  H[AskUI Hub<br/>account · tokens]
+  D -->|gRPC :23000 / :26000| A1
+  D --> B
+  D --> P
+  D --> F
+  D -->|screenshots + step text| M
+  D -->|auth · usage| H
+```
+
+## What talks to what
+
+| Connection | Protocol | Notes |
+| --- | --- | --- |
+| Desktop/CLI → AgentOS | gRPC, port 23000 (app-spawned) or 26000 (installed service) | Screen, keyboard, mouse of a [desktop machine](/docs/devices/remote-computer) |
+| Desktop/CLI → browser | Playwright, local | [Web profiles](/docs/devices/web-browser) — no AgentOS involved |
+| Desktop/CLI → Android | adb, local/USB/wireless | [Emulators](/docs/devices/android-emulator) and [phones](/docs/devices/android-phone) |
+| Desktop/CLI → model provider | HTTPS | See below — the only place test content leaves your network |
+| Desktop → AskUI Hub | HTTPS | Sign-in, tokens, usage. Not involved in test execution itself |
+
+Endpoints and firewall rules:
+[Network requirements](/docs/reference/network-requirements).
+
+## What leaves your network
+
+Each [loop iteration](/docs/concepts/how-askui-works#the-loop) sends the
+current **screenshot and the step's text** to the model provider — that's
+the inference the agent's decisions are made of. By default the provider is
+the AskUI hub. With [your own model provider](/docs/extending/model-providers)
+(BYOM) inference goes to your Anthropic/OpenAI-compatible endpoint instead —
+including a self-hosted one, keeping screenshots entirely in your tenancy.
+
+## What is stored where
+
+| Data | Location |
+| --- | --- |
+| Testware — tests, plans, prompts, tool config | The [project folder](/docs/projects), plain files, yours to version |
+| Test evidence — reports, screenshots, logs | `agent_workspace/` inside the project, local |
+| Credentials for tests | The app's [secret store](/docs/extending/secrets), encrypted with your Windows/macOS user account — never in the project |
+| Sign-in tokens | Encrypted local storage on your machine |
+
+## What is downloaded at runtime
+
+For supply-chain review, the app fetches on demand — each after an explicit
+action on your side: browser bundles (first
+[web-profile](/docs/devices/web-browser) connect), the Android SDK toolchain
+(consent click on [Set up](/docs/devices/android-emulator)), NuGet packages
+declared by your [custom tools](/docs/extending/custom-tools) (resolved via
+your own `NuGet.config`, so enterprise feeds and mirrors apply), and
+connections to the [MCP servers](/docs/extending/mcp) your project registers.
+
+## Infrastructure requirements
+
+| Question | Answer |
+| --- | --- |
+| **Operating systems** | AskUI Desktop: Windows and macOS. AgentOS on target machines: Windows 10+/Server 2019+, macOS 10.15+, Ubuntu 18.04+ — [full matrix](/docs/agentos/reference/system-requirements) |
+| **Proxy** | A system/corporate proxy is supported app-wide (Settings → Network proxy), including NTLM/Kerberos authentication — covers sign-in, model provider, and MCP traffic. [Troubleshooting proxy & SSL](/docs/troubleshooting/proxy-ssl) |
+| **Air-gapped / no AskUI account** | [License-key mode](/docs/get-started/licensing) removes the hub from the picture entirely: activate locally, bring your own model endpoint. Runtime downloads (browsers, Android SDK) still need a reachable mirror or pre-provisioned tooling |
+| **CI runners** | The [CLI](/docs/running-tests/cli) authenticates via `ASKUI_WORKSPACE_ID` / `ASKUI_TOKEN`. Headless browser targets run on a bare runner; desktop targets need a machine with [AgentOS](/docs/agentos/deployment/ci) and a real session |
+| **Team rollout** | Which teams run what, and on whose machines: [AskUI in your organization](/docs/concepts/team-setups) |

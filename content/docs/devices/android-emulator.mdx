@@ -1,0 +1,58 @@
+---
+icon: Android
+title: Android emulator
+description: A virtual Android device created and managed on this machine — device type, Android version, lifecycle.
+---
+
+An **Android emulator** profile provisions a virtual Android device on this
+machine. The app creates it, boots it, and connects it — you never touch
+`avdmanager`.
+
+## Create it
+
+1. **Add profile** → **Android emulator**.
+2. Fill in the fields:
+   - **Device type** — hardware profile: screen size, resolution *(select, default `Pixel 9`)*
+   - **System image** — the Android version the device runs *(select, default `Android 34 · Google APIs`)*
+   - **Lifecycle** — what Start and Stop do, see below *(select, default `Persistent`)*
+   - **Headless** — boot without an emulator window *(toggle, default off)*
+3. **Add profile**.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-profile-android-emulator.png"
+  alt="The Android emulator profile editor with device type, system image, and lifecycle"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+**Lifecycle** decides how long the device lives:
+
+| Lifecycle | On Start | On Stop |
+| --- | --- | --- |
+| **Persistent** | Reuses the existing device | Shuts the emulator down, keeps the device |
+| **Ephemeral** | Creates a factory-fresh device | Deletes the device |
+| **Always-on** | Reuses the existing device | Leaves the emulator running |
+
+Persistent is the everyday choice. Ephemeral gives every session reproducible
+preconditions at the cost of a cold boot. Always-on skips even the shutdown —
+fastest turnaround, state carries over.
+
+## Run it
+
+1. **Start** on the profile card boots the emulator and connects it.
+2. Pick the profile in the test's **Run on** dropdown and press **Run**.
+
+The card shows each state while Start works:
+
+| State on the card | What's happening | Notes |
+| --- | --- | --- |
+| **Set up phases** — *Downloading command-line tools… / Unpacking JDK… / Accepting licenses… / Installing emulator… / Downloading system image…* | One-time tooling bootstrap, only when no Android SDK exists — runs after your consent click | Minutes, once per machine |
+| **Creating…** | Building the virtual device | First Start only — and every Start with an **Ephemeral** lifecycle |
+| **Booting…** *(· 42s)* | The emulator is cold-booting; the counter shows elapsed time | First boot takes several minutes, later boots are faster. If the emulator crashes on the machine's GPU, Start retries once with software graphics |
+| **Ready** | Boot completed, device connected — green dot | An emulator that was already running skips straight here, never rebooted |
+
+A Start that hangs in **Booting…** past ~8 minutes times out with an error —
+the emulator may still come up; Start again reconnects to it.
+
+Testing on a physical phone instead? See
+[Android phone (real device)](/docs/devices/android-phone) — discovered via
+USB and added as a profile with one click.

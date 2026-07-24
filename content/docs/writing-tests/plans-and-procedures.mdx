@@ -1,0 +1,49 @@
+---
+title: Plans & procedures
+description: Plans group tests into suites you run as one unit; procedures are reusable, parameterized step sequences shared across tests.
+---
+
+Two project folders keep a growing test set manageable: `plans/` for **which
+tests run together**, and `procedures/` for **steps every test repeats**.
+
+## Plans — your test suites
+
+A plan is a Markdown file in `plans/` that names a subset of tests — a smoke
+suite, a regression pack, a nightly set:
+
+```md title="plans/smoke.md"
+# Smoke Plan · Run on every change
+
+Run the following tests in order. Stop on the first failure.
+
+- LOGIN_001 · valid login
+- All tests in `tests/`
+```
+
+Reference tests by id, name, or folder — the agent resolves the entries
+against `tests/`. Because a plan is plain text, it can also carry execution
+notes like "stop on the first failure."
+
+**Run it:** pick the plan from the Run split button on the **Plans** page, or
+headless with [`askui run --plan smoke`](/docs/running-tests/cli). A plan can
+also be [scheduled](/docs/running-tests/scheduling).
+
+## Procedures — write a step sequence once
+
+A procedure is a parameterized, reusable block of steps in `procedures/` —
+the same idea as a keyword in keyword-driven testing:
+
+```md title="procedures/login_to_ui.md"
+# Login to the UI
+# Parameters: [username, password]
+
+1. Enter the value of {username} into the username field
+2. Enter the value of {password} into the password field
+3. Click the "Login" button
+4. The procedure is successful if you are logged in
+```
+
+Any test calls it as a single step: `login_to_ui[qa_user, {QA_PASSWORD}]`.
+When the login screen changes, you fix the procedure once — every test that
+calls it picks the fix up. Guidance on what belongs in a procedure versus a
+test step is in [What goes where](/docs/best-practices/prompting-best-practices).

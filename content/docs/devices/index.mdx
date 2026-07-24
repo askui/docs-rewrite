@@ -1,0 +1,80 @@
+---
+icon: MonitorSmartphone
+title: Devices
+description: Device profiles describe the machines and apps your tests run on. Create them once, connect, and target them from any test.
+---
+
+Tests run on devices: this machine, a browser, a phone. A **device profile**
+describes how to reach one. Connected profiles appear in every test's
+**Run on** picker — they are your test environments.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-devices.png"
+  alt="The Devices page with three device profiles — Windows Desktop, Chrome Browser, and a Pixel 9 Android emulator"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+| On the page | Meaning |
+| --- | --- |
+| **Windows Desktop** | This machine's desktop via the AskUI Agent OS — native applications |
+| **Chrome Browser** | A local Chrome window the app launches itself — web tests |
+| **Pixel 9** | An Android emulator, created and booted by the app |
+| **Connect / Start** | Opens the session. Green dot = ready. Tests only run on connected devices |
+| **Probe** | Checks reachability without connecting |
+
+A new project starts with a **Local** profile (this machine) and, where the
+machine supports it, a ready-made **Android Emulator** profile. Deleted
+defaults stay deleted.
+
+## Create a profile
+
+1. Click **Add profile**.
+2. Pick the kind.
+3. Enter a name and the kind's fields.
+4. Click **Add profile**, then **Connect** the new card.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-add-profile.png"
+  alt="The Add profile dialog with the device-kind picker"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+| Kind | Device | Notes |
+| --- | --- | --- |
+| [**Remote computer**](/docs/devices/remote-computer) | Any machine running [AgentOS](/docs/agentos) — host, port, display | Test on a dedicated machine instead of your own |
+| [**Web browser**](/docs/devices/web-browser) | Local browser session — Chromium, Firefox, or WebKit | Optional start URL, headless |
+| [**Android emulator**](/docs/devices/android-emulator) | Virtual device on this machine | Device type + Android version; created on first Start |
+| [**iOS simulator**](/docs/devices/ios-simulator) | Apple simulator | macOS only — greyed out on Windows |
+| [**Multi computer**](/docs/devices/multi-computer) | Several desktops, one agent | The test names the machine per step ("on the server …, on the client …") |
+| [**Cross-platform**](/docs/devices/cross-platform) | Desktop + Android + web in one profile | Connect/status only — runs not supported yet |
+| [**Android phone**](/docs/devices/android-phone) | A physical device via USB or wireless | Not in this dialog — added from the **Android devices** list below |
+
+Each kind has its own page with the exact fields and setup. Missing tooling
+(e.g. no Android SDK) shows up on the profile card as a one-click setup or as
+manual steps with exact commands.
+
+## Android devices (discovery)
+
+The **Android devices** section lists what `adb` sees: USB-connected phones
+(USB debugging enabled) and already-running emulators. **Add as profile**
+turns a discovered device into a regular profile — see
+[Android phone](/docs/devices/android-phone). For a wireless device, enter
+its `ip:port` and click **Connect wireless**.
+
+## How a test picks its device
+
+The test names its target ("Run this on the **Windows Desktop** device");
+the **Run on** picker confirms it. Pick a different connected profile to run
+the same test on another environment.
+
+## It uses your mouse and keyboard
+
+A desktop run on this machine is a real user session: the agent moves the
+pointer, types, and needs the application in the foreground. Don't work on
+the machine during a run — use a browser, emulator, or remote profile to
+keep working.
+
+## Where profiles live
+
+`devices.json` in the project. Colleagues get the same device list and only
+connect. See [How a Project is organized](/docs/projects).

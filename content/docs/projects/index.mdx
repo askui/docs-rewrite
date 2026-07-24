@@ -1,45 +1,80 @@
 ---
+icon: Folder
 title: How a Project is organized
-description: The structure of an AskUI Desktop Project and how tests, plans, prompts, procedures and utils fit together.
+description: One folder holds your complete testware — suites, cases, plans, keywords, environments. Plain files, designed to live in Git.
 ---
 
-A **Project** is the unit of work in AskUI Desktop. Everything for a body of
-testing lives in one Project folder, split into a few well-known areas.
+A **Project** is your testware in one folder: test cases, test plans,
+reusable keywords, environment definitions, and the tooling the agent may
+use. Every artifact is a plain file.
 
 <Files>
-  <Folder name="my-project">
-    <Folder name="tests">
+  <Folder name="my-project" defaultOpen>
+    <Folder name="tests" defaultOpen>
       <File name="rules.md" />
       <File name="setup.md" />
       <File name="teardown.md" />
+      <File name="login_test.md" />
+      <File name="user_matrix.csv" />
+      <File name="legacy_spec.pdf" />
+      <Folder name="checkout" defaultOpen>
+        <File name="setup.md" />
+        <File name="pay_with_card.md" />
+        <File name="pay_with_invoice.md" />
+      </Folder>
     </Folder>
-    <Folder name="prompts" />
-    <Folder name="procedures" />
-    <Folder name="plans" />
-    <Folder name="utils" />
+    <Folder name="plans" defaultOpen>
+      <File name="smoke.md" />
+    </Folder>
+    <Folder name="procedures" defaultOpen>
+      <File name="login_to_ui.md" />
+    </Folder>
+    <Folder name="prompts" defaultOpen>
+      <File name="device_information.md" />
+      <File name="report_format.md" />
+    </Folder>
+    <Folder name="utils" defaultOpen>
+      <File name="tools.json" />
+      <File name="mcp.json" />
+      <Folder name="custom_tools" defaultOpen>
+        <File name="query_admin_api.cs" />
+      </Folder>
+    </Folder>
+    <File name="devices.json" />
+    <File name="schedules.json" />
+    <Folder name="agent_workspace" />
   </Folder>
 </Files>
 
-## The domain model
+| Folder / file | In tester terms | Example |
+| --- | --- | --- |
+| `tests/` | Test suites and test cases. A file is a case (steps, expected results); a sub-folder is a suite with its own `setup.md` / `teardown.md` (entry criteria and cleanup); `rules.md` = standing test instructions | `checkout/pay_with_card.md` |
+| `plans/` | Test selection — which cases make up the smoke set, the regression pack | [`smoke.md`](/docs/writing-tests/plans-and-procedures) |
+| `procedures/` | Keywords, as in keyword-driven testing: write a sequence once, call it from any case with parameters | [`login_to_ui.md`](/docs/writing-tests/plans-and-procedures#procedures--write-a-step-sequence-once) |
+| `prompts/` | What you'd tell a new tester on day one: how the application under test behaves, what the report must contain | [`device_information.md`, `report_format.md`](/docs/writing-tests/agents-and-prompts) |
+| `utils/` | The permitted tooling: [built-in tools](/docs/extending/tools), [MCP servers](/docs/extending/mcp), [custom C# tools](/docs/extending/custom-tools) | `custom_tools/query_admin_api.cs` |
+| `devices.json` | The test environments — see [Devices](/docs/devices) | — |
+| `schedules.json` | The execution schedule — [recurring runs](/docs/running-tests/scheduling) | — |
+| `agent_workspace/` | Test evidence: [execution logs, reports, screenshots](/docs/results/run-report). Generated per run — not versioned | — |
 
-- **Tests** decompose into **suites → cases → steps**. A step describes an
-  action and its expected result. Cases may carry a **precondition** and
-  **postcondition**; suites may carry **setup** and **teardown**. Suites can have subsuites saved as subfolders.
-- A **step** can invoke one or more **procedures** (a reusable sequence), or **utils** (a
-  tool, MCP server, skill, or CLI command).
-- **Plans** select what runs, e.g. a `smoke` plan that runs a subset of
-  suites for a quick check.
+**Test case formats:** Markdown is the default, but the runner also reads
+`.txt`, `.csv` — one case per row, the natural fit for data-driven testing —
+`.pdf` (an exported or scanned specification can be executed directly), and
+`.json`.
 
-<Callout title="Tip">
-Start from the scaffold: a new Project comes pre-seeded with all necessary parts. we recommend filling in
-the placeholders rather than starting from a blank page.
-</Callout>
+A new Project comes pre-seeded with this scaffold — fill in the placeholders
+instead of starting blank.
 
-## Where to go next
+## Testware under configuration management
 
-- [Agents & prompts](/docs/using-askui-desktop/agents-and-prompts) — the prompt
-  parts in detail.
-- [Prompting best practices](/docs/guides/prompting-best-practices) —
-  how to structure them well.
-- [Reading a run report](/docs/using-askui-desktop/run-report) — what a run
-  produces.
+Every artifact above is a plain text file — deliberately. A Project is
+persisted **as code** and synchronized via Git, which gives you configuration
+management of the complete testware: branches and reviews for test changes,
+history to diff yesterday's case against today's, and reproducibility — a
+colleague clones the repository and has the identical suites, environments,
+and toolbox.
+
+Two things stay out of version control by design: `agent_workspace/` (test
+evidence — regenerated every run) and credentials, which live in the app's
+encrypted [secret store](/docs/extending/secrets), never in the project
+folder.

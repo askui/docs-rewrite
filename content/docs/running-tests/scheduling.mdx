@@ -1,0 +1,36 @@
+---
+title: Scheduling recurring runs
+description: Run a test or plan automatically — daily at a time or every N minutes — while AskUI Desktop is open.
+---
+
+A schedule runs a test or [plan](/docs/writing-tests/plans-and-procedures) on
+a device profile without you pressing Run.
+
+## Create a schedule
+
+1. Open the test on the **Tests** page (or the plan on **Plans**).
+2. Click the alarm-clock button — the **Scheduled runs** dialog opens,
+   prefilled with this file.
+3. Pick the **Device profile**.
+4. Pick the **Cadence**: **Daily at a time** (with weekdays) or
+   **Every N minutes**.
+5. Click **Add schedule**.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-schedule-dialog.png"
+  alt="The Scheduled runs dialog with device profile, cadence, and the project's schedule list"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+The dialog lists every schedule in the project with its last outcome — the
+run's results, or why it was skipped (e.g. the device could not connect).
+Schedules live in the project's `schedules.json`.
+
+## Only while the app is open
+
+AskUI Desktop is not a background service. Schedules fire only while the app
+runs; a missed firing is not made up. A due schedule never double-fires, even
+when a run outlasts its interval.
+
+For unattended runs on a build server, use the
+[CLI](/docs/running-tests/cli) with your CI scheduler.

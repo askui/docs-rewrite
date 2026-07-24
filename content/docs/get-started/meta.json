@@ -1,1 +1,1 @@
-{ "title": "Get Started", "pages": ["install-desktop", "install-cli", "first-run", "uninstall"] }
+{ "title": "Get Started", "icon": "Rocket", "pages": ["install-desktop", "first-run", "licensing", "uninstall"] }

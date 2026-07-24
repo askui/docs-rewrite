@@ -1,0 +1,32 @@
+---
+icon: Apple
+title: iOS simulator
+description: An Apple iOS simulator provisioned on a Mac — device type and iOS runtime. macOS only.
+---
+
+An **iOS simulator** profile provisions an Apple simulator.
+
+<Callout type="warn" title="macOS only">
+Apple ships the simulator exclusively with Xcode on a Mac. On Windows this
+kind is greyed out in the Add-profile dialog — running AskUI Desktop on
+Windows cannot drive an iOS simulator, not even a remote one.
+</Callout>
+
+**Preconditions:** a Mac running AskUI Desktop, Xcode command-line tools
+(`simctl`), and `idb` — the profile card lists anything missing with the
+exact install commands.
+
+## Create it
+
+1. **Add profile** → **iOS simulator**.
+2. Fill in the fields:
+   - **Device type** — the iPhone / iPad model to simulate *(select, default `iPhone 15`)*
+   - **Runtime** — the iOS version; empty picks the newest installed *(select, optional)*
+   - **Lifecycle** — same semantics as the [Android emulator](/docs/devices/android-emulator#create-it) *(select, default `Persistent`)*
+3. **Add profile**.
+
+## Run it
+
+1. **Start** — the simulator is created on first use and booted; later
+   Starts reuse it.
+2. Pick the profile in the test's **Run on** dropdown and press **Run**.

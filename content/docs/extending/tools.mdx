@@ -1,0 +1,30 @@
+---
+title: Tools
+description: What the agent is allowed to do during a run — enable, disable, and configure the toolbox per project.
+---
+
+Everything the agent does happens through a **tool** — mouse, screenshot,
+file access, database query. The toolbox is the boundary of what a test can
+possibly do. Manage it under **Utils → Tools**.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-utils-tools.png"
+  alt="The Tools tab on the Utils page listing built-in tools with enable switches"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+| Tier | Behavior |
+| --- | --- |
+| **Device tools** | Screenshot, click, type — injected automatically for the run's device kind. Always on, not listed |
+| **Default tools** | Enabled unless you switch them off |
+| **Optional tools** | Disabled until you enable them — typically tools with reach beyond the UI under test, like a shell or database access |
+
+Some tools take configuration when added — a connection string, a base URL.
+`${VAR}` values resolve from the environment at run start; credentials belong
+in [named secrets](/docs/extending/secrets).
+
+Choices are saved to `utils/tools.json` — the whole team runs with the same
+toolbox. An untouched tool follows its tier default.
+
+Need more? [Custom tools](/docs/extending/custom-tools) for anything you can
+write in C#; [MCP servers](/docs/extending/mcp) for existing tool servers.
