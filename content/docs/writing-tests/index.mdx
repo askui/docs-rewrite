@@ -41,7 +41,7 @@ suite** — and suites nest, so the tree mirrors your test structure plan:
 | Entry | What it is |
 | --- | --- |
 | `login_test.md` | A single test case — the file name is the test's name in runs and reports |
-| `user_matrix.csv` | Also test cases — one per row; every [format](/docs/writing-tests/test-case-formats) sits side by side in the same tree |
+| `user_matrix.csv` | Also test cases — one per row; every [format](/docs/writing-tests#formats) sits side by side in the same tree |
 | `checkout/` | A suite: its cases run together, framed by the suite's own `setup.md`. Nest deeper for sub-suites |
 | `user-management/` | A sibling suite — no steering files of its own, so only the outer ones apply. Suites are independent: a failing `checkout/setup.md` never touches it |
 | `rules.md`, `setup.md`, `teardown.md` | Steering files, allowed at **every** level — each scopes to its folder and everything below ([scope](#scope--which-tests-they-apply-to)) |
@@ -200,10 +200,56 @@ The same menu holds everything on this page: creating files and folders, the
 quick-create entries for `setup.md` / `teardown.md` / `rules.md`, **Run on**,
 and **Duplicate / Rename / Delete**.
 
-The seeded template and one example per format:
-[Test case formats](/docs/writing-tests/test-case-formats). How to phrase
-steps well: [Writing good tests](/docs/best-practices/writing-good-tests).
-A **New folder** groups cases into a suite.
+A **New Markdown** file starts from the template — preconditions, steps,
+postconditions. How to phrase steps well:
+[Writing good tests](/docs/best-practices/writing-good-tests).
+
+### Formats
+
+| Format | Use for |
+| --- | --- |
+| `.md` | The default — one case per file |
+| `.csv` | One case per **row** — data-driven testing |
+| `.json` | Exports from a test-management tool run as-is (no fixed schema) |
+| `.txt`, `.pdf` | A written or exported specification runs directly |
+
+<Tabs items={['Markdown', 'CSV', 'JSON']}>
+<Tab value="Markdown">
+```md title="tests/example_login_test.md"
+# Login Flow · Smoke Test
+
+## Preconditions
+- No user is currently logged in
+
+## Steps
+1. Run procedure `login_to_ui[username, password]` with the QA secrets
+2. Wait until the start screen loads
+
+## Postconditions
+- Test passes if the signed-in indicator is visible
+```
+</Tab>
+<Tab value="CSV">
+```csv title="tests/example_test_data.csv"
+Test case ID,Test case name,Precondition,Step number,Step description,Expected result
+LOGIN_001,Valid login,App is open on the login screen,1,Enter the QA credentials into the login form,Both fields are filled
+,,,2,Click the Login button,The start screen is visible and the user is signed in
+```
+</Tab>
+<Tab value="JSON">
+```json title="tests/login_001.json"
+{
+  "id": "LOGIN_001",
+  "name": "Valid login",
+  "preconditions": ["App is open on the login screen"],
+  "steps": [
+    { "action": "Enter the QA credentials into the login form", "expected": "Both fields are filled" },
+    { "action": "Click the Login button", "expected": "The user is signed in" }
+  ]
+}
+```
+</Tab>
+</Tabs>
 
 ## Run a test case
 
