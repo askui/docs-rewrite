@@ -1,0 +1,60 @@
+---
+icon: FolderCog
+title: Setup, Teardown & Rules
+description: The three steering files of a suite — entry criteria, cleanup, and standing instructions. What each is and how to create it.
+---
+
+Every suite folder can carry three steering files. Their
+[scope chains per folder level](/docs/writing-tests/organisation#scope);
+each quick-create seeds a template with `FILL IN` placeholders — replace
+those, keep the shape.
+
+## Setup
+
+The suite's entry criteria: open the application, log in, reset data. Runs
+once, before any case in its folder — a failing setup records the suite's
+cases as broken instead of executing them against a bad state.
+
+**Create it:** right-click the folder → **New setup.md**.
+
+```md title="setup.md"
+## Setup Steps
+
+1. FILL IN: open the application under test and wait until it is fully visible.
+2. Log in using the `login_to_ui` procedure with the QA username and password secrets.
+3. Verify the start screen has loaded before any test starts.
+```
+
+## Teardown
+
+The suite's cleanup: sign out, delete created records. Runs last, after
+every case in its folder — even after failures.
+
+**Create it:** right-click the folder → **New teardown.md**.
+
+```md title="teardown.md"
+## Teardown Steps
+
+1. FILL IN: close the application under test.
+2. Clear any temporary files created during testing.
+```
+
+## Rules
+
+Standing instructions that apply to every phase in the folder — not a test,
+context: interaction style, error handling, things never to do ("never
+change the language setting", "treat error dialogs as failures").
+
+**Create it:** right-click the folder → **New rules.md**.
+
+```md title="rules.md"
+# Execution rules for this folder
+
+## Interaction
+- Use the desktop computer to execute these tests.
+
+## Error handling
+- On an infrastructure error (connection lost, session expired): mark the
+  testcase BROKEN, write the report, abort.
+- On an application error: mark the testcase FAILED and abort.
+```

@@ -1,0 +1,43 @@
+---
+icon: Repeat
+title: Procedures
+description: Reusable, parameterized step sequences — define once, call from any test like a keyword.
+---
+
+A procedure is a parameterized, reusable block of steps — the same idea as a
+keyword in keyword-driven testing. When the login screen changes, you fix
+the procedure once; every test that calls it picks the fix up.
+
+## Define it
+
+The **Procedures** button on the Tests page creates a file in `procedures/`
+from a template:
+
+```md title="procedures/login_to_ui.md"
+# Login to the UI
+# Parameters: [username, password]
+
+1. Enter the value of {username} into the username field
+2. Enter the value of {password} into the password field
+3. Click the "Login" button
+4. The procedure is successful if you are logged in
+```
+
+- The **file name** is the name tests call: `login_to_ui`.
+- The `# Parameters: [...]` line declares the inputs; steps reference them
+  as `{username}`, `{password}`.
+- The last step states when the procedure counts as successful.
+
+## Use it
+
+Call it as a single step from any test — or from a suite's
+[setup](/docs/writing-tests/setup-teardown-rules) — passing arguments in
+parameter order; a [secret](/docs/extending/secrets) can be passed by name:
+
+```md
+1. Run procedure `login_to_ui[qa_user, {QA_PASSWORD}]`
+2. Wait until the start screen loads
+```
+
+What belongs in a procedure versus a test step:
+[What goes where](/docs/best-practices/prompting-best-practices).

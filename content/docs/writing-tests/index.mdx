@@ -1,7 +1,7 @@
 ---
 icon: SquarePen
 title: Test cases
-description: The tests/ structure, steering files, and procedures — then creating, running, and managing cases on the Tests page.
+description: What a test case is and how to create, run, and manage one — with the concept map of everything around it.
 ---
 
 Test cases live as files under `tests/` and are managed on the **Tests**
@@ -14,115 +14,51 @@ with the opened test case and its Run controls.
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
-## How tests/ is organized
+## The concepts
 
-Two rules build the whole structure: **a file is a test case, a folder is a
-suite** — and suites nest, so the tree mirrors your test structure plan:
-
-<Files>
-  <Folder name="tests" defaultOpen>
-    <File name="rules.md" />
-    <File name="setup.md" />
-    <File name="teardown.md" />
-    <File name="login_test.md" />
-    <File name="user_matrix.csv" />
-    <Folder name="checkout" defaultOpen>
-      <File name="setup.md" />
-      <File name="pay_with_card.md" />
-      <File name="pay_with_invoice.md" />
-    </Folder>
-    <Folder name="user-management" defaultOpen>
-      <File name="create_user.md" />
-      <File name="delete_user.md" />
-    </Folder>
-  </Folder>
-</Files>
-
-| Entry | What it is |
-| --- | --- |
-| `login_test.md` | A single test case — the file name is the test's name in runs and reports |
-| `user_matrix.csv` | Also test cases — one per row; every [format](/docs/writing-tests#formats) sits side by side in the same tree |
-| `checkout/` | A suite: its cases run together, framed by the suite's own `setup.md`. Nest deeper for sub-suites |
-| `user-management/` | A sibling suite — no steering files of its own, so only the outer ones apply. Suites are independent: a failing `checkout/setup.md` never touches it |
-| `rules.md`, `setup.md`, `teardown.md` | Steering files, allowed at **every** level — each scopes to its folder and everything below (scope: see below) |
-
-**Scope at a glance:** the steering files reach downward, never sideways.
-In the tree above, `checkout/pay_with_card.md` runs framed by
-`tests/setup.md` *and* `checkout/setup.md`, under the outer `rules.md`;
-`user-management/create_user.md` gets only the outer files. Setups run
-top-down, teardowns bottom-up — pressing **Run** on the `checkout` suite:
+Six building blocks make up everything you author:
 
 ```mermaid
-flowchart LR
-  RUN([▶ Run<br/>checkout on Windows Desktop]) --> A
-  A[1<br/>tests/<br/>setup.md] --> B[2<br/>checkout/<br/>setup.md] --> C[3<br/>pay_with_card] --> D[4<br/>pay_with_invoice] --> E[5<br/>checkout/<br/>teardown.md] --> F[6<br/>tests/<br/>teardown.md]
-  R[rules.md — applies to every phase] -.-> A & B & C & D & E & F
+flowchart TB
+  subgraph SUITE["Suite — a folder under tests/"]
+    SETUP["Setup
+entry criteria · runs first"]
+    TC["Test Case
+preconditions · steps · postconditions"]
+    TEARDOWN["Teardown
+cleanup · runs last"]
+    RULES["Rules
+standing instructions"]
+  end
+  PROC["Procedure
+reusable steps with parameters"]
+  SEC["Secret
+named credential · encrypted"]
+  SETUP --> TC --> TEARDOWN
+  RULES -.applies to every phase.-> TC
+  TC -- calls --> PROC
+  SETUP -- calls --> PROC
+  TC -- references --> SEC
+  PROC -- receives --> SEC
 ```
 
-A failing setup blocks exactly the tests below it; sibling suites are
-unaffected. Any level can be a run target: one file, one suite, or the whole
-tree — folder structure is also your run granularity.
-
-## Procedures
-
-A procedure is a parameterized, reusable block of steps — the same idea as a
-keyword in keyword-driven testing. When the login screen changes, you fix
-the procedure once; every test that calls it picks the fix up.
-
-**Define it** — a Markdown file in `procedures/` (the **Procedures** button
-on the Tests page creates one from a template):
-
-```md title="procedures/login_to_ui.md"
-# Login to the UI
-# Parameters: [username, password]
-
-1. Enter the value of {username} into the username field
-2. Enter the value of {password} into the password field
-3. Click the "Login" button
-4. The procedure is successful if you are logged in
-```
-
-- The **file name** is the name tests call: `login_to_ui`.
-- The `# Parameters: [...]` line declares the inputs; steps reference them
-  as `{username}`, `{password}`.
-- The last step states when the procedure counts as successful.
-
-**Use it** — call it as a single step from any test (or from `setup.md`),
-passing arguments in parameter order; a [secret](/docs/extending/secrets)
-can be passed by name:
-
-```md
-1. Run procedure `login_to_ui[qa_user, {QA_PASSWORD}]`
-2. Wait until the start screen loads
-```
-
-## Target multiple platforms
-
-A first line `platforms: desktop, android` marks a case cross-platform — it
-then runs only on a [Cross-platform profile](/docs/devices/cross-platform),
-and single-platform tests never run there. The steps name the surface, like
-a [multi-computer test](/docs/devices/multi-computer) names machines:
-
-```md
-platforms: desktop, android
-
-# Order hand-off
-
-## Steps
-1. On the desktop, read the most recent order number from the orders list.
-2. On the Android device, open the companion app and search for that order.
-```
-
-<Callout type="warn" title="Authoring only, for now">
-Cross-platform profiles connect and report status, but runs against them are
-not supported yet — the case is ready for when they are.
-</Callout>
+A **suite** frames its test cases with
+[setup, teardown, and rules](/docs/writing-tests/setup-teardown-rules); how
+suites nest and scope chains is on
+[Organisation & scope](/docs/writing-tests/organisation). Cases and setups
+call [procedures](/docs/writing-tests/procedures) for repeated sequences,
+and reference [secrets](#use-secrets-in-a-test) instead of containing
+credentials. [Plans](/docs/writing-tests/plans) select which cases run
+together.
 
 ## Create a test case
 
+A test case is one file: preconditions, steps with expected results,
+postconditions. The file name is the test's name in runs and reports.
+
 1. Right-click in the file tree → **New Markdown** (or **New CSV**).
-2. Name the file and write the case: preconditions, steps with expected
-   results, postconditions.
+2. Name the file and fill the seeded template. How to phrase steps well:
+   [Writing good tests](/docs/best-practices/writing-good-tests).
 
 <img
   src="/docs-rewrite/screenshots/desktop-tests-context-menu.png"
@@ -131,12 +67,8 @@ not supported yet — the case is ready for when they are.
 />
 
 The same menu holds everything on this page: creating files and folders, the
-quick-create entries for `setup.md` / `teardown.md` / `rules.md`, **Run on**,
-and **Duplicate / Rename / Delete**.
-
-A **New Markdown** file starts from the template — preconditions, steps,
-postconditions. How to phrase steps well:
-[Writing good tests](/docs/best-practices/writing-good-tests).
+quick-create entries for setup / teardown / rules, **Run on**, and
+**Duplicate / Rename / Delete**.
 
 ### Formats
 
@@ -185,6 +117,30 @@ LOGIN_001,Valid login,App is open on the login screen,1,Enter the QA credentials
 </Tab>
 </Tabs>
 
+### Target multiple platforms
+
+A first line `platforms: desktop, android` marks a case cross-platform — it
+then runs only on a [Cross-platform profile](/docs/devices/cross-platform),
+and single-platform tests never run there. The steps name the surface, like
+a [multi-computer test](/docs/devices/multi-computer) names machines.
+
+<Callout type="warn" title="Authoring only, for now">
+Cross-platform profiles connect and report status, but runs against them are
+not supported yet — the case is ready for when they are.
+</Callout>
+
+## Use secrets in a test
+
+Never write credentials into a case — reference
+[named secrets](/docs/extending/secrets) by name instead. Add the value once
+under **Utils → Secrets**; the agent sees only the name, and the real value
+is substituted at execution time, redacted from logs and reports:
+
+```md
+Sign in with the QA credentials — the secrets named
+`QA_USERNAME` and `QA_PASSWORD`.
+```
+
 ## Run a test case
 
 Pick a connected device in **Run on** and press **Run** — or right-click any
@@ -201,13 +157,3 @@ operations — visible in Git like any other change to your
 There is no skip flag: to leave a case out temporarily, run a
 [plan](/docs/writing-tests/plans) that doesn't include it, or move the file
 out of `tests/`.
-
-## Use secrets in a test
-
-Never write credentials into a case — reference
-[named secrets](/docs/extending/secrets) instead:
-
-```md
-Sign in with the QA credentials — the secrets named
-`QA_USERNAME` and `QA_PASSWORD`.
-```
