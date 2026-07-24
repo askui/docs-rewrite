@@ -26,3 +26,6 @@ yarn-error.log*
 next-env.d.ts
 # local preview exports
 /.preview/
+
+# AskUI trajectory caches from capture/demo runs
+.askui_cache/
