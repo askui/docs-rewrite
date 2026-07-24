@@ -1,0 +1,8 @@
+# Run artifacts — per-run reports, screenshots, HTML logs.
+/agent_workspace/
+
+# Trajectory cache (askui run --cache-strategy auto).
+/.askui_cache/
+
+# Credentials — copy .env.example to .env and fill in.
+.env
