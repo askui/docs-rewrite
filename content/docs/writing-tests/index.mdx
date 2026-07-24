@@ -96,6 +96,15 @@ this holds even when you run a **single file**: its ancestor folders' setups
 and teardowns still frame it. A failing setup blocks exactly the tests below
 it; sibling suites are unaffected.
 
+The chain wraps like an onion — each folder level opens before and closes
+after everything inside it. Running the `checkout` suite:
+
+```mermaid
+flowchart LR
+  A[tests/<br/>setup.md] --> B[checkout/<br/>setup.md] --> C[pay_with_card] --> D[pay_with_invoice] --> E[checkout/<br/>teardown.md] --> F[tests/<br/>teardown.md]
+  R[rules.md — applies to every phase] -.-> A & B & C & D & E & F
+```
+
 ### setup.md — runs first
 
 The suite's entry criteria: log in, reset data, open the application. Runs
