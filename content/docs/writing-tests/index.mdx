@@ -1,7 +1,7 @@
 ---
 icon: SquarePen
 title: Working with test cases
-description: Create, organize, run, and delete test cases on the Tests page — and where setup, teardown, rules, and secrets fit in.
+description: Create, organize, run, and delete test cases on the Tests page — with suite files, procedures, and secrets.
 ---
 
 Test cases live as files under `tests/` and are managed on the **Tests**
@@ -16,31 +16,13 @@ page: a file tree on the left, the editor and Run controls on the right.
 ## Create a test case
 
 1. Right-click in the file tree → **New Markdown** (or **New CSV**).
-2. Name the file and write the case: steps with expected results — see
-   [Writing good tests](/docs/best-practices/writing-good-tests).
+2. Name the file and write the case: preconditions, steps with expected
+   results, postconditions.
 
-A new file starts from this template — the three sections are the shape of
-every case:
-
-```md
-# New test
-
-## Preconditions
-- Describe what must already be true (app open, user logged out, …)
-
-## Steps
-1. Describe each action the agent should take, paired with what to expect.
-2. If the test needs credentials, reference them — never write them here.
-3. Reusable sequences live in procedures/ — call them like
-   `login_to_ui[username, password]`.
-
-## Postconditions
-- Describe what success looks like at the end.
-```
-
-Formats: `.md` is the default; `.csv` holds one case per row (data-driven
-testing); `.txt`, `.pdf`, and `.json` files are executed too — an exported
-specification can run as-is. A **New folder** groups cases into a suite.
+The seeded template and one example per format:
+[Test case formats](/docs/writing-tests/test-case-formats). How to phrase
+steps well: [Writing good tests](/docs/best-practices/writing-good-tests).
+A **New folder** groups cases into a suite.
 
 ## setup.md, teardown.md, rules.md
 
@@ -54,27 +36,35 @@ when a folder doesn't have them:
 | `rules.md` | Standing instructions that apply to every phase: "never change the language setting", "treat error dialogs as failures". Not a test — context |
 
 In nested suites, setups run top-down, teardowns bottom-up, and rules
-accumulate per level.
+accumulate per level. Each quick-create seeds a template with `FILL IN`
+placeholders — replace those, keep the shape:
 
-Each quick-create seeds a template with `FILL IN` placeholders — replace
-those, keep the shape:
+<Tabs items={['setup.md', 'teardown.md', 'rules.md']}>
+<Tab value="setup.md">
+Runs BEFORE every test in the folder:
 
-```md title="setup.md — runs BEFORE every test in the folder"
+```md
 ## Setup Steps
 
 1. FILL IN: open the application under test and wait until it is fully visible.
 2. Log in using the `login_to_ui` procedure with the QA username and password secrets.
 3. Verify the start screen has loaded before any test starts.
 ```
+</Tab>
+<Tab value="teardown.md">
+Runs AFTER every test in the folder:
 
-```md title="teardown.md — runs AFTER every test in the folder"
+```md
 ## Teardown Steps
 
 1. FILL IN: close the application under test.
 2. Clear any temporary files created during testing.
 ```
+</Tab>
+<Tab value="rules.md">
+Picked up automatically by every test in the folder:
 
-```md title="rules.md — picked up automatically by every test in the folder"
+```md
 # Execution rules for this folder
 
 ## Interaction
@@ -84,6 +74,41 @@ those, keep the shape:
 - On an infrastructure error (connection lost, session expired): mark the
   testcase BROKEN, write the report, abort.
 - On an application error: mark the testcase FAILED and abort.
+```
+</Tab>
+</Tabs>
+
+## Procedures
+
+A procedure is a parameterized, reusable block of steps — the same idea as a
+keyword in keyword-driven testing. When the login screen changes, you fix
+the procedure once; every test that calls it picks the fix up.
+
+**Define it** — a Markdown file in `procedures/` (the **Procedures** button
+on the Tests page creates one from a template):
+
+```md title="procedures/login_to_ui.md"
+# Login to the UI
+# Parameters: [username, password]
+
+1. Enter the value of {username} into the username field
+2. Enter the value of {password} into the password field
+3. Click the "Login" button
+4. The procedure is successful if you are logged in
+```
+
+- The **file name** is the name tests call: `login_to_ui`.
+- The `# Parameters: [...]` line declares the inputs; steps reference them
+  as `{username}`, `{password}`.
+- The last step states when the procedure counts as successful.
+
+**Use it** — call it as a single step from any test (or from `setup.md`),
+passing arguments in parameter order; a [secret](/docs/extending/secrets)
+can be passed by name:
+
+```md
+1. Run procedure `login_to_ui[qa_user, {QA_PASSWORD}]`
+2. Wait until the start screen loads
 ```
 
 ## Use secrets in a test

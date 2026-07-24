@@ -49,8 +49,8 @@ use. Every artifact is a plain file.
 | Folder / file | In tester terms | Example |
 | --- | --- | --- |
 | `tests/` | Test suites and test cases. A file is a case (steps, expected results); a sub-folder is a suite with its own `setup.md` / `teardown.md` (entry criteria and cleanup); `rules.md` = standing test instructions | `checkout/pay_with_card.md` |
-| `plans/` | Test selection — which cases make up the smoke set, the regression pack | [`smoke.md`](/docs/writing-tests/plans-and-procedures) |
-| `procedures/` | Keywords, as in keyword-driven testing: write a sequence once, call it from any case with parameters | [`login_to_ui.md`](/docs/writing-tests/plans-and-procedures#procedures--write-a-step-sequence-once) |
+| `plans/` | Test selection — which cases make up the smoke set, the regression pack | [`smoke.md`](/docs/writing-tests/plans) |
+| `procedures/` | Keywords, as in keyword-driven testing: write a sequence once, call it from any case with parameters | [`login_to_ui.md`](/docs/writing-tests#procedures) |
 | `prompts/` | What you'd tell a new tester on day one: how the application under test behaves, what the report must contain | [`device_information.md`, `report_format.md`](/docs/writing-tests/agents-and-prompts) |
 | `utils/` | The permitted tooling: [built-in tools](/docs/extending/tools), [MCP servers](/docs/extending/mcp), [custom C# tools](/docs/extending/custom-tools) | `custom_tools/query_admin_api.cs` |
 | `devices.json` | The test environments — see [Devices](/docs/devices) | — |

@@ -1,0 +1,88 @@
+---
+icon: FileText
+title: Test case formats
+description: Markdown is the default; CSV, JSON, TXT, and PDF run too — with the template and a seeded example per format.
+---
+
+A test case is a file — preconditions, steps, postconditions. `.md` is the
+default; `.csv` holds one case per row (data-driven testing); `.txt`, `.json`,
+and `.pdf` are executed too, so an exported specification can run as-is.
+
+<Tabs items={['Template', 'Markdown', 'CSV', 'JSON']}>
+<Tab value="Template">
+What **New Markdown** seeds — the shape of every case:
+
+```md
+# New test
+
+## Preconditions
+- Describe what must already be true (app open, user logged out, …)
+
+## Steps
+1. Describe each action the agent should take, paired with what to expect.
+2. If the test needs credentials, reference them — never write them here.
+3. Reusable sequences live in procedures/ — call them like
+   `login_to_ui[username, password]`.
+
+## Postconditions
+- Describe what success looks like at the end.
+```
+</Tab>
+<Tab value="Markdown">
+The seeded example every new project contains:
+
+```md title="tests/example_login_test.md"
+# Login Flow · Smoke Test
+
+## Preconditions
+- The app is open and visible
+- No user is currently logged in
+
+## Steps
+1. Run procedure `login_to_ui[username, password]` with the QA username and
+   password secrets (stored in Utils → Secrets)
+2. Wait until the start screen loads
+
+## Postconditions
+- Test passes if the user is logged in and the signed-in indicator is visible
+```
+</Tab>
+<Tab value="CSV">
+One test case per row — data-driven testing:
+
+```csv title="tests/example_test_data.csv"
+Test case ID,Test case name,Precondition,Step number,Step description,Expected result
+LOGIN_001,Valid login,Application is open on the login screen,1,Use the QA credential secrets for the following steps,Credentials are available
+,,,2,Enter the username and password into the login form,Both fields are filled
+,,,3,Click the Login button,The start screen is visible and the user is signed in
+LOGIN_002,Invalid password,Application is open on the login screen,1,Enter the QA username with the password "wrong_password",Both fields are filled
+,,,2,Click the Login button,An "Invalid credentials" error message is shown
+```
+</Tab>
+<Tab value="JSON">
+JSON has no fixed schema — the agent reads it like any test description, so
+an export from your test-management tool runs as-is. A typical shape:
+
+```json title="tests/login_001.json"
+{
+  "id": "LOGIN_001",
+  "name": "Valid login",
+  "preconditions": ["Application is open on the login screen"],
+  "steps": [
+    {
+      "action": "Enter the QA username and password (secrets QA_USERNAME, QA_PASSWORD) into the login form",
+      "expected": "Both fields are filled"
+    },
+    {
+      "action": "Click the Login button",
+      "expected": "The start screen is visible and the user is signed in"
+    }
+  ],
+  "postconditions": ["The signed-in indicator shows the QA user"]
+}
+```
+</Tab>
+</Tabs>
+
+How to phrase steps so they execute reliably:
+[Writing good tests](/docs/best-practices/writing-good-tests).
