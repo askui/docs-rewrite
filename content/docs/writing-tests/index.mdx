@@ -44,40 +44,13 @@ suite** — and suites nest, so the tree mirrors your test structure plan:
 | `user_matrix.csv` | Also test cases — one per row; every [format](/docs/writing-tests#formats) sits side by side in the same tree |
 | `checkout/` | A suite: its cases run together, framed by the suite's own `setup.md`. Nest deeper for sub-suites |
 | `user-management/` | A sibling suite — no steering files of its own, so only the outer ones apply. Suites are independent: a failing `checkout/setup.md` never touches it |
-| `rules.md`, `setup.md`, `teardown.md` | Steering files, allowed at **every** level — each scopes to its folder and everything below ([scope](#scope--which-tests-they-apply-to)) |
+| `rules.md`, `setup.md`, `teardown.md` | Steering files, allowed at **every** level — each scopes to its folder and everything below (scope: see below) |
 
 **Scope at a glance:** the steering files reach downward, never sideways.
 In the tree above, `checkout/pay_with_card.md` runs framed by
 `tests/setup.md` *and* `checkout/setup.md`, under the outer `rules.md`;
-`user-management/create_user.md` gets only the outer files.
-
-Any level can be a run target: one file, one suite, or the whole tree —
-folder structure is also your run granularity.
-
-## Steering files: setup, teardown & rules [#steering-files]
-
-Three conventional files steer how a folder executes. The right-click menu
-offers **New setup.md / teardown.md / rules.md** when they're missing; each
-seeds a template with `FILL IN` placeholders — replace those, keep the shape.
-
-### Scope — which tests they apply to
-
-Each file scopes to **its folder and everything below it**. With the tree
-above, running `checkout/pay_with_card.md` executes:
-
-1. `tests/setup.md` — outer entry criteria first
-2. `checkout/setup.md` — the suite's own entry criteria
-3. `checkout/pay_with_card.md` — the case, under **both** `rules.md` levels
-4. `checkout/teardown.md` — innermost cleanup first
-5. `tests/teardown.md` — outer cleanup last
-
-Setups run top-down, teardowns bottom-up, rules accumulate per level — and
-this holds even when you run a **single file**: its ancestor folders' setups
-and teardowns still frame it. A failing setup blocks exactly the tests below
-it; sibling suites are unaffected.
-
-The chain wraps like an onion — each folder level opens before and closes
-after everything inside it. Pressing **Run** on the `checkout` suite:
+`user-management/create_user.md` gets only the outer files. Setups run
+top-down, teardowns bottom-up — pressing **Run** on the `checkout` suite:
 
 ```mermaid
 flowchart LR
@@ -86,48 +59,9 @@ flowchart LR
   R[rules.md — applies to every phase] -.-> A & B & C & D & E & F
 ```
 
-### Setup — runs first
-
-The suite's entry criteria: log in, reset data, open the application. Runs
-once, before any case — a failing setup records the suite's cases as broken
-instead of executing them against a bad state.
-
-```md title="setup.md"
-## Setup Steps
-
-1. FILL IN: open the application under test and wait until it is fully visible.
-2. Log in using the `login_to_ui` procedure with the QA username and password secrets.
-3. Verify the start screen has loaded before any test starts.
-```
-
-### Teardown — runs last
-
-Cleanup after the suite: sign out, delete created records. Runs even after
-failures.
-
-```md title="teardown.md"
-## Teardown Steps
-
-1. FILL IN: close the application under test.
-2. Clear any temporary files created during testing.
-```
-
-### Rules — apply throughout
-
-Standing instructions for every phase — not a test, context: interaction
-style, error handling, things never to do.
-
-```md title="rules.md"
-# Execution rules for this folder
-
-## Interaction
-- Use the desktop computer to execute these tests.
-
-## Error handling
-- On an infrastructure error (connection lost, session expired): mark the
-  testcase BROKEN, write the report, abort.
-- On an application error: mark the testcase FAILED and abort.
-```
+A failing setup blocks exactly the tests below it; sibling suites are
+unaffected. Any level can be a run target: one file, one suite, or the whole
+tree — folder structure is also your run granularity.
 
 ## Procedures
 

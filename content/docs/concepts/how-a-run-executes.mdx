@@ -18,7 +18,7 @@ flowchart LR
 records the tests it guards as broken — they never execute against a bad
 state. **teardown.md** runs last, even after failures. **rules.md** applies
 to every phase. In nested suites, setups run top-down, teardowns bottom-up,
-and rules accumulate per level. ([Where these files live](/docs/writing-tests#steering-files).)
+and rules accumulate per level. ([Where these files live](/docs/writing-tests#how-tests-is-organized).)
 
 Every phase streams into the [live conversation log](/docs/running-tests#watch-it-live)
 and lands in the run's [reports](/docs/results/run-report).
