@@ -1,11 +1,12 @@
 ---
 icon: SquarePen
 title: Test cases
-description: Create, organize, run, and delete test cases on the Tests page — with suite files, procedures, and secrets.
+description: The tests/ structure, steering files, and procedures — then creating, running, and managing cases on the Tests page.
 ---
 
 Test cases live as files under `tests/` and are managed on the **Tests**
-page: a file tree on the left, the editor and Run controls on the right.
+page: on the left the file tree with all test cases, on the right the editor
+with the opened test case and its Run controls.
 
 <img
   src="/docs-rewrite/screenshots/desktop-tests-run.png"
@@ -13,9 +14,10 @@ page: a file tree on the left, the editor and Run controls on the right.
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
-The `tests/` folder holds everything. Two rules build the whole structure:
-**a file is a test case, a folder is a suite** — and suites nest, so the
-tree mirrors your test structure plan:
+## How tests/ is organized
+
+Two rules build the whole structure: **a file is a test case, a folder is a
+suite** — and suites nest, so the tree mirrors your test structure plan:
 
 <Files>
   <Folder name="tests" defaultOpen>
@@ -47,34 +49,12 @@ tree mirrors your test structure plan:
 **Scope at a glance:** the steering files reach downward, never sideways.
 In the tree above, `checkout/pay_with_card.md` runs framed by
 `tests/setup.md` *and* `checkout/setup.md`, under the outer `rules.md`;
-`user-management/create_user.md` gets only the outer files. The exact
-execution order: [Scope — which tests they apply to](#scope--which-tests-they-apply-to).
+`user-management/create_user.md` gets only the outer files.
 
 Any level can be a run target: one file, one suite, or the whole tree —
 folder structure is also your run granularity.
 
-## Create a test case
-
-1. Right-click in the file tree → **New Markdown** (or **New CSV**).
-2. Name the file and write the case: preconditions, steps with expected
-   results, postconditions.
-
-<img
-  src="/docs-rewrite/screenshots/desktop-tests-context-menu.png"
-  alt="The file tree's right-click menu with New Markdown, New CSV, New folder, and the quick-create entries for setup, teardown, and rules"
-  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
-/>
-
-The same menu holds everything on this page: creating files and folders, the
-quick-create entries for `setup.md` / `teardown.md` / `rules.md`, **Run on**,
-and **Duplicate / Rename / Delete**.
-
-The seeded template and one example per format:
-[Test case formats](/docs/writing-tests/test-case-formats). How to phrase
-steps well: [Writing good tests](/docs/best-practices/writing-good-tests).
-A **New folder** groups cases into a suite.
-
-## setup.md, teardown.md, rules.md
+## Steering files: setup, teardown & rules [#steering-files]
 
 Three conventional files steer how a folder executes. The right-click menu
 offers **New setup.md / teardown.md / rules.md** when they're missing; each
@@ -97,21 +77,22 @@ and teardowns still frame it. A failing setup blocks exactly the tests below
 it; sibling suites are unaffected.
 
 The chain wraps like an onion — each folder level opens before and closes
-after everything inside it. Running the `checkout` suite:
+after everything inside it. Pressing **Run** on the `checkout` suite:
 
 ```mermaid
 flowchart LR
-  A[tests/<br/>setup.md] --> B[checkout/<br/>setup.md] --> C[pay_with_card] --> D[pay_with_invoice] --> E[checkout/<br/>teardown.md] --> F[tests/<br/>teardown.md]
+  RUN([▶ Run<br/>checkout on Windows Desktop]) --> A
+  A[1<br/>tests/<br/>setup.md] --> B[2<br/>checkout/<br/>setup.md] --> C[3<br/>pay_with_card] --> D[4<br/>pay_with_invoice] --> E[5<br/>checkout/<br/>teardown.md] --> F[6<br/>tests/<br/>teardown.md]
   R[rules.md — applies to every phase] -.-> A & B & C & D & E & F
 ```
 
-### setup.md — runs first
+### Setup — runs first
 
 The suite's entry criteria: log in, reset data, open the application. Runs
 once, before any case — a failing setup records the suite's cases as broken
 instead of executing them against a bad state.
 
-```md
+```md title="setup.md"
 ## Setup Steps
 
 1. FILL IN: open the application under test and wait until it is fully visible.
@@ -119,24 +100,24 @@ instead of executing them against a bad state.
 3. Verify the start screen has loaded before any test starts.
 ```
 
-### teardown.md — runs last
+### Teardown — runs last
 
 Cleanup after the suite: sign out, delete created records. Runs even after
 failures.
 
-```md
+```md title="teardown.md"
 ## Teardown Steps
 
 1. FILL IN: close the application under test.
 2. Clear any temporary files created during testing.
 ```
 
-### rules.md — applies throughout
+### Rules — apply throughout
 
 Standing instructions for every phase — not a test, context: interaction
 style, error handling, things never to do.
 
-```md
+```md title="rules.md"
 # Execution rules for this folder
 
 ## Interaction
@@ -203,15 +184,26 @@ Cross-platform profiles connect and report status, but runs against them are
 not supported yet — the case is ready for when they are.
 </Callout>
 
-## Use secrets in a test
+## Create a test case
 
-Never write credentials into a case — reference
-[named secrets](/docs/extending/secrets) instead:
+1. Right-click in the file tree → **New Markdown** (or **New CSV**).
+2. Name the file and write the case: preconditions, steps with expected
+   results, postconditions.
 
-```md
-Sign in with the QA credentials — the secrets named
-`QA_USERNAME` and `QA_PASSWORD`.
-```
+<img
+  src="/docs-rewrite/screenshots/desktop-tests-context-menu.png"
+  alt="The file tree's right-click menu with New Markdown, New CSV, New folder, and the quick-create entries for setup, teardown, and rules"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+The same menu holds everything on this page: creating files and folders, the
+quick-create entries for `setup.md` / `teardown.md` / `rules.md`, **Run on**,
+and **Duplicate / Rename / Delete**.
+
+The seeded template and one example per format:
+[Test case formats](/docs/writing-tests/test-case-formats). How to phrase
+steps well: [Writing good tests](/docs/best-practices/writing-good-tests).
+A **New folder** groups cases into a suite.
 
 ## Run a test case
 
@@ -229,3 +221,13 @@ operations — visible in Git like any other change to your
 There is no skip flag: to leave a case out temporarily, run a
 [plan](/docs/writing-tests/plans) that doesn't include it, or move the file
 out of `tests/`.
+
+## Use secrets in a test
+
+Never write credentials into a case — reference
+[named secrets](/docs/extending/secrets) instead:
+
+```md
+Sign in with the QA credentials — the secrets named
+`QA_USERNAME` and `QA_PASSWORD`.
+```
