@@ -13,8 +13,9 @@ page: a file tree on the left, the editor and Run controls on the right.
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
-The `tests/` folder holds everything: a file is a case, a sub-folder is a
-suite, and three conventional files steer execution per folder:
+The `tests/` folder holds everything. Two rules build the whole structure:
+**a file is a test case, a folder is a suite** — and suites nest, so the
+tree mirrors your test structure plan:
 
 <Files>
   <Folder name="tests" defaultOpen>
@@ -28,8 +29,29 @@ suite, and three conventional files steer execution per folder:
       <File name="pay_with_card.md" />
       <File name="pay_with_invoice.md" />
     </Folder>
+    <Folder name="user-management" defaultOpen>
+      <File name="create_user.md" />
+      <File name="delete_user.md" />
+    </Folder>
   </Folder>
 </Files>
+
+| Entry | What it is |
+| --- | --- |
+| `login_test.md` | A single test case — the file name is the test's name in runs and reports |
+| `user_matrix.csv` | Also test cases — one per row; every [format](/docs/writing-tests/test-case-formats) sits side by side in the same tree |
+| `checkout/` | A suite: its cases run together, framed by the suite's own `setup.md`. Nest deeper for sub-suites |
+| `user-management/` | A sibling suite — no steering files of its own, so only the outer ones apply. Suites are independent: a failing `checkout/setup.md` never touches it |
+| `rules.md`, `setup.md`, `teardown.md` | Steering files, allowed at **every** level — each scopes to its folder and everything below ([scope](#scope--which-tests-they-apply-to)) |
+
+**Scope at a glance:** the steering files reach downward, never sideways.
+In the tree above, `checkout/pay_with_card.md` runs framed by
+`tests/setup.md` *and* `checkout/setup.md`, under the outer `rules.md`;
+`user-management/create_user.md` gets only the outer files. The exact
+execution order: [Scope — which tests they apply to](#scope--which-tests-they-apply-to).
+
+Any level can be a run target: one file, one suite, or the whole tree —
+folder structure is also your run granularity.
 
 ## Create a test case
 
