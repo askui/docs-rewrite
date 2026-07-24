@@ -30,3 +30,66 @@ description: Frequently asked questions about AskUI — capabilities, runs, bill
 Experiencing a specific error or unexpected behavior? See
 [Troubleshooting](/docs/troubleshooting) for step-by-step fixes, or
 [Get help](/docs/support/get-help) to contact the team.
+
+---
+
+## Find your question
+
+The docs answer these directly — each question links to the page that
+answers it.
+
+### Getting started & concepts
+
+| Question | Answered in |
+| --- | --- |
+| What is a CUA agent, and how does AskUI execute a test? | [How AskUI works](/docs/concepts/how-askui-works) |
+| Why did the agent do it differently than last run? | [How a run executes](/docs/concepts/how-a-run-executes#why-execution-differs) |
+| What leaves our network, and what is stored where? | [Architecture & data flow](/docs/concepts/architecture-and-data-flow) |
+| Proxy, air-gapped use, CI runners, OS support? | [Infrastructure requirements](/docs/concepts/architecture-and-data-flow#infrastructure-requirements) |
+| Should testers, developers, or both own the testware? | [AskUI in your organization](/docs/concepts/team-setups) |
+| Can I run without an AskUI account? | [License key activation](/docs/get-started/licensing) |
+
+### Devices
+
+| Question | Answered in |
+| --- | --- |
+| Which device kinds exist, and how do I create a profile? | [Devices](/docs/devices) |
+| How does a test know which device to use? | [Devices → How a test picks its device](/docs/devices#how-a-test-picks-its-device) |
+| Does a desktop run take over my mouse and keyboard? | [Devices → It uses your mouse and keyboard](/docs/devices#it-uses-your-mouse-and-keyboard) |
+| What do the emulator's Booting / Ready states mean? | [Android emulator → Run it](/docs/devices/android-emulator#run-it) |
+| How do I test on a real Android phone? | [Android phone](/docs/devices/android-phone) |
+| Can I test iOS from Windows? | [iOS simulator](/docs/devices/ios-simulator) |
+| Can one agent drive several machines in one test? | [Multi computer](/docs/devices/multi-computer) |
+
+### Writing tests
+
+| Question | Answered in |
+| --- | --- |
+| How do I create a test case, and what shape does it have? | [Test cases](/docs/writing-tests) |
+| Which file formats can a test case have? | [Test case formats](/docs/writing-tests/test-case-formats) |
+| When do I use setup.md, teardown.md, rules.md? | [Test cases → suite files](/docs/writing-tests#setupmd-teardownmd-rulesmd) |
+| How do I reuse a step sequence across tests? | [Test cases → Procedures](/docs/writing-tests#procedures) |
+| How do I keep credentials out of test files? | [Secrets](/docs/extending/secrets) |
+| Can one case target desktop and mobile together? | [Test cases → Target multiple platforms](/docs/writing-tests#target-multiple-platforms) |
+| How do I skip a case temporarily? | [Test cases → skip](/docs/writing-tests#duplicate-rename-delete--and-skip) |
+| How do I group tests into smoke / regression sets? | [Plans](/docs/writing-tests/plans) |
+| How do I write steps the agent executes reliably? | [Writing good tests](/docs/best-practices/writing-good-tests) |
+
+### Running & results
+
+| Question | Answered in |
+| --- | --- |
+| How do I start a run, and what happens during one? | [Running a test](/docs/running-tests) |
+| Can I watch the agent while it works? | [Running → Watch it live](/docs/running-tests#watch-it-live) |
+| How do I run suites automatically every day? | [Scheduling](/docs/running-tests/scheduling) |
+| How do I run headless in CI? | [AskUI in CI](/docs/guides/askui-in-ci) |
+| How do I read the report, and what do the statuses mean? | [Reading a run report](/docs/results/run-report) |
+| Where do I see trends across runs? | [Run report → Dashboard](/docs/results/run-report#dashboard) |
+
+### Extending
+
+| Question | Answered in |
+| --- | --- |
+| What is the agent allowed to do, and how do I restrict it? | [Tools](/docs/extending/tools) |
+| The built-in tools aren't enough — now what? | [Custom tools](/docs/extending/custom-tools) · [MCP servers](/docs/extending/mcp) |
+| Can I use my own AI model instead of the AskUI hub? | [Model providers](/docs/extending/model-providers) |
