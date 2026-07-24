@@ -37,6 +37,16 @@ suite, and three conventional files steer execution per folder:
 2. Name the file and write the case: preconditions, steps with expected
    results, postconditions.
 
+<img
+  src="/docs-rewrite/screenshots/desktop-tests-context-menu.png"
+  alt="The file tree's right-click menu with New Markdown, New CSV, New folder, and the quick-create entries for setup, teardown, and rules"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+The same menu holds everything on this page: creating files and folders, the
+quick-create entries for `setup.md` / `teardown.md` / `rules.md`, **Run on**,
+and **Duplicate / Rename / Delete**.
+
 The seeded template and one example per format:
 [Test case formats](/docs/writing-tests/test-case-formats). How to phrase
 steps well: [Writing good tests](/docs/best-practices/writing-good-tests).
@@ -47,8 +57,22 @@ A **New folder** groups cases into a suite.
 Three conventional files steer how a folder executes. The right-click menu
 offers **New setup.md / teardown.md / rules.md** when they're missing; each
 seeds a template with `FILL IN` placeholders — replace those, keep the shape.
-In nested suites, setups run top-down, teardowns bottom-up, and rules
-accumulate per level.
+
+### Scope — which tests they apply to
+
+Each file scopes to **its folder and everything below it**. With the tree
+above, running `checkout/pay_with_card.md` executes:
+
+1. `tests/setup.md` — outer entry criteria first
+2. `checkout/setup.md` — the suite's own entry criteria
+3. `checkout/pay_with_card.md` — the case, under **both** `rules.md` levels
+4. `checkout/teardown.md` — innermost cleanup first
+5. `tests/teardown.md` — outer cleanup last
+
+Setups run top-down, teardowns bottom-up, rules accumulate per level — and
+this holds even when you run a **single file**: its ancestor folders' setups
+and teardowns still frame it. A failing setup blocks exactly the tests below
+it; sibling suites are unaffected.
 
 ### setup.md — runs first
 

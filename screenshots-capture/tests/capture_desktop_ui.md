@@ -54,19 +54,25 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     the Run controls (Run button, Run-on picker) are visible. Call
     `save_screenshot[desktop-tests-run]`.
 
-11. Click the alarm-clock button next to the Run controls to open the
+11. Right-click on an empty area of the file tree (below the last file) so the
+    context menu opens with its **Create** section — "New Markdown",
+    "New CSV", "New folder", and any "New setup.md"-style entries. With the
+    menu open, call `save_screenshot[desktop-tests-context-menu]`, then press
+    Escape to close it — do NOT click any menu entry.
+
+12. Click the alarm-clock button next to the Run controls to open the
     **Scheduled runs** dialog. When it is shown, call
     `save_screenshot[desktop-schedule-dialog]`, then close it — do NOT add a
     schedule.
 
-12. Open the **Utils** page, **Tools** tab. Wait for the tool list, then call
+13. Open the **Utils** page, **Tools** tab. Wait for the tool list, then call
     `save_screenshot[desktop-utils-tools]`.
 
-13. Switch to the **Secrets** tab, then call
+14. Switch to the **Secrets** tab, then call
     `save_screenshot[desktop-utils-secrets]`. Do NOT add, edit, or reveal any
     secret.
 
-14. Switch to the **MCP** tab, then call `save_screenshot[desktop-utils-mcp]`.
+15. Switch to the **MCP** tab, then call `save_screenshot[desktop-utils-mcp]`.
 
 ## Done
 The capture is successful when each screen above was shown and saved. Report one
