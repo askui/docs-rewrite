@@ -47,16 +47,16 @@ suite's own rules on top — but only inside `tests/checkout/`.
 top-down, teardowns bottom-up — pressing **Run** on the `checkout` suite:
 
 ```mermaid
-flowchart LR
+flowchart TB
   RUN(["▶ Run
 checkout on Windows Desktop"]) --> A
   subgraph CHAIN["scope of tests/"]
-    direction LR
+    direction TB
     R1["tests/rules.md
 applies to every phase"]
     R1 ~~~ A["1 · tests/setup.md"]
     subgraph CO["scope of tests/checkout/"]
-      direction LR
+      direction TB
       R2["tests/checkout/rules.md
 adds rules inside this scope"]
       R2 ~~~ B["2 · tests/checkout/setup.md"]
