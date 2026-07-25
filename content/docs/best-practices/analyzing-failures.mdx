@@ -121,7 +121,15 @@ this screen. Escalate in this order:
 
 ### The agent takes a lot of steps
 
-It is unsure how your application behaves — teach it in
+**How you see it:** the
+[conversation log](/docs/results#conversation-log)'s TEST header shows the
+tool-call count per case — compare it with earlier runs of the same case
+(a case that normally takes ~13 calls suddenly needs 45). Watching
+[live](/docs/running-tests#watch-it-live), wandering looks like repeated
+screenshots and back-and-forth navigation; the token numbers per step add
+up to the cost of it.
+
+**Why:** it is unsure how your application behaves — teach it in
 [UI information](/docs/writing-tests/agents-and-prompts#ui-information) and
 make vague goals precise.
 
