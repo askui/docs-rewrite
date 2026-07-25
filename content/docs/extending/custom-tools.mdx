@@ -9,6 +9,12 @@ agent's toolbox for every run of the project — for anything no built-in
 covers: your product's admin API, resetting test users, seeding data.
 Manage the files under **Utils → Custom Tools**.
 
+<Callout type="warn" title="Developer territory">
+Custom tools are C# code with full machine access, running inside every run
+of the project. They should be implemented and validated by your developers
+or the AskUI Solution Engineering team — not edited ad hoc by test authors.
+</Callout>
+
 <img
   src="/docs-rewrite/screenshots/desktop-utils-custom.png"
   alt="The Custom Tools tab on the Utils page listing the project's .cs tool files with a drop zone"
@@ -172,6 +178,20 @@ public sealed class CompareWithReferenceTool : Tool
 
 Because the constructor requires `IAgentOs`, this tool exists only on
 computer and web runs — on an Android run it is skipped with a warning.
+
+## Keep results small
+
+Everything a tool returns goes into the agent's conversation and is sent to
+the model on every following step — it costs
+[tokens](/docs/troubleshooting/performance-cost) for the rest of the test.
+Return what the agent needs to decide the step, not everything you have:
+
+- Cap lists and truncate long text — the built-in SQL tool pages at 20 rows
+  for exactly this reason.
+- Aggregate instead of dumping — "3 files, newest: report.pdf" beats 500
+  file names.
+- Images are the most expensive result — return one, sized to what the
+  agent must see.
 
 Files compile when a run starts (cached; unchanged files cost nothing). A
 file that doesn't compile **aborts the run**, with the error as the first
