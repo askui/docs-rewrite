@@ -13,8 +13,12 @@ page is the loop for **why** — and where the fix belongs.
    which cases didn't pass, and with which status?
    - **`FAILED`**: the application misbehaved — or the test told the agent
      the wrong thing. Continue with step 2.
-   - **`BROKEN`**: infrastructure, not the application — device lost,
-     session expired, model unreachable. Two ways to resolve:
+   - **`BROKEN`**: infrastructure, not the application. Typically one of:
+     the **device connection** dropped (AgentOS unreachable, emulator died,
+     browser session gone), the **AI model** was unreachable (network,
+     proxy, expired token), the **test machine** wasn't usable (locked
+     screen, display asleep), or a **peripheral** the test depends on
+     failed (scanner, printer). Two ways to resolve:
      - **Fix the issue itself** — the network, the hardware, the session
        ([Troubleshooting](/docs/troubleshooting)).
      - **Or let the agent resolve it**: give it a
