@@ -167,6 +167,18 @@ table rows:
     without an error message.
 ```
 
+The loop body can hold several sub-steps — the same lettered pattern as
+conditions. Keep the set bounded:
+
+```md
+16. For the first 3 orders in the list:
+    a. Open the order — the detail view shows its order number.
+    b. Verify the order contains at least one line item.
+    c. Add the comment "checked by QA" and save — the comment appears in
+       the order history.
+    d. Return to the order list — it shows the same rows as before.
+```
+
 <Callout type="warn" title="Iteration tends to be unstable">
 The agent has to keep count on a screen that changes with every action —
 long or unbounded iterations drift. Keep the set small and verifiable
@@ -182,9 +194,9 @@ Say explicitly what must **not** happen — the agent honors prohibitions like
 a tester honors a warning in the test spec:
 
 ```md
-16. Click **Submit** exactly once — do NOT press it again, even if the page
+17. Click **Submit** exactly once — do NOT press it again, even if the page
     seems to hang.
-17. Do NOT dismiss the license dialog; the test verifies its content first.
+18. Do NOT dismiss the license dialog; the test verifies its content first.
 ```
 
 For prohibitions that apply to every test in a folder ("never change the
@@ -198,7 +210,7 @@ One step runs a whole [procedure](/docs/writing-tests/procedures) — name it
 and say what fills its parameters:
 
 ```md
-18. Log in using the `login_to_ui` procedure with the QA username and
+19. Log in using the `login_to_ui` procedure with the QA username and
    password secrets.
 ```
 
@@ -208,7 +220,7 @@ Reference credentials by name, never by value —
 [secrets](/docs/extending/secrets):
 
 ```md
-19. Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
+20. Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
 ```
 
 ## Tool invocations
@@ -218,9 +230,9 @@ requests, SQL statements, shell scripts, QR scanning. Describing the action
 is usually enough; when two tools could match, name the tool explicitly:
 
 ```md
-20. Perform an HTTP GET request to `https://example.com`.
-21. Scan the QR code from the screen — the decoded text contains "wikipedia".
-22. Use the `sql_database` tool to run the statement `test_data`.
+21. Perform an HTTP GET request to `https://example.com`.
+22. Scan the QR code from the screen — the decoded text contains "wikipedia".
+23. Use the `sql_database` tool to run the statement `test_data`.
 ```
 
 Tool names are listed under **Utils → Tools** — each card carries the name
@@ -234,6 +246,6 @@ per step; a `platforms:` first line marks a
 [cross-platform case](/docs/writing-tests#target-multiple-platforms):
 
 ```md
-23. On the **server**, start the message service.
-24. On the **client**, send a message to the server.
+24. On the **server**, start the message service.
+25. On the **client**, send a message to the server.
 ```
