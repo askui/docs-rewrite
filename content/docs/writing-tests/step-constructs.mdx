@@ -74,6 +74,17 @@ steps can branch on what is actually there:
 7. If a cookie banner appears, dismiss it before continuing.
 ```
 
+## Optional executions
+
+A step that only applies in some situations — and whose absence is **not** a
+failure. Say what to do when the situation doesn't occur, so the report
+shows SKIPPED instead of FAILED:
+
+```md
+8. If the tutorial overlay is shown on first start, dismiss it — otherwise
+   mark this step SKIPPED and continue.
+```
+
 ## Waits
 
 Normally you don't need waits — the agent sees the screen and won't act on a
@@ -81,13 +92,13 @@ half-loaded page. When it gets impatient anyway, tell it **what to look
 for**, not how long to wait:
 
 ```md
-8. Wait until the start screen loads.
+9. Wait until the start screen loads.
 ```
 
 A fixed duration is the last resort, for settling you can't describe:
 
 ```md
-9. Wait 3 seconds for the page to settle.
+10. Wait 3 seconds for the page to settle.
 ```
 
 ## Timeouts
@@ -97,7 +108,7 @@ what happens when time is up — otherwise a hanging application under test
 turns into an endlessly patient agent:
 
 ```md
-10. Start the export. If the success message does not appear within about
+11. Start the export. If the success message does not appear within about
    2 minutes, mark the step FAILED and continue with the next test.
 ```
 
@@ -113,7 +124,7 @@ expected — an agent that helpfully works around a defect masks exactly what
 the test exists to find:
 
 ```md
-11. Open the customer record ACME-42. If an error dialog appears instead,
+12. Open the customer record ACME-42. If an error dialog appears instead,
     mark the test FAILED and stop — do NOT retry or work around it.
 ```
 
@@ -131,8 +142,8 @@ number shown on screen — can be noted in one step and referenced in a later
 one; the agent carries what it saw through the whole test:
 
 ```md
-12. Create a new user — note the user ID shown in the confirmation dialog.
-13. Open the user list and click the entry with the user ID noted in step 12.
+13. Create a new user — note the user ID shown in the confirmation dialog.
+14. Open the user list and click the entry with the user ID noted in step 12.
 ```
 
 The seeded cross-platform example uses the same pattern across devices: read
@@ -145,7 +156,7 @@ A step can repeat over what's on screen — "for every …" across lists, tabs,
 table rows:
 
 ```md
-14. For every tab in the Settings dialog: open it and verify it loads
+15. For every tab in the Settings dialog: open it and verify it loads
     without an error message.
 ```
 
@@ -164,9 +175,9 @@ Say explicitly what must **not** happen — the agent honors prohibitions like
 a tester honors a warning in the test spec:
 
 ```md
-15. Click **Submit** exactly once — do NOT press it again, even if the page
+16. Click **Submit** exactly once — do NOT press it again, even if the page
     seems to hang.
-16. Do NOT dismiss the license dialog; the test verifies its content first.
+17. Do NOT dismiss the license dialog; the test verifies its content first.
 ```
 
 For prohibitions that apply to every test in a folder ("never change the
@@ -180,7 +191,7 @@ One step runs a whole [procedure](/docs/writing-tests/procedures) — name it
 and say what fills its parameters:
 
 ```md
-17. Log in using the `login_to_ui` procedure with the QA username and
+18. Log in using the `login_to_ui` procedure with the QA username and
    password secrets.
 ```
 
@@ -190,7 +201,7 @@ Reference credentials by name, never by value —
 [secrets](/docs/extending/secrets):
 
 ```md
-18. Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
+19. Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
 ```
 
 ## Tool invocations
@@ -200,9 +211,9 @@ requests, SQL statements, shell scripts, QR scanning. Describing the action
 is usually enough; when two tools could match, name the tool explicitly:
 
 ```md
-19. Perform an HTTP GET request to `https://example.com`.
-20. Scan the QR code from the screen — the decoded text contains "wikipedia".
-21. Use the `sql_database` tool to run the statement `test_data`.
+20. Perform an HTTP GET request to `https://example.com`.
+21. Scan the QR code from the screen — the decoded text contains "wikipedia".
+22. Use the `sql_database` tool to run the statement `test_data`.
 ```
 
 Tool names are listed under **Utils → Tools** — each card carries the name
@@ -216,6 +227,6 @@ per step; a `platforms:` first line marks a
 [cross-platform case](/docs/writing-tests#target-multiple-platforms):
 
 ```md
-22. On the **server**, start the message service.
-23. On the **client**, send a message to the server.
+23. On the **server**, start the message service.
+24. On the **client**, send a message to the server.
 ```
