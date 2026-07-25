@@ -64,9 +64,12 @@ Because the agent [reads the screen before every step](/docs/concepts/how-a-run-
 steps can branch on what is actually there:
 
 ```md
-5. If the result says more rows are available, call it again with the
+5. Check whether a window named "AskUI Desktop" is already open. If yes,
+   bring it to the front — otherwise open the Start menu, search for
+   "AskUI Desktop" and start it.
+6. If the result says more rows are available, call it again with the
    suggested offset — otherwise continue.
-6. If a cookie banner appears, dismiss it before continuing.
+7. If a cookie banner appears, dismiss it before continuing.
 ```
 
 ## Waits
@@ -76,13 +79,13 @@ half-loaded page. When it gets impatient anyway, tell it **what to look
 for**, not how long to wait:
 
 ```md
-7. Wait until the start screen loads.
+8. Wait until the start screen loads.
 ```
 
 A fixed duration is the last resort, for settling you can't describe:
 
 ```md
-8. Wait 3 seconds for the page to settle.
+9. Wait 3 seconds for the page to settle.
 ```
 
 ## Timeouts
@@ -92,7 +95,7 @@ what happens when time is up — otherwise a hanging application under test
 turns into an endlessly patient agent:
 
 ```md
-9. Start the export. If the success message does not appear within about
+10. Start the export. If the success message does not appear within about
    2 minutes, mark the step FAILED and continue with the next test.
 ```
 
@@ -108,7 +111,7 @@ expected — an agent that helpfully works around a defect masks exactly what
 the test exists to find:
 
 ```md
-10. Open the customer record ACME-42. If an error dialog appears instead,
+11. Open the customer record ACME-42. If an error dialog appears instead,
     mark the test FAILED and stop — do NOT retry or work around it.
 ```
 
@@ -144,9 +147,9 @@ Say explicitly what must **not** happen — the agent honors prohibitions like
 a tester honors a warning in the test spec:
 
 ```md
-11. Click **Submit** exactly once — do NOT press it again, even if the page
+12. Click **Submit** exactly once — do NOT press it again, even if the page
     seems to hang.
-12. Do NOT dismiss the license dialog; the test verifies its content first.
+13. Do NOT dismiss the license dialog; the test verifies its content first.
 ```
 
 For prohibitions that apply to every test in a folder ("never change the
@@ -160,7 +163,7 @@ One step runs a whole [procedure](/docs/writing-tests/procedures) — name it
 and say what fills its parameters:
 
 ```md
-13. Log in using the `login_to_ui` procedure with the QA username and
+14. Log in using the `login_to_ui` procedure with the QA username and
    password secrets.
 ```
 
@@ -170,7 +173,7 @@ Reference credentials by name, never by value —
 [secrets](/docs/extending/secrets):
 
 ```md
-14. Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
+15. Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
 ```
 
 ## Tool invocations
@@ -180,9 +183,9 @@ requests, SQL statements, shell scripts, QR scanning. Describing the action
 is usually enough; when two tools could match, name the tool explicitly:
 
 ```md
-15. Perform an HTTP GET request to `https://example.com`.
-16. Scan the QR code from the screen — the decoded text contains "wikipedia".
-17. Use the `sql_database` tool to run the statement `test_data`.
+16. Perform an HTTP GET request to `https://example.com`.
+17. Scan the QR code from the screen — the decoded text contains "wikipedia".
+18. Use the `sql_database` tool to run the statement `test_data`.
 ```
 
 Tool names are listed under **Utils → Tools** — each card carries the name
@@ -196,6 +199,6 @@ per step; a `platforms:` first line marks a
 [cross-platform case](/docs/writing-tests#target-multiple-platforms):
 
 ```md
-18. On the **server**, start the message service.
-19. On the **client**, send a message to the server.
+19. On the **server**, start the message service.
+20. On the **client**, send a message to the server.
 ```
