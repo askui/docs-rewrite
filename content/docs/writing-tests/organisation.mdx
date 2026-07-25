@@ -50,12 +50,17 @@ top-down, teardowns bottom-up — pressing **Run** on the `checkout` suite:
 flowchart LR
   RUN(["▶ Run
 checkout on Windows Desktop"]) --> A
-  subgraph CHAIN["scope of tests/ — rules.md applies to every phase"]
+  subgraph CHAIN["scope of tests/"]
     direction LR
-    A["1 · tests/setup.md"]
-    subgraph CO["scope of tests/checkout/ — checkout/rules.md adds rules here"]
+    R1["tests/rules.md
+applies to every phase"]
+    R1 ~~~ A["1 · tests/setup.md"]
+    subgraph CO["scope of tests/checkout/"]
       direction LR
-      B["2 · tests/checkout/setup.md"] --> C["3 · tests/checkout/pay_with_card.md"] --> D["4 · tests/checkout/pay_with_invoice.md"] --> E["5 · tests/checkout/teardown.md"]
+      R2["tests/checkout/rules.md
+adds rules inside this scope"]
+      R2 ~~~ B["2 · tests/checkout/setup.md"]
+      B --> C["3 · tests/checkout/pay_with_card.md"] --> D["4 · tests/checkout/pay_with_invoice.md"] --> E["5 · tests/checkout/teardown.md"]
     end
     A --> B
     E --> F["6 · tests/teardown.md"]

@@ -16,6 +16,24 @@ Describe intent; the agent works out the clicks and keystrokes:
 1. Open the Start menu, type `Notepad`, and press Enter.
 ```
 
+## Element descriptions
+
+Describe a UI element the way you'd point it out to a colleague — by any
+visible feature, combined freely:
+
+| Kind | Example |
+| --- | --- |
+| **Text** | Click the button labeled **"Save"** |
+| **Icon** | Click the **gear icon** in the toolbar |
+| **Color** | Click the **green** Connect button |
+| **Location** | The search field **at the top right** |
+| **Relation** | The Delete button **next to** the second list entry, the field **below** "Username" |
+
+The more distinguishing features, the more reliable the step — "click the
+button" fails on a screen with ten buttons; "the green Connect button on the
+Windows Desktop card" doesn't. Phrasing guidance:
+[Writing good tests](/docs/best-practices/writing-good-tests).
+
 ## Expected results
 
 Pair every action with what must be true afterwards — that pair becomes the
@@ -58,6 +76,22 @@ You don't have to script every eventuality — the agent adapts to the screen
 it sees (a popup, a different layout, a scrolled list) as long as the
 expected result stays checkable. Constrain unwanted freedom with
 [rules](/docs/writing-tests/setup-teardown-rules#rules).
+
+## Exclusions
+
+Say explicitly what must **not** happen — the agent honors prohibitions like
+a tester honors a warning in the test spec:
+
+```md
+15. Click **Submit** exactly once — do NOT press it again, even if the page
+    seems to hang.
+16. Do NOT dismiss the license dialog; the test verifies its content first.
+```
+
+For prohibitions that apply to every test in a folder ("never change the
+language setting", "never sign out"), put them in
+[rules.md](/docs/writing-tests/setup-teardown-rules#rules) instead of
+repeating them per step.
 
 ## Procedure calls
 
