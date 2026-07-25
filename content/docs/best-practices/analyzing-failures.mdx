@@ -76,18 +76,40 @@ and after.
 ### The agent misclicks
 
 The [locator](/docs/writing-tests/step-constructs#locators) is ambiguous on
-this screen — make the element description more specific. Still not enough?
-Enable the **Screen zoom** [tool](/docs/extending/tools).
+this screen. Escalate in this order:
+
+1. **Quote the exact label** the UI shows — `"Sign-Up"` beats "the login
+   button".
+2. **Add relations** — position and neighbors.
 
 <div className="grid gap-3 md:grid-cols-2">
 
-```md title="tests/connect_device.md — before"
-3. Click Connect.
+```md title="tests/login_test.md — before"
+2. Please press the login button.
 ```
 
-```md title="tests/connect_device.md — after"
-3. Click the green **Connect** button
-   on the "Windows Desktop" card.
+```md title="tests/login_test.md — after"
+2. Press the "Sign-Up" button —
+   top right, next to "Log in".
+```
+
+</div>
+
+3. **Still misclicking?** Tell the agent to use the **Screen zoom**
+   [tool](/docs/extending/tools) for small targets — and add a verification
+   step so the click's effect is checked:
+
+<div className="grid gap-3 md:grid-cols-2">
+
+```md title="tests/signup_test.md — before"
+4. Accept the terms.
+```
+
+```md title="tests/signup_test.md — after"
+4. Use the zoom tool to click the
+   "Accept AGB" checkbox.
+5. Check afterwards that the
+   checkbox is checked.
 ```
 
 </div>
