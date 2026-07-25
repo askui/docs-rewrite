@@ -1,60 +1,45 @@
 ---
-title: Proxy & SSL
-description: Configure a proxy and fix SSL certificate errors from deep-packet-inspection proxies.
+title: Proxy & TLS
+description: Configure the network proxy inside the app and fix TLS errors caused by traffic-inspecting corporate proxies.
 ---
 
-### Configure a proxy
+### Configure the proxy
 
-AskUI Desktop and the CLI respect the standard proxy environment variables.
-Set them before launching:
+The proxy is configured **in the app** — no environment variables:
 
-<Tabs items={['Windows PowerShell', 'macOS/Linux']}>
-  <Tab value="Windows PowerShell">
-    ```powershell
-    $env:HTTP_PROXY="http://proxy.example.com:8080"
-    $env:HTTPS_PROXY="http://proxy.example.com:8080"
-    $env:NO_PROXY="localhost,127.0.0.1"
-    ```
-  </Tab>
-  <Tab value="macOS/Linux">
-    ```bash
-    export HTTP_PROXY="http://proxy.example.com:8080"
-    export HTTPS_PROXY="http://proxy.example.com:8080"
-    export NO_PROXY="localhost,127.0.0.1"
-    ```
-  </Tab>
-</Tabs>
+1. Open **Settings → Network proxy**. (During license setup, the same form
+   is in the wizard under **Behind a proxy? Configure network access**.)
+2. Choose the **Proxy** mode:
+   - **Use system proxy (recommended)** — the Windows proxy/PAC
+     configuration applies.
+   - **Manual proxy address** — enter the fields:
+     - **Proxy address** — e.g. `http://proxy.corp.example:8080`
+     - **Bypass for** — hosts reached directly, separated by semicolons
+       (e.g. `*.corp.example; 10.0.0.*`). Localhost is always bypassed.
+   - **No proxy (direct connection)**.
+3. Choose **Proxy authentication**:
+   - **Automatic (recommended)** — if the proxy asks for sign-in
+     (HTTP 407), your current OS account answers automatically
+     (NTLM / Kerberos). No password is stored, and nothing is sent unless
+     the proxy actually asks.
+   - **Username and password** — stored encrypted on this machine; it
+     never leaves it.
+   - **Never authenticate**.
 
-### Deep-packet-inspection proxies (Zscaler and similar)
+### TLS errors behind inspecting proxies (Zscaler and similar)
 
-Some corporate proxies intercept HTTPS traffic and inject a custom root
-certificate. This can cause SSL errors like:
+Some corporate proxies inspect HTTPS traffic and re-sign it with their own
+root certificate. The app then reports:
 
 ```
-SSL: CERTIFICATE_VERIFY_FAILED
+The secure (TLS) connection could not be established.
 ```
 
-**Solution:** Disable SSL verification as a temporary workaround while you
-get the proxy certificate added to your system trust store:
+1. Check your internet connection first — an interrupted connection fails
+   with this same error.
+2. If you are online and on a corporate network, ask your IT department to
+   **install the corporate root certificate into the Windows certificate
+   store** — or to exclude the app's endpoints from inspection.
 
-<Tabs items={['Windows PowerShell', 'macOS/Linux']}>
-  <Tab value="Windows PowerShell">
-    ```powershell
-    $env:ASKUI_HTTP_SSL_VERIFICATION="false"
-    ```
-  </Tab>
-  <Tab value="macOS/Linux">
-    ```bash
-    export ASKUI_HTTP_SSL_VERIFICATION=false
-    ```
-  </Tab>
-</Tabs>
-
-<Callout type="warn">
-Disabling SSL verification reduces security. Re-enable it once your proxy
-certificate is trusted by the OS certificate store.
-</Callout>
-
-The permanent fix is to add your proxy's root certificate to the system
-certificate store. Contact your IT/network team for the certificate file and
-import instructions for your OS.
+There is no switch to disable TLS verification — the certificate has to be
+trusted by the OS.
