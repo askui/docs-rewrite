@@ -6,11 +6,13 @@ description: Run a test or plan automatically — daily at a time or every N min
 A schedule runs a test or [plan](/docs/writing-tests/plans) on
 a device profile without you pressing Run.
 
-<Callout type="warn" title="Only while the app is open">
-AskUI Desktop is not a background service. Schedules fire only while the app
-runs; a missed firing is not made up. A due schedule never double-fires, even
-when a run outlasts its interval. For unattended runs on a build server, use
-the [CLI](/docs/running-tests/cli) with your CI scheduler.
+<Callout type="warn" title="A closed app means missed runs">
+Schedules fire only while AskUI Desktop is running — it is not a background
+service. Close the app, or let the machine sleep or shut down, and the
+scheduled run silently does not happen: no firing, no report, and no catch-up
+when the app comes back. For runs that must never be missed — the nightly
+regression — use the [CLI](/docs/running-tests/cli) on a build server with
+your CI scheduler.
 </Callout>
 
 ## Create a schedule
@@ -31,4 +33,16 @@ the [CLI](/docs/running-tests/cli) with your CI scheduler.
 
 The dialog lists every schedule in the project with its last outcome — the
 run's results, or why it was skipped (e.g. the device could not connect).
-Schedules live in the project's `schedules.json`.
+Schedules live in the project's `schedules.json`. A due schedule never
+double-fires, even when a run outlasts its interval.
+
+## Pause or delete a schedule
+
+The dialog lists every schedule in the project:
+
+1. Untick the **on** checkbox to pause a schedule — it stays configured but
+   stops firing (the row dims).
+2. Click the trash button (**Delete schedule**) to remove it.
+
+There is no edit: to change the cadence or device, delete the schedule and
+add it again.
