@@ -108,46 +108,43 @@ time.
 
 Section by section:
 
-- **Header**: test case ID, execution date, and the overall status — the
-  `**Status:**` line is what the
-  [runner parses](/docs/writing-tests/agents-and-prompts#report-format) as
-  the run's result.
+- **Test metadata**: who, when, and how it went.
+  - **Test Case ID**: ties the report to the
+    [test case](/docs/writing-tests) — its title ID or file name.
+  - **Date**: when the test executed.
+  - **Status**: the overall result — the `**Status:**` line is what the
+    [runner parses](/docs/writing-tests/agents-and-prompts#report-format) as
+    the run's result. One of:
+    - `PASSED` — actual result matches expected.
+    - `FAILED` — the step executed but the result didn't match.
+    - `SKIPPED` — intentionally not executed (e.g. precondition not met).
+    - `WARN` — passed, but with a caveat (slow response, minor visual
+      deviation).
+    - `BROKEN` — could not execute: crash or infrastructure failure.
+
+    The overall status is the worst of the steps: `BROKEN` if any step
+    broke, else `FAILED` if any failed, else `WARN`, else `SKIPPED` if all
+    skipped, otherwise `PASSED`.
 - **Summary**: the outcome in two sentences — read this first.
 - **Preconditions**: whether the assumed starting state was actually met —
   a test that began from the wrong state fails here, not misleadingly in a
   step.
-- **Test Steps**: per step — **Agent Interpretation** (how the agent
-  understood your instruction; check this when a step surprises you),
-  **Expected** vs. **Actual**, its own status, and the step screenshot as
-  evidence.
+- **Test Steps**: one entry per step.
+  - **Agent Interpretation**: how the agent understood your instruction —
+    check this when a step surprises you.
+  - **Expected** / **Actual**: the step's contract and what was actually
+    observed.
+  - **Status**: the step's own status, same vocabulary as above.
+  - **Screenshot**: the step's evidence (`step_<n>.png`).
 - **Postconditions**: whether the overall pass criterion held at the end.
 - **Issues**: anything worth a look that isn't a failure — the incident
   notes. In the example above: the 15-second sign-in.
 - **Conclusion**: the agent's closing assessment of the whole case.
 
-Each step carries its own status; the **overall status** is the worst of its
-steps — see [Status vocabulary](#status-vocabulary). The report's shape is
-defined by your project's
-[report format](/docs/writing-tests/agents-and-prompts#report-format).
-
-What to do with a failing report — triage, root cause, where the fix
-belongs: [Analyzing failures](/docs/best-practices/analyzing-failures).
-
-## Status vocabulary
-
-Each step — and the test overall — carries one status:
-
-| Status | Meaning |
-| --- | --- |
-| `PASSED` | Actual result matches expected. |
-| `FAILED` | Step executed but the result didn't match. |
-| `SKIPPED` | Intentionally not executed (e.g. precondition not met). |
-| `WARN` | Passed, but with a caveat (slow response, minor visual deviation). |
-| `BROKEN` | Could not execute — crash or infrastructure failure. |
-
-The overall test status is the worst of its steps: `BROKEN` if any step broke,
-else `FAILED` if any failed, else `WARN`, else `SKIPPED` if all skipped,
-otherwise `PASSED`.
+The report's shape is defined by your project's
+[report format](/docs/writing-tests/agents-and-prompts#report-format). What
+to do with a failing report — triage, root cause, where the fix belongs:
+[Analyzing failures](/docs/best-practices/analyzing-failures).
 
 ---
 
