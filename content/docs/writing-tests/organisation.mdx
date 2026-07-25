@@ -47,7 +47,7 @@ suite's own rules on top — but only inside `tests/checkout/`.
 top-down, teardowns bottom-up — pressing **Run** on the `checkout` suite:
 
 ```mermaid
-flowchart TB
+flowchart LR
   RUN(["▶ Run
 checkout on Windows Desktop"]) --> A
   subgraph CHAIN["scope of tests/"]
