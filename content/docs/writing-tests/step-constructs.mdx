@@ -1,0 +1,99 @@
+---
+icon: ListOrdered
+title: Step constructs
+description: What a test step can express — actions, verifications, conditions, waits, procedure calls, and dynamic reactions to the screen.
+---
+
+Steps are plain language, not syntax: the agent reads them the way a tester
+would. These constructs are the vocabulary that works — each example is from
+a real seeded test.
+
+## Actions
+
+Describe intent; the agent works out the clicks and keystrokes:
+
+```md
+1. Open the Start menu, type `Notepad`, and press Enter.
+```
+
+## Expected results
+
+Pair every action with what must be true afterwards — that pair becomes the
+step's expected-vs-actual entry in the [report](/docs/results/run-report):
+
+```md
+2. Click the Login button — the start screen is visible and the user is signed in.
+```
+
+## Verifications
+
+A step can be pure checking:
+
+```md
+3. Verify the response status is 200 and the body contains "Example Domain".
+4. Check whether `tests/example_test_data.csv` exists (expect yes).
+```
+
+## Conditions
+
+Because the agent [reads the screen before every step](/docs/concepts/how-a-run-executes#why-execution-differs),
+steps can branch on what is actually there:
+
+```md
+5. If the result says more rows are available, call it again with the
+   suggested offset — otherwise continue.
+6. If a cookie banner appears, dismiss it before continuing.
+```
+
+## Waits
+
+```md
+7. Wait until the start screen loads.
+8. Wait 3 seconds for the page to settle.
+```
+
+## Dynamic reactions
+
+You don't have to script every eventuality — the agent adapts to the screen
+it sees (a popup, a different layout, a scrolled list) as long as the
+expected result stays checkable. Constrain unwanted freedom with
+[rules](/docs/writing-tests/setup-teardown-rules#rules).
+
+## Procedure calls
+
+One step runs a whole [procedure](/docs/writing-tests/procedures), arguments
+in parameter order:
+
+```md
+9. Run procedure `login_to_ui[qa_user, {QA_PASSWORD}]`.
+```
+
+## Secrets
+
+Reference credentials by name, never by value —
+[secrets](/docs/extending/secrets):
+
+```md
+10. Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
+```
+
+## Tool invocations
+
+Steps can name anything the [toolbox](/docs/extending/tools) allows — HTTP
+requests, SQL statements, shell scripts, QR scanning:
+
+```md
+11. Perform an HTTP GET request to `https://example.com`.
+12. Scan the QR code from the screen — the decoded text contains "wikipedia".
+```
+
+## Targeting machines and platforms
+
+In a [multi-computer](/docs/devices/multi-computer) test, name the machine
+per step; a `platforms:` first line marks a
+[cross-platform case](/docs/writing-tests#target-multiple-platforms):
+
+```md
+13. On the **server**, start the message service.
+14. On the **client**, send a message to the server.
+```

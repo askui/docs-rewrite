@@ -112,9 +112,9 @@ executes them one at a time: perform the action, compare what it observes
 against the step's expected result, record both with a screenshot. Each step
 becomes an expected-vs-actual entry in the
 [run report](/docs/results/run-report) — so a step without an expected
-result is a step the report can't judge. Steps may call
-[procedures](/docs/writing-tests/procedures) and reference
-[secrets](#use-secrets-in-a-test).
+result is a step the report can't judge. Everything a step can express —
+conditions, waits, checks, procedure calls — is on
+[Step constructs](/docs/writing-tests/step-constructs).
 
 **Postconditions** — the overall pass criterion, phrased as a checkable end
 state: "Test passes if …". The agent judges it after the last step; this is
