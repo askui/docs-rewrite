@@ -8,7 +8,9 @@ The [test report](/docs/results/run-report) tells you **what** failed. This
 page is the loop for deciding **why** — and where the fix belongs: in the
 product, in the test, or in the environment.
 
-## Triage by status
+## Find the cause
+
+### Triage by status
 
 Start at the [summary report](/docs/results/run-report#summary-report) and
 take each non-passing case by its status:
@@ -20,7 +22,7 @@ take each non-passing case by its status:
 | `WARN` | Passed with a caveat — often the early sign of a real problem | The report's **Issues** section |
 | `SKIPPED` | An entry criterion wasn't met, or an [optional step](/docs/writing-tests/step-constructs#optional) didn't apply | The **Preconditions** section |
 
-## Read the failed step
+### Read the failed step
 
 1. Read the **Agent Interpretation** — did the agent understand the step the
    way you meant it? If not, the defect is in the test: sharpen the wording
@@ -38,7 +40,9 @@ take each non-passing case by its status:
    agent notes anomalies there (slow responses, odd dialogs) that are often
    the early warning for the next run's failure.
 
-## Behavior, cause, remedy
+## Fix it
+
+### Behavior, cause, remedy
 
 The recurring patterns, side by side:
 
@@ -52,7 +56,7 @@ The recurring patterns, side by side:
 | **operates the UI wrong** (shortcuts, keyboard instead of numpad) | It doesn't know your house style | Teach it in [ui_information](/docs/writing-tests/agents-and-prompts#ui-information) or [rules](/docs/writing-tests/setup-teardown-rules#rules) |
 | **hits random real-world disruptions** (hanging app, empty printer) | The environment, not the test | Give it the manual tester's recoveries in [rules](/docs/writing-tests/step-constructs#beyond-steps) |
 
-## Where the fix belongs
+### Where the fix belongs
 
 | Symptom | Fix it in |
 | --- | --- |
