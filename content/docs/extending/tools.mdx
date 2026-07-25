@@ -101,7 +101,7 @@ Grouped by where they reach; required parameters in bold.
   - **Use it when:** the application shows values in one base and the test
     data is in another — hex device IDs, register values.
   ```md
-  5. Verify the "Device ID" field shows the hex value of 4660.
+  5. Verify the "Device ID" field shows the hex value of 305419896.
   ```
 
 
@@ -124,7 +124,8 @@ Grouped by where they reach; required parameters in bold.
     or seeding and cleaning test data in
     [setup and teardown](/docs/writing-tests/setup-teardown-rules).
   - **Parameters:** **ODBC driver**, **Server**, **Database**, credentials,
-    Allowed statements, Allow raw SQL — full list in the add dialog.
+    Allowed statements (`name: SQL` per line — the agent runs statements by
+    these names), Allow raw SQL — full list in the add dialog.
   ```md
   9. Run the "open_orders" SQL statement — the new order appears with status NEW.
   ```
