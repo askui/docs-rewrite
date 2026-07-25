@@ -1,0 +1,29 @@
+---
+icon: ChartColumn
+title: Dashboard
+description: Every run of the project rolled into one view — counters, pass-rate trend, and status over time.
+---
+
+Where a [run report](/docs/results/run-report) covers a single execution,
+the **Dashboard** rolls every run in the project into one view — the closest
+thing to a test execution status report across your whole suite. Open the
+**Dashboard** page when you want the trend rather than one result.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-dashboard.png"
+  alt="The Dashboard in AskUI Desktop showing total runs, average pass rate, per-status counters, and a test-status-over-time chart"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+| Tile | Meaning |
+| --- | --- |
+| **Total runs** | Runs recorded in this project |
+| **Avg pass rate** | Share of passed tests across all runs. Warnings count as passed; broken tests that never executed are excluded |
+| **Passed / Failed / Broken (latest)** | The same tally for the most recent run only |
+| **Warnings (all)** | Tests that passed but flagged something, across every run |
+| **Test status over time** | One bar per run — green passed, red failed. A regression = a red bar breaking a green streak |
+| **Pass rate over time / Latest run** | The trend, and a shortcut into the newest run's report |
+
+The numbers derive from each run's
+[summary report](/docs/results/run-report#summary-report) — the counting
+rules live there.

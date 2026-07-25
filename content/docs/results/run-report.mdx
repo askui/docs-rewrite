@@ -1,25 +1,12 @@
 ---
+icon: FileText
 title: Run report
-description: The report artifacts a run produces — per-test Markdown reports and a cross-run summary — and how to read each one.
+description: The written reports a run produces — the per-test Markdown report and the run-level summary — and how to read each one.
 ---
 
-Every run writes its output into a timestamped workspace folder under
-`agent_workspace/`. Two types of report are produced:
-
-```
-agent_workspace/
-└── 2025-11-12_14-30-00/        ← one folder per run
-    ├── summary_report.md        ← run-level table
-    └── login_test/              ← one folder per test
-        ├── login_test_report.md
-        ├── step_1.png
-        └── step_2.png
-```
-
-The default workspace path is `<project-root>/agent_workspace/<UTC timestamp>`.
-You can override it with `--workspace` when running from the CLI.
-
----
+Two written reports per run — the per-test report and the run-level
+summary. Where they live and how to open them:
+[Runs](/docs/results).
 
 ## Markdown report
 
@@ -155,50 +142,8 @@ and screenshots stay attached to the run even when tests fail:
   if: always()
   with:
     name: askui-run
-    path: ./run-artifacts
+    path: agent_workspace/
 ```
-
----
-
-## Conversation log
-
-Beside the written reports, every run keeps its full conversation log — each
-agent message, tool call, and screenshot in order. Where the report gives the
-result, the log is the complete execution record: open it when a status alone
-doesn't explain what happened.
-
-<img
-  src="/docs-rewrite/screenshots/desktop-conversation-log.png"
-  alt="The conversation log of a finished run — agent messages, tool calls, and screenshots in order"
-  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
-/>
-
-During a run the same view streams live — see
-[Watch it live](/docs/running-tests#watch-it-live).
-
----
-
-## Dashboard
-
-Where a run report covers a single execution, the **Dashboard** rolls every run
-in the project into one view — the closest thing to a test execution status
-report across your whole suite. Open it when you want the trend rather than one
-result.
-
-<img
-  src="/docs-rewrite/screenshots/desktop-dashboard.png"
-  alt="The Dashboard in AskUI Desktop showing total runs, average pass rate, per-status counters, and a test-status-over-time chart"
-  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
-/>
-
-| Tile | Meaning |
-| --- | --- |
-| **Total runs** | Runs recorded in this project |
-| **Avg pass rate** | Share of passed tests across all runs. Warnings count as passed; broken tests that never executed are excluded |
-| **Passed / Failed / Broken (latest)** | The same tally for the most recent run only |
-| **Warnings (all)** | Tests that passed but flagged something, across every run |
-| **Test status over time** | One bar per run — green passed, red failed. A regression = a red bar breaking a green streak |
-| **Pass rate over time / Latest run** | The trend, and a shortcut into the newest run's report |
 
 ---
 

@@ -1,0 +1,67 @@
+---
+icon: History
+title: Runs
+description: Every run keeps its full results — open them in the app, read the conversation log, share the HTML report, or grab the files.
+---
+
+Every run is kept: its reports, screenshots, and the complete conversation.
+The **Runs** page is where you open them.
+
+## Open a run's results
+
+1. Open the **Runs** page.
+2. Pick the run in the sidebar — newest first, one entry per run with its
+   pass tally.
+3. Choose what to look at:
+   - **Conversation log** — the full execution record (below).
+   - **Summary report** — the run-level table, one row per test.
+   - **HTML report** — the whole run as one self-contained file.
+   - **The per-test entries** — each test's
+     [report](/docs/results/run-report) with its status badge.
+
+**Open in Explorer** jumps to the run's folder on disk.
+
+## Conversation log
+
+Beside the written reports, every run keeps its full conversation — each
+agent message, tool call, and screenshot in order. Where the report gives
+the result, the log is the complete execution record: open it when a status
+alone doesn't explain what happened.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-conversation-log.png"
+  alt="The conversation log of a finished run — agent messages, tool calls, and screenshots in order"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+During a run the same view streams live — reading it element by element:
+[Watch it live](/docs/running-tests#watch-it-live).
+
+## Share results
+
+To hand a result to a developer or attach it to a ticket, send the **HTML
+report** — one self-contained file with the reports and screenshots, no
+AskUI Desktop needed to view it. For the raw evidence, zip the run's folder
+(**Open in Explorer** → the timestamped folder).
+
+## On disk
+
+Each run is one timestamped folder under `agent_workspace/`:
+
+```
+agent_workspace/
+└── 2026-07-23_21-56-55/          ← one folder per run
+    ├── conversation.html          ← the shareable HTML report
+    ├── conversation.json          ← the raw conversation (machine-readable)
+    ├── summary_report.md          ← run-level table
+    └── open_notepad_windows/      ← one folder per test
+        ├── open_notepad_windows_report.md
+        ├── step_1.png
+        └── step_2.png
+```
+
+Run folders are independent of each other — archive or delete old ones as
+your evidence-retention policy requires; the Runs list and
+[Dashboard](/docs/results/dashboard) reflect whatever folders exist. The
+folder is [gitignored](/docs/projects#git--versioning--sync) by design. From
+the CLI, `--workspace` overrides the location.
