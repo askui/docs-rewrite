@@ -11,8 +11,11 @@ page is the loop for **why** — and where the fix belongs.
 
 1. Start at the [summary report](/docs/results/run-report#summary-report):
    which cases didn't pass, and with which status?
-   - **`FAILED`**: the application misbehaved — or the test told the agent
-     the wrong thing. Continue with step 2.
+   - **`FAILED`**: two possible truths — step 2 decides which:
+     - **The test told the agent the wrong thing** → fix the test
+       ([Fix it](#fix-it), below).
+     - **The application misbehaved** → report it as a defect, with the
+       test report and its screenshots attached as evidence.
    - **`BROKEN`**: infrastructure, not the application. The usual kinds:
      - **Device connection dropped** — AgentOS unreachable, emulator died,
        browser session gone →
