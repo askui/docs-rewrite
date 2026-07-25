@@ -19,7 +19,7 @@ actually observed.
 <Tab value="Rendered">
 <div className="rounded-lg border bg-fd-card px-6 py-5 text-sm leading-relaxed">
   <p className="text-xl font-semibold">Test Case Report: login_test</p>
-  <p className="mt-3"><b>Test Case ID:</b> login_test<br /><b>Date:</b> 2025-11-12<br /><b>Status:</b> <span className="font-semibold text-fd-primary">PASSED</span></p>
+  <p className="mt-3"><b>Test Case ID:</b> login_test<br /><b>Date:</b> 2025-11-12<br /><b>Status:</b> <span className="font-semibold text-amber-600">WARN</span></p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Summary</p>
   <p className="mt-2">The agent successfully logged in using the QA credentials and verified the dashboard was shown.</p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Preconditions</p>
@@ -36,11 +36,11 @@ actually observed.
       <div className="mt-2 flex h-24 w-44 items-center justify-center rounded border bg-fd-muted text-xs text-fd-muted-foreground">step_1.png</div>
     </div>
     <div>
-      <p><b>2. Enter QA credentials and submit</b> — Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
+      <p><b>2. Enter QA credentials and submit</b> — Status: <span className="font-semibold text-amber-600">WARN</span></p>
       <ul className="mt-1 list-disc pl-6 text-fd-muted-foreground">
-        <li><b>Agent Interpretation:</b> Filled the form using the QA credentials file.</li>
+        <li><b>Agent Interpretation:</b> Filled the form using the QA credential secrets.</li>
         <li><b>Expected:</b> Dashboard page shown after successful sign-in.</li>
-        <li><b>Actual:</b> Dashboard loaded with the welcome banner.</li>
+        <li><b>Actual:</b> Dashboard loaded with the welcome banner — but only after roughly 15 seconds.</li>
       </ul>
       <div className="mt-2 flex h-24 w-44 items-center justify-center rounded border bg-fd-muted text-xs text-fd-muted-foreground">step_2.png</div>
     </div>
@@ -48,9 +48,9 @@ actually observed.
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Postconditions</p>
   <p className="mt-2">1. User is signed in and the dashboard is visible.</p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Issues</p>
-  <p className="mt-2">No issues encountered.</p>
+  <p className="mt-2">Sign-in took about 15 seconds — well above the usual 2–3 seconds. The dashboard did load completely, so step 2 is WARN rather than FAILED, but this is worth watching before it becomes a timeout.</p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Conclusion</p>
-  <p className="mt-2">All steps passed. The login flow works as expected with the current QA credentials.</p>
+  <p className="mt-2">The login flow works, with one caveat: sign-in is unusually slow. Functionally PASSED behaviour, reported as WARN because of the response time.</p>
 </div>
 </Tab>
 <Tab value="Markdown source">
@@ -60,12 +60,12 @@ actually observed.
 
 **Test Case ID:** login_test
 **Date:** 2025-11-12
-**Status:** PASSED
+**Status:** WARN
 
 ## Summary
 
-The agent successfully logged in using the QA credentials and verified
-the dashboard was shown.
+The agent logged in using the QA credentials and verified the dashboard was
+shown — but sign-in was unusually slow (about 15 seconds).
 
 ## Preconditions
 
@@ -79,10 +79,11 @@ the dashboard was shown.
    - **Actual:** Login form visible with username and password fields.
    - ![Step 1](step_1.png)
 
-2. **Enter QA credentials and submit** — Status: **PASSED**
-   - **Agent Interpretation:** Filled the form using the QA credentials file.
+2. **Enter QA credentials and submit** — Status: **WARN**
+   - **Agent Interpretation:** Filled the form using the QA credential secrets.
    - **Expected:** Dashboard page shown after successful sign-in.
-   - **Actual:** Dashboard loaded with the welcome banner.
+   - **Actual:** Dashboard loaded with the welcome banner — but only after
+     roughly 15 seconds.
    - ![Step 2](step_2.png)
 
 ## Postconditions
@@ -91,11 +92,15 @@ the dashboard was shown.
 
 ## Issues
 
-No issues encountered.
+Sign-in took about 15 seconds — well above the usual 2–3 seconds. The
+dashboard did load completely, so step 2 is WARN rather than FAILED, but
+this is worth watching before it becomes a timeout.
 
 ## Conclusion
 
-All steps passed. The login flow works as expected with the current QA credentials.
+The login flow works, with one caveat: sign-in is unusually slow.
+Functionally PASSED behaviour, reported as WARN because of the response
+time.
 ```
 
 </Tab>
@@ -103,15 +108,22 @@ All steps passed. The login flow works as expected with the current QA credentia
 
 Section by section:
 
-| Section | What it tells you |
-| --- | --- |
-| **Header** | Test case ID, execution date, and the overall status — the `**Status:**` line is what the [runner parses](/docs/writing-tests/agents-and-prompts#report-format) as the run's result |
-| **Summary** | The outcome in two sentences — read this first |
-| **Preconditions** | Whether the assumed starting state was actually met — a test that began from the wrong state fails here, not misleadingly in a step |
-| **Test Steps** | Per step: **Agent Interpretation** (how the agent understood your instruction — check this when a step surprises you), **Expected** vs. **Actual**, its own status, and the step screenshot as evidence |
-| **Postconditions** | Whether the overall pass criterion held at the end |
-| **Issues** | Anything worth a look that isn't a failure — the incident notes |
-| **Conclusion** | The agent's closing assessment of the whole case |
+- **Header**: test case ID, execution date, and the overall status — the
+  `**Status:**` line is what the
+  [runner parses](/docs/writing-tests/agents-and-prompts#report-format) as
+  the run's result.
+- **Summary**: the outcome in two sentences — read this first.
+- **Preconditions**: whether the assumed starting state was actually met —
+  a test that began from the wrong state fails here, not misleadingly in a
+  step.
+- **Test Steps**: per step — **Agent Interpretation** (how the agent
+  understood your instruction; check this when a step surprises you),
+  **Expected** vs. **Actual**, its own status, and the step screenshot as
+  evidence.
+- **Postconditions**: whether the overall pass criterion held at the end.
+- **Issues**: anything worth a look that isn't a failure — the incident
+  notes. In the example above: the 15-second sign-in.
+- **Conclusion**: the agent's closing assessment of the whole case.
 
 Each step carries its own status; the **overall status** is the worst of its
 steps — see [Status vocabulary](#status-vocabulary). The report's shape is
@@ -120,6 +132,22 @@ defined by your project's
 
 What to do with a failing report — triage, root cause, where the fix
 belongs: [Analyzing failures](/docs/best-practices/analyzing-failures).
+
+## Status vocabulary
+
+Each step — and the test overall — carries one status:
+
+| Status | Meaning |
+| --- | --- |
+| `PASSED` | Actual result matches expected. |
+| `FAILED` | Step executed but the result didn't match. |
+| `SKIPPED` | Intentionally not executed (e.g. precondition not met). |
+| `WARN` | Passed, but with a caveat (slow response, minor visual deviation). |
+| `BROKEN` | Could not execute — crash or infrastructure failure. |
+
+The overall test status is the worst of its steps: `BROKEN` if any step broke,
+else `FAILED` if any failed, else `WARN`, else `SKIPPED` if all skipped,
+otherwise `PASSED`.
 
 ---
 
@@ -161,21 +189,3 @@ and screenshots stay attached to the run even when tests fail:
     name: askui-run
     path: agent_workspace/
 ```
-
----
-
-## Status vocabulary
-
-Each step — and the test overall — carries one status:
-
-| Status | Meaning |
-| --- | --- |
-| `PASSED` | Actual result matches expected. |
-| `FAILED` | Step executed but the result didn't match. |
-| `SKIPPED` | Intentionally not executed (e.g. precondition not met). |
-| `WARN` | Passed, but with a caveat (slow response, minor visual deviation). |
-| `BROKEN` | Could not execute — crash or infrastructure failure. |
-
-The overall test status is the worst of its steps: `BROKEN` if any step broke,
-else `FAILED` if any failed, else `WARN`, else `SKIPPED` if all skipped,
-otherwise `PASSED`.
