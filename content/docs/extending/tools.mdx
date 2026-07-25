@@ -63,116 +63,146 @@ tier default. Edit via the UI — the file is just what gets committed.
 ## The tools in the store
 
 All store tools are currently **Optional** — off until you enable them.
-Grouped by where they reach; required parameters in bold.
+Grouped by where they reach; required parameters in bold. Every tool heading
+is a link — copy it to point a colleague at exactly one tool.
 
 ### Seeing the screen better
 
-- <Lucide name="zoom-in" /> **Screen zoom** — a zoomed-in crop of a screen
-  region (computer device).
-  - **Use it when:** the agent keeps missing small targets — tiny
-    checkboxes, dense tables. The last rung of the
-    [misclick ladder](/docs/best-practices/analyzing-failures#the-agent-misclicks).
-  ```md
-  4. Use the zoom tool to click the "Accept AGB" checkbox.
-  ```
+#### <Lucide name="zoom-in" /> Screen zoom
 
-- <Lucide name="qr-code" /> **QR scanner** — scan and decode a QR code from
-  the screen or an image (computer, web, Android).
-  - **Use it when:** the application generates a QR code — invoice, ticket —
-    and the test must verify it encodes the right content.
-  ```md
-  6. Scan the QR code on the invoice — it encodes the order number from step 2.
-  ```
+A zoomed-in crop of a screen region (computer device).
 
+- **Use it when:** the agent keeps missing small targets — tiny checkboxes,
+  dense tables. The last rung of the
+  [misclick ladder](/docs/best-practices/analyzing-failures#the-agent-misclicks).
+
+```md
+4. Use the zoom tool to click the "Accept AGB" checkbox.
+```
+
+#### <Lucide name="qr-code" /> QR scanner
+
+Scan and decode a QR code from the screen or an image (computer, web,
+Android).
+
+- **Use it when:** the application generates a QR code — invoice, ticket —
+  and the test must verify it encodes the right content.
+
+```md
+6. Scan the QR code on the invoice — it encodes the order number from step 2.
+```
 
 ### Test data
 
-- <Lucide name="calendar-clock" /> **Date & time** — the current date/time;
-  the agent can ask with a day offset (1 = tomorrow).
-  - **Use it when:** a step needs a real date — "enter a delivery date three
-    days from today" — or verifies a timestamp the UI shows.
-  - **Parameters:** Format, Timezone.
-  ```md
-  3. Enter the date three days from today into "Delivery date".
-  ```
+#### <Lucide name="calendar-clock" /> Date & time
 
-- <Lucide name="hash" /> **Number converter** — convert between decimal,
-  hex, binary, octal.
-  - **Use it when:** the application shows values in one base and the test
-    data is in another — hex device IDs, register values.
-  ```md
-  5. Verify the "Device ID" field shows the hex value of 305419896.
-  ```
+The current date/time; the agent can ask with a day offset (1 = tomorrow).
 
+- **Use it when:** a step needs a real date — "enter a delivery date three
+  days from today" — or verifies a timestamp the UI shows.
+- **Parameters:** Format, Timezone.
+
+```md
+3. Enter the date three days from today into "Delivery date".
+```
+
+#### <Lucide name="hash" /> Number converter
+
+Convert between decimal, hex, binary, octal.
+
+- **Use it when:** the application shows values in one base and the test
+  data is in another — hex device IDs, register values.
+
+```md
+5. Verify the "Device ID" field shows the hex value of 305419896.
+```
 
 ### Beyond the UI — on this machine
 
-- <Lucide name="globe" /> **HTTP client** — HTTP requests (GET, POST, …)
-  against APIs and webhooks; header values support `${VAR}`
-  [secrets](/docs/extending/secrets).
-  - **Use it when:** cross-checking the UI against the backend — after
-    checkout, verify via the API that the order really exists — or
-    triggering a webhook as test setup.
-  - **Parameters:** Allowed hosts (empty = any).
-  ```md
-  8. Perform a GET request to https://api.example.com/orders — the new order is in the response.
-  ```
+#### <Lucide name="globe" /> HTTP client
 
-- <Lucide name="database" /> **SQL database** — run allowlisted SQL
-  statements via any ODBC driver; raw SQL is a separate, dangerous opt-in.
-  - **Use it when:** verifying the record actually landed in the database,
-    or seeding and cleaning test data in
-    [setup and teardown](/docs/writing-tests/setup-teardown-rules).
-  - **Parameters:** **ODBC driver**, **Server**, **Database**, credentials,
-    Allowed statements (`name: SQL` per line — the agent runs statements by
-    these names), Allow raw SQL — full list in the add dialog.
-  ```md
-  9. Run the "open_orders" SQL statement — the new order appears with status NEW.
-  ```
+HTTP requests (GET, POST, …) against APIs and webhooks; header values
+support `${VAR}` [secrets](/docs/extending/secrets).
 
-- <Lucide name="terminal" /> **Shell script** — run a pre-configured
-  shell/batch script; the agent invokes it by the name you give it.
-  - **Use it when:** a script already solves it — restarting a scanner
-    service as a [recovery](/docs/writing-tests/step-constructs#beyond-steps),
-    resetting the test database.
-  - **Parameters:** **Tool name**, **Script path**, **Description**.
-  ```md title="tests/rules.md"
-  - If the scanner stops responding, run the restart_scanner tool and repeat the step.
-  ```
+- **Use it when:** cross-checking the UI against the backend — after
+  checkout, verify via the API that the order really exists — or triggering
+  a webhook as test setup.
+- **Parameters:** Allowed hosts (empty = any).
 
-- <Lucide name="file-search" /> **File exists** — check whether a file or
-  directory exists on this machine.
-  - **Use it when:** the test ends in an export or download — verify the
-    file actually appeared.
-  - **Parameters:** **Base directory**.
-  ```md
-  7. Check that the file "order_export.pdf" exists in C:/exports.
-  ```
+```md
+8. Perform a GET request to https://api.example.com/orders — the new order is in the response.
+```
 
+#### <Lucide name="database" /> SQL database
+
+Run allowlisted SQL statements via any ODBC driver; raw SQL is a separate,
+dangerous opt-in.
+
+- **Use it when:** verifying the record actually landed in the database, or
+  seeding and cleaning test data in
+  [setup and teardown](/docs/writing-tests/setup-teardown-rules).
+- **Parameters:** **ODBC driver**, **Server**, **Database**, credentials,
+  Allowed statements (`name: SQL` per line — the agent runs statements by
+  these names), Allow raw SQL — full list in the add dialog.
+
+```md
+9. Run the "open_orders" SQL statement — the new order appears with status NEW.
+```
+
+#### <Lucide name="terminal" /> Shell script
+
+Run a pre-configured shell/batch script; the agent invokes it by the name
+you give it.
+
+- **Use it when:** a script already solves it — restarting a scanner
+  service as a [recovery](/docs/writing-tests/step-constructs#beyond-steps),
+  resetting the test database.
+- **Parameters:** **Tool name**, **Script path**, **Description**.
+
+```md title="tests/rules.md"
+- If the scanner stops responding, run the restart_scanner tool and repeat the step.
+```
+
+#### <Lucide name="file-search" /> File exists
+
+Check whether a file or directory exists on this machine.
+
+- **Use it when:** the test ends in an export or download — verify the file
+  actually appeared.
+- **Parameters:** **Base directory**.
+
+```md
+7. Check that the file "order_export.pdf" exists in C:/exports.
+```
 
 ### Files on the controlled machine
 
 For runs where the application under test is on **another machine**
 (computer device) and writes files there.
 
-- <Lucide name="folder-search" /> **List remote files** — list files in a
-  directory on the machine being controlled.
-  - **Use it when:** checking the export folder on the test machine after
-    the run's actions.
-  - **Parameters:** **Base directory**, Allowed file extensions.
-  ```md
-  5. List the files in the export folder — a new PDF was created.
-  ```
+#### <Lucide name="folder-search" /> List remote files
 
-- <Lucide name="file-down" /> **Read remote file** — read a file's text
-  content from the controlled machine.
-  - **Use it when:** the content matters, not just the existence — verify a
-    log line or an exported CSV on the test machine.
-  - **Parameters:** **Base directory**.
-  ```md
-  6. Read the exported CSV — it contains the order number from step 3.
-  ```
+List files in a directory on the machine being controlled.
 
+- **Use it when:** checking the export folder on the test machine after the
+  run's actions.
+- **Parameters:** **Base directory**, Allowed file extensions.
+
+```md
+5. List the files in the export folder — a new PDF was created.
+```
+
+#### <Lucide name="file-down" /> Read remote file
+
+Read a file's text content from the controlled machine.
+
+- **Use it when:** the content matters, not just the existence — verify a
+  log line or an exported CSV on the test machine.
+- **Parameters:** **Base directory**.
+
+```md
+6. Read the exported CSV — it contains the order number from step 3.
+```
 
 ## Using a tool in a test
 
