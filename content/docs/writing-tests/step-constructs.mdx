@@ -101,6 +101,24 @@ screenshots, it doesn't run a stopwatch. For hard behavior on errors and
 hangs that applies to every test, use
 [rules.md](/docs/writing-tests/setup-teardown-rules#rules).
 
+## Raising errors
+
+Tell the agent to fail **actively** when the application doesn't react as
+expected — an agent that helpfully works around a defect masks exactly what
+the test exists to find:
+
+```md
+10. Open the customer record ACME-42. If an error dialog appears instead,
+    mark the test FAILED and stop — do NOT retry or work around it.
+```
+
+Use the [status vocabulary](/docs/results/run-report#status-vocabulary):
+**FAILED** when the application misbehaves, **BROKEN** for infrastructure
+problems (connection lost, session expired). The seeded
+[rules.md](/docs/writing-tests/setup-teardown-rules#rules) already sets this
+policy for every test — a step-level instruction sharpens it for a specific
+known risk.
+
 ## Dynamic reactions
 
 You don't have to script every eventuality — the agent adapts to the screen
