@@ -6,8 +6,8 @@ description: The three steering files of a suite — entry criteria, cleanup, an
 
 Every suite folder can carry three steering files. Their
 [scope chains per folder level](/docs/writing-tests/organisation#scope);
-each quick-create seeds a template with `FILL IN` placeholders — replace
-those, keep the shape.
+each quick-create seeds a starter template — adjust it to your application,
+keep the shape.
 
 ## Setup
 
@@ -20,7 +20,7 @@ cases as broken instead of executing them against a bad state.
 ```md title="setup.md"
 ## Setup Steps
 
-1. FILL IN: open the application under test and wait until it is fully visible.
+1. Open the application under test and wait until it is fully visible.
 2. Log in using the `login_to_ui` procedure with the QA username and password secrets.
 3. Verify the start screen has loaded before any test starts.
 ```
@@ -35,7 +35,7 @@ every case in its folder — even after failures.
 ```md title="teardown.md"
 ## Teardown Steps
 
-1. FILL IN: close the application under test.
+1. Close the application under test.
 2. Clear any temporary files created during testing.
 ```
 

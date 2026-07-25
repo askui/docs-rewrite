@@ -36,23 +36,22 @@ Two built-in conventions the agent relies on:
 
 ## `device_information.md`
 
-Facts about the machine under test. The default is a placeholder you fill in:
+Machine quirks the agent can't see for itself — keep it small. The agent
+already sees the screen, so OS and display basics rarely need describing:
 
 ```markdown
-You are controlling a desktop computer.
+You are controlling a test machine with full system access.
 
-* Operating system: FILL IN (e.g. Windows 11, macOS 15)
-* Displays: FILL IN (e.g. one built-in display; always execute on display 1)
-* Screen coordinates are in pixels, starting from (0, 0) at the top-left.
-* Always verify the current screen state before performing interactions.
+* Always execute on display 1.
+* The corporate lock screen appears after 5 minutes of inactivity.
 ```
 
 Swap this file when retargeting a Project at a different machine.
 
 ## `ui_information.md`
 
-Where the agent learns your application. The default ships empty — **this is the
-file you invest the most in**:
+Where the agent learns your application. The default ships as placeholders —
+**this is the file you invest the most in**:
 
 ```markdown
 ## Navigation
