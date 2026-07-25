@@ -204,6 +204,20 @@ language setting", "never sign out"), put them in
 [rules.md](/docs/writing-tests/setup-teardown-rules#rules) instead of
 repeating them per step.
 
+## Comments
+
+HTML comments are notes for maintainers — why a step exists, a ticket
+reference, a review hint. They are not steps:
+
+```md
+<!-- AC-123: card payments only — the invoice path is covered in PAY_002. -->
+```
+
+The agent reads comments as background, not instructions — but it does read
+them, so keep them truthful: a stale or misleading comment can steer
+execution the same way a misleading remark steers a colleague. The seeded
+templates use comments exactly this way.
+
 ## Procedure calls
 
 One step runs a whole [procedure](/docs/writing-tests/procedures) — name it
