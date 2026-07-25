@@ -71,10 +71,35 @@ steps can branch on what is actually there:
 
 ## Waits
 
+Normally you don't need waits — the agent sees the screen and won't act on a
+half-loaded page. When it gets impatient anyway, tell it **what to look
+for**, not how long to wait:
+
 ```md
 7. Wait until the start screen loads.
+```
+
+A fixed duration is the last resort, for settling you can't describe:
+
+```md
 8. Wait 3 seconds for the page to settle.
 ```
+
+## Timeouts
+
+The counterpart of a wait: bound how long the agent keeps trying, and say
+what happens when time is up — otherwise a hanging application under test
+turns into an endlessly patient agent:
+
+```md
+9. Start the export. If the success message does not appear within about
+   2 minutes, mark the step FAILED and continue with the next test.
+```
+
+Timeouts are approximate — the agent judges elapsed time between
+screenshots, it doesn't run a stopwatch. For hard behavior on errors and
+hangs that applies to every test, use
+[rules.md](/docs/writing-tests/setup-teardown-rules#rules).
 
 ## Dynamic reactions
 
