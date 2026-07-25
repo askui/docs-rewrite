@@ -83,11 +83,13 @@ this screen. Escalate in this order:
 2. **Add relations** — position and neighbors
    ([locator kinds](/docs/writing-tests/step-constructs#locators)).
 
-<div className="grid gap-3 md:grid-cols-2">
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
 
 ```md title="❌ tests/login_test.md — before"
 2. Please press the login button.
 ```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
 ```md title="✅ tests/login_test.md — after"
 2. Press the "Sign-Up" button —
@@ -100,11 +102,13 @@ this screen. Escalate in this order:
    [tool](/docs/extending/tools) for small targets — and add a verification
    step so the click's effect is checked:
 
-<div className="grid gap-3 md:grid-cols-2">
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
 
 ```md title="❌ tests/signup_test.md — before"
 4. Accept the terms.
 ```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
 ```md title="✅ tests/signup_test.md — after"
 4. Use the zoom tool to click the
@@ -121,12 +125,14 @@ It is unsure how your application behaves — teach it in
 [UI information](/docs/writing-tests/agents-and-prompts#ui-information) and
 make vague goals precise.
 
-<div className="grid gap-3 md:grid-cols-2">
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
 
 ```md title="❌ prompts/ui_information.md — before"
 ## Dialogs & quirks
 <behaviors the agent must know>
 ```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
 ```md title="✅ prompts/ui_information.md — after"
 ## Dialogs & quirks
@@ -142,12 +148,14 @@ elsewhere does not close it.
 The agent judged against the wrong picture: your expected result is
 under-specified — state precisely what it looks like.
 
-<div className="grid gap-3 md:grid-cols-2">
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
 
 ```md title="❌ tests/login_test.md — before"
 2. Click Login — the user is
    logged in.
 ```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
 ```md title="✅ tests/login_test.md — after"
 2. Click Login — the start screen
@@ -162,11 +170,13 @@ under-specified — state precisely what it looks like.
 The success criterion is too loose to catch the defect — add an explicit
 [verification step](/docs/writing-tests/step-constructs#verifications).
 
-<div className="grid gap-3 md:grid-cols-2">
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
 
 ```md title="❌ tests/create_record.md — before"
 3. Click Save.
 ```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
 ```md title="✅ tests/create_record.md — after"
 3. Click Save.
