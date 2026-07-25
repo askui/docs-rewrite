@@ -29,21 +29,69 @@ in [named secrets](/docs/extending/secrets).
 Choices are saved to `utils/tools.json` — the whole team runs with the same
 toolbox. An untouched tool follows its tier default.
 
+<Accordions>
+<Accordion title="What utils/tools.json looks like">
+
+```json title="utils/tools.json"
+{
+  "tools": {
+    "datetime": true,
+    "qr_scan": true,
+    "http_request": {
+      "enabled": true,
+      "config": { "AllowedHosts": "api.example.com" }
+    },
+    "shell_script": {
+      "enabled": true,
+      "config": {
+        "ToolName": "restart_scanner",
+        "ScriptPath": "C:/qa/restart_scanner.ps1",
+        "Description": "Restarts the barcode scanner service."
+      }
+    }
+  }
+}
+```
+
+`true`/`false` is the shorthand for tools without configuration; a configured
+tool stores `enabled` plus its values. A tool that isn't listed follows its
+tier default. Edit via the UI — the file is just what gets committed.
+
+</Accordion>
+</Accordions>
+
 ## The tools in the store
 
 All store tools are currently **Optional** — off until you enable them.
-Required parameters in bold:
+Grouped by where they reach; required parameters in bold.
+
+### Seeing the screen better
+
+| Tool | What it does | Parameters |
+| --- | --- | --- |
+| <Lucide name="zoom-in" /> **Screen zoom** | Zoomed-in crop of a screen region — for closely inspecting small elements (computer device) | — |
+| <Lucide name="qr-code" /> **QR scanner** | Scan and decode a QR code from the screen or an image (computer, web, Android) | — |
+
+### Test data
 
 | Tool | What it does | Parameters |
 | --- | --- | --- |
 | <Lucide name="calendar-clock" /> **Date & time** | Current date/time; the agent can ask with a day offset (1 = tomorrow) | Format, Timezone |
 | <Lucide name="hash" /> **Number converter** | Convert between decimal, hex, binary, octal | — |
+
+### Beyond the UI — on this machine
+
+| Tool | What it does | Parameters |
+| --- | --- | --- |
 | <Lucide name="globe" /> **HTTP client** | HTTP requests (GET, POST, …) against APIs and webhooks; header values support `${VAR}` secrets | Allowed hosts (empty = any) |
-| <Lucide name="file-search" /> **File exists** | Check whether a file or directory exists on this machine | **Base directory** |
+| <Lucide name="database" /> **SQL database** | Run allowlisted SQL statements via any ODBC driver; raw SQL is a separate, dangerous opt-in | **ODBC driver**, **Server**, **Database**, credentials, Allowed statements, Allow raw SQL — full list in the add dialog |
 | <Lucide name="terminal" /> **Shell script** | Run a pre-configured shell/batch script; the agent invokes it by the name you give it | **Tool name**, **Script path**, **Description** |
-| <Lucide name="database" /> **SQL database** | Run allowlisted SQL statements via any ODBC driver on this machine; raw SQL is a separate, dangerous opt-in | **ODBC driver**, **Server**, Port, **Database**, User name, Password, Connection string, Max result rows, Allowed statements, Allow raw SQL |
-| <Lucide name="qr-code" /> **QR scanner** | Scan and decode a QR code from the screen or an image (computer, web, Android) | — |
-| <Lucide name="zoom-in" /> **Screen zoom** | Zoomed-in crop of a screen region — for closely inspecting small elements (computer device) | — |
+| <Lucide name="file-search" /> **File exists** | Check whether a file or directory exists on this machine | **Base directory** |
+
+### Files on the controlled machine
+
+| Tool | What it does | Parameters |
+| --- | --- | --- |
 | <Lucide name="folder-search" /> **List remote files** | List files in a directory **on the machine being controlled** (computer device) | **Base directory**, Allowed file extensions |
 | <Lucide name="file-down" /> **Read remote file** | Read a file's text content from the controlled machine (computer device) | **Base directory** |
 
@@ -62,6 +110,10 @@ name the tool explicitly when two could match:
 
 The full step vocabulary:
 [Step constructs → Tool invocations](/docs/writing-tests/step-constructs#tool-invocations).
+
+A step that names a tool the run doesn't have is flagged by the agent:
+**WARN** when it accomplished the step reliably another way, **BROKEN** —
+with a hint to enable the tool — when the step depends on it.
 
 Need more? [Custom tools](/docs/extending/custom-tools) for anything you can
 write in C#; [MCP servers](/docs/extending/mcp) for existing tool servers.

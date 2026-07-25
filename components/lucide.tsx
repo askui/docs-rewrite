@@ -6,9 +6,7 @@ import { createElement } from 'react';
  * lucide PascalCase or kebab-case names, plus our brand icons. Renders
  * inline with the text so it works in table cells and list items. */
 export function Lucide({ name, size = 15 }: { name: string; size?: number }) {
-  const pascal = name.includes('-')
-    ? name.replace(/(^|-)([a-z0-9])/g, (_, __, c: string) => c.toUpperCase())
-    : name;
+  const pascal = name.replace(/(^|-)([a-z0-9])/g, (_, __, c: string) => c.toUpperCase());
   const icon =
     (brandIcons as Record<string, React.ComponentType<{ size?: number }>>)[pascal] ??
     (icons as Record<string, React.ComponentType<{ size?: number; className?: string }>>)[pascal];
