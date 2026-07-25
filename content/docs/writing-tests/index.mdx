@@ -159,12 +159,26 @@ Sign in with the QA credentials — the secrets named
 
 Details in [Running a test](/docs/running-tests).
 
-## Duplicate, rename, delete — and skip
+## Manage a test case
 
-Right-click the file: **Duplicate** copies a case as a starting point,
-**Rename** and **Delete** do what they say. All of it is plain file
-operations — visible in Git like any other change to your
-[testware](/docs/projects).
+All of it is plain file operations via right-click — visible in Git like any
+other change to your [testware](/docs/projects).
+
+### Duplicate
+
+Right-click the file → **Duplicate** — copies the case as a starting point
+for a similar one.
+
+### Rename
+
+Right-click the file → **Rename**. The file name is the test's name in runs
+and reports, so reports of old runs keep the old name.
+
+### Delete
+
+Right-click the file → **Delete**.
+
+### Skip
 
 There is no skip flag: to leave a case out temporarily, run a
 [plan](/docs/writing-tests/plans) that doesn't include it, or move the file
