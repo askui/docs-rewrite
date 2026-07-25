@@ -19,6 +19,8 @@ possibly do. Manage it under **Utils → Tool Store**.
 | **Device tools** | Screenshot, click, type — injected automatically for the run's device kind. Always on, not listed |
 | **Default tools** | Enabled unless you switch them off |
 | **Optional tools** | Disabled until you enable them — typically tools with reach beyond the UI under test, like a shell or database access |
+| **[Custom tools](/docs/extending/custom-tools)** | Your own C# tools from `utils/custom_tools/` — always part of the run's toolbox once the file exists |
+| **[MCP tools](/docs/extending/mcp)** | Tools of the MCP servers registered in `utils/mcp.json` — connected at run start |
 
 Some tools take configuration when added — a connection string, a base URL.
 `${VAR}` values resolve from the environment at run start; credentials belong
