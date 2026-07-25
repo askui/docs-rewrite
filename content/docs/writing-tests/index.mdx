@@ -19,27 +19,26 @@ with the opened test case and its Run controls.
 Six building blocks make up everything you author:
 
 ```mermaid
-flowchart TB
-  subgraph SUITE["Suite — a folder under tests/"]
-    SETUP["Setup
-entry criteria · runs first"]
-    TC["Test Case
-preconditions · steps · postconditions"]
-    TEARDOWN["Teardown
-cleanup · runs last"]
-    RULES["Rules
-standing instructions"]
-  end
+flowchart LR
+  TC["Test Case
+preconditions · steps
+· postconditions"]
+  SETUP["Setup
+entry criteria
+runs first"]
+  TEARDOWN["Teardown
+cleanup
+runs last"]
+  RULES["Rules
+standing
+instructions"]
   PROC["Procedure
-reusable steps with parameters"]
+reusable steps
+with parameters"]
   SEC["Secret
-named credential · encrypted"]
-  SETUP --> TC --> TEARDOWN
-  RULES -.applies to every phase.-> TC
-  TC -- calls --> PROC
-  SETUP -- calls --> PROC
-  TC -- references --> SEC
-  PROC -- receives --> SEC
+named credential
+encrypted"]
+  TC ~~~ SETUP ~~~ TEARDOWN ~~~ RULES ~~~ PROC ~~~ SEC
 ```
 
 A **suite** frames its test cases with
