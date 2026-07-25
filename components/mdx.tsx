@@ -7,6 +7,7 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 import { RunEmbed } from '@/components/run-embed';
 import { Mermaid } from '@/components/mermaid';
+import { Lucide } from '@/components/lucide';
 import type { MDXComponents } from 'mdx/types';
 
 // Register the components used across the docs globally, so MDX pages can use
@@ -29,6 +30,7 @@ export function getMDXComponents(components?: MDXComponents) {
     Accordions,
     RunEmbed,
     Mermaid,
+    Lucide,
     ...components,
   } satisfies MDXComponents;
 }

@@ -34,16 +34,32 @@ Required parameters in bold:
 
 | Tool | What it does | Parameters |
 | --- | --- | --- |
-| **Date & time** | Current date/time; the agent can ask with a day offset (1 = tomorrow) | Format, Timezone |
-| **Number converter** | Convert between decimal, hex, binary, octal | — |
-| **HTTP client** | HTTP requests (GET, POST, …) against APIs and webhooks; header values support `${VAR}` secrets | Allowed hosts (empty = any) |
-| **File exists** | Check whether a file or directory exists on this machine | **Base directory** |
-| **Shell script** | Run a pre-configured shell/batch script; the agent invokes it by the name you give it | **Tool name**, **Script path**, **Description** |
-| **SQL database** | Run allowlisted SQL statements via any ODBC driver on this machine; raw SQL is a separate, dangerous opt-in | **ODBC driver**, **Server**, Port, **Database**, User name, Password, Connection string, Max result rows, Allowed statements, Allow raw SQL |
-| **QR scanner** | Scan and decode a QR code from the screen or an image (computer, web, Android) | — |
-| **Screen zoom** | Zoomed-in crop of a screen region — for closely inspecting small elements (computer device) | — |
-| **List remote files** | List files in a directory **on the machine being controlled** (computer device) | **Base directory**, Allowed file extensions |
-| **Read remote file** | Read a file's text content from the controlled machine (computer device) | **Base directory** |
+| <Lucide name="calendar-clock" /> **Date & time** | Current date/time; the agent can ask with a day offset (1 = tomorrow) | Format, Timezone |
+| <Lucide name="hash" /> **Number converter** | Convert between decimal, hex, binary, octal | — |
+| <Lucide name="globe" /> **HTTP client** | HTTP requests (GET, POST, …) against APIs and webhooks; header values support `${VAR}` secrets | Allowed hosts (empty = any) |
+| <Lucide name="file-search" /> **File exists** | Check whether a file or directory exists on this machine | **Base directory** |
+| <Lucide name="terminal" /> **Shell script** | Run a pre-configured shell/batch script; the agent invokes it by the name you give it | **Tool name**, **Script path**, **Description** |
+| <Lucide name="database" /> **SQL database** | Run allowlisted SQL statements via any ODBC driver on this machine; raw SQL is a separate, dangerous opt-in | **ODBC driver**, **Server**, Port, **Database**, User name, Password, Connection string, Max result rows, Allowed statements, Allow raw SQL |
+| <Lucide name="qr-code" /> **QR scanner** | Scan and decode a QR code from the screen or an image (computer, web, Android) | — |
+| <Lucide name="zoom-in" /> **Screen zoom** | Zoomed-in crop of a screen region — for closely inspecting small elements (computer device) | — |
+| <Lucide name="folder-search" /> **List remote files** | List files in a directory **on the machine being controlled** (computer device) | **Base directory**, Allowed file extensions |
+| <Lucide name="file-down" /> **Read remote file** | Read a file's text content from the controlled machine (computer device) | **Base directory** |
+
+## Using a tool in a test
+
+Once enabled, a tool is available wherever steps live — test cases,
+[setup and teardown](/docs/writing-tests/setup-teardown-rules), and
+[procedure](/docs/writing-tests/procedures) bodies. Describe the action, or
+name the tool explicitly when two could match:
+
+```md
+6. Perform an HTTP GET request to `https://example.com` — the response
+   status is 200.
+7. Use the `sql_database` tool to run the statement `test_data`.
+```
+
+The full step vocabulary:
+[Step constructs → Tool invocations](/docs/writing-tests/step-constructs#tool-invocations).
 
 Need more? [Custom tools](/docs/extending/custom-tools) for anything you can
 write in C#; [MCP servers](/docs/extending/mcp) for existing tool servers.
