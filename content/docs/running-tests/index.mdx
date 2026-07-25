@@ -58,13 +58,7 @@ the report exists.
 
 ### Reading the conversation
 
-| Element | Meaning |
-| --- | --- |
-| **Numbered circle + TEST header** | One phase (setup, a test case, teardown) with its file path, status badge (PASS/FAIL), and how many tool calls it took — this is where you see each test |
-| **Text lines** | The agent's narration: what it sees on screen and what it decides to do next |
-| **Chips** | Tool calls — a screenshot, a keystroke, a click, or a named tool like *Save screenshot* / *Write file*, with the result behind it |
-| **`350 → 26`** | Tokens in → out for that step — the cost signal of the run |
-| **`500ms`** | The step's latency |
+<include>../_shared/conversation-elements.mdx</include>
 
 The same view stays available after the run finishes — see the
 [conversation log](/docs/results#conversation-log) on the results

@@ -1,19 +1,19 @@
 ---
 icon: FileText
 title: Run report
-description: The written reports a run produces — the per-test Markdown report and the run-level summary — and how to read each one.
+description: The written reports a run produces — the per-test test report and the run-level summary — and how to read each one.
 ---
 
-Two written reports per run — the per-test report and the run-level
+Two written reports per run — the test report per case and the run-level
 summary. Where they live and how to open them:
 [Runs](/docs/results).
 
-## Markdown report
+## Test report
 
-Each test gets its own subdirectory with a `<test_name>_report.md` and a
-`step_<n>.png` screenshot for every step. The agent writes this report as it
-executes — it is the primary record of what the agent did, what it expected,
-and what it actually observed.
+Each test gets its own `<test_name>_report.md` (with a `step_<n>.png`
+screenshot for every step) — the agent writes it while it executes. It is
+the primary record of what the agent did, what it expected, and what it
+actually observed.
 
 <Tabs items={['Rendered', 'Markdown source']}>
 <Tab value="Rendered">
@@ -101,8 +101,22 @@ All steps passed. The login flow works as expected with the current QA credentia
 </Tab>
 </Tabs>
 
-Each step carries its own status. The **overall status** of the test is derived
-from the worst step status — see [Status vocabulary](#status-vocabulary) below.
+Section by section:
+
+| Section | What it tells you |
+| --- | --- |
+| **Header** | Test case ID, execution date, and the overall status — the `**Status:**` line is what the [runner parses](/docs/writing-tests/agents-and-prompts#report-format) as the run's result |
+| **Summary** | The outcome in two sentences — read this first |
+| **Preconditions** | Whether the assumed starting state was actually met — a test that began from the wrong state fails here, not misleadingly in a step |
+| **Test Steps** | Per step: **Agent Interpretation** (how the agent understood your instruction — check this when a step surprises you), **Expected** vs. **Actual**, its own status, and the step screenshot as evidence |
+| **Postconditions** | Whether the overall pass criterion held at the end |
+| **Issues** | Anything worth a look that isn't a failure — the incident notes |
+| **Conclusion** | The agent's closing assessment of the whole case |
+
+Each step carries its own status; the **overall status** is the worst of its
+steps — see [Status vocabulary](#status-vocabulary). The report's shape is
+defined by your project's
+[report format](/docs/writing-tests/agents-and-prompts#report-format).
 
 ---
 

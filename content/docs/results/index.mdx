@@ -15,11 +15,11 @@ The **Runs** page is where you open them.
 3. Choose what to look at:
    - **Conversation log** — the full execution record (below).
    - **Summary report** — the run-level table, one row per test.
-   - **HTML report** — the whole run as one self-contained file.
    - **The per-test entries** — each test's
-     [report](/docs/results/run-report) with its status badge.
+     [test report](/docs/results/run-report) with its status badge.
 
-**Open in Explorer** jumps to the run's folder on disk.
+**Open in Explorer** on a test jumps to its files on disk — the run's folder
+is one level up.
 
 ## Conversation log
 
@@ -34,28 +34,30 @@ alone doesn't explain what happened.
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
-During a run the same view streams live — reading it element by element:
-[Watch it live](/docs/running-tests#watch-it-live).
+Reading it element by element:
+
+<include>../_shared/conversation-elements.mdx</include>
+
+During a run the same view streams live — [Watch it live](/docs/running-tests#watch-it-live).
 
 ## Share results
 
-To hand a result to a developer or attach it to a ticket, send the **HTML
-report** — one self-contained file with the reports and screenshots, no
-AskUI Desktop needed to view it. For the raw evidence, zip the run's folder
-(**Open in Explorer** → the timestamped folder).
+To hand a result to a developer or attach it to a ticket, zip the run's
+timestamped folder (**Open in Explorer** on a test, one level up) — the
+reports are plain Markdown with the step screenshots next to them, readable
+anywhere.
 
 ## On disk
 
 Each run is one timestamped folder under `agent_workspace/`:
 
 ```
-agent_workspace/
+<project>/agent_workspace/
 └── 2026-07-23_21-56-55/          ← one folder per run
-    ├── conversation.html          ← the shareable HTML report
-    ├── conversation.json          ← the raw conversation (machine-readable)
+    ├── conversation.json          ← the conversation (the app re-renders it)
     ├── summary_report.md          ← run-level table
     └── open_notepad_windows/      ← one folder per test
-        ├── open_notepad_windows_report.md
+        ├── open_notepad_windows_report.md   ← the test report
         ├── step_1.png
         └── step_2.png
 ```
