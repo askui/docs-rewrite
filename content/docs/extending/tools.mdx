@@ -67,33 +67,71 @@ Grouped by where they reach; required parameters in bold.
 
 ### Seeing the screen better
 
-| Tool | What it does | Parameters |
-| --- | --- | --- |
-| <Lucide name="zoom-in" /> **Screen zoom** | Zoomed-in crop of a screen region — for closely inspecting small elements (computer device) | — |
-| <Lucide name="qr-code" /> **QR scanner** | Scan and decode a QR code from the screen or an image (computer, web, Android) | — |
+- <Lucide name="zoom-in" /> **Screen zoom** — a zoomed-in crop of a screen
+  region (computer device).
+  - **Use it when:** the agent keeps missing small targets — tiny
+    checkboxes, dense tables. The last rung of the
+    [misclick ladder](/docs/best-practices/analyzing-failures#the-agent-misclicks).
+- <Lucide name="qr-code" /> **QR scanner** — scan and decode a QR code from
+  the screen or an image (computer, web, Android).
+  - **Use it when:** the application generates a QR code — invoice, ticket —
+    and the test must verify it encodes the right content.
 
 ### Test data
 
-| Tool | What it does | Parameters |
-| --- | --- | --- |
-| <Lucide name="calendar-clock" /> **Date & time** | Current date/time; the agent can ask with a day offset (1 = tomorrow) | Format, Timezone |
-| <Lucide name="hash" /> **Number converter** | Convert between decimal, hex, binary, octal | — |
+- <Lucide name="calendar-clock" /> **Date & time** — the current date/time;
+  the agent can ask with a day offset (1 = tomorrow).
+  - **Use it when:** a step needs a real date — "enter a delivery date three
+    days from today" — or verifies a timestamp the UI shows.
+  - **Parameters:** Format, Timezone.
+- <Lucide name="hash" /> **Number converter** — convert between decimal,
+  hex, binary, octal.
+  - **Use it when:** the application shows values in one base and the test
+    data is in another — hex device IDs, register values.
 
 ### Beyond the UI — on this machine
 
-| Tool | What it does | Parameters |
-| --- | --- | --- |
-| <Lucide name="globe" /> **HTTP client** | HTTP requests (GET, POST, …) against APIs and webhooks; header values support `${VAR}` secrets | Allowed hosts (empty = any) |
-| <Lucide name="database" /> **SQL database** | Run allowlisted SQL statements via any ODBC driver; raw SQL is a separate, dangerous opt-in | **ODBC driver**, **Server**, **Database**, credentials, Allowed statements, Allow raw SQL — full list in the add dialog |
-| <Lucide name="terminal" /> **Shell script** | Run a pre-configured shell/batch script; the agent invokes it by the name you give it | **Tool name**, **Script path**, **Description** |
-| <Lucide name="file-search" /> **File exists** | Check whether a file or directory exists on this machine | **Base directory** |
+- <Lucide name="globe" /> **HTTP client** — HTTP requests (GET, POST, …)
+  against APIs and webhooks; header values support `${VAR}`
+  [secrets](/docs/extending/secrets).
+  - **Use it when:** cross-checking the UI against the backend — after
+    checkout, verify via the API that the order really exists — or
+    triggering a webhook as test setup.
+  - **Parameters:** Allowed hosts (empty = any).
+- <Lucide name="database" /> **SQL database** — run allowlisted SQL
+  statements via any ODBC driver; raw SQL is a separate, dangerous opt-in.
+  - **Use it when:** verifying the record actually landed in the database,
+    or seeding and cleaning test data in
+    [setup and teardown](/docs/writing-tests/setup-teardown-rules).
+  - **Parameters:** **ODBC driver**, **Server**, **Database**, credentials,
+    Allowed statements, Allow raw SQL — full list in the add dialog.
+- <Lucide name="terminal" /> **Shell script** — run a pre-configured
+  shell/batch script; the agent invokes it by the name you give it.
+  - **Use it when:** a script already solves it — restarting a scanner
+    service as a [recovery](/docs/writing-tests/step-constructs#beyond-steps),
+    resetting the test database.
+  - **Parameters:** **Tool name**, **Script path**, **Description**.
+- <Lucide name="file-search" /> **File exists** — check whether a file or
+  directory exists on this machine.
+  - **Use it when:** the test ends in an export or download — verify the
+    file actually appeared.
+  - **Parameters:** **Base directory**.
 
 ### Files on the controlled machine
 
-| Tool | What it does | Parameters |
-| --- | --- | --- |
-| <Lucide name="folder-search" /> **List remote files** | List files in a directory **on the machine being controlled** (computer device) | **Base directory**, Allowed file extensions |
-| <Lucide name="file-down" /> **Read remote file** | Read a file's text content from the controlled machine (computer device) | **Base directory** |
+For runs where the application under test is on **another machine**
+(computer device) and writes files there.
+
+- <Lucide name="folder-search" /> **List remote files** — list files in a
+  directory on the machine being controlled.
+  - **Use it when:** checking the export folder on the test machine after
+    the run's actions.
+  - **Parameters:** **Base directory**, Allowed file extensions.
+- <Lucide name="file-down" /> **Read remote file** — read a file's text
+  content from the controlled machine.
+  - **Use it when:** the content matters, not just the existence — verify a
+    log line or an exported CSV on the test machine.
+  - **Parameters:** **Base directory**.
 
 ## Using a tool in a test
 
