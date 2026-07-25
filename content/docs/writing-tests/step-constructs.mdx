@@ -1,7 +1,7 @@
 ---
 icon: ListOrdered
 title: Step constructs
-description: What a test step can express — actions, verifications, conditions, waits, procedure calls, and dynamic reactions to the screen.
+description: What a test step can express — actions, verifications, conditions, waits, dynamic values, iteration, procedure calls.
 ---
 
 Steps are plain language, not syntax. Imagine handing the test to a human
@@ -124,24 +124,37 @@ problems (connection lost, session expired). The seeded
 policy for every test — a step-level instruction sharpens it for a specific
 known risk.
 
-## Dynamic reactions
+## Dynamic values
 
-This one is about what you **don't** write. Take a plain step:
+Values that only exist at run time — an ID the application generates, a
+number shown on screen — can be noted in one step and referenced in a later
+one; the agent carries what it saw through the whole test:
 
 ```md
-Select customer ACME-42 in the list.
+12. Create a new user — note the user ID shown in the confirmation dialog.
+13. Open the user list and click the entry with the user ID noted in step 12.
 ```
 
-On run day, an update dialog covers the list — the agent closes it and
-continues. The row is below the fold — the agent scrolls. Nothing of that is
-in the test; the agent handles it because it re-reads the screen before
-every action, like a colleague would. You script the intent, not the
-detours.
+The seeded cross-platform example uses the same pattern across devices: read
+the most recent order number on the desktop, then search for exactly that
+number on the phone.
 
-When a detour matters, make it explicit: expected variants →
-[conditions](#conditions), forbidden reactions →
-[exclusions](#exclusions), folder-wide limits →
-[rules](/docs/writing-tests/setup-teardown-rules#rules).
+## Iterating over lists, tabs & tables
+
+A step can loop over what's on screen:
+
+```md
+14. For every tab in the Settings dialog: open it and verify it loads
+    without an error message.
+```
+
+<Callout type="warn" title="Iteration tends to be unstable">
+The agent has to keep count on a screen that changes with every action —
+long or unbounded iterations drift. Keep the set small and verifiable
+("all 4 tabs"), and when the elements are known up front, prefer one
+[data-driven CSV case per element](/docs/writing-tests#formats) instead of
+a loop.
+</Callout>
 
 ## Exclusions
 
@@ -149,9 +162,9 @@ Say explicitly what must **not** happen — the agent honors prohibitions like
 a tester honors a warning in the test spec:
 
 ```md
-12. Click **Submit** exactly once — do NOT press it again, even if the page
+15. Click **Submit** exactly once — do NOT press it again, even if the page
     seems to hang.
-13. Do NOT dismiss the license dialog; the test verifies its content first.
+16. Do NOT dismiss the license dialog; the test verifies its content first.
 ```
 
 For prohibitions that apply to every test in a folder ("never change the
@@ -165,7 +178,7 @@ One step runs a whole [procedure](/docs/writing-tests/procedures) — name it
 and say what fills its parameters:
 
 ```md
-14. Log in using the `login_to_ui` procedure with the QA username and
+17. Log in using the `login_to_ui` procedure with the QA username and
    password secrets.
 ```
 
@@ -175,7 +188,7 @@ Reference credentials by name, never by value —
 [secrets](/docs/extending/secrets):
 
 ```md
-15. Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
+18. Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
 ```
 
 ## Tool invocations
@@ -185,9 +198,9 @@ requests, SQL statements, shell scripts, QR scanning. Describing the action
 is usually enough; when two tools could match, name the tool explicitly:
 
 ```md
-16. Perform an HTTP GET request to `https://example.com`.
-17. Scan the QR code from the screen — the decoded text contains "wikipedia".
-18. Use the `sql_database` tool to run the statement `test_data`.
+19. Perform an HTTP GET request to `https://example.com`.
+20. Scan the QR code from the screen — the decoded text contains "wikipedia".
+21. Use the `sql_database` tool to run the statement `test_data`.
 ```
 
 Tool names are listed under **Utils → Tools** — each card carries the name
@@ -201,6 +214,6 @@ per step; a `platforms:` first line marks a
 [cross-platform case](/docs/writing-tests#target-multiple-platforms):
 
 ```md
-19. On the **server**, start the message service.
-20. On the **client**, send a message to the server.
+22. On the **server**, start the message service.
+23. On the **client**, send a message to the server.
 ```
