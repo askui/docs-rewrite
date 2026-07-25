@@ -30,25 +30,27 @@ take each non-passing case by its status:
    the expectation is right and the application really did something else,
    you've found a product defect — the report with its screenshot **is** the
    incident evidence; attach it to the ticket.
-3. Still unclear? Open the
-   [conversation log](/docs/results#conversation-log) — the complete record
-   of every decision and screenshot on the way to the failure.
+3. Still unclear? Switch from the test report to the
+   [conversation log](/docs/results#conversation-log) — it shows what the
+   agent actually did, in detail: every decision, tool call, and screenshot
+   on the way to the failure.
+4. Check the report's **Issues** section — also on tests that passed. The
+   agent notes anomalies there (slow responses, odd dialogs) that are often
+   the early warning for the next run's failure.
 
-## Failure keeps coming back?
+## Behavior, cause, remedy
 
-**The agent took an odd path but the result was right** — that's
-[by design](/docs/concepts/how-a-run-executes#why-execution-differs); judge
-the result, not the path. \
-**The agent keeps misreading the same element** — sharpen the
-[locator](/docs/writing-tests/step-constructs#locators): more distinguishing
-features, spatial anchors. \
-**The agent operates the UI wrong** (shortcuts, keyboard instead of numpad)
-— teach the house style in
-[ui_information](/docs/writing-tests/agents-and-prompts#ui-information) or
-[rules](/docs/writing-tests/setup-teardown-rules#rules). \
-**Random real-world disruptions** (hanging app, empty printer) — give the
-agent the manual tester's recoveries in
-[rules](/docs/writing-tests/step-constructs#beyond-steps).
+The recurring patterns, side by side:
+
+| The agent… | What it usually means | The remedy |
+| --- | --- | --- |
+| **misclicks** | The [locator](/docs/writing-tests/step-constructs#locators) is ambiguous on this screen | Make the element description more specific (text + color + position). If that's not enough, enable the **Screen zoom** [tool](/docs/extending/tools) |
+| **takes a lot of steps** | It is unsure how your application behaves | Add [UI information](/docs/writing-tests/agents-and-prompts#ui-information) ("the pop-up stays open when you click it") — and make vague goals more precise |
+| **reports FAILED, but the behavior is actually correct** | Your expected result is under-specified — the agent judged against the wrong picture | State more precisely what the expected result looks like |
+| **reports PASSED, but it actually failed** | The success criterion is too loose to catch the defect | Add an explicit [verification step](/docs/writing-tests/step-constructs#verifications) after the action |
+| **takes an odd path, but the result is right** | [Non-determinism by design](/docs/concepts/how-a-run-executes#why-execution-differs) | Nothing — judge the result, not the path |
+| **operates the UI wrong** (shortcuts, keyboard instead of numpad) | It doesn't know your house style | Teach it in [ui_information](/docs/writing-tests/agents-and-prompts#ui-information) or [rules](/docs/writing-tests/setup-teardown-rules#rules) |
+| **hits random real-world disruptions** (hanging app, empty printer) | The environment, not the test | Give it the manual tester's recoveries in [rules](/docs/writing-tests/step-constructs#beyond-steps) |
 
 ## Where the fix belongs
 
