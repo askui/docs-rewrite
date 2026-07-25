@@ -49,24 +49,17 @@ top-down, teardowns bottom-up — pressing **Run** on the `checkout` suite:
 ```mermaid
 flowchart LR
   RUN(["▶ Run
-checkout on Windows Desktop"]) --> CHAIN
-  subgraph CHAIN["execution"]
-    direction TB
+checkout on Windows Desktop"]) --> A
+  subgraph CHAIN["scope of tests/ — rules.md applies to every phase"]
+    direction LR
     A["1 · tests/setup.md"]
-    subgraph CO["scope of tests/checkout/"]
-      direction TB
+    subgraph CO["scope of tests/checkout/ — checkout/rules.md adds rules here"]
+      direction LR
       B["2 · tests/checkout/setup.md"] --> C["3 · tests/checkout/pay_with_card.md"] --> D["4 · tests/checkout/pay_with_invoice.md"] --> E["5 · tests/checkout/teardown.md"]
     end
     A --> B
     E --> F["6 · tests/teardown.md"]
   end
-  CHAIN -.- R1["tests/rules.md
-applies to every phase"]
-  B -.- R2
-  C -.- R2
-  D -.- R2
-  E -.- R2["tests/checkout/rules.md
-adds rules inside tests/checkout/"]
 ```
 
 A failing setup blocks exactly the tests below it; sibling suites are
