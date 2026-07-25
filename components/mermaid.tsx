@@ -26,6 +26,9 @@ export function Mermaid({ chart }: { chart: string }) {
         securityLevel: 'loose',
         fontFamily: 'inherit',
         theme: resolvedTheme === 'dark' ? 'dark' : 'neutral',
+        // Render at natural size — wide diagrams scroll horizontally in the
+        // container below instead of shrinking to unreadable text.
+        flowchart: { useMaxWidth: false },
       });
       try {
         const { svg } = await mermaid.render(
@@ -47,9 +50,11 @@ export function Mermaid({ chart }: { chart: string }) {
 
   return (
     <div
-      // The [&_.nodeLabel_svg] rules style inline icons inside node labels:
-      // centered above the text and in full foreground color (theme-aware).
-      className="my-6 flex justify-center [&_svg]:max-w-full [&_.nodeLabel_svg]:mx-auto [&_.nodeLabel_svg]:block [&_.nodeLabel_svg]:mb-1 [&_.nodeLabel_svg]:text-fd-foreground"
+      // Natural-size rendering: narrow diagrams center, wide ones scroll
+      // horizontally (no flex here — centering would clip the left edge of
+      // scrolled content). The [&_.nodeLabel_svg] rules style inline icons
+      // inside node labels: centered above the text, foreground color.
+      className="my-6 overflow-x-auto [&>svg]:mx-auto [&>svg]:block [&_.nodeLabel_svg]:mx-auto [&_.nodeLabel_svg]:block [&_.nodeLabel_svg]:mb-1 [&_.nodeLabel_svg]:text-fd-foreground"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
