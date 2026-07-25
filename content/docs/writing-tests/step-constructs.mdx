@@ -265,3 +265,39 @@ per step; a `platforms:` first line marks a
 25. On the **server**, start the message service.
 26. On the **client**, send a message to the server.
 ```
+## Nothing fits?
+
+Two situations don't belong in any step — they're the manual tester's
+tribal knowledge, and they have their own homes.
+
+**Real-world disruptions.** Some failures are random and expected:
+the application hangs, the printer is empty, a product is out of stock. A
+manual tester doesn't fail the test — they restart the app, ignore the
+printer, refill the quantity, and carry on. Give the agent the same
+recoveries in [rules.md](/docs/writing-tests/setup-teardown-rules#rules), at
+the [scope](/docs/writing-tests/organisation#scope) that needs them:
+
+```md title="tests/rules.md"
+## Recoveries
+- If the application hangs, restart it and repeat the current step once.
+- If the printer reports empty, ignore the print result and continue.
+- If a product is out of stock, set its quantity to 10 in inventory first.
+```
+
+**The agent operates the UI differently than you wish.** It uses keyboard
+shortcuts where your users click menus, types numbers instead of using the
+on-screen numpad, keeps misreading the same part of your UI. That's not a
+step problem either — teach it the house style in
+[rules.md](/docs/writing-tests/setup-teardown-rules#rules) or, when it's
+about how your application works, in the
+[ui_information prompt](/docs/writing-tests/agents-and-prompts):
+
+```md title="prompts/ui_information.md"
+- Enter numbers via the on-screen numpad with mouse clicks — never type
+  them with the keyboard.
+- Do not use keyboard shortcuts; this application is tested through its
+  menus, like our users work.
+```
+
+What belongs where in detail:
+[What goes where](/docs/best-practices/prompting-best-practices).
