@@ -21,7 +21,9 @@ export function Mermaid({ chart }: { chart: string }) {
       const { default: mermaid } = await import('mermaid');
       mermaid.initialize({
         startOnLoad: false,
-        securityLevel: 'strict',
+        // 'loose' keeps inline HTML (e.g. lucide SVG icons) in node labels.
+        // Safe here: every diagram is authored in this repo — no user content.
+        securityLevel: 'loose',
         fontFamily: 'inherit',
         theme: resolvedTheme === 'dark' ? 'dark' : 'neutral',
       });
