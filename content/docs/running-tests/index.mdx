@@ -33,15 +33,37 @@ criteria weren't met.
 
 ## Watch it live
 
-The **Runs** page streams the agent conversation while it works — every
-message, tool call, and screenshot. This is the test execution log; use it to
-catch unexpected behaviour before the report exists.
+The conversation is the live test execution log — every message, tool call,
+and screenshot as it happens. Use it to catch unexpected behaviour before
+the report exists.
+
+1. Open the **Runs** page.
+2. Pick the run in the runs sidebar on the left — it lists every run of the
+   project, and **several runs can be active at once**; each streams its own
+   conversation.
+3. Follow along: **Autofollow** keeps the view pinned to the newest entry,
+   and the density toggle switches between **Quiet** (just the story),
+   **Detailed** (the default), and **Raw** (the underlying messages as JSON).
 
 <img
   src="/docs-rewrite/screenshots/desktop-runs-live.png"
   alt="The Runs page showing an agent conversation with messages, tool calls, and step screenshots"
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
+
+### Reading the conversation
+
+| Element | Meaning |
+| --- | --- |
+| **Numbered circle + TEST header** | One phase (setup, a test case, teardown) with its file path, status badge (PASS/FAIL), and how many tool calls it took — this is where you see each test |
+| **Text lines** | The agent's narration: what it sees on screen and what it decides to do next |
+| **Chips** | Tool calls — a screenshot, a keystroke, a click, or a named tool like *Save screenshot* / *Write file*, with the result behind it |
+| **`350 → 26`** | Tokens in → out for that step — the cost signal of the run |
+| **`500ms`** | The step's latency |
+
+The same view stays available after the run finishes — see the
+[conversation log](/docs/results/run-report#conversation-log) on the results
+page.
 
 After the run: [read the report](/docs/results/run-report). Recurring runs:
 [Scheduling](/docs/running-tests/scheduling). Headless / CI:
