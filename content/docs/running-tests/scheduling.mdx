@@ -6,6 +6,13 @@ description: Run a test or plan automatically — daily at a time or every N min
 A schedule runs a test or [plan](/docs/writing-tests/plans) on
 a device profile without you pressing Run.
 
+<Callout type="warn" title="Only while the app is open">
+AskUI Desktop is not a background service. Schedules fire only while the app
+runs; a missed firing is not made up. A due schedule never double-fires, even
+when a run outlasts its interval. For unattended runs on a build server, use
+the [CLI](/docs/running-tests/cli) with your CI scheduler.
+</Callout>
+
 ## Create a schedule
 
 1. Open the test on the **Tests** page (or the plan on **Plans**).
@@ -25,12 +32,3 @@ a device profile without you pressing Run.
 The dialog lists every schedule in the project with its last outcome — the
 run's results, or why it was skipped (e.g. the device could not connect).
 Schedules live in the project's `schedules.json`.
-
-## Only while the app is open
-
-AskUI Desktop is not a background service. Schedules fire only while the app
-runs; a missed firing is not made up. A due schedule never double-fires, even
-when a run outlasts its interval.
-
-For unattended runs on a build server, use the
-[CLI](/docs/running-tests/cli) with your CI scheduler.
