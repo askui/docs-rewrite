@@ -1,167 +1,183 @@
 ---
 title: Writing good tests
-description: How to write clear, reliable test steps — element descriptions, credentials, procedures, and setup/teardown.
+description: How to write test steps the agent executes reliably — one goal per file, precise locators, verifications, named secrets, and shared structure.
 ---
 
-A test file is a plain Markdown file listing the steps and verifications the
-agent should carry out. The agent reads it, acts on the real screen, and writes
-a report. Whether that run is reliable depends almost entirely on how clearly
-the steps are written.
+A test file is plain Markdown: preconditions, numbered steps, postconditions.
+The agent reads it, acts on the real screen, and writes a
+[report](/docs/results/run-report). Whether the run is reliable depends
+almost entirely on how clearly the steps are written. The bar to clear:
+**someone who has never seen the app should be able to execute the test from
+the file alone.**
 
 ## One goal per test file
 
-Each test file should describe **one coherent scenario** with a clear,
-verifiable outcome. Tests with multiple independent goals are harder to debug
-— when the run fails, you cannot tell which goal it failed on.
+One coherent scenario with one verifiable outcome per file. When a
+two-goal test fails, you can't tell which goal failed.
 
-```markdown
-<!-- Good: one goal, clear pass condition -->
-# Verify that a new user can complete registration
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
 
-Navigate to the registration page.
-Fill in the registration form with valid data.
-Submit the form.
-Verify that the confirmation page is shown.
+```md title="❌ tests/registration_and_login.md"
+# Registration and Login
+
+## Steps
+1. Register a new account, then
+   log in with the new credentials.
 ```
 
-```markdown
-<!-- Avoid: two independent goals in one file -->
-# Registration and login
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
-Register a new account, then log in with the new credentials.
+```md title="✅ tests/registration_test.md"
+# New User Registration
+
+## Steps
+1. Open the registration page.
+2. Fill the form with the test data.
+3. Submit — the confirmation page
+   "Welcome aboard" is shown.
 ```
 
-## Write steps the agent can act on reliably
+</div>
 
-The agent identifies UI elements from screenshots. Vague descriptions force it
-to guess; specific descriptions make each step unambiguous.
+## Steps the agent can act on
 
-**Use spatial anchors.** Describe where an element is relative to something
-stable on screen:
+The agent identifies elements from screenshots. Vague descriptions force it
+to guess — the [locator vocabulary](/docs/writing-tests/step-constructs#locators)
+makes each step unambiguous.
 
-```markdown
-<!-- Vague -->
-Click the button.
+**Quote the exact label and anchor the position:**
 
-<!-- Specific -->
-Click the Save button in the bottom-right corner of the dialog, below the
-comment field.
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ vague"
+3. Click the button.
 ```
 
-**Include distinguishing features.** Name the label, color, icon, or position
-that makes the element unique:
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
-```markdown
-<!-- Vague -->
-Click the icon.
-
-<!-- Specific -->
-Click the red trash-can icon to the right of the row labelled "Draft report".
+```md title="✅ specific"
+3. Click "Save" — bottom right of
+   the dialog, below the comment
+   field.
 ```
 
-**Instruct the agent to zoom for small targets.** If a button or icon is
-small, say so explicitly:
+</div>
 
-```markdown
-Zoom in on the toolbar area, then click the small pencil icon on the far right.
+**Name the feature that makes an element unique:**
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ vague"
+5. Click the icon.
 ```
 
-**State what to verify, not just what to do.** A step without a verification
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ specific"
+5. Click the red trash-can icon in
+   the row labelled "Draft report".
+```
+
+</div>
+
+**Small targets: use the Screen zoom tool** — enable it in the
+[Tool Store](/docs/extending/tools#screen-zoom) first, then say so in the
+step, with a verification after the click:
+
+```md
+4. Use the zoom tool to click the "Accept AGB" checkbox.
+5. Check afterwards that the checkbox is checked.
+```
+
+**Every step states its expected result.** A step without a verification
 always passes:
 
-```markdown
-<!-- No verification — passes even if the page is wrong -->
-Click Submit.
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
 
-<!-- With verification -->
-Click Submit. Verify that the success banner "Changes saved" appears at the
-top of the page.
+```md title="❌ always passes"
+6. Click Submit.
 ```
 
-## Never embed credentials in test files
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
-Test files are version-controlled. Credentials must not be. Reference them by
-name and keep the values in the app's encrypted secret store:
-
-```markdown
-<!-- Correct: reference by name -->
-Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
-
-<!-- Wrong: never do this -->
-Sign in with username "admin@example.com" and password "hunter2".
+```md title="✅ verifiable"
+6. Click Submit — the banner
+   "Changes saved" appears at the
+   top of the page.
 ```
 
-Add the values once under **Utils → Secrets**; the real value is substituted
-at execution time, hidden from the model and redacted from logs and reports.
-See [Secrets](/docs/extending/secrets) for the full mechanics.
+</div>
 
-## Use procedures for repeated sequences
+## Never embed credentials
 
-When the same multi-step sequence appears in more than one test — signing in,
-navigating to a starting state, seeding data — extract it into a procedure:
+Test files are version-controlled; credentials must not be. Reference them
+by name — the values live encrypted in
+[Utils → Secrets](/docs/extending/secrets) and substitute at execution
+time, hidden from the model and redacted from reports:
 
-```markdown
-# procedures/sign_in.md
-Navigate to https://app.example.com/login.
-Enter the QA username and password.
-Click Sign in and wait for the dashboard to appear.
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ never"
+1. Sign in as "admin@example.com"
+   with password "hunter2".
 ```
 
-Call it from any test or setup file:
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
-```markdown
-Sign in using the QA credentials.
+```md title="✅ by name"
+1. Sign in with the QA credentials —
+   the secrets QA_USERNAME and
+   QA_PASSWORD.
 ```
 
-Procedures keep tests short and focused. They also mean a changed flow (a new
-login page, a renamed field) only needs fixing in one place.
+</div>
 
-## Use setup and teardown for shared state
+## Repeated sequences → procedures
 
-**Setup files** run before every test in a folder. Use them for preconditions
-that every test in that folder needs:
+The same multi-step sequence in more than one test — signing in, reaching a
+starting state — belongs in a
+[procedure](/docs/writing-tests/procedures). A changed flow (new login
+page, renamed field) is then fixed in one place:
 
-- Logging in
-- Navigating to a known starting page
-- Seeding or resetting test data
+```md title="tests/checkout_test.md"
+1. Run procedure `login_to_ui[username, password]` with the QA credentials.
+2. Add the first product to the cart.
+```
 
-**Teardown files** run after every test. Use them for cleanup:
+## Shared state → setup and teardown
 
-- Logging out
-- Deleting data created during the test
-- Resetting application state
+Preconditions every test in a folder needs — logging in, seeding data —
+belong in the folder's `setup.md`, cleanup in `teardown.md`
+([how they cascade](/docs/writing-tests/setup-teardown-rules)). Keep a
+precondition inline only when just some tests need it. Unlike procedures,
+setup and teardown run automatically — nothing calls them.
 
-If a precondition is needed by every test in a folder, put it in `setup.md`
-rather than at the top of each test file. If a step is needed by only some
-tests, keep it inline.
+## Non-deterministic execution
 
-<Callout title="Note">
-Setup and teardown are not the same as procedures. Setup/teardown run
-automatically for every test in the folder; procedures are called explicitly
-from a test step.
-</Callout>
+Two runs of the same case can take different paths — by design
+([why](/docs/concepts/how-a-run-executes#why-execution-differs)). For a
+tester this means:
+
+- **Judge the result, not the path** — the report's expected vs. actual
+  per step is the contract; the exact clicks are the execution log, not
+  the specification.
+- **Precise expected results = stable outcomes** — the agent has freedom
+  in *how*; your steps define *what must be true afterwards*. The tighter
+  the expected result, the less room for a wrong interpretation.
+- **Rules constrain the freedom** —
+  [rules.md](/docs/writing-tests/setup-teardown-rules#rules) removes paths
+  you never want taken ("never change settings", "abort on error dialogs").
+- **Watch a run when in doubt** — the
+  [live conversation log](/docs/running-tests#watch-it-live) shows the
+  path the agent chose, and why.
 
 ## Checklist
 
 Before committing test files:
 
-- [ ] Each test file has one clear goal with a verifiable outcome.
-- [ ] Steps use spatial anchors and distinguishing features — no bare "click the button".
-- [ ] Every step that does something verifiable includes an explicit verification.
-- [ ] No credentials in any test file — only named references.
-- [ ] Repeated sequences are in `procedures/`, not copy-pasted.
-- [ ] Shared preconditions are in `setup.md`, not duplicated across tests.
-- [ ] Shared cleanup is in `teardown.md`.
-
-## Working with non-deterministic execution
-
-Two runs of the same case can take different paths — by design; the
-background is in [How a run executes](/docs/concepts/how-a-run-executes#why-execution-differs).
-For a tester this means:
-
-| | |
-| --- | --- |
-| **Judge the result, not the path** | The report's expected vs. actual per step is the contract. The exact clicks are the execution log, not the specification |
-| **Precise expected results = stable outcomes** | The agent has freedom in *how*; your steps define *what must be true afterwards*. The tighter the expected result, the less room for a wrong interpretation |
-| **Rules constrain the freedom** | `rules.md` removes paths you never want taken ("never change settings", "abort on error dialogs") |
-| **Watch a run when in doubt** | The [live conversation log](/docs/running-tests#watch-it-live) shows the path the agent chose and why |
+- [ ] One goal per file, with a verifiable outcome.
+- [ ] Labels quoted, positions anchored — no bare "click the button".
+- [ ] Every acting step ends in "— <what must be true afterwards>".
+- [ ] No credentials in any file — only named references.
+- [ ] Repeated sequences in `procedures/`, not copy-pasted.
+- [ ] Shared preconditions in `setup.md`, shared cleanup in `teardown.md`.
