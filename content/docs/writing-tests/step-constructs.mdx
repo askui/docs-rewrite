@@ -66,12 +66,19 @@ Because the agent [reads the screen before every step](/docs/concepts/how-a-run-
 steps can branch on what is actually there:
 
 ```md
-5. Check whether a window named "AskUI Desktop" is already open. If yes,
-   bring it to the front — otherwise open the Start menu, search for
-   "AskUI Desktop" and start it.
-6. If the result says more rows are available, call it again with the
+5. If the result says more rows are available, call it again with the
    suggested offset — otherwise continue.
-7. If a cookie banner appears, dismiss it before continuing.
+6. If a cookie banner appears, dismiss it before continuing.
+```
+
+Bigger decisions read best as sub-steps — one branch per letter, each with
+its own expected result:
+
+```md
+7. Check whether a window named "AskUI Desktop" is already open:
+   a. If yes: bring it to the front — the app window is focused.
+   b. If no: open the Start menu, search for "AskUI Desktop" and start
+      it — the app window opens within a minute.
 ```
 
 ## Optional executions
