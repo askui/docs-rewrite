@@ -15,7 +15,9 @@ suite** — and suites nest, so the tree mirrors your test structure plan:
     <File name="login_test.md" />
     <File name="user_matrix.csv" />
     <Folder name="checkout" defaultOpen>
+      <File name="rules.md" />
       <File name="setup.md" />
+      <File name="teardown.md" />
       <File name="pay_with_card.md" />
       <File name="pay_with_invoice.md" />
     </Folder>
@@ -30,16 +32,18 @@ suite** — and suites nest, so the tree mirrors your test structure plan:
 | --- | --- |
 | `login_test.md` | A single test case — the file name is the test's name in runs and reports |
 | `user_matrix.csv` | Also test cases — one per row; every [format](/docs/writing-tests#formats) sits side by side in the same tree |
-| `checkout/` | A suite: its cases run together, framed by the suite's own `setup.md`. Nest deeper for sub-suites |
-| `user-management/` | A sibling suite — no steering files of its own, so only the outer ones apply. Suites are independent: a failing `checkout/setup.md` never touches it |
+| `checkout/` | A suite: its cases run together, framed by the suite's own `setup.md` and under its own `rules.md` **in addition to** the outer one. Nest deeper for sub-suites |
+| `user-management/` | A sibling suite — no steering files of its own, so only the root ones apply. Suites are independent: a failing `checkout/setup.md` never touches it |
 | `rules.md`, `setup.md`, `teardown.md` | [Steering files](/docs/writing-tests/setup-teardown-rules), allowed at **every** level — each scopes to its folder and everything below |
 
 ## Scope
 
 The steering files reach downward, never sideways. In the tree above,
-`checkout/pay_with_card.md` runs framed by `tests/setup.md` *and*
-`checkout/setup.md`, under the outer `rules.md`;
-`user-management/create_user.md` gets only the outer files. Setups run
+`tests/checkout/pay_with_card.md` runs framed by `tests/setup.md` *and*
+`tests/checkout/setup.md`, and rules **accumulate**: the root
+`tests/rules.md` applies to every phase, `tests/checkout/rules.md` adds the
+suite's own rules on top — but only inside `tests/checkout/`.
+`tests/user-management/create_user.md` gets only the root files. Setups run
 top-down, teardowns bottom-up — pressing **Run** on the `checkout` suite:
 
 ```mermaid
@@ -48,10 +52,18 @@ flowchart LR
 checkout on Windows Desktop"]) --> CHAIN
   subgraph CHAIN["execution"]
     direction TB
-    A["1 · tests/setup.md"] --> B["2 · checkout/setup.md"] --> C["3 · pay_with_card"] --> D["4 · pay_with_invoice"] --> E["5 · checkout/teardown.md"] --> F["6 · tests/teardown.md"]
+    A["1 · tests/setup.md"]
+    subgraph CO["scope of tests/checkout/"]
+      direction TB
+      B["2 · tests/checkout/setup.md"] --> C["3 · tests/checkout/pay_with_card.md"] --> D["4 · tests/checkout/pay_with_invoice.md"] --> E["5 · tests/checkout/teardown.md"]
+    end
+    A --> B
+    E --> F["6 · tests/teardown.md"]
   end
-  CHAIN -.- R["rules.md
+  CHAIN -.- R1["tests/rules.md
 applies to every phase"]
+  CO -.- R2["tests/checkout/rules.md
+adds rules inside tests/checkout/"]
 ```
 
 A failing setup blocks exactly the tests below it; sibling suites are
