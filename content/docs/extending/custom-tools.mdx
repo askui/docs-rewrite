@@ -99,9 +99,20 @@ What the example uses — and what else a tool file can do:
   `IWebAgentOs` (browser), `IAndroidAgentOs`, or `IIosAgentOs` gets the
   run's device layer injected. Parameterless (like above) works on every
   run; a tool whose device isn't part of the run is skipped with a warning.
-- **NuGet packages** — declared per file at the top —
-  `#:package Npgsql@8.0.3` — resolved through your normal `NuGet.config`,
-  so enterprise feeds work unchanged.
+- **The .NET standard library** — available without any package: ZIP
+  archives (`System.IO.Compression`), cryptography, regular expressions,
+  XML, sockets, starting processes. Namespaces beyond the injected common
+  ones need one `using` line:
+
+  ```csharp
+  using System.IO.Compression;
+
+  ZipFile.ExtractToDirectory("export.zip", "export");
+  ```
+
+- **NuGet packages** — for everything the standard library doesn't cover,
+  declared per file at the top — `#:package Npgsql@8.0.3` — resolved
+  through your normal `NuGet.config`, so enterprise feeds work unchanged.
 
 ## A tool using all of it
 
