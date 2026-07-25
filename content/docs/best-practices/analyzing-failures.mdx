@@ -70,40 +70,120 @@ page is the loop for **why** — and where the fix belongs.
 
 ## Fix it
 
-Match what you saw to the pattern — each has one remedy.
+Match what you saw to the pattern — each shows the file to change, before
+and after.
 
-- **The agent misclicks.** The
-  [locator](/docs/writing-tests/step-constructs#locators) is ambiguous on
-  this screen.
-  - **Fix:** make the element description more specific — text + color +
-    position. Still not enough? Enable the **Screen zoom**
-    [tool](/docs/extending/tools).
-- **The agent takes a lot of steps.** It is unsure how your application
-  behaves.
-  - **Fix:** add
-    [UI information](/docs/writing-tests/agents-and-prompts#ui-information)
-    — "the pop-up stays open when you click it" — and make vague goals more
-    precise.
-- **FAILED, but the behavior is actually correct.** The agent judged against
-  the wrong picture: your expected result is under-specified.
-  - **Fix:** state more precisely what the expected result looks like.
-- **PASSED, but it actually failed.** The success criterion is too loose to
-  catch the defect.
-  - **Fix:** add an explicit
-    [verification step](/docs/writing-tests/step-constructs#verifications)
-    after the action.
-- **Odd path, but the right result.** That's
-  [non-determinism by design](/docs/concepts/how-a-run-executes#why-execution-differs).
-  - **Fix:** nothing — judge the result, not the path.
-- **The agent operates the UI wrong** — shortcuts, keyboard instead of the
-  numpad. It doesn't know your house style.
-  - **Fix:** teach it in
-    [ui_information](/docs/writing-tests/agents-and-prompts#ui-information)
-    or [rules](/docs/writing-tests/setup-teardown-rules#rules).
-- **Random real-world disruptions** — the app hangs, the printer is empty.
-  The environment, not the test.
-  - **Fix:** give the agent the manual tester's recoveries in
-    [rules](/docs/writing-tests/step-constructs#beyond-steps).
+### The agent misclicks
+
+The [locator](/docs/writing-tests/step-constructs#locators) is ambiguous on
+this screen — make the element description more specific. Still not enough?
+Enable the **Screen zoom** [tool](/docs/extending/tools).
+
+<div className="grid gap-3 md:grid-cols-2">
+
+```md title="tests/connect_device.md — before"
+3. Click Connect.
+```
+
+```md title="tests/connect_device.md — after"
+3. Click the green **Connect** button
+   on the "Windows Desktop" card.
+```
+
+</div>
+
+### The agent takes a lot of steps
+
+It is unsure how your application behaves — teach it in
+[UI information](/docs/writing-tests/agents-and-prompts#ui-information) and
+make vague goals precise.
+
+<div className="grid gap-3 md:grid-cols-2">
+
+```md title="prompts/ui_information.md — before"
+## Dialogs & quirks
+<behaviors the agent must know>
+```
+
+```md title="prompts/ui_information.md — after"
+## Dialogs & quirks
+The confirmation pop-up stays open
+until you click **OK** — clicking
+elsewhere does not close it.
+```
+
+</div>
+
+### FAILED, but the behavior is actually correct
+
+The agent judged against the wrong picture: your expected result is
+under-specified — state precisely what it looks like.
+
+<div className="grid gap-3 md:grid-cols-2">
+
+```md title="tests/login_test.md — before"
+2. Click Login — the user is
+   logged in.
+```
+
+```md title="tests/login_test.md — after"
+2. Click Login — the start screen
+   shows the green signed-in dot
+   at the top right.
+```
+
+</div>
+
+### PASSED, but it actually failed
+
+The success criterion is too loose to catch the defect — add an explicit
+[verification step](/docs/writing-tests/step-constructs#verifications).
+
+<div className="grid gap-3 md:grid-cols-2">
+
+```md title="tests/create_record.md — before"
+3. Click Save.
+```
+
+```md title="tests/create_record.md — after"
+3. Click Save.
+4. Verify the new record appears in
+   the list with status "Active".
+```
+
+</div>
+
+### The agent operates the UI wrong
+
+Shortcuts, keyboard instead of the numpad — it doesn't know your house
+style. Teach it in
+[ui_information](/docs/writing-tests/agents-and-prompts#ui-information) or,
+per suite, in [rules](/docs/writing-tests/setup-teardown-rules#rules):
+
+```md title="tests/rules.md — add"
+## Interaction
+- Never use keyboard shortcuts — operate the application through its
+  menus, like our users do.
+- Enter numbers via the on-screen numpad with mouse clicks.
+```
+
+### Random real-world disruptions
+
+The app hangs, the printer is empty — the environment, not the test. Give
+the agent the manual tester's
+[recoveries](/docs/writing-tests/step-constructs#beyond-steps):
+
+```md title="tests/rules.md — add"
+## Recoveries
+- If the application hangs, restart it and repeat the current step once.
+- If the printer reports empty, ignore the print result and continue.
+```
+
+### Odd path, but the right result
+
+That's
+[non-determinism by design](/docs/concepts/how-a-run-executes#why-execution-differs)
+— change nothing; judge the result, not the path.
 
 ### Not the agent's behavior?
 
