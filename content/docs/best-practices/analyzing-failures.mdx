@@ -35,7 +35,15 @@ page is the loop for **why** — and where the fix belongs.
        with admin rights — or non-standard behavior of your device:
        [contact AskUI](/docs/support/get-help).
    - **`WARN`**: passed with a caveat — read the report's **Issues**
-     section; often the early sign of a real problem.
+     section, then decide:
+     - **Standard behavior of your application** (a known pop-up, a slow
+       first load)? Make it expected — a
+       [rule](/docs/writing-tests/setup-teardown-rules#rules) or an
+       [optional step](/docs/writing-tests/step-constructs#optional) — and
+       the warning disappears from future runs.
+     - **A genuine anomaly**? Keep an eye on it across the next runs — and
+       if it persists or worsens, report it as a defect, with the reports
+       as evidence.
    - **`SKIPPED`**: an entry criterion wasn't met, or an
      [optional step](/docs/writing-tests/step-constructs#optional) didn't
      apply. Check the **Preconditions** section.
