@@ -65,7 +65,7 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     `save_screenshot[desktop-schedule-dialog]`, then close it — do NOT add a
     schedule.
 
-13. Open the **Utils** page, **Tools** tab. Wait for the tool list, then call
+13. Open the **Utils** page, **Tool Store** tab. Wait for the tool list, then call
     `save_screenshot[desktop-utils-tools]`.
 
 14. Switch to the **Secrets** tab, then call

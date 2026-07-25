@@ -1,16 +1,16 @@
 ---
-icon: Hammer
-title: Tools
+icon: Wrench
+title: Tool Store
 description: What the agent is allowed to do during a run — enable, disable, and configure the toolbox per project.
 ---
 
 Everything the agent does happens through a **tool** — mouse, screenshot,
 file access, database query. The toolbox is the boundary of what a test can
-possibly do. Manage it under **Utils → Tools**.
+possibly do. Manage it under **Utils → Tool Store**.
 
 <img
   src="/docs-rewrite/screenshots/desktop-utils-tools.png"
-  alt="The Tools tab on the Utils page listing built-in tools with enable switches"
+  alt="The Tool Store tab on the Utils page listing built-in tools with enable switches"
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
@@ -26,6 +26,24 @@ in [named secrets](/docs/extending/secrets).
 
 Choices are saved to `utils/tools.json` — the whole team runs with the same
 toolbox. An untouched tool follows its tier default.
+
+## The tools in the store
+
+All store tools are currently **Optional** — off until you enable them.
+Required parameters in bold:
+
+| Tool | What it does | Parameters |
+| --- | --- | --- |
+| **Date & time** | Current date/time; the agent can ask with a day offset (1 = tomorrow) | Format, Timezone |
+| **Number converter** | Convert between decimal, hex, binary, octal | — |
+| **HTTP client** | HTTP requests (GET, POST, …) against APIs and webhooks; header values support `${VAR}` secrets | Allowed hosts (empty = any) |
+| **File exists** | Check whether a file or directory exists on this machine | **Base directory** |
+| **Shell script** | Run a pre-configured shell/batch script; the agent invokes it by the name you give it | **Tool name**, **Script path**, **Description** |
+| **SQL database** | Run allowlisted SQL statements via any ODBC driver on this machine; raw SQL is a separate, dangerous opt-in | **ODBC driver**, **Server**, Port, **Database**, User name, Password, Connection string, Max result rows, Allowed statements, Allow raw SQL |
+| **QR scanner** | Scan and decode a QR code from the screen or an image (computer, web, Android) | — |
+| **Screen zoom** | Zoomed-in crop of a screen region — for closely inspecting small elements (computer device) | — |
+| **List remote files** | List files in a directory **on the machine being controlled** (computer device) | **Base directory**, Allowed file extensions |
+| **Read remote file** | Read a file's text content from the controlled machine (computer device) | **Base directory** |
 
 Need more? [Custom tools](/docs/extending/custom-tools) for anything you can
 write in C#; [MCP servers](/docs/extending/mcp) for existing tool servers.
