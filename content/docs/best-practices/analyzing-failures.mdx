@@ -30,8 +30,9 @@ page is the loop for **why** — and where the fix belongs.
        plus a [tool](/docs/extending/custom-tools): "if the scanner stops
        responding, use the `restart_scanner` tool and repeat the step."
      - **Admin rights missing** — UAC prompt, service restart, installing
-       software → run the affected action outside the test, or grant the
-       session the rights it needs.
+       software → run the affected action outside the test, or enable
+       **Allow control of administrative applications** in the
+       [AgentOS service installation](/docs/agentos/installation/service).
      - **Clicks and typing don't arrive** — the run looks alive,
        screenshots work, but nothing happens. Either an admin-rights issue
        (an elevated window swallows input): start the controller (AgentOS)
