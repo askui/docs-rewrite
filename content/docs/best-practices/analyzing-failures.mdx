@@ -13,21 +13,27 @@ page is the loop for **why** — and where the fix belongs.
    which cases didn't pass, and with which status?
    - **`FAILED`**: the application misbehaved — or the test told the agent
      the wrong thing. Continue with step 2.
-   - **`BROKEN`**: infrastructure, not the application. Typically one of:
-     the **device connection** dropped (AgentOS unreachable, emulator died,
-     browser session gone), the **AI model** was unreachable (network,
-     proxy, expired token), the **test machine** wasn't usable (locked
-     screen, display asleep), a **peripheral** the test depends on
-     failed (scanner, printer), an action needed **admin rights** the
-     session doesn't have (UAC prompt, service restart, installing
-     software), or **clicks and typing don't arrive** — an elevated window
-     swallowing input, a locked remote session. Two ways to resolve:
-     - **Fix the issue itself** — the network, the hardware, the session
-       ([Troubleshooting](/docs/troubleshooting)).
-     - **Or let the agent resolve it**: give it a
-       [rule](/docs/writing-tests/setup-teardown-rules#rules) plus a
-       [tool](/docs/extending/custom-tools) — e.g. "if the scanner stops
+   - **`BROKEN`**: infrastructure, not the application. The usual kinds:
+     - **Device connection dropped** — AgentOS unreachable, emulator died,
+       browser session gone →
+       [Troubleshooting](/docs/troubleshooting/connection-sessions).
+     - **AI model unreachable** — network, proxy, expired token →
+       [Troubleshooting](/docs/troubleshooting/model-providers).
+     - **Test machine not usable** — locked screen, display asleep → fix
+       the machine state; recurring cases belong in
+       [rules](/docs/writing-tests/step-constructs#beyond-steps).
+     - **Peripheral failed** — scanner, printer → fix the hardware, or arm
+       the agent with a [rule](/docs/writing-tests/setup-teardown-rules#rules)
+       plus a [tool](/docs/extending/custom-tools): "if the scanner stops
        responding, use the `restart_scanner` tool and repeat the step."
+     - **Admin rights missing** — UAC prompt, service restart, installing
+       software → run the affected action outside the test, or grant the
+       session the rights it needs.
+     - **Clicks and typing don't arrive** — the run looks alive,
+       screenshots work, but nothing happens. Either an admin-rights issue
+       (an elevated window swallows input): start the controller (AgentOS)
+       with admin rights — or non-standard behavior of your device:
+       [contact AskUI](/docs/support/get-help).
    - **`WARN`**: passed with a caveat — read the report's **Issues**
      section; often the early sign of a real problem.
    - **`SKIPPED`**: an entry criterion wasn't met, or an
