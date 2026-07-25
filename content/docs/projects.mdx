@@ -4,9 +4,9 @@ title: Projects
 description: One folder holds your complete testware — suites, cases, plans, keywords, environments. Plain files, designed to live in Git.
 ---
 
-A **Project** is your testware in one folder: test cases, test plans,
-reusable keywords, environment definitions, and the tooling the agent may
-use. Every artifact is a plain file.
+A **Project** is your testware in one folder — it lives on your device and
+syncs via Git. Test cases, test plans, reusable keywords, environment
+definitions, the tooling the agent may use: every artifact is a plain file.
 
 <Files>
   <Folder name="my-project" defaultOpen>
@@ -65,7 +65,7 @@ use. Every artifact is a plain file.
 A new Project comes pre-seeded with this scaffold — fill in the placeholders
 instead of starting blank.
 
-## Testware under configuration management
+## Versioning & sync
 
 Every artifact above is a plain text file — deliberately. A Project is
 persisted **as code** and synchronized via Git, which gives you configuration
@@ -74,7 +74,43 @@ history to diff yesterday's case against today's, and reproducibility — a
 colleague clones the repository and has the identical suites, environments,
 and toolbox.
 
-Two things stay out of version control by design: `agent_workspace/` (test
-evidence — regenerated every run) and credentials, which live in the app's
-encrypted [secret store](/docs/extending/secrets), never in the project
-folder.
+The app has Git built in — no terminal needed for the daily loop:
+
+**Start versioning**
+
+1. Click **Init git** in the top bar (shown when the project folder is not a
+   repository yet). This also writes the project's `.gitignore`.
+
+**Commit and sync**
+
+<img
+  src="/docs-rewrite/screenshots/desktop-git-chip.png"
+  alt="The source-control flyout — changed files, commit message field, and the sync row"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+1. Click the branch chip in the top bar — a dot marks uncommitted changes,
+   `↓`/`↑` how far you are behind/ahead of the remote.
+2. Review the changed files, type a commit message, and commit.
+3. **Sync** pulls the remote's changes and pushes yours. Conflicts block the
+   sync until you resolve them in the flyout — keep yours, take theirs, or
+   mark resolved after editing.
+
+**Get an existing project**
+
+1. On the Home page, choose **Clone from Git** and paste the repository URL
+   (`https://…` or `git@…`).
+
+**Keep run artifacts out**
+
+The seeded `.gitignore` excludes `agent_workspace/` (test evidence —
+regenerated every run) and the trajectory cache. If a project has no
+`.gitignore` — or run artifacts show up in the changes list — the flyout
+offers **Add .gitignore for run artifacts**, one click. Credentials never
+need ignoring: they live in the app's encrypted
+[secret store](/docs/extending/secrets), not in the project folder.
+
+The deliberately small scope — commit everything, sync, resolve — covers the
+tester's daily loop; branch management and partial staging stay in your Git
+client of choice. Which team owns which repository:
+[AskUI in your organization](/docs/concepts/team-setups).

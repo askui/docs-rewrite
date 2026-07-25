@@ -74,6 +74,11 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
 
 15. Switch to the **MCP** tab, then call `save_screenshot[desktop-utils-mcp]`.
 
+16. With the demo project open, click the git branch chip in the top bar so
+    the source-control flyout opens (changes list, commit field, sync row).
+    Call `save_screenshot[desktop-git-chip]`, then press Escape — do NOT
+    commit or sync.
+
 ## Done
 The capture is successful when each screen above was shown and saved. Report one
 line per screen per the report format.
