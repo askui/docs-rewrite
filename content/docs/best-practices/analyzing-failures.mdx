@@ -1,72 +1,85 @@
 ---
 icon: Stethoscope
 title: Analyzing failures
-description: The run failed — now what? Triage by status, read the failed step, decide whether the defect is in the product, the test, or the environment.
+description: The run failed — now what? Find the cause in the reports, then fix it in the right place — product, test, or environment.
 ---
 
 The [test report](/docs/results/run-report) tells you **what** failed. This
-page is the loop for deciding **why** — and where the fix belongs: in the
-product, in the test, or in the environment.
+page is the loop for **why** — and where the fix belongs.
 
 ## Find the cause
 
-### Triage by status
-
-Start at the [summary report](/docs/results/run-report#summary-report) and
-take each non-passing case by its status:
-
-- **`FAILED`**: the application misbehaved — or the test told the agent the
-  wrong thing. Go to [Read the failed step](#read-the-failed-step).
-- **`BROKEN`**: infrastructure, not the application — device lost, session
-  expired, model unreachable. Go to
-  [Troubleshooting](/docs/troubleshooting).
-- **`WARN`**: passed with a caveat — often the early sign of a real problem.
-  Read the report's **Issues** section.
-- **`SKIPPED`**: an entry criterion wasn't met, or an
-  [optional step](/docs/writing-tests/step-constructs#optional) didn't
-  apply. Check the **Preconditions** section.
-
-### Read the failed step
-
-1. Read the **Agent Interpretation** — did the agent understand the step the
-   way you meant it? If not, the defect is in the test: sharpen the wording
-   ([Writing good tests](/docs/best-practices/writing-good-tests),
-   [Step constructs](/docs/writing-tests/step-constructs)).
-2. Compare **Expected** vs. **Actual** and look at the step screenshot. If
-   the expectation is right and the application really did something else,
-   you've found a product defect — the report with its screenshot **is** the
-   incident evidence; attach it to the ticket.
+1. Start at the [summary report](/docs/results/run-report#summary-report):
+   which cases didn't pass, and with which status?
+   - **`FAILED`**: the application misbehaved — or the test told the agent
+     the wrong thing. Continue with step 2.
+   - **`BROKEN`**: infrastructure, not the application — device lost,
+     session expired, model unreachable. Go to
+     [Troubleshooting](/docs/troubleshooting).
+   - **`WARN`**: passed with a caveat — read the report's **Issues**
+     section; often the early sign of a real problem.
+   - **`SKIPPED`**: an entry criterion wasn't met, or an
+     [optional step](/docs/writing-tests/step-constructs#optional) didn't
+     apply. Check the **Preconditions** section.
+2. Open the failing case's [test report](/docs/results/run-report) and read
+   the failed step:
+   - **Agent Interpretation** — did the agent understand the step the way
+     you meant it? If not, the defect is in the test.
+   - **Expected vs. Actual**, plus the step screenshot — if the expectation
+     is right and the application really did something else, you've found a
+     product defect.
 3. Still unclear? Switch from the test report to the
    [conversation log](/docs/results#conversation-log) — it shows what the
    agent actually did, in detail: every decision, tool call, and screenshot
    on the way to the failure.
-4. Check the report's **Issues** section — also on tests that passed. The
-   agent notes anomalies there (slow responses, odd dialogs) that are often
-   the early warning for the next run's failure.
+4. Before closing: scan **Issues** — also on tests that passed. The agent
+   notes anomalies there (slow responses, odd dialogs) that are often the
+   early warning for the next run's failure.
 
 ## Fix it
 
-### Behavior, cause, remedy
+Match what you saw to the pattern — each has one remedy.
 
-The recurring patterns, side by side:
+- **The agent misclicks.** The
+  [locator](/docs/writing-tests/step-constructs#locators) is ambiguous on
+  this screen.
+  - **Fix:** make the element description more specific — text + color +
+    position. Still not enough? Enable the **Screen zoom**
+    [tool](/docs/extending/tools).
+- **The agent takes a lot of steps.** It is unsure how your application
+  behaves.
+  - **Fix:** add
+    [UI information](/docs/writing-tests/agents-and-prompts#ui-information)
+    — "the pop-up stays open when you click it" — and make vague goals more
+    precise.
+- **FAILED, but the behavior is actually correct.** The agent judged against
+  the wrong picture: your expected result is under-specified.
+  - **Fix:** state more precisely what the expected result looks like.
+- **PASSED, but it actually failed.** The success criterion is too loose to
+  catch the defect.
+  - **Fix:** add an explicit
+    [verification step](/docs/writing-tests/step-constructs#verifications)
+    after the action.
+- **Odd path, but the right result.** That's
+  [non-determinism by design](/docs/concepts/how-a-run-executes#why-execution-differs).
+  - **Fix:** nothing — judge the result, not the path.
+- **The agent operates the UI wrong** — shortcuts, keyboard instead of the
+  numpad. It doesn't know your house style.
+  - **Fix:** teach it in
+    [ui_information](/docs/writing-tests/agents-and-prompts#ui-information)
+    or [rules](/docs/writing-tests/setup-teardown-rules#rules).
+- **Random real-world disruptions** — the app hangs, the printer is empty.
+  The environment, not the test.
+  - **Fix:** give the agent the manual tester's recoveries in
+    [rules](/docs/writing-tests/step-constructs#beyond-steps).
 
-| The agent… | What it usually means | The remedy |
-| --- | --- | --- |
-| **misclicks** | The [locator](/docs/writing-tests/step-constructs#locators) is ambiguous on this screen | Make the element description more specific (text + color + position). If that's not enough, enable the **Screen zoom** [tool](/docs/extending/tools) |
-| **takes a lot of steps** | It is unsure how your application behaves | Add [UI information](/docs/writing-tests/agents-and-prompts#ui-information) ("the pop-up stays open when you click it") — and make vague goals more precise |
-| **reports FAILED, but the behavior is actually correct** | Your expected result is under-specified — the agent judged against the wrong picture | State more precisely what the expected result looks like |
-| **reports PASSED, but it actually failed** | The success criterion is too loose to catch the defect | Add an explicit [verification step](/docs/writing-tests/step-constructs#verifications) after the action |
-| **takes an odd path, but the result is right** | [Non-determinism by design](/docs/concepts/how-a-run-executes#why-execution-differs) | Nothing — judge the result, not the path |
-| **operates the UI wrong** (shortcuts, keyboard instead of numpad) | It doesn't know your house style | Teach it in [ui_information](/docs/writing-tests/agents-and-prompts#ui-information) or [rules](/docs/writing-tests/setup-teardown-rules#rules) |
-| **hits random real-world disruptions** (hanging app, empty printer) | The environment, not the test | Give it the manual tester's recoveries in [rules](/docs/writing-tests/step-constructs#beyond-steps) |
+### Not the agent's behavior?
 
-### Where the fix belongs
-
-| Symptom | Fix it in |
-| --- | --- |
-| Step wording was misunderstood | The test case — [phrasing](/docs/best-practices/writing-good-tests) |
-| Expectation was too vague to judge | The step's expected result |
-| Wrong starting state | The suite's [setup](/docs/writing-tests/setup-teardown-rules) |
-| Credentials failed | [Secrets](/docs/extending/secrets) — values are per machine |
-| Device didn't come up | [Devices](/docs/devices) / [Troubleshooting](/docs/troubleshooting/connection-sessions) |
-| Application genuinely misbehaved | Your bug tracker — with the test report attached |
+- **Wrong starting state** → the suite's
+  [setup](/docs/writing-tests/setup-teardown-rules).
+- **Credentials failed** → [secrets](/docs/extending/secrets) — values are
+  per machine; a colleague's fresh clone starts without them.
+- **The device didn't come up** → [Devices](/docs/devices) and
+  [Troubleshooting](/docs/troubleshooting/connection-sessions).
+- **The application genuinely misbehaved** → your bug tracker. The test
+  report with its screenshots **is** the incident evidence — attach it.
