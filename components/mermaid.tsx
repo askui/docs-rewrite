@@ -47,7 +47,9 @@ export function Mermaid({ chart }: { chart: string }) {
 
   return (
     <div
-      className="my-6 flex justify-center [&_svg]:max-w-full"
+      // The [&_.nodeLabel_svg] rules style inline icons inside node labels:
+      // centered above the text and in full foreground color (theme-aware).
+      className="my-6 flex justify-center [&_svg]:max-w-full [&_.nodeLabel_svg]:mx-auto [&_.nodeLabel_svg]:block [&_.nodeLabel_svg]:mb-1 [&_.nodeLabel_svg]:text-fd-foreground"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
