@@ -68,9 +68,9 @@ is a link — copy it to point a colleague at exactly one tool.
 
 ### Seeing the screen better
 
-#### <Lucide name="zoom-in" /> Screen zoom
+#### Screen zoom
 
-A zoomed-in crop of a screen region (computer device).
+<Lucide name="zoom-in" /> A zoomed-in crop of a screen region (computer device).
 
 - **Use it when:** the agent keeps missing small targets — tiny checkboxes,
   dense tables. The last rung of the
@@ -80,9 +80,9 @@ A zoomed-in crop of a screen region (computer device).
 4. Use the zoom tool to click the "Accept AGB" checkbox.
 ```
 
-#### <Lucide name="qr-code" /> QR scanner
+#### QR scanner
 
-Scan and decode a QR code from the screen or an image (computer, web,
+<Lucide name="qr-code" /> Scan and decode a QR code from the screen or an image (computer, web,
 Android).
 
 - **Use it when:** the application generates a QR code — invoice, ticket —
@@ -94,9 +94,9 @@ Android).
 
 ### Test data
 
-#### <Lucide name="calendar-clock" /> Date & time
+#### Date & time
 
-The current date/time; the agent can ask with a day offset (1 = tomorrow).
+<Lucide name="calendar-clock" /> The current date/time; the agent can ask with a day offset (1 = tomorrow).
 
 - **Use it when:** a step needs a real date — "enter a delivery date three
   days from today" — or verifies a timestamp the UI shows.
@@ -106,9 +106,9 @@ The current date/time; the agent can ask with a day offset (1 = tomorrow).
 3. Enter the date three days from today into "Delivery date".
 ```
 
-#### <Lucide name="hash" /> Number converter
+#### Number converter
 
-Convert between decimal, hex, binary, octal.
+<Lucide name="hash" /> Convert between decimal, hex, binary, octal.
 
 - **Use it when:** the application shows values in one base and the test
   data is in another — hex device IDs, register values.
@@ -119,9 +119,9 @@ Convert between decimal, hex, binary, octal.
 
 ### Beyond the UI — on this machine
 
-#### <Lucide name="globe" /> HTTP client
+#### HTTP client
 
-HTTP requests (GET, POST, …) against APIs and webhooks; header values
+<Lucide name="globe" /> HTTP requests (GET, POST, …) against APIs and webhooks; header values
 support `${VAR}` [secrets](/docs/extending/secrets).
 
 - **Use it when:** cross-checking the UI against the backend — after
@@ -133,9 +133,9 @@ support `${VAR}` [secrets](/docs/extending/secrets).
 8. Perform a GET request to https://api.example.com/orders — the new order is in the response.
 ```
 
-#### <Lucide name="database" /> SQL database
+#### SQL database
 
-Run allowlisted SQL statements via any ODBC driver; raw SQL is a separate,
+<Lucide name="database" /> Run allowlisted SQL statements via any ODBC driver; raw SQL is a separate,
 dangerous opt-in.
 
 - **Use it when:** verifying the record actually landed in the database, or
@@ -149,9 +149,9 @@ dangerous opt-in.
 9. Run the "open_orders" SQL statement — the new order appears with status NEW.
 ```
 
-#### <Lucide name="terminal" /> Shell script
+#### Shell script
 
-Run a pre-configured shell/batch script; the agent invokes it by the name
+<Lucide name="terminal" /> Run a pre-configured shell/batch script; the agent invokes it by the name
 you give it.
 
 - **Use it when:** a script already solves it — restarting a scanner
@@ -163,9 +163,9 @@ you give it.
 - If the scanner stops responding, run the restart_scanner tool and repeat the step.
 ```
 
-#### <Lucide name="file-search" /> File exists
+#### File exists
 
-Check whether a file or directory exists on this machine.
+<Lucide name="file-search" /> Check whether a file or directory exists on this machine.
 
 - **Use it when:** the test ends in an export or download — verify the file
   actually appeared.
@@ -180,9 +180,9 @@ Check whether a file or directory exists on this machine.
 For runs where the application under test is on **another machine**
 (computer device) and writes files there.
 
-#### <Lucide name="folder-search" /> List remote files
+#### List remote files
 
-List files in a directory on the machine being controlled.
+<Lucide name="folder-search" /> List files in a directory on the machine being controlled.
 
 - **Use it when:** checking the export folder on the test machine after the
   run's actions.
@@ -192,9 +192,9 @@ List files in a directory on the machine being controlled.
 5. List the files in the export folder — a new PDF was created.
 ```
 
-#### <Lucide name="file-down" /> Read remote file
+#### Read remote file
 
-Read a file's text content from the controlled machine.
+<Lucide name="file-down" /> Read a file's text content from the controlled machine.
 
 - **Use it when:** the content matters, not just the existence — verify a
   log line or an exported CSV on the test machine.
