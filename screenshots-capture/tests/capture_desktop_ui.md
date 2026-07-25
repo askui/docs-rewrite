@@ -79,6 +79,11 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     Call `save_screenshot[desktop-git-chip]`, then press Escape — do NOT
     commit or sync.
 
+17. On the **Tests** page with a test open, click the chevron of the **Run**
+    split button so the profile dropdown (Run on) opens. Call
+    `save_screenshot[desktop-run-dropdown]`, then press Escape — do NOT
+    start a run this way.
+
 ## Done
 The capture is successful when each screen above was shown and saved. Report one
 line per screen per the report format.
