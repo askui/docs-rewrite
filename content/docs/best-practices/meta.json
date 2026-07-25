@@ -1,1 +1,1 @@
-{ "title": "Best Practices", "icon": "Lightbulb", "pages": ["writing-good-tests", "prompting-best-practices", "system-prompt"] }
+{ "title": "Best Practices", "icon": "Lightbulb", "pages": ["writing-good-tests", "analyzing-failures", "prompting-best-practices", "system-prompt"] }
