@@ -14,8 +14,13 @@ page is the loop for **why** — and where the fix belongs.
    - **`FAILED`**: the application misbehaved — or the test told the agent
      the wrong thing. Continue with step 2.
    - **`BROKEN`**: infrastructure, not the application — device lost,
-     session expired, model unreachable. Go to
-     [Troubleshooting](/docs/troubleshooting).
+     session expired, model unreachable. Two ways to resolve:
+     - **Fix the issue itself** — the network, the hardware, the session
+       ([Troubleshooting](/docs/troubleshooting)).
+     - **Or let the agent resolve it**: give it a
+       [rule](/docs/writing-tests/setup-teardown-rules#rules) plus a
+       [tool](/docs/extending/custom-tools) — e.g. "if the scanner stops
+       responding, use the `restart_scanner` tool and repeat the step."
    - **`WARN`**: passed with a caveat — read the report's **Issues**
      section; often the early sign of a real problem.
    - **`SKIPPED`**: an entry criterion wasn't met, or an
