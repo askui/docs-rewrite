@@ -15,12 +15,16 @@ product, in the test, or in the environment.
 Start at the [summary report](/docs/results/run-report#summary-report) and
 take each non-passing case by its status:
 
-| Status | First suspicion | Go to |
-| --- | --- | --- |
-| `FAILED` | The application misbehaved — or the test told the agent the wrong thing | The failed step, below |
-| `BROKEN` | Infrastructure, not the application: device lost, session expired, model unreachable | [Troubleshooting](/docs/troubleshooting) |
-| `WARN` | Passed with a caveat — often the early sign of a real problem | The report's **Issues** section |
-| `SKIPPED` | An entry criterion wasn't met, or an [optional step](/docs/writing-tests/step-constructs#optional) didn't apply | The **Preconditions** section |
+- **`FAILED`**: the application misbehaved — or the test told the agent the
+  wrong thing. Go to [Read the failed step](#read-the-failed-step).
+- **`BROKEN`**: infrastructure, not the application — device lost, session
+  expired, model unreachable. Go to
+  [Troubleshooting](/docs/troubleshooting).
+- **`WARN`**: passed with a caveat — often the early sign of a real problem.
+  Read the report's **Issues** section.
+- **`SKIPPED`**: an entry criterion wasn't met, or an
+  [optional step](/docs/writing-tests/step-constructs#optional) didn't
+  apply. Check the **Preconditions** section.
 
 ### Read the failed step
 
