@@ -74,6 +74,10 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
 
 15. Switch to the **MCP** tab, then call `save_screenshot[desktop-utils-mcp]`.
 
+15b. Switch to the **Custom Tools** tab. Wait until the file list (or the
+    empty drop zone) is shown, then call `save_screenshot[desktop-utils-custom]`.
+    Do NOT add or remove any file.
+
 16. With the demo project open, click the git branch chip in the top bar so
     the source-control flyout opens (changes list, commit field, sync row).
     Call `save_screenshot[desktop-git-chip]`, then press Escape — do NOT

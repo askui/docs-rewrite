@@ -6,47 +6,96 @@ description: Give the agent a project-specific ability by dropping a C# file int
 
 A **custom tool** is one C# file in `utils/custom_tools/`. It joins the
 agent's toolbox for every run of the project — for anything no built-in
-covers: your product's admin API, seeding a database, checking a file on the
-machine under test.
+covers: your product's admin API, resetting test users, seeding data.
+Manage the files under **Utils → Custom Tools**.
 
-```csharp title="utils/custom_tools/list_remote_files.cs"
-public sealed class ListRemoteFilesTool : Tool
-{
-    private readonly IAgentOs _agentOs;
+<img
+  src="/docs-rewrite/screenshots/desktop-utils-custom.png"
+  alt="The Custom Tools tab on the Utils page listing the project's .cs tool files with a drop zone"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
 
-    public ListRemoteFilesTool(IAgentOs agentOs)
-        : base(
-            name: "list_remote_files",
-            description: "Lists the files in a folder on the machine under test.",
-            inputSchema: new JsonObject
-            {
-                ["type"] = "object",
-                ["properties"] = new JsonObject
-                {
-                    ["path"] = new JsonObject { ["type"] = "string" },
-                },
-                ["required"] = new JsonArray("path"),
-            })
-    {
-        _agentOs = agentOs;
-    }
+- **File list** — every `.cs` file in `utils/custom_tools/`. The trash icon
+  removes one: the file is deleted, the agent loses the tool on the next run.
+- **Drop zone** — drop `.cs` files or click to choose. Copying files into
+  the folder manually works too — the folder is watched.
+- **Open folder** — opens `utils/custom_tools/` in your file explorer.
+- **Warnings** — the same NuGet package requested at different versions
+  across files is flagged; the higher version wins at run start.
 
-    public override async ValueTask<ToolResult> InvokeAsync(
-        JsonObject input, CancellationToken cancellationToken = default)
-    {
-        var files = await _agentOs.GetFileNamesAsync(
-            input["path"]!.GetValue<string>(), cancellationToken);
-        return ToolResult.FromText(string.Join("\n", files));
-    }
-}
-```
+There is no in-app code editor — write tools in your own IDE.
 
-| | |
-| --- | --- |
-| **No boilerplate** | Common namespaces (`System`, `System.Text.Json.Nodes`, the AskUI tool types) work without `using` directives |
-| **Device access** | A constructor asking for `IAgentOs` (desktop), `IWebAgentOs` (browser), `IAndroidAgentOs`, or `IIosAgentOs` gets the run's device layer injected. Parameterless = works on every run; wrong device = skipped with a warning |
-| **NuGet packages** | Declared per file at the top — `#:package Npgsql@8.0.3` — resolved through your normal `NuGet.config`, so enterprise feeds work unchanged |
-| **Secrets** | Never hard-code credentials — use [named secrets](/docs/extending/secrets) |
+## Create a tool
+
+1. Write a class deriving from `Tool`: a name, a description (what the
+   agent reads to decide when to call it), an input schema, and
+   `InvokeAsync`:
+
+   ```csharp title="utils/custom_tools/reset_test_user.cs"
+   public sealed class ResetTestUserTool : Tool, ISecretsConsumer
+   {
+       private string _apiKey = "";
+
+       public ResetTestUserTool()
+           : base(
+               name: "reset_test_user",
+               description: "Resets a test user to a clean state via the admin API.",
+               inputSchema: new JsonObject
+               {
+                   ["type"] = "object",
+                   ["properties"] = new JsonObject
+                   {
+                       ["username"] = new JsonObject { ["type"] = "string" },
+                   },
+                   ["required"] = new JsonArray("username"),
+               })
+       {
+       }
+
+       public void UseSecrets(IReadOnlyDictionary<string, string> secrets) =>
+           _apiKey = secrets.GetValueOrDefault("ADMIN_API_KEY", "");
+
+       public override async ValueTask<ToolResult> InvokeAsync(
+           JsonObject input, CancellationToken cancellationToken = default)
+       {
+           using var http = new HttpClient();
+           http.DefaultRequestHeaders.Add("X-Api-Key", _apiKey);
+           var response = await http.PostAsync(
+               $"https://admin.example.com/api/users/{input["username"]}/reset",
+               content: null, cancellationToken);
+           return response.IsSuccessStatusCode
+               ? ToolResult.FromText($"User {input["username"]} was reset.")
+               : ToolResult.Error($"Admin API returned {(int)response.StatusCode}.");
+       }
+   }
+   ```
+
+2. Drop the file onto **Utils → Custom Tools** — or save it straight into
+   `utils/custom_tools/`.
+3. Add the secret it uses (`ADMIN_API_KEY`) under **Utils → Secrets** —
+   never hard-code credentials into the file.
+4. Use it in a [step](/docs/writing-tests/step-constructs#tool-invocations) —
+   the file compiles when the run starts:
+
+   ```md title="tests/setup.md"
+   2. Use the reset_test_user tool for user "qa_user_1".
+   ```
+
+What the example uses — and what else a tool file can do:
+
+- **No boilerplate** — common namespaces (`System`, `System.Net.Http`,
+  `System.Text.Json.Nodes`, the AskUI tool types) work without `using`
+  directives.
+- **Secrets** — implement `ISecretsConsumer` and the run hands the tool the
+  project's [named secrets](/docs/extending/secrets); `ADMIN_API_KEY` above
+  comes from Utils → Secrets, not from the file.
+- **Device access** — a constructor asking for `IAgentOs` (desktop),
+  `IWebAgentOs` (browser), `IAndroidAgentOs`, or `IIosAgentOs` gets the
+  run's device layer injected. Parameterless (like above) works on every
+  run; a tool whose device isn't part of the run is skipped with a warning.
+- **NuGet packages** — declared per file at the top —
+  `#:package Npgsql@8.0.3` — resolved through your normal `NuGet.config`,
+  so enterprise feeds work unchanged.
 
 Files compile when a run starts (cached; unchanged files cost nothing). A
 file that doesn't compile **aborts the run**, with the error as the first
