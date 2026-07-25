@@ -26,9 +26,11 @@ export function Mermaid({ chart }: { chart: string }) {
         securityLevel: 'loose',
         fontFamily: 'inherit',
         theme: resolvedTheme === 'dark' ? 'dark' : 'neutral',
+        themeVariables: { fontSize: '14px' },
         // Render at natural size — wide diagrams scroll horizontally in the
-        // container below instead of shrinking to unreadable text.
-        flowchart: { useMaxWidth: false },
+        // container below instead of shrinking to unreadable text. Tight
+        // spacing keeps tall/wide charts compact at natural scale.
+        flowchart: { useMaxWidth: false, nodeSpacing: 30, rankSpacing: 26, padding: 8 },
       });
       try {
         const { svg } = await mermaid.render(
