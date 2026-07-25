@@ -85,11 +85,11 @@ this screen. Escalate in this order:
 
 <div className="grid gap-3 md:grid-cols-2">
 
-```md title="tests/login_test.md — before"
+```md title="❌ tests/login_test.md — before"
 2. Please press the login button.
 ```
 
-```md title="tests/login_test.md — after"
+```md title="✅ tests/login_test.md — after"
 2. Press the "Sign-Up" button —
    top right, next to "Log in".
 ```
@@ -102,11 +102,11 @@ this screen. Escalate in this order:
 
 <div className="grid gap-3 md:grid-cols-2">
 
-```md title="tests/signup_test.md — before"
+```md title="❌ tests/signup_test.md — before"
 4. Accept the terms.
 ```
 
-```md title="tests/signup_test.md — after"
+```md title="✅ tests/signup_test.md — after"
 4. Use the zoom tool to click the
    "Accept AGB" checkbox.
 5. Check afterwards that the
@@ -123,12 +123,12 @@ make vague goals precise.
 
 <div className="grid gap-3 md:grid-cols-2">
 
-```md title="prompts/ui_information.md — before"
+```md title="❌ prompts/ui_information.md — before"
 ## Dialogs & quirks
 <behaviors the agent must know>
 ```
 
-```md title="prompts/ui_information.md — after"
+```md title="✅ prompts/ui_information.md — after"
 ## Dialogs & quirks
 The confirmation pop-up stays open
 until you click **OK** — clicking
@@ -144,12 +144,12 @@ under-specified — state precisely what it looks like.
 
 <div className="grid gap-3 md:grid-cols-2">
 
-```md title="tests/login_test.md — before"
+```md title="❌ tests/login_test.md — before"
 2. Click Login — the user is
    logged in.
 ```
 
-```md title="tests/login_test.md — after"
+```md title="✅ tests/login_test.md — after"
 2. Click Login — the start screen
    shows the green signed-in dot
    at the top right.
@@ -164,11 +164,11 @@ The success criterion is too loose to catch the defect — add an explicit
 
 <div className="grid gap-3 md:grid-cols-2">
 
-```md title="tests/create_record.md — before"
+```md title="❌ tests/create_record.md — before"
 3. Click Save.
 ```
 
-```md title="tests/create_record.md — after"
+```md title="✅ tests/create_record.md — after"
 3. Click Save.
 4. Verify the new record appears in
    the list with status "Active".
@@ -183,7 +183,7 @@ style. Teach it in
 [ui_information](/docs/writing-tests/agents-and-prompts#ui-information) or,
 per suite, in [rules](/docs/writing-tests/setup-teardown-rules#rules):
 
-```md title="tests/rules.md — add"
+```md title="➕ tests/rules.md — add"
 ## Interaction
 - Never use keyboard shortcuts — operate the application through its
   menus, like our users do.
@@ -196,7 +196,7 @@ The app hangs, the printer is empty — the environment, not the test. Give
 the agent the manual tester's
 [recoveries](/docs/writing-tests/step-constructs#beyond-steps):
 
-```md title="tests/rules.md — add"
+```md title="➕ tests/rules.md — add"
 ## Recoveries
 - If the application hangs, restart it and repeat the current step once.
 - If the printer reports empty, ignore the print result and continue.
