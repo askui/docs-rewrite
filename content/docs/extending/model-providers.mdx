@@ -53,6 +53,20 @@ SGLang, llama.cpp, Ollama).
 | **Model** | Required | The provider's model id — e.g. `Qwen/Qwen3-VL-…`. |
 | **API key** | Optional | Omit for local servers that don't require one. |
 
+**Authentication** has a second mode for a gateway fronted by
+**Microsoft Entra ID** — e.g. an internal LLM gateway of your company.
+Choose **Microsoft Entra (OAuth2 client credentials)** instead of
+**API key (or none)** and fill in the app registration:
+
+- **Tenant ID** — GUID or domain, e.g. `contoso.onmicrosoft.com` *(required)*
+- **Client ID** — the application (client) id of your app registration *(required)*
+- **Scope** — the resource scope, usually ending in `/.default`, e.g.
+  `api://<app-id>/.default` *(required)*
+- **Client secret** — stored encrypted on this device, like an API key *(required)*
+
+Saving acquires a token to verify the app registration; during runs, tokens
+are minted and refreshed automatically.
+
   </Tab>
 </Tabs>
 
@@ -83,6 +97,49 @@ than mid‑run.
 Run a test as usual. The agent now uses your provider.
 </Step>
 </Steps>
+
+Behind a corporate proxy, configure network access **first** — the setup
+wizard's **Behind a proxy? Configure network access** section, or
+**Settings → Network proxy** — otherwise the test call can't reach the
+endpoint. Details: [Proxy & TLS](/docs/troubleshooting/proxy-ssl).
+
+## Gateway message transforms
+
+Some corporate gateways enforce rules **stricter than the stock OpenAI
+spec** — and reject the agent's requests with HTTP 400 even though the
+model behind them would accept them. For these, an operator project can
+normalize the outgoing `messages` array: drop a class implementing
+`IOpenAiMessageTransform` into `utils/message_transforms/`.
+
+```csharp title="utils/message_transforms/gateway_normalization.cs"
+public sealed class GatewayNormalization : IOpenAiMessageTransform
+{
+    public JsonArray Transform(JsonArray messages)
+    {
+        var output = new JsonArray();
+        foreach (var node in messages)
+        {
+            var message = (JsonObject)node!.DeepClone();
+            // Example gateway rule: an assistant message carrying
+            // tool_calls must have content = null.
+            if ((string?)message["role"] == "assistant"
+                && message["tool_calls"] is JsonArray { Count: > 0 })
+            {
+                message["content"] = null;
+            }
+            output.Add(message);
+        }
+        return output;
+    }
+}
+```
+
+Transform files compile at run start exactly like
+[custom tools](/docs/extending/custom-tools) — no `using` directives needed,
+a compile error aborts the run, and the same rule applies: **developer
+territory**. Multiple files compose in discovery order. Only the
+OpenAI-compatible provider consults them; the app ships no gateway-specific
+rules — your project owns them.
 
 ## How your credentials are stored
 
