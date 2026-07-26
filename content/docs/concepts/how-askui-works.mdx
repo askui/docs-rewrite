@@ -48,7 +48,10 @@ The same cycle as the app records it —
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:gap-4">
       <span className="w-20 shrink-0 pt-0.5 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Screenshot</span>
       <span>
-        <span className="font-mono text-xs"><span className="rounded border bg-fd-muted px-1.5 py-0.5">screenshot</span></span>
+        <span className="inline-flex items-center gap-1.5 rounded-full border bg-fd-card py-0.5 pl-1 pr-2.5">
+          <span className="flex size-[18px] items-center justify-center rounded-full bg-fd-muted text-fd-muted-foreground"><Lucide name="camera" size={11} /></span>
+          <span className="text-xs font-medium">Take screenshot</span>
+        </span>
         <span className="mt-2 block w-56 overflow-hidden rounded border bg-white shadow-sm dark:bg-neutral-900">
           <span className="flex items-center gap-1 border-b bg-fd-muted px-2 py-1">
             <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
@@ -75,7 +78,11 @@ The same cycle as the app records it —
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Act</span>
-      <span className="font-mono text-xs"><span className="rounded border bg-fd-muted px-1.5 py-0.5">click 1180, 96</span></span>
+      <span className="inline-flex items-center gap-1.5 rounded-full border bg-fd-card py-0.5 pl-1 pr-2.5">
+        <span className="flex size-[18px] items-center justify-center rounded-full bg-fd-muted text-fd-muted-foreground"><Lucide name="mouse-pointer" size={11} /></span>
+        <span className="text-xs font-medium">Click</span>
+        <span className="font-mono text-xs text-fd-muted-foreground">1180, 96</span>
+      </span>
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Verify</span>
@@ -91,7 +98,13 @@ The same cycle as the app records it —
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:gap-4">
       <span className="w-20 shrink-0 pt-0.5 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Act</span>
       <span>
-        <span className="font-mono text-xs"><span className="rounded border bg-fd-muted px-1.5 py-0.5">http_request GET api.example.com/orders/4711</span> <span className="text-fd-muted-foreground">200 OK</span></span>
+        <span className="inline-flex flex-wrap items-center gap-1.5 rounded-full border bg-fd-card py-0.5 pl-1 pr-2.5">
+          <span className="flex size-[18px] items-center justify-center rounded-full bg-fd-muted text-fd-muted-foreground"><Lucide name="globe" size={11} /></span>
+          <span className="text-xs font-medium">HTTP client</span>
+          <code className="rounded bg-fd-muted px-1 text-[11px]">GET</code>
+          <span className="font-mono text-xs text-fd-muted-foreground">api.example.com/orders/4711</span>
+          <span className="font-mono text-xs text-emerald-600">→ 200 OK</span>
+        </span>
         <span className="mt-1.5 block rounded border bg-fd-muted/40 px-2 py-1 font-mono text-[11px] text-fd-muted-foreground">{'{ "id": "4711", "customer": "Contoso", "status": "New" }'}</span>
       </span>
     </div>
@@ -119,6 +132,34 @@ nobody wrote down: another application, another environment, a state that
 has decayed. A random pop-up costs it a click, not the run. That same
 freedom is why
 [two runs can take different paths](/docs/concepts/how-a-run-executes#why-execution-differs).
+
+## What a CUA agent is made of
+
+Four parts, each one you can inspect or swap:
+
+- **A vision-capable model** — the "decide" step. It receives the screenshot
+  and the step text and answers with the next action. Runs through the AskUI
+  hub by default, or through
+  [your own provider](/docs/extending/model-providers).
+- **Tools** — everything the agent *can* do. Device tools (screenshot,
+  click, type) come with the device kind; beyond that you decide what it
+  gets: [store tools](/docs/extending/tools),
+  [your own](/docs/extending/custom-tools),
+  [MCP servers](/docs/extending/mcp). The toolbox is the boundary of what a
+  test can possibly do.
+- **A device layer** — the eyes and hands on the target:
+  [AgentOS](/docs/agentos) on a desktop machine, Playwright for a browser,
+  adb for Android. This is what turns "click 1180, 96" into a real click on
+  a real machine.
+- **Instructions** — your test steps for *this* scenario, plus the
+  [system prompt](/docs/best-practices/agent-behavior): who the agent is,
+  what your application does, how to report.
+
+Everything the four produce during a run — screenshots, decisions, tool
+results — accumulates in the conversation above. That transcript is both the
+run's evidence and its cost: every step is sent to the model again, which is
+why tools should
+[return little](/docs/extending/custom-tools#keep-results-small).
 
 Where AskUI Desktop, AgentOS, the CLI, and the model provider sit around
 this loop: [Architecture & data flow](/docs/concepts/architecture-and-data-flow).
