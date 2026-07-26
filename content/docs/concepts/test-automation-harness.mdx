@@ -14,6 +14,26 @@ Each phase is one autonomous agent execution: read the file, drive the UI
 through the [loop](/docs/concepts/computer-use-agent#the-loop), write the report
 as it goes.
 
+We build it for three things, because a CUA model left to itself is
+expensive, erratic and slow at suite scale:
+
+- **Token efficiency** — every turn re-sends the conversation, so the harness
+  keeps it small: a fresh transcript per phase instead of one growing
+  transcript per run, the stable parts of the prompt and the tool
+  definitions cached between turns, screenshots downscaled before they are
+  sent, and tool results kept short by design (the SQL tool pages at 20 rows
+  rather than dumping a table).
+- **Reliability** — the same instructions assembled the same way for every
+  phase, a hard attempt limit instead of endless retrying, one documented
+  status vocabulary, and a clean transcript per test so yesterday's failure
+  can't influence today's. A `PASSED` means the same thing in every project.
+- **Speed** — the agent chains several actions into one model request where
+  it can, needs no waits because it reads the screen, and pays the
+  compilation cost of your [custom tools](/docs/extending/custom-tools) only
+  when their source changed. What's left is mostly model latency, which is
+  why the model you pick shows up directly in run duration
+  ([performance & cost](/docs/troubleshooting/performance-cost)).
+
 ```mermaid
 flowchart LR
   S[setup.md] --> T1[test case] --> T2[test case] --> TD[teardown.md]
