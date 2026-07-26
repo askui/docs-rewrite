@@ -34,7 +34,7 @@ export function Mermaid({ chart }: { chart: string }) {
         flowchart: {
           useMaxWidth: false,
           nodeSpacing: 40,
-          rankSpacing: 60,
+          rankSpacing: 36,
           padding: 10,
           curve: 'step',
         },

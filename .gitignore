@@ -29,3 +29,6 @@ next-env.d.ts
 
 # AskUI trajectory caches from capture/demo runs
 .askui_cache/
+
+# mermaid render preview (render-mermaid skill)
+public/_preview/

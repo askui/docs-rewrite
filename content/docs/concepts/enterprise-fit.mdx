@@ -17,71 +17,72 @@ test run side by side on the tester's PC; the only thing that leaves it is
 the model traffic:
 
 ```mermaid
-flowchart LR
+flowchart BT
   subgraph pc["Tester PC"]
-    direction TB
+    direction LR
     D["«AskUI Desktop»<br/>author · run · review"]
     A["«Application under test»<br/>desktop app or browser"]
     F[("«Project»<br/>tests · prompts · reports")]
     D --> A
     D --> F
   end
-  D -->|"screenshots + step text"| M["«Model provider»<br/>AskUI hub or your own"]
+  pc -->|"screenshots · steps · conversation"| M["«Model provider»"]
 ```
+
+The **model provider** is the AI service that makes the agent's decisions:
+the AskUI hub by default, or one you bring yourself — the choice, and what
+it means for your data, is in
+[What leaves the network](#what-leaves-the-network-and-how-to-stop-it).
 
 Nothing to provision, no server, no CI: install, sign in, write a test, run
 it ([first run](/docs/get-started/first-run)). Most teams stay here for
 their first weeks.
 
-## Expand: dedicated infrastructure
+## Expand to scale
 
 When tests should run without a tester present, the same project moves
 outward in three steps, each one optional and independent:
 
 ```mermaid
 flowchart LR
-  subgraph pc["Tester PC"]
-    direction TB
-    D["«AskUI Desktop»<br/>author · run · review"]
-    B1["«Playwright»<br/>Browser"]
-    D --> B1
+  subgraph starts["Who starts the run"]
+    subgraph pc["Tester PC"]
+      D["«AskUI Desktop»<br/>author · run · review"]
+      B1["«Playwright»<br/>local browser"]
+    end
+    subgraph ci["CI pipeline"]
+      C["«AskUI CLI»<br/>headless runs"]
+      B2["«Playwright»<br/>local browser"]
+    end
+    pc ~~~ ci
   end
-  subgraph ci["CI pipeline"]
-    direction TB
-    C["«AskUI CLI»<br/>headless runs"]
-    B2["«Playwright»<br/>Browser"]
-    C --> B2
-  end
-  M["«Model provider»<br/>AskUI hub or your own"]
   R[("«Git»<br/>Project repository")]
+  M["«Model provider»"]
   subgraph cloud["Cloud provider"]
-    direction TB
     V1["«AgentOS»<br/>Windows VM"]
     V2["«AgentOS»<br/>Linux VM"]
   end
   subgraph lab["On-premise lab"]
-    direction TB
     P1["«AgentOS»<br/>Windows PC"]
     P2["«AgentOS»<br/>macOS machine"]
+  end
+  subgraph farm["Device farm"]
     A1["«adb»<br/>Android phone"]
     I1["«simulator»<br/>iOS simulator"]
   end
-  D -->|"screenshots + step text"| M
-  C --> M
-  D --> R
-  C --> R
-  D --> cloud
-  D --> lab
-  C --> cloud
-  C --> lab
+  starts --> R
+  starts -->|"screenshots · steps · conversation"| M
+  starts --> cloud
+  starts --> lab
+  starts --> farm
 ```
 
-Every box is one real thing you provision, and every group is optional: a
-Windows or Linux VM at your cloud provider, machines in your own lab, phones
-or an [iOS simulator](/docs/devices/ios-simulator) on a Mac. Browsers are the
-exception, they need no machine of their own: Playwright runs on whichever
-machine started the run. The tester's Desktop and the CI pipeline drive the
-same targets from the same project.
+Every box is one real thing you provision, and every group is optional: VMs
+at your cloud provider, machines in your own lab, a rack of phones and
+[simulators](/docs/devices/ios-simulator). Browsers are the exception, they
+need no machine of their own: Playwright runs on whichever machine started
+the run. Desktop and the CI pipeline drive the same targets from the same
+project, so a test written on a tester's PC runs unchanged in the pipeline.
 
 - **Remote test machines**: the application under test moves off the
   tester's PC onto dedicated machines running
@@ -131,9 +132,10 @@ Endpoints and firewall rules:
 ## What leaves the network (and how to stop it)
 
 Each [loop iteration](/docs/concepts/computer-use-agent#the-loop) sends the
-current **screenshot and the step's text** to the model provider, that's the
-inference the agent's decisions are made of, and the only test content that
-travels at all. Where it travels is your choice:
+current **screenshot, the step's text and the conversation so far** (earlier
+screenshots, decisions and tool results of this phase) to the model provider.
+That is the inference the agent's decisions are made of, and the only test
+content that travels at all. Where it travels is your choice:
 
 - **AskUI hub** (default), inference runs through us, billed with your
   workspace.
