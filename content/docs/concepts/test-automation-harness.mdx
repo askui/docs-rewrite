@@ -14,8 +14,8 @@ Each phase is one autonomous agent execution: read the file, drive the UI
 through the [loop](/docs/concepts/computer-use-agent#the-loop), write the report
 as it goes.
 
-We build it for four things, because a CUA model left to itself is
-expensive, erratic, slow and hard to hold accountable at suite scale:
+We build it for three things, because a CUA model left to itself is
+expensive, erratic and slow at suite scale:
 
 - **Token efficiency** — every turn re-sends the conversation, so the harness
   keeps it small: a fresh transcript per phase instead of one growing
@@ -33,15 +33,6 @@ expensive, erratic, slow and hard to hold accountable at suite scale:
   when their source changed. What's left is mostly model latency, which is
   why the model you pick shows up directly in run duration
   ([performance & cost](/docs/troubleshooting/performance-cost)).
-- **Reporting you can hand to someone else** — the agent writes its
-  [test report](/docs/results/run-report) while it works, so every step
-  carries its interpretation, expected vs. actual and a screenshot; the run
-  gets a [summary](/docs/results/run-report#summary-report) the
-  [Dashboard](/docs/results/dashboard) counts, and the full
-  [conversation log](/docs/results#conversation-log) stays as the audit
-  trail. Evidence for a defect ticket is a by-product of the run, not extra
-  work — and because it's Markdown and PNGs in the project folder, CI can
-  archive it and reviewers can read it without the app.
 
 ```mermaid
 flowchart LR
@@ -55,10 +46,8 @@ state. **teardown.md** runs last, even after failures. **rules.md** applies
 to every phase. In nested suites, setups run top-down, teardowns bottom-up,
 and rules accumulate per level. ([Where these files live](/docs/writing-tests/organisation).)
 
-Every phase streams into the [live conversation log](/docs/running-tests#watch-it-live)
-and lands in the run's [reports](/docs/results/run-report).
-
-What the AskUI harness gives each phase, and what it enforces:
+What the AskUI harness owns — what it hands each phase, what it enforces,
+and what it leaves behind:
 
 - **The project** — everything it reads comes from one folder: the
   [project](/docs/projects). Tests, prompts, procedures, plans, tool
@@ -107,6 +96,16 @@ What the AskUI harness gives each phase, and what it enforces:
   value across phases on purpose, a step tells it to write to the
   [scratchpad](/docs/writing-tests/agents-and-prompts) — setup stores the
   order number, a later test reads it.
+- **The reporting** — the evidence. Every phase streams into the
+  [live conversation log](/docs/running-tests#watch-it-live) while it runs.
+  The agent writes its [test report](/docs/results/run-report) as it works, so each step
+  carries its interpretation, expected vs. actual and a screenshot; the
+  harness adds the run's
+  [summary table](/docs/results/run-report#summary-report) that the
+  [Dashboard](/docs/results/dashboard) counts, and keeps the
+  [conversation log](/docs/results#conversation-log) as the audit trail. All
+  of it is Markdown and PNGs under `agent_workspace/`, so CI can archive it
+  and a reviewer can read it without the app.
 
 ## Why execution differs
 
