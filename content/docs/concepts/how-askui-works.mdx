@@ -145,12 +145,14 @@ Four parts, each one you can inspect or swap:
   [your own provider](/docs/extending/model-providers#supported-models) and
   pay that vendor directly. Which model you pick drives both the run's cost
   and how reliably it reads your UI.
-- **Tools** — everything the agent *can* do. Device tools (screenshot,
-  click, type) come with the device kind; beyond that you decide what it
-  gets: [store tools](/docs/extending/tools),
-  [your own](/docs/extending/custom-tools),
-  [MCP servers](/docs/extending/mcp). The toolbox is the boundary of what a
-  test can possibly do.
+- **Tools** — everything the agent *can* do, and the boundary of what a test
+  can possibly do. We ship most of them: the device tools (screenshot,
+  click, type) come with the device kind, and the
+  [Tool Store](/docs/extending/tools) adds ready-made ones like SQL, HTTP or
+  screen zoom. You extend from there where your product needs it — your own
+  C# [custom tools](/docs/extending/custom-tools), or existing
+  [MCP servers](/docs/extending/mcp) — and you decide which of them a
+  project actually gets.
 - **An infrastructure layer** — the eyes and hands on the target, and the
   part you don't have to build yourself: [AgentOS](/docs/agentos) on a
   desktop machine, Playwright for a browser, adb for Android. It turns
