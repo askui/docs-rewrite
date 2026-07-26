@@ -1,12 +1,14 @@
 ---
-icon: Waypoints
-title: Architecture & data flow
-description: What runs where, what talks to what, what leaves your network, and what is stored where.
+icon: Building2
+title: Enterprise fit
+description: How AskUI fits into your environment — what runs where, what leaves your network, what is stored, what gets downloaded, and what IT has to approve.
 ---
 
-The evaluation questions first: screenshots of your applications go to an AI
-model for the agent's decisions; everything else — testware, reports,
-secrets — stays on your machines. Here is the full picture.
+Everything here answers one question: what does bringing AskUI into your
+environment actually mean? The short version — screenshots of your
+applications go to an AI model for the agent's decisions; everything else
+(testware, reports, secrets) stays on your machines. The full picture, in the
+order a security or infrastructure review asks for it:
 
 ```mermaid
 flowchart LR
@@ -31,7 +33,8 @@ flowchart LR
 
 A raw CUA can drive a screen. Turning that into test automation an
 enterprise runs every day — on its own machines, inside its own network,
-under its own governance — takes four things:
+under its own governance — takes four things, and each one runs somewhere
+you control:
 
 | Component | Role |
 | --- | --- |
