@@ -10,9 +10,11 @@ framework would otherwise be, built for an agent: it walks your selection in
 that stop a run from grinding, and writes the reports
 ([where it sits](/docs/concepts/computer-use-agent#what-a-cua-agent-is-made-of)).
 
-Each phase is one autonomous agent execution: read the file, drive the UI
-through the [loop](/docs/concepts/computer-use-agent#the-loop), write the report
-as it goes.
+A **phase** is one of `setup.md`, a test case, or `teardown.md` — and one
+autonomous agent execution: read the file, drive the UI through the
+[loop](/docs/concepts/computer-use-agent#the-loop), write the report as it
+goes. Nothing is shared between phases except what you deliberately hand
+across, which is what keeps one test from poisoning the next.
 
 ## Where the tester's time goes
 
@@ -49,6 +51,8 @@ model left to itself is not. The three things the harness is built for:
   why the model you pick shows up directly in run duration
   ([performance & cost](/docs/troubleshooting/performance-cost)).
 
+## Phases
+
 ```mermaid
 flowchart LR
   S[setup.md] --> T1[test case] --> T2[test case] --> TD[teardown.md]
@@ -61,8 +65,9 @@ state. **teardown.md** runs last, even after failures. **rules.md** applies
 to every phase. In nested suites, setups run top-down, teardowns bottom-up,
 and rules accumulate per level. ([Where these files live](/docs/writing-tests/organisation).)
 
-What the AskUI harness owns — what it hands each phase, what it enforces,
-and what it leaves behind:
+## What the harness owns
+
+What it hands each phase, what it enforces, and what it leaves behind:
 
 - **The project** — everything it reads comes from one folder: the
   [project](/docs/projects). Tests, prompts, procedures, plans, tool
@@ -103,9 +108,11 @@ and what it leaves behind:
   - **A custom tool doesn't compile** → the run aborts before the first
     step, with the compiler error as the first entry in the log.
 
-    You can override these per suite in
-    [`rules.md`](/docs/writing-tests/setup-teardown-rules#rules) — for
-    example allowing a documented recovery instead of a `BROKEN`.
+  The step-level defaults come from the agent's instructions, so a suite can
+  soften them in [`rules.md`](/docs/writing-tests/setup-teardown-rules#rules)
+  — for example a documented recovery ("restart the scanner and repeat the
+  step") instead of a `BROKEN`. The compile abort is not one of them: the
+  runner refuses to start.
 - **The memory** — one conversation per phase: the agent starts each test
   with a clean transcript, so a previous test can't confuse it. To carry a
   value across phases on purpose, a step tells it to write to the
