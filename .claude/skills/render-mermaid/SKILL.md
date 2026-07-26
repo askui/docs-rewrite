@@ -40,6 +40,22 @@ node .claude/skills/render-mermaid/extract.mjs content/docs/concepts/enterprise-
 Writes `d1.mmd`, `d2.mmd`, … one per ```mermaid block, so you can render,
 iterate on a copy, and paste the winner back into the MDX.
 
+## Label conventions (component diagrams)
+
+- A box with **two lines** carries the protocol or technology as a
+  stereotype on the first line and the concrete thing on the second:
+  `<<AgentOS>>` / `Windows VM`, `<<adb>>` / `Android Phone`,
+  `<<idb>>` / `iOS Simulator`, `<<Playwright>>` / `Local Browser`,
+  `<<Git>>` / `Project Repository`.
+- **Write the stereotype with HTML entities**: `"&lt;&lt;AgentOS&gt;&gt;<br/>Windows VM"`.
+  Raw `<<AgentOS>>` is parsed as an HTML tag and vanishes (the box then
+  shows `<>`).
+- A box needing no protocol stays **one line**: `AskUI Desktop`,
+  `AskUI CLI`, `Project`, `Model Provider`.
+- **Title Case** every label and container title.
+- Process diagrams (a loop, a lifecycle, a folder walk) are exempt: their
+  boxes are steps, not components.
+
 ## Layout rules learned the hard way
 
 - **Edges from a container, not from a node inside it** (`pc --> M`, not

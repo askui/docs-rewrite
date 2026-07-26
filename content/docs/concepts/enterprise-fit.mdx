@@ -22,12 +22,12 @@ flowchart BT
   subgraph pc["Tester PC"]
     direction LR
     D["AskUI Desktop"]
-    A["Application under test<br/>desktop app or browser"]
+    A["Application Under Test"]
     F[("Project")]
     D --> A
     D --> F
   end
-  pc -->|"screenshots, steps, conversation"| M["Model provider"]
+  pc -->|"Screenshots, Steps, Conversation"| M["Model Provider"]
 ```
 
 The **model provider** is the AI service that makes the agent's decisions:
@@ -48,33 +48,33 @@ same way Desktop does interactively:
 
 ```mermaid
 flowchart LR
-  subgraph starts["Who starts the run"]
+  subgraph starts["Who Starts the Run"]
     subgraph pc["Tester PC"]
       D["AskUI Desktop"]
-      B1["Playwright<br/>local browser"]
+      B1["&lt;&lt;Playwright&gt;&gt;<br/>Local Browser"]
     end
-    subgraph ci["CI pipeline"]
+    subgraph ci["CI Pipeline"]
       C["AskUI CLI"]
-      B2["Playwright<br/>local browser"]
+      B2["&lt;&lt;Playwright&gt;&gt;<br/>Local Browser"]
     end
     pc ~~~ ci
   end
-  R[("Git<br/>project repository")]
-  M["Model provider"]
-  subgraph cloud["Cloud provider"]
-    V1["AgentOS<br/>Windows VM"]
-    V2["AgentOS<br/>Linux VM"]
+  R[("&lt;&lt;Git&gt;&gt;<br/>Project Repository")]
+  M["Model Provider"]
+  subgraph cloud["Cloud Provider"]
+    V1["&lt;&lt;AgentOS&gt;&gt;<br/>Windows VM"]
+    V2["&lt;&lt;AgentOS&gt;&gt;<br/>Linux VM"]
   end
-  subgraph lab["On-premise lab"]
-    P1["AgentOS<br/>Windows PC"]
-    P2["AgentOS<br/>macOS machine"]
+  subgraph lab["On-Premise Lab"]
+    P1["&lt;&lt;AgentOS&gt;&gt;<br/>Windows PC"]
+    P2["&lt;&lt;AgentOS&gt;&gt;<br/>macOS Machine"]
   end
-  subgraph farm["Device farm"]
-    A1["adb<br/>Android phone"]
-    I1["idb<br/>iOS simulator"]
+  subgraph farm["Device Farm"]
+    A1["&lt;&lt;adb&gt;&gt;<br/>Android Phone"]
+    I1["&lt;&lt;idb&gt;&gt;<br/>iOS Simulator"]
   end
   starts --> R
-  starts -->|"screenshots, steps, conversation"| M
+  starts -->|"Screenshots, Steps, Conversation"| M
   starts --> cloud
   starts --> lab
   starts --> farm
