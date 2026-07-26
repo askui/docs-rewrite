@@ -10,24 +10,71 @@ applications go to an AI model for the agent's decisions; everything else
 (testware, reports, secrets) stays on your machines. The full picture, in the
 order a security or infrastructure review asks for it:
 
+## Start simple: one computer
+
+The smallest setup is one machine. AskUI Desktop and the application under
+test run side by side on the tester's PC; the only thing that leaves it is
+the model traffic:
+
 ```mermaid
 flowchart LR
-  subgraph your network
-    D[AskUI Desktop / CLI]
-    A1[AgentOS<br/>desktop machines]
-    B[Browser<br/>Playwright]
-    P[Android device<br/>adb]
-    F[(Project folder<br/>testware + reports)]
+  subgraph pc["tester's PC"]
+    D["AskUI Desktop"]
+    A["application under test"]
+    F[("project folder")]
   end
-  M[Model provider<br/>AskUI hub or BYOM]
-  H[AskUI Hub<br/>account · tokens]
-  D -->|gRPC :23000 / :26000| A1
+  D --> A
+  D --> F
+  D -->|"screenshots + step text"| M["model provider"]
+```
+
+Nothing to provision, no server, no CI: install, sign in, write a test, run
+it ([first run](/docs/get-started/first-run)). Most teams stay here for
+their first weeks.
+
+## Expand: dedicated infrastructure
+
+When tests should run without a tester present, the same project moves
+outward in three steps — each one optional and independent:
+
+```mermaid
+flowchart LR
+  subgraph local["tester's PC"]
+    D["AskUI Desktop<br/>author · run · review"]
+  end
+  subgraph infra["test infrastructure"]
+    A1["Windows / macOS machine<br/>AgentOS"]
+    B["browser<br/>Playwright"]
+    P["Android device<br/>adb"]
+  end
+  subgraph ci["CI runner"]
+    C["AskUI CLI"]
+  end
+  R[("Git repository<br/>the project")]
+  D --> R
+  C --> R
+  D -->|"gRPC :23000 / :26000"| A1
   D --> B
   D --> P
-  D --> F
-  D -->|screenshots + step text| M
-  D -->|auth · usage| H
+  C --> A1
+  C --> B
+  D -->|"screenshots + step text"| M["model provider"]
+  C --> M
 ```
+
+- **Remote test machines** — the application under test moves off the
+  tester's PC onto dedicated machines running
+  [AgentOS](/docs/devices/remote-computer), so a run can't disturb anyone's
+  desktop and several tests can run at once.
+- **The project in Git** — the same folder for everyone, reviewed like code
+  ([versioning](/docs/projects#git--versioning--sync)).
+- **CI pipeline** — the [CLI](/docs/running-tests/cli) runs the same project
+  headless on every merge or on a
+  [schedule](/docs/running-tests/scheduling), against the same machines
+  ([AskUI in CI](/docs/guides/askui-in-ci)).
+
+Who owns which part of that setup:
+[Team setups](/docs/concepts/team-setups).
 
 ## The four components
 
@@ -60,14 +107,25 @@ the enterprise questions — proxy, air-gapped operation, CI runners — are in
 Endpoints and firewall rules:
 [Network requirements](/docs/reference/network-requirements).
 
-## What leaves your network
+## What leaves the network (and how to stop it)
 
 Each [loop iteration](/docs/concepts/computer-use-agent#the-loop) sends the
-current **screenshot and the step's text** to the model provider — that's
-the inference the agent's decisions are made of. By default the provider is
-the AskUI hub. With [your own model provider](/docs/extending/model-providers)
-(BYOM) inference goes to your Anthropic/OpenAI-compatible endpoint instead —
-including a self-hosted one, keeping screenshots entirely in your tenancy.
+current **screenshot and the step's text** to the model provider — that's the
+inference the agent's decisions are made of, and the only test content that
+travels at all. Where it travels is your choice:
+
+- **AskUI hub** (default) — inference runs through us, billed with your
+  workspace.
+- **Your own provider** — with
+  [BYOM](/docs/extending/model-providers) the traffic goes to your own
+  Anthropic or OpenAI-compatible endpoint instead: your Anthropic account,
+  Azure AI Foundry, or your company's internal LLM gateway. This is what
+  most IT-security reviews approve, because the data stays inside contracts
+  you already hold.
+- **Nothing leaves at all** — point BYOM at a vision model you host
+  yourself (vLLM, SGLang) and screenshots never leave your network. If you
+  don't have the hardware for it, we can supply a local deployment on NVIDIA
+  hardware you purchase — [talk to us](/docs/support/get-help).
 
 ## What is stored where
 
