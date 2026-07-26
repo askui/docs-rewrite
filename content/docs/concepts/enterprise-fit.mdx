@@ -17,15 +17,17 @@ test run side by side on the tester's PC; the only thing that leaves it is
 the model traffic:
 
 ```mermaid
-flowchart LR
+flowchart TB
+  M["«Model provider»<br/>AskUI hub or your own"]
   subgraph pc["Tester PC"]
     D["«AskUI Desktop»<br/>author · run · review"]
     A["«Application under test»<br/>Windows / macOS app or browser"]
     F[("«Project»<br/>tests · prompts · reports")]
   end
+  M ~~~ pc
+  D -->|"screenshots + step text"| M
   D --> A
   D --> F
-  D -->|"screenshots + step text"| M["«Model provider»<br/>AskUI hub or your own"]
 ```
 
 Nothing to provision, no server, no CI: install, sign in, write a test, run
@@ -38,19 +40,22 @@ When tests should run without a tester present, the same project moves
 outward in three steps, each one optional and independent:
 
 ```mermaid
-flowchart LR
+flowchart TB
+  M["«Model provider»<br/>AskUI hub or your own"]
   subgraph starts["Who starts the run"]
     D["«AskUI Desktop»<br/>Tester PC"]
     C["«AskUI CLI»<br/>CI pipeline"]
   end
+  R[("«Git»<br/>Project repository")]
   subgraph infra["Test infrastructure"]
     V["«AgentOS»<br/>Windows VM · cloud or on-prem"]
     MC["«AgentOS»<br/>macOS machine"]
     FARM["«Device farm»<br/>Android &amp; iOS devices"]
     BR["«Playwright»<br/>Browser"]
   end
-  R[("«Git»<br/>Project repository")]
-  M["«Model provider»<br/>AskUI hub or your own"]
+  M ~~~ starts
+  D -->|"screenshots + step text"| M
+  C -->|"screenshots + step text"| M
   D --> R
   C --> R
   D --> V
@@ -60,8 +65,6 @@ flowchart LR
   C --> V
   C --> FARM
   C --> BR
-  D --> M
-  C --> M
 ```
 
 Everything in **Test infrastructure** is optional and mixable: a Windows VM
