@@ -70,7 +70,8 @@ including a self-hosted one, keeping screenshots entirely in your tenancy.
 
 | Data | Location |
 | --- | --- |
-| Testware — tests, plans, prompts, tool config | The [project folder](/docs/projects), plain files, yours to version |
+| Testware — tests, procedures, plans, rules | The [project folder](/docs/projects), plain files, yours to version |
+| Agent files — the `prompts/` folder, tool and device configuration | Same folder, versioned alongside the testware |
 | Test evidence — reports, screenshots, logs | `agent_workspace/` inside the project, local |
 | Credentials for tests | The app's [secret store](/docs/extending/secrets), encrypted with your Windows/macOS user account — never in the project |
 | Sign-in tokens | Encrypted local storage on your machine |

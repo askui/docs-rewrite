@@ -36,17 +36,43 @@ What the AskUI harness gives each phase, and what it enforces:
   configuration and device profiles are plain files, so a run is fully
   defined by what is checked into your repository — the same folder produces
   the same run on a colleague's machine or a CI runner.
-- **The instructions** — the project's
-  [prompt files](/docs/best-practices/agent-behavior), the folder's
-  `rules.md`, the phase's own file, and the names of the
-  [secrets](/docs/extending/secrets) it may use.
-- **The toolbox** — device tools for the run's device kind plus the
-  [tools you enabled](/docs/extending/tools); a tool whose device isn't part
-  of this run is left out with a warning.
-- **The limits** — two attempts per step, no creative retries, and an
-  infrastructure error ends the run as `BROKEN` rather than continuing
-  against a broken machine
-  ([the discipline](/docs/best-practices/agent-behavior#system-capabilities--error-discipline)).
+- **The agent files** — *who* is testing: the four
+  [prompt files](/docs/best-practices/agent-behavior) in `prompts/` — the
+  agent's identity and error discipline, facts about the machine, knowledge
+  of your application, and the report contract. They apply to every phase and
+  change rarely.
+- **The testware** — *what* is tested: the phase's own file (`setup.md`, a
+  test case, `teardown.md`), the folder's
+  [`rules.md`](/docs/writing-tests/setup-teardown-rules#rules), any
+  [procedures](/docs/writing-tests/procedures) its steps call, and the
+  [plan](/docs/writing-tests/plans) that selected it. This is what changes
+  per scenario. Steps naming credentials get the
+  [secret](/docs/extending/secrets) names, never the values — those
+  substitute at execution time.
+- **The toolbox** — *what it may do*: device tools for the run's device kind
+  plus the [tools you enabled](/docs/extending/tools); a tool whose device
+  isn't part of this run is left out with a warning.
+- **The limits and the default behavior in error cases** — what happens when
+  a step doesn't work out, so a result means the same thing in every project
+  ([the discipline](/docs/best-practices/agent-behavior#system-capabilities--error-discipline)):
+  - **Two attempts per step**, then stop — no third try, no creative
+    workarounds, no navigating back to retry.
+  - **The application misbehaved** → the step is `FAILED` and the test
+    aborts; remaining steps are not executed against a wrong state.
+  - **A precondition wasn't met** → `SKIPPED`. It never ran, so it can't
+    count as a failure.
+  - **Infrastructure broke** (device connection, session, peripheral) →
+    `BROKEN` with a diagnosis hint, and the run aborts instead of grinding
+    on against a broken machine.
+  - **A referenced tool is missing** → `WARN` if the agent reached the goal
+    another way, `BROKEN` if the step depended on it — and the next test
+    still runs.
+  - **A custom tool doesn't compile** → the run aborts before the first
+    step, with the compiler error as the first entry in the log.
+
+    You can override these per suite in
+    [`rules.md`](/docs/writing-tests/setup-teardown-rules#rules) — for
+    example allowing a documented recovery instead of a `BROKEN`.
 - **The memory** — one conversation per phase: the agent starts each test
   with a clean transcript, so a previous test can't confuse it. To carry a
   value across phases on purpose, a step tells it to write to the
