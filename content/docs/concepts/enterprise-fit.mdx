@@ -44,35 +44,42 @@ flowchart TB
   M["«Model provider»<br/>AskUI hub or your own"]
   subgraph pc["Tester PC"]
     D["«AskUI Desktop»<br/>author · run · review"]
+    B1["«Playwright»<br/>Browser"]
   end
   subgraph ci["CI pipeline"]
     C["«AskUI CLI»<br/>headless runs"]
+    B2["«Playwright»<br/>Browser"]
   end
   R[("«Git»<br/>Project repository")]
-  subgraph infra["Test infrastructure"]
-    V["«AgentOS»<br/>Windows VM · cloud or on-prem"]
-    MC["«AgentOS»<br/>macOS machine"]
-    FARM["«Device farm»<br/>Android &amp; iOS devices"]
-    BR["«Playwright»<br/>Browser"]
+  subgraph cloud["Cloud provider"]
+    V1["«AgentOS»<br/>Windows VM"]
+    V2["«AgentOS»<br/>Linux VM"]
+  end
+  subgraph lab["On-premise lab"]
+    P1["«AgentOS»<br/>Windows PC"]
+    P2["«AgentOS»<br/>macOS machine"]
+    A1["«adb»<br/>Android phone"]
+    I1["«simulator»<br/>iOS simulator"]
   end
   M ~~~ pc
   D -->|"screenshots + step text"| M
   C -->|"screenshots + step text"| M
+  D --> B1
+  C --> B2
   D --> R
   C --> R
-  D --> V
-  D --> MC
-  D --> FARM
-  D --> BR
-  C --> V
-  C --> FARM
-  C --> BR
+  D --> cloud
+  D --> lab
+  C --> cloud
+  C --> lab
 ```
 
-Everything in **Test infrastructure** is optional and mixable: a Windows VM
-at your cloud provider, a physical machine in the lab, a rack of Android and
-iOS devices, or nothing but browsers. The tester's Desktop and the CI
-pipeline drive the same machines through the same project.
+Every box is one real thing you provision, and every group is optional: a
+Windows or Linux VM at your cloud provider, machines in your own lab, phones
+or an [iOS simulator](/docs/devices/ios-simulator) on a Mac. Browsers are the
+exception, they need no machine of their own: Playwright runs on whichever
+machine started the run. The tester's Desktop and the CI pipeline drive the
+same targets from the same project.
 
 - **Remote test machines**: the application under test moves off the
   tester's PC onto dedicated machines running
