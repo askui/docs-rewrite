@@ -4,6 +4,8 @@ import { basePath, gitConfig } from './shared';
 export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
+      // The logo points at the docs root — "/" only meta-refreshes here.
+      url: '/docs',
       // Raw <img> (not next/image) so the static export just copies the SVGs;
       // basePath must be prefixed manually — Next only auto-prefixes
       // next/link and next/image.
