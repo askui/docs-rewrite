@@ -54,6 +54,36 @@ else, and the
 [AgentOS port](/docs/concepts/enterprise-fit#what-talks-to-what) should be
 restricted to the machines allowed to start runs.
 
+## Allowlist the domains, nothing more
+
+Two different machines need two different allowlists, and the shorter one is
+the test machine's:
+
+- **The machine that starts runs** (a tester's PC or a CI runner) needs
+  outbound HTTPS to AskUI for sign-in, workspace and licence checks, and to
+  the model endpoint. The exact domains are in
+  [Network requirements](/docs/reference/network-requirements); allowlist
+  those, not `*`.
+- **Test machines** need the application under test and nothing else. They
+  do not talk to AskUI or to the model provider — the machine driving the run
+  does that. Deny the rest of their outbound traffic and you have removed the
+  route that a badly written custom tool would need to leak anything.
+- **With your own model endpoint**, the model domain moves inside your
+  network, and with
+  [on-premise inference](/docs/concepts/enterprise-fit#what-leaves-the-network-and-how-to-stop-it)
+  it disappears from the allowlist entirely.
+- **Runtime downloads are separate entries**: browser bundles, the Android
+  SDK toolchain, and NuGet feeds for
+  [custom tools](/docs/extending/custom-tools) resolve through your own
+  `NuGet.config`, so an internal mirror keeps them off the public internet.
+  Pre-provision them and the machines stay closed.
+- **Allowlist inside the app as well.** Network rules stop a host being
+  reachable; the [HTTP client tool's](/docs/extending/tools#http-client)
+  **Allowed hosts** stops a step from *asking*, and it lives in
+  `utils/tools.json` where a reviewer sees it. Same for
+  [MCP servers](/docs/extending/mcp): pin the endpoint, prefer internal
+  servers.
+
 ## The toolbox decides the ceiling
 
 Device tools (screenshot, click, type) always exist. Everything with reach
@@ -141,6 +171,8 @@ suddenly needs the shell tool is a design question, not a checkbox.
 
 ## Checklist
 
+- [ ] Outbound allowlist per machine role: run starters reach AskUI and the
+      model endpoint, test machines reach only the system under test.
 - [ ] Dedicated OS account per test machine: standard user, no domain-wide
       rights, nothing personal in the profile, elevation off unless required.
 - [ ] Application test users carry only the role their scenario needs, and
