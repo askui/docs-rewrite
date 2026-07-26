@@ -1,0 +1,96 @@
+---
+icon: ShieldCheck
+title: What the agent may do
+description: Keep a run's reach to what the test needs — least-privilege accounts, an opt-in toolbox, scoped tools, secrets, and what belongs in review.
+---
+
+An agent run can do whatever the tools it was given allow, with the rights of
+the session it runs in. Both are yours to set. The rule of thumb: **grant the
+least a test needs, and make every grant visible in the project**.
+
+Where each grant lives, so a reviewer can see it:
+[Enterprise fit](/docs/concepts/enterprise-fit#what-the-agent-may-do-on-a-machine).
+
+## The session decides the floor
+
+- **Use a dedicated test account**, not a personal or administrative one. The
+  agent can do what the logged-in user can do, so the account's rights are
+  the floor of everything below.
+- **Leave elevation off** unless a suite genuinely needs it. Driving elevated
+  windows requires enabling
+  ["Allow control of administrative applications"](/docs/agentos/installation/service)
+  — if one suite needs it, give it its own machine rather than switching it
+  on lab-wide.
+- **Separate the lab from production.** Test machines should reach the system
+  under test and nothing else; restrict the
+  [AgentOS port](/docs/concepts/enterprise-fit#what-talks-to-what) to the
+  machines allowed to start runs.
+
+## The toolbox decides the ceiling
+
+Device tools (screenshot, click, type) always exist. Everything with reach
+beyond the UI is off until someone enables it — keep it that way unless a
+test needs it, and scope it when you do:
+
+| Tool | Scope it with |
+| --- | --- |
+| [Shell script](/docs/extending/tools#shell-script) | One fixed script path per tool, so the agent runs *that* script, not arbitrary commands |
+| [SQL database](/docs/extending/tools#sql-database) | Named allowlisted statements; leave **Allow raw SQL** off, and connect with a read-only user where the test only verifies |
+| [HTTP client](/docs/extending/tools#http-client) | **Allowed hosts**, so a step can't call an arbitrary endpoint |
+| [File exists](/docs/extending/tools#file-exists), [List](/docs/extending/tools#list-remote-files) / [Read remote file](/docs/extending/tools#read-remote-file) | A **base directory**, plus allowed extensions for listings |
+
+Two grants deserve a real review, because they are code and third-party
+reach:
+
+- **[Custom tools](/docs/extending/custom-tools)** run with the rights of the
+  run and can do anything C# can. Developer-owned, reviewed like production
+  code, and never a thin wrapper around "run whatever the agent passes".
+- **[MCP servers](/docs/extending/mcp)** hand the agent someone else's tools.
+  Prefer internal servers, pin the endpoint, and know what each server
+  exposes.
+
+## Credentials
+
+- **Only as [named secrets](/docs/extending/secrets).** Steps reference the
+  name; the value is substituted at execution time and redacted from reports
+  and logs. A credential in a test file is a credential in your Git history.
+- **Test accounts, not real ones.** Minimal rights in the system under test,
+  and never a production account reused for testing.
+- **Rotate them like any other credential**, and remember values are per
+  machine: a colleague's fresh clone starts without them, which is the point.
+
+## Test data and screenshots
+
+- Every step's screenshot becomes [evidence](/docs/results/run-report) on
+  disk — and the same screenshot is what the model sees. If your test data
+  contains personal data, both facts matter.
+- Prefer **synthetic or anonymised data**. Where a screen unavoidably shows
+  real data, choose the model placement to match:
+  [your own tenancy or on-premise inference](/docs/concepts/enterprise-fit#what-leaves-the-network-and-how-to-stop-it).
+- Test evidence is yours: it stays in `agent_workspace/` under your retention
+  rules. Decide deliberately what gets archived in CI.
+
+## Make grants reviewable
+
+Everything above is a file in the project, so a pull request shows it:
+
+- `utils/tools.json` — which tools are enabled, with their scoping values
+- `utils/mcp.json` — which MCP servers a run connects to
+- `utils/custom_tools/*.cs` — the code the agent can call
+- `devices.json` — which machines a run may drive
+
+Review those diffs the way you review dependency changes. A test that
+suddenly needs the shell tool is a design question, not a checkbox.
+
+## Checklist
+
+- [ ] Runs use a dedicated test account, elevation off unless required.
+- [ ] Only the tools a test needs are enabled, each scoped (path, statements,
+      hosts, base directory).
+- [ ] Raw SQL off; database user read-only where the test only verifies.
+- [ ] No credentials in test files — named secrets only, test accounts only.
+- [ ] Synthetic or anonymised test data, or a model placement that matches
+      the data's sensitivity.
+- [ ] Custom tools and MCP servers reviewed like code.
+- [ ] `tools.json`, `mcp.json`, `devices.json` changes reviewed in pull
+      requests.

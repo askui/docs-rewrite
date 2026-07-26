@@ -14,7 +14,7 @@ Straight to your questions:
 | If you are | Start at |
 | --- | --- |
 | **A software architect** | [The four components](#the-four-components), [What talks to what](#what-talks-to-what), [Concurrency and upgrades](#concurrency-and-upgrades) |
-| **IT security** | [What leaves the network](#what-leaves-the-network-and-how-to-stop-it), [What the agent may do on a machine](#what-the-agent-may-do-on-a-machine), [Telemetry](#telemetry-what-we-see), [Inbound ports](#what-talks-to-what) |
+| **IT security** | [What leaves the network](#what-leaves-the-network-and-how-to-stop-it), [What the agent may do on a machine](#what-the-agent-may-do-on-a-machine), [Telemetry](#telemetry-what-we-see), [Inbound ports](#what-talks-to-what), [hardening a run](/docs/best-practices/security) |
 | **Compliance** | [Data protection](#data-protection), [What is stored where](#what-is-stored-where), [What is downloaded at runtime](#what-is-downloaded-at-runtime) |
 | **The team running the lab** | [Running the lab machines](#running-the-lab-machines), [Infrastructure requirements](#infrastructure-requirements) |
 
@@ -196,6 +196,10 @@ through tools it was given, and you decide which:
 - **Credentials never reach the model**: steps reference
   [secrets](/docs/extending/secrets) by name, values are substituted at
   execution time and redacted from reports and logs.
+
+How to keep that reach as small as a test needs, account rights, scoping each
+tool, what belongs in review:
+[What the agent may do](/docs/best-practices/security).
 
 ## Telemetry, what we see
 
