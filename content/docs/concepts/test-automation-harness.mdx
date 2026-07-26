@@ -4,8 +4,8 @@ title: Test automation harness
 description: What the harness does on every run — phases, lifecycle files, attempt limits, reports — and why the same test can take a different path.
 ---
 
-The model decides; the **harness** runs the test. It is the part of AskUI
-that a test framework would otherwise be: it walks your selection in
+The model decides; the **AskUI harness** runs the test. It is what a test
+framework would otherwise be, built for an agent: it walks your selection in
 **phases**, assembles what the agent is told for each one, holds the limits
 that stop a run from grinding, and writes the reports
 ([where it sits](/docs/concepts/computer-use-agent#what-a-cua-agent-is-made-of)).
@@ -29,7 +29,7 @@ and rules accumulate per level. ([Where these files live](/docs/writing-tests/or
 Every phase streams into the [live conversation log](/docs/running-tests#watch-it-live)
 and lands in the run's [reports](/docs/results/run-report).
 
-What the harness gives each phase, and what it enforces:
+What the AskUI harness gives each phase, and what it enforces:
 
 - **The project** — everything it reads comes from one folder: the
   [project](/docs/projects). Tests, prompts, procedures, plans, tool
