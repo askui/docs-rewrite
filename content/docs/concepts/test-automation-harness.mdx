@@ -14,8 +14,23 @@ Each phase is one autonomous agent execution: read the file, drive the UI
 through the [loop](/docs/concepts/computer-use-agent#the-loop), write the report
 as it goes.
 
-We build it for three things, because a CUA model left to itself is
-expensive, erratic and slow at suite scale:
+## Where the tester's time goes
+
+With scripted automation, most of the effort goes into keeping the scripts
+alive: locators that moved, waits that were too short, reruns to tell flake
+from defect. That layer is gone here — nothing in a test encodes the UI's
+structure, so there is nothing to repair when the UI changes.
+
+The time moves to the part that actually needs a tester: reading the
+[report](/docs/results/run-report), judging whether the behavior was right,
+and writing up the defect with the evidence attached. For an organization
+that is the real shift — automation cost stops scaling with UI churn, and
+testing capacity goes into coverage and analysis instead of maintenance.
+Where that time is best spent:
+[Analyzing failures](/docs/best-practices/analyzing-failures).
+
+That only holds if a run is cheap, trustworthy and fast, which is what a CUA
+model left to itself is not. The three things the harness is built for:
 
 - **Token efficiency** — every turn re-sends the conversation, so the harness
   keeps it small: a fresh transcript per phase instead of one growing
