@@ -1,4 +1,5 @@
 ---
+icon: PenLine
 title: Writing good tests
 description: How to write test steps the agent executes reliably — one goal per file, precise locators, verifications, named secrets, and shared structure.
 ---
@@ -151,6 +152,67 @@ belong in the folder's `setup.md`, cleanup in `teardown.md`
 ([how they cascade](/docs/writing-tests/setup-teardown-rules)). Keep a
 precondition inline only when just some tests need it. Unlike procedures,
 setup and teardown run automatically — nothing calls them.
+
+Three order tests that each opened the app and signed in:
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ tests/create_order_test.md"
+## Steps
+1. Open the application and wait
+   until it is fully visible.
+2. Sign in with the QA credentials.
+3. Open "Records" and create an
+   order for customer "Contoso" —
+   it appears with status "New".
+4. Sign out.
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ tests/create_order_test.md"
+## Preconditions
+- Signed in, start screen visible
+
+## Steps
+1. Open "Records" and create an
+   order for customer "Contoso" —
+   it appears with status "New".
+```
+
+</div>
+
+The shared steps move up one level, into the folder every order test lives in:
+
+<Files>
+  <Folder name="tests" defaultOpen>
+    <File name="setup.md" />
+    <File name="teardown.md" />
+    <File name="create_order_test.md" />
+    <File name="cancel_order_test.md" />
+    <File name="search_order_test.md" />
+  </Folder>
+</Files>
+
+```md title="tests/setup.md"
+## Setup Steps
+
+1. Open the application under test and wait until it is fully visible.
+2. Sign in using the `login_to_ui` procedure with the QA credentials —
+   the secrets named `QA_USERNAME` and `QA_PASSWORD`.
+3. Verify the start screen has loaded before any test starts.
+```
+
+```md title="tests/teardown.md"
+## Teardown Steps
+
+1. Delete the orders created during the test.
+2. Sign out and close the application under test.
+```
+
+Each test now reads as its own scenario, the sign-in flow is defined once,
+and a failing setup blocks the tests below it instead of failing three times
+in a row.
 
 ## Non-deterministic execution
 
