@@ -1,6 +1,6 @@
 ---
 title: Network requirements
-description: Which domains and ports have to be reachable, per machine role — and which ones disappear when you bring your own model or a licence key.
+description: Which domains and ports have to be reachable, per machine role, and which ones disappear when you bring your own model or a licence key.
 ---
 
 Allowlist per **machine role**: the machine that starts runs needs AskUI and
@@ -19,7 +19,7 @@ AskUI Desktop and the [CLI](/docs/running-tests/cli) need HTTPS (443) to:
 | `inference.askui.com` | Model inference through the AskUI hub | Not with [your own model provider](/docs/extending/model-providers) |
 | `files.askui.com` | Installer and update downloads (release CDN) | Only for installing and updating |
 
-With your own provider, that endpoint replaces `inference.askui.com` — your
+With your own provider, that endpoint replaces `inference.askui.com`, your
 Anthropic account, your Azure AI Foundry resource, or a host inside your own
 network. With **on-premise inference** no external model domain is needed at
 all.
@@ -38,7 +38,7 @@ this list**. It talks to the application under test; the machine driving the
 run does the rest. Downloads are the exception, and only until the machine is
 provisioned: browser bundles for [web profiles](/docs/devices/web-browser),
 the Android SDK for [emulators](/docs/devices/android-emulator), and NuGet
-packages for [custom tools](/docs/extending/custom-tools) — all resolvable
+packages for [custom tools](/docs/extending/custom-tools), all resolvable
 from an internal mirror.
 
 ## Inbound
@@ -49,7 +49,7 @@ from an internal mirror.
 | 26000 | Same, when AgentOS runs as an [installed service](/docs/agentos/installation/service) | Shared lab machines |
 
 Restrict those ports to the machines allowed to start runs. Local runs on a
-single PC need no inbound rule at all — the connection never leaves the
+single PC need no inbound rule at all, the connection never leaves the
 machine.
 
 ## Proxy

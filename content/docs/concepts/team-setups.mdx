@@ -1,7 +1,7 @@
 ---
 icon: Users
 title: Sharing the project
-description: How a project is shared across a team — what travels in the repository, what each member adds locally, who owns which part, and where the repository lives.
+description: How a project is shared across a team, what travels in the repository, what each member adds locally, who owns which part, and where the repository lives.
 ---
 
 A [project](/docs/projects) is plain files, so sharing it is a Git question,
@@ -31,7 +31,7 @@ them:
 
 - **[Secrets](/docs/extending/secrets)**: values live encrypted on the
   machine, never in the project. A fresh clone starts without them, which is
-  the point — everyone uses their own test credentials.
+  the point, everyone uses their own test credentials.
 - **Access to the machines**: a device profile names a host; whether you can
   reach it depends on your network and on
   [AgentOS](/docs/agentos) running there.
@@ -46,7 +46,7 @@ local instead of bloating the repository. Archive them in
 
 ## Who owns which part
 
-Roles, not job titles — one person often wears several:
+Roles, not job titles, one person often wears several:
 
 - **Test author**: writes cases and expected results, curates plans, keeps
   `ui_information.md` current as the application changes.
@@ -69,7 +69,7 @@ Three arrangements, all with the same project layout:
 The testing team holds the testware repo, authors in **AskUI Desktop**, runs
 against the team's [devices](/docs/devices), and
 [schedules](/docs/running-tests/scheduling) recurring suites. Failures go to
-development as [run reports](/docs/results/run-report) — expected vs. actual
+development as [run reports](/docs/results/run-report), expected vs. actual
 per step with screenshots, so a developer can act without reproducing first.
 
 - **Pick this if** QA owns its own environments and release cadence.
@@ -87,7 +87,7 @@ the merge like a failed unit test.
 - **Pick this if** UI tests should gate merges and live with the code they
   cover.
 - **It needs**: the CLI on the runner with `ASKUI_WORKSPACE_ID` /
-  `ASKUI_TOKEN`, and a device the runner can reach — a
+  `ASKUI_TOKEN`, and a device the runner can reach, a
   [headless browser](/docs/devices/web-browser) needs nothing else, desktop
   targets need [AgentOS](/docs/agentos/deployment/ci) on a test machine.
 
@@ -101,7 +101,7 @@ as pull requests either side can review, and
 comes for free.
 
 - **Pick this if** regression belongs to QA but a fast subset should gate
-  CI — the common end state.
+  CI, the common end state.
 - **It needs**: agreement on which plan gates merges (`smoke`) and which runs
   [on a schedule](/docs/running-tests/scheduling), plus who owns the results
   of each.
@@ -109,7 +109,7 @@ comes for free.
 ## Onboarding a new member
 
 1. Clone the repository and open the folder in AskUI Desktop.
-2. Add your [secrets](/docs/extending/secrets) — the names are already
+2. Add your [secrets](/docs/extending/secrets), the names are already
    referenced by the tests.
 3. Connect a [device](/docs/devices) from the shared profile list.
 4. Run one existing test to confirm the setup before writing anything.

@@ -24,7 +24,7 @@ The full picture, in the order a review usually asks for it:
 
 The smallest setup is one machine: [AskUI Desktop](/docs/get-started/install-desktop)
 and the application under test side by side on the tester's PC, with the
-[project](/docs/projects) — tests, prompts and reports — in a folder next to
+[project](/docs/projects), tests, prompts and reports, in a folder next to
 them. The only thing that leaves the machine is the inference traffic: the
 screenshot, the step text and the conversation of the current test:
 
@@ -42,7 +42,7 @@ flowchart BT
 ```
 
 The **model provider** is the AI service that makes the agent's decisions:
-the AskUI hub by default, or one you bring yourself — the choice, and what
+the AskUI hub by default, or one you bring yourself, the choice, and what
 it means for your data, is in
 [What leaves the network](#what-leaves-the-network-and-how-to-stop-it).
 
@@ -168,7 +168,7 @@ content that travels at all. Where it travels is your choice:
   [Microsoft Entra](/docs/extending/model-providers) work out of the box.
   **AWS Bedrock**, **GCP Vertex AI** and internal gateways with their own
   authentication scheme need that scheme implemented, so if your models sit
-  behind one, [talk to us](/docs/support/get-help) — we support you in
+  behind one, [talk to us](/docs/support/get-help), we support you in
   getting it wired up.
 - **On-premise inference**: point BYOM at a vision model you host yourself
   (vLLM, SGLang) and nothing leaves your network at all. If you don't have

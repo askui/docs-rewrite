@@ -157,7 +157,7 @@ takes down the run, the problem is reported and the rest keeps loading.
 Each run gets its own workspace folder (see `--workspace`), containing:
 
 - **Per-test artifacts**: `<test_name>/<test_name>_report.md` with the
-  verdict and step-by-step results, plus `step_<n>.png` screenshots.
+  result and step-by-step details, plus `step_<n>.png` screenshots.
 - **`summary_report.md`**: one table over all executed tests with
   pass/fail/broken counts. Tests a plan selected but the run never reached
   appear as broken, so nothing goes missing silently.
@@ -173,7 +173,7 @@ The console shows each phase as it starts and finishes
 | Code | Meaning |
 | --- | --- |
 | `0` | All executed tests passed. |
-| `1` | At least one test failed or broke, or the run produced no verdict. |
+| `1` | At least one test failed or broke, or the run produced no result. |
 | `2` | Usage or configuration error (bad flags, missing project/target, unreachable surface). |
 | `130` | Interrupted (Ctrl+C), partial reports and the summary are preserved. |
 
