@@ -33,8 +33,8 @@ export function Mermaid({ chart }: { chart: string }) {
         // curve 'step': right-angled connectors instead of curved splines.
         flowchart: {
           useMaxWidth: false,
-          nodeSpacing: 34,
-          rankSpacing: 40,
+          nodeSpacing: 40,
+          rankSpacing: 60,
           padding: 10,
           curve: 'step',
         },

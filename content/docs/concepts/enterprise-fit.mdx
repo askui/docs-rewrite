@@ -17,17 +17,16 @@ test run side by side on the tester's PC; the only thing that leaves it is
 the model traffic:
 
 ```mermaid
-flowchart TB
-  M["«Model provider»<br/>AskUI hub or your own"]
+flowchart LR
   subgraph pc["Tester PC"]
+    direction TB
     D["«AskUI Desktop»<br/>author · run · review"]
-    A["«Application under test»<br/>Windows / macOS app or browser"]
+    A["«Application under test»<br/>desktop app or browser"]
     F[("«Project»<br/>tests · prompts · reports")]
+    D --> A
+    D --> F
   end
-  M ~~~ pc
-  D -->|"screenshots + step text"| M
-  D --> A
-  D --> F
+  D -->|"screenshots + step text"| M["«Model provider»<br/>AskUI hub or your own"]
 ```
 
 Nothing to provision, no server, no CI: install, sign in, write a test, run
@@ -40,32 +39,35 @@ When tests should run without a tester present, the same project moves
 outward in three steps, each one optional and independent:
 
 ```mermaid
-flowchart TB
-  M["«Model provider»<br/>AskUI hub or your own"]
+flowchart LR
   subgraph pc["Tester PC"]
+    direction TB
     D["«AskUI Desktop»<br/>author · run · review"]
     B1["«Playwright»<br/>Browser"]
+    D --> B1
   end
   subgraph ci["CI pipeline"]
+    direction TB
     C["«AskUI CLI»<br/>headless runs"]
     B2["«Playwright»<br/>Browser"]
+    C --> B2
   end
+  M["«Model provider»<br/>AskUI hub or your own"]
   R[("«Git»<br/>Project repository")]
   subgraph cloud["Cloud provider"]
+    direction TB
     V1["«AgentOS»<br/>Windows VM"]
     V2["«AgentOS»<br/>Linux VM"]
   end
   subgraph lab["On-premise lab"]
+    direction TB
     P1["«AgentOS»<br/>Windows PC"]
     P2["«AgentOS»<br/>macOS machine"]
     A1["«adb»<br/>Android phone"]
     I1["«simulator»<br/>iOS simulator"]
   end
-  M ~~~ pc
   D -->|"screenshots + step text"| M
-  C -->|"screenshots + step text"| M
-  D --> B1
-  C --> B2
+  C --> M
   D --> R
   C --> R
   D --> cloud
