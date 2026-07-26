@@ -14,8 +14,8 @@ Each phase is one autonomous agent execution: read the file, drive the UI
 through the [loop](/docs/concepts/computer-use-agent#the-loop), write the report
 as it goes.
 
-We build it for three things, because a CUA model left to itself is
-expensive, erratic and slow at suite scale:
+We build it for four things, because a CUA model left to itself is
+expensive, erratic, slow and hard to hold accountable at suite scale:
 
 - **Token efficiency** — every turn re-sends the conversation, so the harness
   keeps it small: a fresh transcript per phase instead of one growing
@@ -33,6 +33,15 @@ expensive, erratic and slow at suite scale:
   when their source changed. What's left is mostly model latency, which is
   why the model you pick shows up directly in run duration
   ([performance & cost](/docs/troubleshooting/performance-cost)).
+- **Reporting you can hand to someone else** — the agent writes its
+  [test report](/docs/results/run-report) while it works, so every step
+  carries its interpretation, expected vs. actual and a screenshot; the run
+  gets a [summary](/docs/results/run-report#summary-report) the
+  [Dashboard](/docs/results/dashboard) counts, and the full
+  [conversation log](/docs/results#conversation-log) stays as the audit
+  trail. Evidence for a defect ticket is a by-product of the run, not extra
+  work — and because it's Markdown and PNGs in the project folder, CI can
+  archive it and reviewers can read it without the app.
 
 ```mermaid
 flowchart LR
