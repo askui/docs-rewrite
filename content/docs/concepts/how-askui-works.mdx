@@ -137,11 +137,14 @@ freedom is why
 
 Four parts, each one you can inspect or swap:
 
-- **A CUA model** — the "decide" step. It receives the screenshot and the
-  step text and answers with the next action, which means it must be
-  **vision-capable**: a text-only model can't see the screen. Runs through
-  the AskUI hub by default, or through
-  [your own provider](/docs/extending/model-providers#supported-models).
+- **A CUA model** — the intelligence, and the part you pay per token for.
+  It receives the screenshot and the step text and answers with the next
+  action, so it must be **vision-capable**: a text-only model can't see the
+  screen. Either you consume it through us (billed with your AskUI
+  workspace) or you bring
+  [your own provider](/docs/extending/model-providers#supported-models) and
+  pay that vendor directly. Which model you pick drives both the run's cost
+  and how reliably it reads your UI.
 - **Tools** — everything the agent *can* do. Device tools (screenshot,
   click, type) come with the device kind; beyond that you decide what it
   gets: [store tools](/docs/extending/tools),
