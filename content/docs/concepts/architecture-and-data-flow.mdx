@@ -27,6 +27,23 @@ flowchart LR
   D -->|auth · usage| H
 ```
 
+## The four components
+
+A raw CUA can drive a screen. Turning that into test automation an
+enterprise runs every day — on its own machines, inside its own network,
+under its own governance — takes four things:
+
+| Component | Role |
+| --- | --- |
+| **AskUI Desktop** | Where you author, run, and review — [projects](/docs/projects), [devices](/docs/devices), [reports](/docs/results/run-report) |
+| **AskUI CLI** | The same runs, headless — [CI and scheduled execution](/docs/running-tests/cli) |
+| **AgentOS** | Gives the agent eyes and hands on a machine: screen, keyboard, mouse — [details](/docs/agentos) |
+| **AskUI Hub** | Workspace, members, tokens, billing — [account](/docs/account-billing/workspaces) |
+
+Where each one runs, what it talks to, and what it stores follows below;
+the enterprise questions — proxy, air-gapped operation, CI runners — are in
+[Infrastructure requirements](#infrastructure-requirements).
+
 ## What talks to what
 
 | Connection | Protocol | Notes |
@@ -42,7 +59,7 @@ Endpoints and firewall rules:
 
 ## What leaves your network
 
-Each [loop iteration](/docs/concepts/how-askui-works#how-askui-agents-work) sends the
+Each [loop iteration](/docs/concepts/how-askui-works#the-loop) sends the
 current **screenshot and the step's text** to the model provider — that's
 the inference the agent's decisions are made of. By default the provider is
 the AskUI hub. With [your own model provider](/docs/extending/model-providers)
