@@ -95,8 +95,37 @@ reach:
 - Prefer **synthetic or anonymised data**. Where a screen unavoidably shows
   real data, choose the model placement to match:
   [your own tenancy or on-premise inference](/docs/concepts/enterprise-fit#what-leaves-the-network-and-how-to-stop-it).
-- Test evidence is yours: it stays in `agent_workspace/` under your retention
-  rules. Decide deliberately what gets archived in CI.
+
+### On a tester's own machine
+
+A run on someone's working PC captures whatever the display shows, so
+Outlook, Teams or an open browser end up in the evidence and in the model
+request. Two habits prevent that:
+
+- **Scope capture to the window under test.** Instead of driving the whole
+  display, have the agent pick the application's window: it lists the open
+  windows and then attaches that one as its capture surface, so every
+  screenshot afterwards contains only that window. Put it in the folder's
+  [rules](/docs/writing-tests/setup-teardown-rules#rules) so it applies to
+  every test:
+
+  ```md title="tests/rules.md"
+  ## Interaction
+  - Before the first step, list the open windows and select the window of the
+    application under test, so screenshots capture only that window.
+  ```
+
+  Where a suite runs on a dedicated machine, a
+  [remote computer profile](/docs/devices/remote-computer) is the cleaner
+  answer — nothing private is on that desktop in the first place.
+- **Delete run folders you no longer need.** Each run keeps full-resolution
+  screenshots of every step under `agent_workspace/<timestamp>/`. Keep the
+  runs you still reason about, delete the rest; they are gitignored, so they
+  only ever existed on that machine. Archive deliberately in
+  [CI](/docs/guides/askui-in-ci) instead of hoarding locally.
+
+Test evidence is yours either way: it stays in the project folder under your
+own retention rules.
 
 ## Make grants reviewable
 
@@ -122,6 +151,8 @@ suddenly needs the shell tool is a design question, not a checkbox.
 - [ ] No credentials in test files — named secrets only, test accounts only.
 - [ ] Synthetic or anonymised test data, or a model placement that matches
       the data's sensitivity.
+- [ ] Runs on a personal machine scope capture to the application's window,
+      and old `agent_workspace/` runs get deleted.
 - [ ] Custom tools and MCP servers reviewed like code.
 - [ ] `tools.json`, `mcp.json`, `devices.json` changes reviewed in pull
       requests.
