@@ -35,33 +35,77 @@ One cycle as it appears in a run's
 <div className="not-prose my-6 overflow-hidden rounded-lg border bg-fd-card text-sm">
   <div className="flex flex-wrap items-center gap-2 border-b px-4 py-2 text-xs text-fd-muted-foreground">
     <span className="flex size-5 items-center justify-center rounded-full bg-fd-primary/10 text-xs font-medium text-fd-primary">2</span>
-    <span className="font-medium text-fd-foreground">TEST · tests/login_test.md</span>
+    <span className="font-medium text-fd-foreground">TEST · tests/create_order_test.md</span>
     <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 font-medium text-emerald-600">PASS</span>
     <span>13 tool calls</span>
   </div>
   <div className="divide-y">
-    <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
-      <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Screenshot</span>
-      <span className="font-mono text-xs"><span className="rounded border bg-fd-muted px-1.5 py-0.5">screenshot</span> <span className="text-fd-muted-foreground">1 image · 480ms</span></span>
+    <div className="bg-fd-muted/30 px-4 py-1.5 text-[11px] text-fd-muted-foreground">
+      Step 2 from the test file — <span className="font-mono text-fd-foreground">Click "Sign-Up" — the start screen shows the signed-in dot.</span>
+    </div>
+    <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:gap-4">
+      <span className="w-20 shrink-0 pt-0.5 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Screenshot</span>
+      <span>
+        <span className="font-mono text-xs"><span className="rounded border bg-fd-muted px-1.5 py-0.5">screenshot</span></span>
+        <span className="mt-2 block w-56 overflow-hidden rounded border bg-white shadow-sm dark:bg-neutral-900">
+          <span className="flex items-center gap-1 border-b bg-fd-muted px-2 py-1">
+            <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
+            <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
+            <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
+            <span className="ml-1 text-[8px] text-fd-muted-foreground">Contoso Orders — Sign in</span>
+          </span>
+          <span className="block space-y-1.5 p-2">
+            <span className="block h-1 w-10 rounded bg-fd-muted-foreground/30" />
+            <span className="block h-3 w-full rounded border bg-fd-muted/40" />
+            <span className="block h-1 w-8 rounded bg-fd-muted-foreground/30" />
+            <span className="block h-3 w-full rounded border bg-fd-muted/40" />
+            <span className="flex justify-end gap-1 pt-1">
+              <span className="rounded border px-1.5 py-0.5 text-[8px] text-fd-muted-foreground">Log in</span>
+              <span className="rounded bg-fd-primary px-1.5 py-0.5 text-[8px] font-medium text-fd-primary-foreground">Sign-Up</span>
+            </span>
+          </span>
+        </span>
+      </span>
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Decide</span>
-      <span>The login page is visible. "Sign-Up" is top right, next to "Log in" — I will click it.</span>
+      <span>The sign-in page is visible. "Sign-Up" is top right, next to "Log in" — I will click it.</span>
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Act</span>
-      <span className="font-mono text-xs"><span className="rounded border bg-fd-muted px-1.5 py-0.5">click 1180, 96</span> <span className="text-fd-muted-foreground">350 → 26 · 500ms</span></span>
+      <span className="font-mono text-xs"><span className="rounded border bg-fd-muted px-1.5 py-0.5">click 1180, 96</span></span>
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Verify</span>
       <span>The start screen shows the green signed-in dot top right — the expected result of step 2 is met.</span>
     </div>
+    <div className="bg-fd-muted/30 px-4 py-1.5 text-[11px] text-fd-muted-foreground">
+      Step 4 — <span className="font-mono text-fd-foreground">Verify order "4711" exists in the backend with status "New".</span> Same cycle, but the truth is not on the screen.
+    </div>
+    <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
+      <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Decide</span>
+      <span>The order was created in the UI. The step asks me to confirm it in the backend — I will use the HTTP client.</span>
+    </div>
+    <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:gap-4">
+      <span className="w-20 shrink-0 pt-0.5 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Act</span>
+      <span>
+        <span className="font-mono text-xs"><span className="rounded border bg-fd-muted px-1.5 py-0.5">http_request GET api.example.com/orders/4711</span> <span className="text-fd-muted-foreground">200 OK</span></span>
+        <span className="mt-1.5 block rounded border bg-fd-muted/40 px-2 py-1 font-mono text-[11px] text-fd-muted-foreground">{'{ "id": "4711", "customer": "Contoso", "status": "New" }'}</span>
+      </span>
+    </div>
+    <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
+      <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Verify</span>
+      <span>The API returns the order with status "New" — the UI and the backend agree.</span>
+    </div>
   </div>
 </div>
 
-The stage labels on the left are this page's four stages — the app shows the
-narration, the tool-call chips, and the tokens and latency per step. Every
-element of the log: [Runs](/docs/results#conversation-log).
+The stage labels on the left are this page's four stages; the app itself
+shows the narration, the screenshots inline, and the tool-call chips with
+their results (plus tokens and latency per step). The cycle is the same whether
+the agent acts on the screen or calls a
+[tool](/docs/extending/tools) like the HTTP client — only the "act" differs.
+Every element of the log: [Runs](/docs/results#conversation-log).
 
 Because every decision starts from the live screen, the agent survives UI
 changes that break coordinate- or selector-based automation — and it is also
@@ -69,8 +113,9 @@ why [two runs can take different paths](/docs/concepts/how-a-run-executes#why-ex
 
 ## How AskUI makes CUA agents usable
 
-A raw CUA can drive a screen. Turning that into test automation your team
-runs every day takes four things:
+A raw CUA can drive a screen. Turning that into test automation an
+enterprise runs every day — on its own machines, inside its own network,
+under its own governance — takes four things:
 
 
 | Component | Role |
@@ -80,5 +125,22 @@ runs every day takes four things:
 | **AgentOS** | Gives the agent eyes and hands on a machine: screen, keyboard, mouse — [details](/docs/agentos) |
 | **AskUI Hub** | Workspace, members, tokens, billing — [account](/docs/account-billing/workspaces) |
 
-The model doing the "decide" step runs through the AskUI hub by default, or
-through [your own model provider](/docs/extending/model-providers).
+What that gives you in an enterprise setting:
+
+- **Your machines, your network** — tests run on the hardware you already
+  test on, reachable through your
+  [corporate proxy](/docs/troubleshooting/proxy-ssl) and, for the agent's
+  own reach, only the tools you
+  [enable](/docs/extending/tools).
+- **Your model, if you want it** — the "decide" step runs through the AskUI
+  hub by default, or through
+  [your own provider](/docs/extending/model-providers): an Anthropic key,
+  Azure AI Foundry, or your internal gateway behind Microsoft Entra.
+- **Your repository** — projects are plain files (tests, prompts,
+  configuration), so they live in
+  [version control](/docs/projects#git--versioning--sync) and review like code.
+- **Your workspace** — members, tokens, and billing are managed in the
+  [hub](/docs/account-billing/workspaces).
+
+The full picture of what talks to what, and which data leaves the machine:
+[Architecture & data flow](/docs/concepts/architecture-and-data-flow).
