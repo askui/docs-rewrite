@@ -31,6 +31,11 @@ and lands in the run's [reports](/docs/results/run-report).
 
 What the harness gives each phase, and what it enforces:
 
+- **The project** — everything it reads comes from one folder: the
+  [project](/docs/projects). Tests, prompts, procedures, plans, tool
+  configuration and device profiles are plain files, so a run is fully
+  defined by what is checked into your repository — the same folder produces
+  the same run on a colleague's machine or a CI runner.
 - **The instructions** — the project's
   [prompt files](/docs/best-practices/agent-behavior), the folder's
   `rules.md`, the phase's own file, and the names of the
