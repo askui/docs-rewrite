@@ -81,7 +81,10 @@ model. A text‑only model will connect but won't be able to see the screen.
   Anthropic tab and this is what runs.
 - **Claude models (recommended)**: the Anthropic Messages API is the tested
   path, whether you reach it through the AskUI hub, your own Anthropic key,
-  Azure AI Foundry, or an Anthropic-compatible gateway. Any current Claude
+  Azure AI Foundry, or an Anthropic-compatible gateway. AWS Bedrock and GCP
+  Vertex AI authenticate differently (SigV4, Google credentials), so they
+  work through a gateway that re-exposes them as an Anthropic- or
+  OpenAI-compatible endpoint, not by pasting their URL here. Any current Claude
   model with vision works; ids come from Anthropic's
   [model list](https://docs.anthropic.com/en/docs/about-claude/models/overview).
   Newer Claude generations also use adaptive thinking automatically.

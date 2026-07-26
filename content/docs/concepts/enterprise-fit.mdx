@@ -142,16 +142,21 @@ content that travels at all. Where it travels is your choice:
 
 - **AskUI hub** (default), inference runs through us, billed with your
   workspace.
-- **Your own provider**: with
-  [BYOM](/docs/extending/model-providers) the traffic goes to your own
-  Anthropic or OpenAI-compatible endpoint instead: your Anthropic account,
-  Azure AI Foundry, or your company's internal LLM gateway. This is what
-  most IT-security reviews approve, because the data stays inside contracts
-  you already hold.
-- **Nothing leaves at all**: point BYOM at a vision model you host
-  yourself (vLLM, SGLang) and screenshots never leave your network. If you
-  don't have the hardware for it, we can supply a local deployment on NVIDIA
-  hardware you purchase, [talk to us](/docs/support/get-help).
+- **Your own cloud tenancy**: with
+  [BYOM](/docs/extending/model-providers) the traffic goes to an endpoint you
+  own instead, so it stays inside contracts and a cloud account you already
+  hold. Your Anthropic account and
+  [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/) work
+  directly; **AWS Bedrock** and **GCP Vertex AI** speak their own
+  authentication, so they need a gateway in front that exposes an
+  Anthropic- or OpenAI-compatible endpoint, which is also how most internal
+  LLM gateways are already built (including
+  [Entra-protected ones](/docs/extending/model-providers)). This is what
+  most IT-security reviews approve.
+- **On-premise inference**: point BYOM at a vision model you host yourself
+  (vLLM, SGLang) and nothing leaves your network at all. If you don't have
+  the hardware for it, we can supply a local deployment on NVIDIA hardware
+  you purchase, [talk to us](/docs/support/get-help).
 
 ## What is stored where
 
