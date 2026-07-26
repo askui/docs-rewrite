@@ -12,17 +12,18 @@ order a security or infrastructure review asks for it:
 
 ## Start simple: one computer
 
-The smallest setup is one machine. AskUI Desktop and the application under
-test run side by side on the tester's PC; the only thing that leaves it is
-the model traffic:
+The smallest setup is one machine: [AskUI Desktop](/docs/get-started/install-desktop)
+and the application under test side by side on the tester's PC, with the
+[project](/docs/projects) — tests, prompts and reports — in a folder next to
+them. The only thing that leaves the machine is the model traffic:
 
 ```mermaid
 flowchart BT
   subgraph pc["Tester PC"]
     direction LR
-    D["«AskUI Desktop»<br/>author, run, review"]
+    D["«AskUI Desktop»"]
     A["«Application under test»<br/>desktop app or browser"]
-    F[("«Project»<br/>tests, prompts, reports")]
+    F[("«Project»")]
     D --> A
     D --> F
   end
@@ -40,23 +41,25 @@ their first weeks.
 
 ## Expand to scale
 
-When tests should run without a tester present, the same project moves
-outward in three steps, each one optional and independent:
+When tests should run without a tester present, the same
+[project](/docs/projects) moves outward in three steps, each one optional and
+independent. The [AskUI CLI](/docs/running-tests/cli) runs it headless, the
+same way Desktop does interactively:
 
 ```mermaid
 flowchart LR
   subgraph starts["Who starts the run"]
     subgraph pc["Tester PC"]
-      D["«AskUI Desktop»<br/>author, run, review"]
+      D["«AskUI Desktop»"]
       B1["«Playwright»<br/>local browser"]
     end
     subgraph ci["CI pipeline"]
-      C["«AskUI CLI»<br/>headless runs"]
+      C["«AskUI CLI»"]
       B2["«Playwright»<br/>local browser"]
     end
     pc ~~~ ci
   end
-  R[("«Git»<br/>Project repository")]
+  R[("«Git»<br/>project repository")]
   M["«Model provider»"]
   subgraph cloud["Cloud provider"]
     V1["«AgentOS»<br/>Windows VM"]
@@ -68,7 +71,7 @@ flowchart LR
   end
   subgraph farm["Device farm"]
     A1["«adb»<br/>Android phone"]
-    I1["«simulator»<br/>iOS simulator"]
+    I1["«idb»<br/>iOS simulator"]
   end
   starts --> R
   starts -->|"screenshots, steps, conversation"| M
