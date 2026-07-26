@@ -187,10 +187,10 @@ The shared steps move up one level, into the folder every order test lives in:
 <Files>
   <Folder name="tests" defaultOpen>
     <File name="setup.md" />
-    <File name="teardown.md" />
     <File name="create_order_test.md" />
     <File name="cancel_order_test.md" />
     <File name="search_order_test.md" />
+    <File name="teardown.md" />
   </Folder>
 </Files>
 
@@ -217,18 +217,72 @@ in a row.
 ## Non-deterministic execution
 
 Two runs of the same case can take different paths — by design
-([why](/docs/concepts/how-a-run-executes#why-execution-differs)). For a
-tester this means:
+([why](/docs/concepts/how-a-run-executes#why-execution-differs)). The same
+step, two runs, both `PASSED`:
+
+<div className="grid gap-3 md:grid-cols-2">
+
+```md title="Run 1 — 11 tool calls"
+3. Open "Records" and create an
+   order for "Contoso".
+
+Agent Interpretation: clicked
+"Records" in the left sidebar,
+then "New order".
+```
+
+```md title="Run 2 — 14 tool calls"
+3. Open "Records" and create an
+   order for "Contoso".
+
+Agent Interpretation: a survey
+pop-up covered the sidebar —
+dismissed it, then clicked
+"Records" and "New order".
+```
+
+</div>
+
+Neither run is wrong: the order exists afterwards, which is what the step
+demanded. For a tester this means:
 
 - **Judge the result, not the path** — the report's expected vs. actual
   per step is the contract; the exact clicks are the execution log, not
   the specification.
 - **Precise expected results = stable outcomes** — the agent has freedom
   in *how*; your steps define *what must be true afterwards*. The tighter
-  the expected result, the less room for a wrong interpretation.
+  the expected result, the less room for a wrong interpretation:
+
+  <div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+  ```md title="❌ passes on any screen"
+  4. Save the order — it worked.
+  ```
+
+  <div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+  ```md title="✅ one true outcome"
+  4. Save the order — it appears in
+     "Records" with status "New"
+     and today's date.
+  ```
+
+  </div>
+
 - **Rules constrain the freedom** —
   [rules.md](/docs/writing-tests/setup-teardown-rules#rules) removes paths
-  you never want taken ("never change settings", "abort on error dialogs").
+  you never want taken:
+
+  ```md title="➕ tests/rules.md"
+  ## Interaction
+  - Never change application settings to make a step work.
+  - Reach "Records" through the left sidebar, not through search.
+
+  ## Error handling
+  - If an error dialog appears, document it and mark the step FAILED —
+    never dismiss it and continue.
+  ```
+
 - **Watch a run when in doubt** — the
   [live conversation log](/docs/running-tests#watch-it-live) shows the
   path the agent chose, and why.
