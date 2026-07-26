@@ -1,50 +1,115 @@
 ---
 icon: Users
-title: Team setups
-description: Three working models, a testing team, developers in their dev workflow, or both on shared testware.
+title: Sharing the project
+description: How a project is shared across a team — what travels in the repository, what each member adds locally, who owns which part, and where the repository lives.
 ---
 
-A [Project](/docs/projects) is plain files in Git, so AskUI fits wherever
-your organization keeps its testing: with QA, with development, or shared.
-Three working models, in practice:
+A [project](/docs/projects) is plain files, so sharing it is a Git question,
+not a product question. What changes between teams is only **where the
+repository lives** and **who owns which part of it**.
 
-## Testers own it
+## What travels with the repository
 
-The classic setup: the QA team owns the testware repository. Testers author
-and maintain cases in **AskUI Desktop**, run against the team's
-[devices](/docs/devices), and [schedule](/docs/running-tests/scheduling)
-recurring suites. Failures go to development as
-[run reports](/docs/results/run-report), per-step expected vs. actual with
-screenshots, an incident log developers can act on without reproducing first.
+Everything that defines a run is in the folder, so a colleague's clone
+behaves like yours:
 
-What it needs: AskUI Desktop per tester, a shared Git repository for the
-project, and the test environments as device profiles, which travel with
-the repository, so every tester connects to the same list.
+- **Testware**: test cases, [procedures](/docs/writing-tests/procedures),
+  [plans](/docs/writing-tests/plans), and each folder's `rules.md`,
+  `setup.md`, `teardown.md`.
+- **Agent files**: the [`prompts/`](/docs/best-practices/agent-behavior)
+  folder, so everyone's runs get the same instructions and report format.
+- **Device profiles**: `devices.json`, so every member sees the same
+  [devices](/docs/devices) list instead of wiring machines by hand.
+- **The toolbox**: `utils/tools.json`, `utils/mcp.json` and
+  `utils/custom_tools/*.cs`, which is what makes every grant reviewable in a
+  pull request ([hardening](/docs/best-practices/security)).
 
-## Developers own it
+## What each member adds locally
 
-UI tests live **next to the application code**, the project folder inside
-the app repository. Developers author in plain Markdown alongside the
-feature, run locally with Desktop or the [CLI](/docs/running-tests/cli), and
-CI executes the suite on every pull request
-([AskUI in CI](/docs/guides/askui-in-ci)). A failed UI test blocks the merge
-like a failed unit test.
+Three things deliberately do **not** travel, and a new member has to supply
+them:
 
-What it needs: the CLI on the build runner with `ASKUI_WORKSPACE_ID` /
-`ASKUI_TOKEN`, and a device the runner can reach, a
-[headless browser](/docs/devices/web-browser) needs nothing else; desktop
-targets need [AgentOS](/docs/agentos/deployment/ci) on a test machine.
+- **[Secrets](/docs/extending/secrets)**: values live encrypted on the
+  machine, never in the project. A fresh clone starts without them, which is
+  the point — everyone uses their own test credentials.
+- **Access to the machines**: a device profile names a host; whether you can
+  reach it depends on your network and on
+  [AgentOS](/docs/agentos) running there.
+- **App settings**: sign-in, the
+  [model provider](/docs/extending/model-providers) choice, the proxy. These
+  are per machine, not per project.
 
-## Development + Testing together
+Run artifacts go the other way: `agent_workspace/` and `.askui_cache/` are
+excluded by the scaffolded `.gitignore`, so reports and screenshots stay
+local instead of bloating the repository. Archive them in
+[CI](/docs/guides/askui-in-ci) if you need them long-term.
 
-The shared model: one testware repository, two roles. Testers curate the
-suites, expected results, and [plans](/docs/writing-tests/plans);
-developers wire the smoke plan into CI and fix against the reports. Git is
-the collaboration layer, test changes arrive as pull requests that either
-side can review, and
+## Who owns which part
+
+Roles, not job titles — one person often wears several:
+
+- **Test author**: writes cases and expected results, curates plans, keeps
+  `ui_information.md` current as the application changes.
+- **Developer**: fixes what a run exposes, owns
+  [custom tools](/docs/extending/custom-tools), wires the suite into CI.
+- **Lab owner**: provisions the machines, keeps sessions unlocked and AgentOS
+  installed ([running the lab](/docs/concepts/enterprise-fit#running-the-lab-machines)).
+- **Workspace admin**: seats and
+  [members](/docs/account-billing/members), tokens, and the model provider
+  the team runs on, which is also the cost lever.
+- **Reviewer**: approves changes to the toolbox and device profiles, the same
+  way dependency changes get reviewed.
+
+## Where the repository lives
+
+Three arrangements, all with the same project layout:
+
+### QA owns the repository
+
+The testing team holds the testware repo, authors in **AskUI Desktop**, runs
+against the team's [devices](/docs/devices), and
+[schedules](/docs/running-tests/scheduling) recurring suites. Failures go to
+development as [run reports](/docs/results/run-report) — expected vs. actual
+per step with screenshots, so a developer can act without reproducing first.
+
+- **Pick this if** QA owns its own environments and release cadence.
+- **It needs**: Desktop per tester, one shared repository, and the
+  environments as device profiles so every tester connects to the same list.
+
+### The application repository owns the tests
+
+The project folder lives **inside the app repo**. Developers author in
+Markdown next to the feature, run locally with Desktop or the
+[CLI](/docs/running-tests/cli), and CI executes the suite on every pull
+request ([AskUI in CI](/docs/guides/askui-in-ci)). A failed UI test blocks
+the merge like a failed unit test.
+
+- **Pick this if** UI tests should gate merges and live with the code they
+  cover.
+- **It needs**: the CLI on the runner with `ASKUI_WORKSPACE_ID` /
+  `ASKUI_TOKEN`, and a device the runner can reach — a
+  [headless browser](/docs/devices/web-browser) needs nothing else, desktop
+  targets need [AgentOS](/docs/agentos/deployment/ci) on a test machine.
+
+### One repository, two roles
+
+Testers curate suites, expected results and
+[plans](/docs/writing-tests/plans); developers wire the smoke plan into CI
+and fix against the reports. Git is the collaboration layer: changes arrive
+as pull requests either side can review, and
 [configuration management of the testware](/docs/projects#git-versioning--sync)
 comes for free.
 
-A natural split: developers gate merges with the fast `smoke` plan; the
-testing team runs the full regression [on a schedule](/docs/running-tests/scheduling)
-and owns the results.
+- **Pick this if** regression belongs to QA but a fast subset should gate
+  CI — the common end state.
+- **It needs**: agreement on which plan gates merges (`smoke`) and which runs
+  [on a schedule](/docs/running-tests/scheduling), plus who owns the results
+  of each.
+
+## Onboarding a new member
+
+1. Clone the repository and open the folder in AskUI Desktop.
+2. Add your [secrets](/docs/extending/secrets) — the names are already
+   referenced by the tests.
+3. Connect a [device](/docs/devices) from the shared profile list.
+4. Run one existing test to confirm the setup before writing anything.

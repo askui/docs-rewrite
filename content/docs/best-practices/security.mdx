@@ -13,18 +13,46 @@ Where each grant lives, so a reviewer can see it:
 
 ## The session decides the floor
 
-- **Use a dedicated test account**, not a personal or administrative one. The
-  agent can do what the logged-in user can do, so the account's rights are
-  the floor of everything below.
-- **Leave elevation off** unless a suite genuinely needs it. Driving elevated
-  windows requires enabling
-  ["Allow control of administrative applications"](/docs/agentos/installation/service)
-  — if one suite needs it, give it its own machine rather than switching it
-  on lab-wide.
-- **Separate the lab from production.** Test machines should reach the system
-  under test and nothing else; restrict the
-  [AgentOS port](/docs/concepts/enterprise-fit#what-talks-to-what) to the
-  machines allowed to start runs.
+The agent acts as the logged-in user, so that account's rights are the
+ceiling of everything it can do — on the operating system and in the
+application under test. Create accounts for testing on both levels:
+
+**On the operating system.** One dedicated local account per test machine,
+not a personal and not an administrative one:
+
+- **Standard user, no administrator group.** If the account can install
+  software or write outside its profile, so can a run.
+- **No domain-wide rights.** A local account, or a domain account whose group
+  memberships are scoped to the test machines — never one that also carries
+  access to production systems, file shares or mailboxes.
+- **Own profile, nothing personal in it.** The agent sees whatever the desktop
+  shows: no private mail client, no signed-in browser profile with saved
+  passwords, no VPN client that grants more reach than the test needs.
+- **Auto sign-in without a personal password.** A shared lab machine needs an
+  unlocked session; give it a session that costs you nothing if someone reads
+  the screen over the tester's shoulder.
+- **Elevation off unless a suite needs it.** Driving elevated windows
+  requires enabling
+  ["Allow control of administrative applications"](/docs/agentos/installation/service).
+  If one suite needs it, give that suite its own machine rather than
+  switching it on lab-wide.
+
+**In the application under test.** A test user per suite, provisioned like
+any other user of your product:
+
+- **The role the scenario needs, nothing above it.** A checkout test does not
+  need an admin role; if a test needs admin, that is a separate suite with its
+  own account.
+- **Read-only where the test only verifies.** The same applies to the
+  [SQL tool's](/docs/extending/tools#sql-database) database user.
+- **Never a production account, and never a real person's.** Test accounts are
+  disposable, personal accounts are not, and a failed run leaves screenshots
+  of whatever that account can see.
+
+**Around both.** Test machines should reach the system under test and nothing
+else, and the
+[AgentOS port](/docs/concepts/enterprise-fit#what-talks-to-what) should be
+restricted to the machines allowed to start runs.
 
 ## The toolbox decides the ceiling
 
@@ -84,10 +112,13 @@ suddenly needs the shell tool is a design question, not a checkbox.
 
 ## Checklist
 
-- [ ] Runs use a dedicated test account, elevation off unless required.
+- [ ] Dedicated OS account per test machine: standard user, no domain-wide
+      rights, nothing personal in the profile, elevation off unless required.
+- [ ] Application test users carry only the role their scenario needs, and
+      database users are read-only where the test only verifies.
 - [ ] Only the tools a test needs are enabled, each scoped (path, statements,
       hosts, base directory).
-- [ ] Raw SQL off; database user read-only where the test only verifies.
+- [ ] Raw SQL off.
 - [ ] No credentials in test files — named secrets only, test accounts only.
 - [ ] Synthetic or anonymised test data, or a model placement that matches
       the data's sensitivity.
