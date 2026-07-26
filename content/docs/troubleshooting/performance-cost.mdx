@@ -13,7 +13,7 @@ Common drivers:
 | Oversized images or logs | Very large screen captures or log files raise the token count per step. |
 | Retry loops | A failing step the agent retries many times multiplies cost. Look for high step counts on single actions in the run report. |
 
-Open the run report and check the token count per step — the costliest steps
+Open the run report and check the token count per step, the costliest steps
 are usually the ones to optimize. For a cross-run view, see the
 [Usage dashboard](/docs/account-billing/usage-dashboard).
 
@@ -23,7 +23,7 @@ Log and trace files grow continuously over a run. Very large files can exhaust
 memory or significantly slow the host machine.
 
 Mitigations:
-- Keep test cases short and focused — split a large suite into smaller cases,
+- Keep test cases short and focused, split a large suite into smaller cases,
   each producing its own report.
 - Archive or delete old run artifacts from the `reports/` folder in your
   project periodically.

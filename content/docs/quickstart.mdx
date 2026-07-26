@@ -4,7 +4,7 @@ description: Find your first bug in 10 minutes.
 ---
 
 Find your first bug in 10 minutes. This guide takes you from a blank machine to
-your first test run — no selectors, no code, just plain language. Four steps:
+your first test run, no selectors, no code, just plain language. Four steps:
 download AskUI Desktop, sign in, walk the onboarding wizard, and run the
 template's example test on your own machine.
 
@@ -14,21 +14,21 @@ A Windows or macOS machine. No prior automation experience required.
 
 ---
 
-## Step 1 — Download AskUI Desktop (2 min)
+## Step 1: Download AskUI Desktop (2 min)
 
-Grab the installer for your platform and run it. It's self-contained — no
+Grab the installer for your platform and run it. It's self-contained, no
 extra runtimes needed.
 
 <Cards>
   <Card
     title="Windows (x64)"
     href="https://files.askui.com/releases/AskUIDesktop/0.5.0/AskUI-Desktop-0.5.0-Installer-Win-AMD64.exe"
-    description="AskUI-Desktop-0.5.0-Installer-Win-AMD64.exe — signed, self-contained."
+    description="AskUI-Desktop-0.5.0-Installer-Win-AMD64.exe, signed, self-contained."
   />
   <Card
     title="macOS (Apple Silicon)"
     href="https://files.askui.com/releases/AskUIDesktop/0.5.0/AskUI-Desktop-0.5.0-Installer-Mac-ARM64.dmg"
-    description="AskUI-Desktop-0.5.0-Installer-Mac-ARM64.dmg — notarized."
+    description="AskUI-Desktop-0.5.0-Installer-Mac-ARM64.dmg, notarized."
   />
 </Cards>
 
@@ -51,7 +51,7 @@ always lists the newest installers, and they're also on your
 
 ---
 
-## Step 2 — Sign up or log in (2 min)
+## Step 2: Sign up or log in (2 min)
 
 Launch AskUI Desktop and sign in with your AskUI account.
 
@@ -73,13 +73,13 @@ Authentication uses Auth0 (OIDC) and opens in your system browser.
 
 ---
 
-## Step 3 — Walk the onboarding wizard (3 min)
+## Step 3: Walk the onboarding wizard (3 min)
 
 On first launch, AskUI Desktop opens a short setup wizard.
 
 <Steps>
 <Step>
-**Welcome.** A quick tour of what AskUI does — click **Get started**.
+**Welcome.** A quick tour of what AskUI does, click **Get started**.
 </Step>
 <Step>
 **Grant system permissions** *(macOS only).* Allow **Screen Recording** and
@@ -87,10 +87,10 @@ On first launch, AskUI Desktop opens a short setup wizard.
 flips green automatically once granted.
 </Step>
 <Step>
-**Create your first project — Start from template.** Choose **Start from
+**Create your first project, Start from template.** Choose **Start from
 template** (recommended) and pick an empty folder. AskUI scaffolds the default
 template: `tests/`, `prompts/`, `procedures/`, and `plans/`, pre-filled with an
-example test, a smoke plan, and the agent prompts — ready to run.
+example test, a smoke plan, and the agent prompts, ready to run.
 </Step>
 <Step>
 **You're set.** The final screen maps out where everything lives. Click
@@ -100,14 +100,14 @@ example test, a smoke plan, and the agent prompts — ready to run.
 
 ---
 
-## Step 4 — Run your first test locally (3 min)
+## Step 4: Run your first test locally (3 min)
 
-The default template ships with a runnable example test — run it against your
+The default template ships with a runnable example test, run it against your
 own machine to see a full pass end to end.
 
 <Steps>
 <Step>
-**Open the example test** in `tests/`. It's plain Markdown — readable steps, no
+**Open the example test** in `tests/`. It's plain Markdown, readable steps, no
 code or selectors. Leave it as-is for this first run.
 </Step>
 <Step>
@@ -118,13 +118,13 @@ streams progress into **Live Run**.
 <Step>
 **Read the report.** Each step shows its status (`PASSED`, `FAILED`, `WARN`,
 `SKIPPED`, or `BROKEN`) and a screenshot. A green run means every step actually
-passed — the agent doesn't improvise its way to done.
+passed, the agent doesn't improvise its way to done.
 </Step>
 </Steps>
 
 <Callout title="Make it yours">
 Once the example passes, open `prompts/ui_information.md` and describe your own
-app — its main screens, how to tell you're signed in, and any quirks. It's the
+app, its main screens, how to tell you're signed in, and any quirks. It's the
 single most important file for reliable runs. See
 [Prompting best practices](/docs/best-practices/prompting-best-practices).
 </Callout>
@@ -138,7 +138,7 @@ You have a working project. Here is where to go from here:
 <Cards>
   <Card title="Prompting best practices" href="/docs/best-practices/prompting-best-practices">
     Learn how to structure prompts so your runs stay reliable as your test suite
-    grows — the four-file layout, `rules.md`, and how to avoid brittle tests.
+    grows, the four-file layout, `rules.md`, and how to avoid brittle tests.
   </Card>
   <Card title="Project structure" href="/docs/projects">
     Understand what each folder in a Project does and how the runner picks up

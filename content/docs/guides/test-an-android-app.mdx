@@ -1,7 +1,7 @@
 ---
 icon: Android
 title: Test an Android app
-description: End-to-end — define the device, boot it, write the test case, run it, and analyze the failure.
+description: End-to-end, define the device, boot it, write the test case, run it, and analyze the failure.
 ---
 
 The whole journey for one goal: a passing (or usefully failing) test against
@@ -11,15 +11,15 @@ an Android app. Each step links to the feature page with the full detail.
 
 Emulator or real phone:
 
-- **Emulator** — [create an Android emulator profile](/docs/devices/android-emulator):
+- **Emulator**: [create an Android emulator profile](/docs/devices/android-emulator):
   device type, Android version, lifecycle. No phone needed; missing SDK
   tooling is a one-click **Set up**.
-- **Real phone** — enable USB debugging, plug it in, **Add as profile** from
+- **Real phone**: enable USB debugging, plug it in, **Add as profile** from
   the discovered list: [Android phone](/docs/devices/android-phone).
 
 ## 2 · Start it
 
-**Start** on the profile card. First emulator boot takes minutes — the
+**Start** on the profile card. First emulator boot takes minutes, the
 [card walks through the states](/docs/devices/android-emulator#run-it)
 (Set up → Creating → Booting → Ready). Green dot = the device is an available
 test environment.
@@ -30,7 +30,7 @@ test environment.
 device in it. Android-specific craft:
 
 - Name apps **as the user sees them** ("open the Calculator app"), not by
-  package id — the agent works the launcher like a person.
+  package id, the agent works the launcher like a person.
 - **Verify the app is installed first.** Emulator images are lean; a stock
   Google-APIs image ships without Calculator, for example. Either state it
   as a precondition or pick an app the image has (Settings, Chrome, Clock).
@@ -56,14 +56,14 @@ Run this on the **Pixel 9** device.
 ## 4 · Run it and watch
 
 Pick the Android profile in **Run on**, press **Run**, and open the **Runs**
-page — [the conversation streams live](/docs/running-tests#watch-it-live):
+page, [the conversation streams live](/docs/running-tests#watch-it-live):
 every decision, tap, and device screenshot as it happens.
 
 ## 5 · Analyze the result
 
 The [run report](/docs/results/run-report) gives per-step expected vs.
-actual with a screenshot each — your incident log when something failed. The
+actual with a screenshot each, your incident log when something failed. The
 [conversation log](/docs/results#conversation-log) holds the
 complete execution record. Remember the agent may have taken a different
-path than you imagined — [judge the result, not the
-path](/docs/best-practices/writing-good-tests#working-with-non-deterministic-execution).
+path than you imagined, [judge the result, not the
+path](/docs/best-practices/writing-good-tests#non-deterministic-execution).

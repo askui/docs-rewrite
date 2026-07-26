@@ -1,11 +1,11 @@
 ---
 icon: Building2
 title: Enterprise fit
-description: How AskUI fits into your environment — what runs where, what leaves your network, what is stored, what gets downloaded, and what IT has to approve.
+description: How AskUI fits into your environment, what runs where, what leaves your network, what is stored, what gets downloaded, and what IT has to approve.
 ---
 
 Everything here answers one question: what does bringing AskUI into your
-environment actually mean? The short version — screenshots of your
+environment actually mean? The short version, screenshots of your
 applications go to an AI model for the agent's decisions; everything else
 (testware, reports, secrets) stays on your machines. The full picture, in the
 order a security or infrastructure review asks for it:
@@ -18,14 +18,14 @@ the model traffic:
 
 ```mermaid
 flowchart LR
-  subgraph pc["tester's PC"]
-    D["AskUI Desktop"]
-    A["application under test"]
-    F[("project folder")]
+  subgraph pc["Tester PC"]
+    D["«AskUI Desktop»<br/>author · run · review"]
+    A["«Application under test»<br/>Windows / macOS app or browser"]
+    F[("«Project»<br/>tests · prompts · reports")]
   end
   D --> A
   D --> F
-  D -->|"screenshots + step text"| M["model provider"]
+  D -->|"screenshots + step text"| M["«Model provider»<br/>AskUI hub or your own"]
 ```
 
 Nothing to provision, no server, no CI: install, sign in, write a test, run
@@ -35,40 +35,47 @@ their first weeks.
 ## Expand: dedicated infrastructure
 
 When tests should run without a tester present, the same project moves
-outward in three steps — each one optional and independent:
+outward in three steps, each one optional and independent:
 
 ```mermaid
 flowchart LR
-  subgraph local["tester's PC"]
-    D["AskUI Desktop<br/>author · run · review"]
+  subgraph starts["Who starts the run"]
+    D["«AskUI Desktop»<br/>Tester PC"]
+    C["«AskUI CLI»<br/>CI pipeline"]
   end
-  subgraph infra["test infrastructure"]
-    A1["Windows / macOS machine<br/>AgentOS"]
-    B["browser<br/>Playwright"]
-    P["Android device<br/>adb"]
+  subgraph infra["Test infrastructure"]
+    V["«AgentOS»<br/>Windows VM · cloud or on-prem"]
+    MC["«AgentOS»<br/>macOS machine"]
+    FARM["«Device farm»<br/>Android &amp; iOS devices"]
+    BR["«Playwright»<br/>Browser"]
   end
-  subgraph ci["CI runner"]
-    C["AskUI CLI"]
-  end
-  R[("Git repository<br/>the project")]
+  R[("«Git»<br/>Project repository")]
+  M["«Model provider»<br/>AskUI hub or your own"]
   D --> R
   C --> R
-  D -->|"gRPC :23000 / :26000"| A1
-  D --> B
-  D --> P
-  C --> A1
-  C --> B
-  D -->|"screenshots + step text"| M["model provider"]
+  D --> V
+  D --> MC
+  D --> FARM
+  D --> BR
+  C --> V
+  C --> FARM
+  C --> BR
+  D --> M
   C --> M
 ```
 
-- **Remote test machines** — the application under test moves off the
+Everything in **Test infrastructure** is optional and mixable: a Windows VM
+at your cloud provider, a physical machine in the lab, a rack of Android and
+iOS devices, or nothing but browsers. The tester's Desktop and the CI
+pipeline drive the same machines through the same project.
+
+- **Remote test machines**: the application under test moves off the
   tester's PC onto dedicated machines running
   [AgentOS](/docs/devices/remote-computer), so a run can't disturb anyone's
   desktop and several tests can run at once.
-- **The project in Git** — the same folder for everyone, reviewed like code
-  ([versioning](/docs/projects#git--versioning--sync)).
-- **CI pipeline** — the [CLI](/docs/running-tests/cli) runs the same project
+- **The project in Git**: the same folder for everyone, reviewed like code
+  ([versioning](/docs/projects#git-versioning--sync)).
+- **CI pipeline**: the [CLI](/docs/running-tests/cli) runs the same project
   headless on every merge or on a
   [schedule](/docs/running-tests/scheduling), against the same machines
   ([AskUI in CI](/docs/guides/askui-in-ci)).
@@ -79,19 +86,19 @@ Who owns which part of that setup:
 ## The four components
 
 A raw CUA can drive a screen. Turning that into test automation an
-enterprise runs every day — on its own machines, inside its own network,
-under its own governance — takes four things, and each one runs somewhere
+enterprise runs every day, on its own machines, inside its own network,
+under its own governance, takes four things, and each one runs somewhere
 you control:
 
 | Component | Role |
 | --- | --- |
-| **AskUI Desktop** | Where you author, run, and review — [projects](/docs/projects), [devices](/docs/devices), [reports](/docs/results/run-report) |
-| **AskUI CLI** | The same runs, headless — [CI and scheduled execution](/docs/running-tests/cli) |
-| **AgentOS** | Gives the agent eyes and hands on a machine: screen, keyboard, mouse — [details](/docs/agentos) |
-| **AskUI Hub** | Workspace, members, tokens, billing — [account](/docs/account-billing/workspaces) |
+| **AskUI Desktop** | Where you author, run, and review, [projects](/docs/projects), [devices](/docs/devices), [reports](/docs/results/run-report) |
+| **AskUI CLI** | The same runs, headless, [CI and scheduled execution](/docs/running-tests/cli) |
+| **AgentOS** | Gives the agent eyes and hands on a machine: screen, keyboard, mouse, [details](/docs/agentos) |
+| **AskUI Hub** | Workspace, members, tokens, billing, [account](/docs/account-billing/workspaces) |
 
 Where each one runs, what it talks to, and what it stores follows below;
-the enterprise questions — proxy, air-gapped operation, CI runners — are in
+the enterprise questions, proxy, air-gapped operation, CI runners, are in
 [Infrastructure requirements](#infrastructure-requirements).
 
 ## What talks to what
@@ -99,9 +106,9 @@ the enterprise questions — proxy, air-gapped operation, CI runners — are in
 | Connection | Protocol | Notes |
 | --- | --- | --- |
 | Desktop/CLI → AgentOS | gRPC, port 23000 (app-spawned) or 26000 (installed service) | Screen, keyboard, mouse of a [desktop machine](/docs/devices/remote-computer) |
-| Desktop/CLI → browser | Playwright, local | [Web profiles](/docs/devices/web-browser) — no AgentOS involved |
+| Desktop/CLI → browser | Playwright, local | [Web profiles](/docs/devices/web-browser), no AgentOS involved |
 | Desktop/CLI → Android | adb, local/USB/wireless | [Emulators](/docs/devices/android-emulator) and [phones](/docs/devices/android-phone) |
-| Desktop/CLI → model provider | HTTPS | See below — the only place test content leaves your network |
+| Desktop/CLI → model provider | HTTPS | See below, the only place test content leaves your network |
 | Desktop → AskUI Hub | HTTPS | Sign-in, tokens, usage. Not involved in test execution itself |
 
 Endpoints and firewall rules:
@@ -110,36 +117,36 @@ Endpoints and firewall rules:
 ## What leaves the network (and how to stop it)
 
 Each [loop iteration](/docs/concepts/computer-use-agent#the-loop) sends the
-current **screenshot and the step's text** to the model provider — that's the
+current **screenshot and the step's text** to the model provider, that's the
 inference the agent's decisions are made of, and the only test content that
 travels at all. Where it travels is your choice:
 
-- **AskUI hub** (default) — inference runs through us, billed with your
+- **AskUI hub** (default), inference runs through us, billed with your
   workspace.
-- **Your own provider** — with
+- **Your own provider**: with
   [BYOM](/docs/extending/model-providers) the traffic goes to your own
   Anthropic or OpenAI-compatible endpoint instead: your Anthropic account,
   Azure AI Foundry, or your company's internal LLM gateway. This is what
   most IT-security reviews approve, because the data stays inside contracts
   you already hold.
-- **Nothing leaves at all** — point BYOM at a vision model you host
+- **Nothing leaves at all**: point BYOM at a vision model you host
   yourself (vLLM, SGLang) and screenshots never leave your network. If you
   don't have the hardware for it, we can supply a local deployment on NVIDIA
-  hardware you purchase — [talk to us](/docs/support/get-help).
+  hardware you purchase, [talk to us](/docs/support/get-help).
 
 ## What is stored where
 
 | Data | Location |
 | --- | --- |
-| Testware — tests, procedures, plans, rules | The [project folder](/docs/projects), plain files, yours to version |
-| Agent files — the `prompts/` folder, tool and device configuration | Same folder, versioned alongside the testware |
-| Test evidence — reports, screenshots, logs | `agent_workspace/` inside the project, local |
-| Credentials for tests | The app's [secret store](/docs/extending/secrets), encrypted with your Windows/macOS user account — never in the project |
+| Testware, tests, procedures, plans, rules | The [project folder](/docs/projects), plain files, yours to version |
+| Agent files, the `prompts/` folder, tool and device configuration | Same folder, versioned alongside the testware |
+| Test evidence, reports, screenshots, logs | `agent_workspace/` inside the project, local |
+| Credentials for tests | The app's [secret store](/docs/extending/secrets), encrypted with your Windows/macOS user account, never in the project |
 | Sign-in tokens | Encrypted local storage on your machine |
 
 ## What is downloaded at runtime
 
-For supply-chain review, the app fetches on demand — each after an explicit
+For supply-chain review, the app fetches on demand, each after an explicit
 action on your side: browser bundles (first
 [web-profile](/docs/devices/web-browser) connect), the Android SDK toolchain
 (consent click on [Set up](/docs/devices/android-emulator)), NuGet packages
@@ -151,8 +158,8 @@ connections to the [MCP servers](/docs/extending/mcp) your project registers.
 
 | Question | Answer |
 | --- | --- |
-| **Operating systems** | AskUI Desktop: Windows and macOS. AgentOS on target machines: Windows 10+/Server 2019+, macOS 10.15+, Ubuntu 18.04+ — [full matrix](/docs/agentos/reference/system-requirements) |
-| **Proxy** | A system/corporate proxy is supported app-wide (Settings → Network proxy), including NTLM/Kerberos authentication — covers sign-in, model provider, and MCP traffic. [Troubleshooting proxy & SSL](/docs/troubleshooting/proxy-ssl) |
+| **Operating systems** | AskUI Desktop: Windows and macOS. AgentOS on target machines: Windows 10+/Server 2019+, macOS 10.15+, Ubuntu 18.04+, [full matrix](/docs/agentos/reference/system-requirements) |
+| **Proxy** | A system/corporate proxy is supported app-wide (Settings → Network proxy), including NTLM/Kerberos authentication, covers sign-in, model provider, and MCP traffic. [Troubleshooting proxy & SSL](/docs/troubleshooting/proxy-ssl) |
 | **Air-gapped / no AskUI account** | [License-key mode](/docs/get-started/licensing) removes the hub from the picture entirely: activate locally, bring your own model endpoint. Runtime downloads (browsers, Android SDK) still need a reachable mirror or pre-provisioned tooling |
 | **CI runners** | The [CLI](/docs/running-tests/cli) authenticates via `ASKUI_WORKSPACE_ID` / `ASKUI_TOKEN`. Headless browser targets run on a bare runner; desktop targets need a machine with [AgentOS](/docs/agentos/deployment/ci) and a real session |
 | **Team rollout** | Which teams run what, and on whose machines: [AskUI in your organization](/docs/concepts/team-setups) |

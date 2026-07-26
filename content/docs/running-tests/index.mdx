@@ -8,12 +8,12 @@ description: Start a run from the Tests page and watch the agent execute it live
 1. Open the test on the **Tests** page.
 2. Pick a connected device in the **Run on** dropdown
    (see [Devices](/docs/devices)).
-3. Press **Run** — or use its split menu to run the whole folder or a
+3. Press **Run**, or use its split menu to run the whole folder or a
    [plan](/docs/writing-tests/plans).
 
 <img
   src="/docs-rewrite/screenshots/desktop-run-dropdown.png"
-  alt="The Run split button with its profile dropdown open — every connected device to pick from"
+  alt="The Run split button with its profile dropdown open, every connected device to pick from"
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
@@ -28,27 +28,27 @@ description: Start a run from the Tests page and watch the agent execute it live
 The agent works in phases: the folder's `setup.md` first, then the tests,
 then `teardown.md`, with `rules.md` applied throughout. Each phase is one
 agent execution: read the file, drive the UI, write a report with
-screenshots. A failing setup records its tests as broken — the entry
+screenshots. A failing setup records its tests as broken, the entry
 criteria weren't met.
 
 ## Watch it live
 
-The conversation is the live test execution log — every message, tool call,
+The conversation is the live test execution log, every message, tool call,
 and screenshot as it happens. Use it to catch unexpected behaviour before
 the report exists.
 
 1. Open the **Runs** page.
-2. Pick the run in the runs sidebar on the left — it lists every run of the
+2. Pick the run in the runs sidebar on the left, it lists every run of the
    project, and **several runs can be active at once**; each streams its own
    conversation.
-3. Follow along — the controls at the top of the conversation:
-   - **Autofollow** — keeps the view pinned to the newest entry while the
+3. Follow along, the controls at the top of the conversation:
+   - **Autofollow**: keeps the view pinned to the newest entry while the
      run streams; scroll up to inspect something and it pauses, click it to
      snap back.
-   - **Quiet** — just the story: the agent's narration, minimal noise.
-   - **Detailed** — the default: narration plus every tool call with its
+   - **Quiet**: just the story: the agent's narration, minimal noise.
+   - **Detailed**: the default: narration plus every tool call with its
      result, tokens, and latency.
-   - **Raw** — the underlying messages as JSON, for debugging.
+   - **Raw**: the underlying messages as JSON, for debugging.
 
 <img
   src="/docs-rewrite/screenshots/desktop-runs-live.png"
@@ -60,7 +60,7 @@ the report exists.
 
 <include>../../_shared/conversation-elements.mdx</include>
 
-The same view stays available after the run finishes — see the
+The same view stays available after the run finishes, see the
 [conversation log](/docs/results#conversation-log) on the results
 page.
 

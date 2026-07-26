@@ -1,17 +1,17 @@
 ---
 icon: ListOrdered
 title: Step constructs
-description: What a test step can express — actions, verifications, conditions, waits, dynamic values, iteration, procedure calls.
+description: What a test step can express, actions, verifications, conditions, waits, dynamic values, iteration, procedure calls.
 ---
 
 Steps are plain language, not syntax. Imagine handing the test to a human
 colleague **without domain knowledge about your application**: whatever they
-would need from you to execute it — which element, what to expect, what to
-do if a dialog appears, what never to touch — is exactly what the agent
+would need from you to execute it, which element, what to expect, what to
+do if a dialog appears, what never to touch, is exactly what the agent
 needs. If that colleague could run the step from your wording alone, so can
 the agent.
 
-These constructs are the vocabulary that works — each example is from a real
+These constructs are the vocabulary that works, each example is from a real
 seeded test. They apply wherever steps live: in [test cases](/docs/writing-tests), in
 [setup and teardown](/docs/writing-tests/setup-teardown-rules), and inside
 [procedure](/docs/writing-tests/procedures) bodies.
@@ -26,7 +26,7 @@ Describe intent; the agent works out the clicks and keystrokes:
 
 ## Locators
 
-Describe a UI element the way you'd point it out to a colleague — by any
+Describe a UI element the way you'd point it out to a colleague, by any
 visible feature, combined freely:
 
 | Kind | Example |
@@ -37,14 +37,14 @@ visible feature, combined freely:
 | **Location** | The search field **at the top right** |
 | **Relation** | The Delete button **next to** the second list entry, the field **below** "Username" |
 
-The more distinguishing features, the more reliable the step — "click the
+The more distinguishing features, the more reliable the step, "click the
 button" fails on a screen with ten buttons; "the green Connect button on the
 Windows Desktop card" doesn't. Phrasing guidance:
 [Writing good tests](/docs/best-practices/writing-good-tests).
 
 ## Expectations
 
-Pair every action with what must be true afterwards — that pair becomes the
+Pair every action with what must be true afterwards, that pair becomes the
 step's expected-vs-actual entry in the [report](/docs/results/run-report):
 
 ```md
@@ -71,7 +71,7 @@ steps can branch on what is actually there:
 6. If a cookie banner appears, dismiss it before continuing.
 ```
 
-Bigger decisions read best as sub-steps — one branch per letter, each with
+Bigger decisions read best as sub-steps, one branch per letter, each with
 its own expected result:
 
 ```md
@@ -83,7 +83,7 @@ its own expected result:
 
 ## Optional
 
-A step that only applies in some situations — and whose absence is **not** a
+A step that only applies in some situations, and whose absence is **not** a
 failure. Say what to do when the situation doesn't occur, so the report
 shows SKIPPED instead of FAILED:
 
@@ -96,7 +96,7 @@ shows SKIPPED instead of FAILED:
 
 ## Waits
 
-Normally you don't need waits — the agent sees the screen and won't act on a
+Normally you don't need waits, the agent sees the screen and won't act on a
 half-loaded page. When it gets impatient anyway, tell it **what to look
 for**, not how long to wait:
 
@@ -113,7 +113,7 @@ A fixed duration is the last resort, for settling you can't describe:
 ## Timeouts
 
 The counterpart of a wait: bound how long the agent keeps trying, and say
-what happens when time is up — otherwise a hanging application under test
+what happens when time is up, otherwise a hanging application under test
 turns into an endlessly patient agent:
 
 ```md
@@ -121,7 +121,7 @@ turns into an endlessly patient agent:
    2 minutes, mark the step FAILED and continue with the next test.
 ```
 
-Timeouts are approximate — the agent judges elapsed time between
+Timeouts are approximate, the agent judges elapsed time between
 screenshots, it doesn't run a stopwatch. For hard behavior on errors and
 hangs that applies to every test, use
 [rules.md](/docs/writing-tests/setup-teardown-rules#rules).
@@ -129,7 +129,7 @@ hangs that applies to every test, use
 ## Raising errors
 
 Tell the agent to fail **actively** when the application doesn't react as
-expected — an agent that helpfully works around a defect masks exactly what
+expected, an agent that helpfully works around a defect masks exactly what
 the test exists to find:
 
 ```md
@@ -141,13 +141,13 @@ Use the [status vocabulary](/docs/results/run-report#test-report):
 **FAILED** when the application misbehaves, **BROKEN** for infrastructure
 problems (connection lost, session expired). The seeded
 [rules.md](/docs/writing-tests/setup-teardown-rules#rules) already sets this
-policy for every test — a step-level instruction sharpens it for a specific
+policy for every test, a step-level instruction sharpens it for a specific
 known risk.
 
 ## Dynamic values
 
-Values that only exist at run time — an ID the application generates, a
-number shown on screen — can be noted in one step and referenced in a later
+Values that only exist at run time, an ID the application generates, a
+number shown on screen, can be noted in one step and referenced in a later
 one; the agent carries what it saw through the whole test:
 
 ```md
@@ -161,7 +161,7 @@ number on the phone.
 
 ## Iteration
 
-A step can repeat over what's on screen — "for every …" across lists, tabs,
+A step can repeat over what's on screen, "for every …" across lists, tabs,
 table rows:
 
 ```md
@@ -169,7 +169,7 @@ table rows:
     without an error message.
 ```
 
-The loop body can hold several sub-steps — the same lettered pattern as
+The loop body can hold several sub-steps, the same lettered pattern as
 conditions. Keep the set bounded:
 
 ```md
@@ -182,17 +182,17 @@ conditions. Keep the set bounded:
 ```
 
 <Callout type="warn" title="Iteration tends to be unstable">
-The agent has to keep count on a screen that changes with every action —
+The agent has to keep count on a screen that changes with every action,
 long or unbounded iterations drift. Keep the set small and verifiable
 ("all 4 tabs"), and when the elements are known up front, prefer one
-[data-driven CSV case per element](/docs/writing-tests#formats) instead of
+[data-driven CSV case per element](/docs/writing-tests#anatomy--formats) instead of
 a loop. This is a limitation of today's models and improves with every
-model generation — expect the caution to relax over time.
+model generation, expect the caution to relax over time.
 </Callout>
 
 ## Exclusions
 
-Say explicitly what must **not** happen — the agent honors prohibitions like
+Say explicitly what must **not** happen, the agent honors prohibitions like
 a tester honors a warning in the test spec:
 
 ```md
@@ -208,21 +208,21 @@ repeating them per step.
 
 ## Comments
 
-HTML comments are notes for maintainers — why a step exists, a ticket
+HTML comments are notes for maintainers, why a step exists, a ticket
 reference, a review hint. They are not steps:
 
 ```md
 <!-- AC-123: card payments only — the invoice path is covered in PAY_002. -->
 ```
 
-The agent reads comments as background, not instructions — but it does read
+The agent reads comments as background, not instructions, but it does read
 them, so keep them truthful: a stale or misleading comment can steer
 execution the same way a misleading remark steers a colleague. The seeded
 templates use comments exactly this way.
 
 ## Procedure calls
 
-One step runs a whole [procedure](/docs/writing-tests/procedures) — name it
+One step runs a whole [procedure](/docs/writing-tests/procedures), name it
 and say what fills its parameters:
 
 ```md
@@ -232,7 +232,7 @@ and say what fills its parameters:
 
 ## Secrets
 
-Reference credentials by name, never by value —
+Reference credentials by name, never by value,
 [secrets](/docs/extending/secrets):
 
 ```md
@@ -241,7 +241,7 @@ Reference credentials by name, never by value —
 
 ## Tool invocations
 
-Steps can name anything the [toolbox](/docs/extending/tools) allows — HTTP
+Steps can name anything the [toolbox](/docs/extending/tools) allows, HTTP
 requests, SQL statements, shell scripts, QR scanning. Describing the action
 is usually enough; when two tools could match, name the tool explicitly:
 
@@ -251,7 +251,7 @@ is usually enough; when two tools could match, name the tool explicitly:
 24. Use the `sql_database` tool to run the statement `test_data`.
 ```
 
-Tool names are listed under **Utils → Tool Store** — each card carries the name
+Tool names are listed under **Utils → Tool Store**, each card carries the name
 the agent knows it by. A [custom tool](/docs/extending/custom-tools)'s name
 is the `name:` in its C# file.
 
@@ -267,12 +267,12 @@ per step; a `platforms:` first line marks a
 ```
 ## Beyond steps
 
-Some things don't belong in any step — they're the manual tester's tribal
+Some things don't belong in any step, they're the manual tester's tribal
 knowledge, and they have their own homes.
 
 **Real-world disruptions.** Some failures are random and expected:
 the application hangs, the printer is empty, a product is out of stock. A
-manual tester doesn't fail the test — they restart the app, ignore the
+manual tester doesn't fail the test, they restart the app, ignore the
 printer, refill the quantity, and carry on. Give the agent the same
 recoveries in [rules.md](/docs/writing-tests/setup-teardown-rules#rules), at
 the [scope](/docs/writing-tests/organisation#scope) that needs them:
@@ -287,7 +287,7 @@ the [scope](/docs/writing-tests/organisation#scope) that needs them:
 **The agent operates the UI differently than you wish.** It uses keyboard
 shortcuts where your users click menus, types numbers instead of using the
 on-screen numpad, keeps misreading the same part of your UI. That's not a
-step problem either — teach it the house style in
+step problem either, teach it the house style in
 [rules.md](/docs/writing-tests/setup-teardown-rules#rules) or, when it's
 about how your application works, in the
 [ui_information prompt](/docs/writing-tests/agents-and-prompts):

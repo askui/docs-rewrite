@@ -5,10 +5,10 @@ description: How AskUI workspaces organize members, access tokens, runs, and usa
 
 A **workspace** is the top-level container for your AskUI usage. It owns:
 
-- **Members** — the people with access, each with a privilege level.
-- **Access tokens** — credentials that let AskUI Desktop and the CLI act on
+- **Members**: the people with access, each with a privilege level.
+- **Access tokens**: credentials that let AskUI Desktop and the CLI act on
   behalf of the workspace.
-- **Usage & billing** — runs are metered against the workspace's plan (see
+- **Usage & billing**: runs are metered against the workspace's plan (see
   [Plans & billing](/docs/account-billing/billing)).
 
 You manage workspaces in the **AskUI Hub**.
@@ -21,7 +21,7 @@ accepted.
 
 ## Access tokens
 
-Access tokens authenticate non-interactive clients — most importantly the
+Access tokens authenticate non-interactive clients, most importantly the
 **CLI in CI**, where there's no browser to log in with.
 
 <Steps>
@@ -30,14 +30,14 @@ In the Hub, open **Tokens** and create a new token.
 </Step>
 <Step>
 Give it a **name** (e.g. `ci-smoke-runner`) and an **expiry**. Tokens can be
-long-lived or time-boxed — prefer an expiry for CI.
+long-lived or time-boxed, prefer an expiry for CI.
 </Step>
 <Step>
-**Copy the token value immediately** — only its name and a hash are stored,
+**Copy the token value immediately**: only its name and a hash are stored,
 so the raw value is shown once and can't be retrieved later.
 </Step>
 <Step>
-Provide it to the CLI (e.g. via an environment variable in your pipeline) —
+Provide it to the CLI (e.g. via an environment variable in your pipeline),
 see [Running from the CLI](/docs/running-tests/cli).
 </Step>
 </Steps>

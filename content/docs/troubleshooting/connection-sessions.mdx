@@ -6,7 +6,7 @@ description: Fix session mismatches, post-reboot failures, and RDP or locked-scr
 ### Connection error or session mismatch at run start
 
 Connection errors and session mismatches happen when AgentOS and Desktop have
-lost sync — most often after a machine restart or sleep cycle.
+lost sync, most often after a machine restart or sleep cycle.
 
 **Correct restart order for multi-machine setups:**
 1. Restart AgentOS on the target machine(s) first.
@@ -14,8 +14,8 @@ lost sync — most often after a machine restart or sleep cycle.
 
 If the error persists, use the **Restart** button on the Devices page in the
 Desktop sidebar to force a clean session reset. If the problem recurs after
-restarts, check whether the target machine received a new IP address from DHCP
-— see the entry below.
+restarts, check whether the target machine received a new IP address from DHCP,
+see the entry below.
 
 ### Tests won't start after a reboot or power outage
 
@@ -32,13 +32,13 @@ Work through this checklist:
 
 ### Run stops when RDP session is disconnected or screen is locked
 
-- **Remote Desktop (Windows) — session disconnect:** Disconnecting an RDP
+- **Remote Desktop (Windows), session disconnect:** Disconnecting an RDP
   session suspends the virtual display. AgentOS in Host Mode loses its view of
   the screen and the run ends. Either keep the RDP session connected and the
   window visible during the run, or run AgentOS as a **system service** so it
-  operates independently of the interactive session — see
+  operates independently of the interactive session, see
   [Running as a service](/docs/agentos/installation/service).
-- **Remote Desktop (Windows) — window minimized:** Minimizing the RDP client
+- **Remote Desktop (Windows), window minimized:** Minimizing the RDP client
   window (`mstsc`) simulates a display disconnect on the remote machine. The
   Remote Device Controller loses access to the display and may return empty
   screenshots or shut down. To prevent this, set a registry value on the
@@ -53,4 +53,4 @@ Work through this checklist:
   virtual display tool that persists across lock events.
 
 For fully unattended CI scenarios, the recommended setup is AgentOS as an OS
-service — see [CI/CD integration](/docs/agentos/deployment/ci).
+service, see [CI/CD integration](/docs/agentos/deployment/ci).

@@ -1,7 +1,7 @@
 ---
 icon: PenLine
 title: Writing good tests
-description: How to write test steps the agent executes reliably — one goal per file, precise locators, verifications, named secrets, and shared structure.
+description: How to write test steps the agent executes reliably, one goal per file, precise locators, verifications, named secrets, and shared structure.
 ---
 
 A test file is plain Markdown: preconditions, numbered steps, postconditions.
@@ -43,7 +43,7 @@ two-goal test fails, you can't tell which goal failed.
 ## Steps the agent can act on
 
 The agent identifies elements from screenshots. Vague descriptions force it
-to guess — the [locator vocabulary](/docs/writing-tests/step-constructs#locators)
+to guess, the [locator vocabulary](/docs/writing-tests/step-constructs#locators)
 makes each step unambiguous.
 
 **Quote the exact label and anchor the position:**
@@ -81,7 +81,7 @@ makes each step unambiguous.
 
 </div>
 
-**Small targets: use the Screen zoom tool** — enable it in the
+**Small targets: use the Screen zoom tool**: enable it in the
 [Tool Store](/docs/extending/tools#screen-zoom) first, then say so in the
 step, with a verification after the click:
 
@@ -110,8 +110,8 @@ always passes:
 </div>
 
 Where the outcome isn't visible in the same place you acted, make the check
-its own [verification step](/docs/writing-tests/step-constructs#verifications)
-— the agent reports it separately, so you see which half broke:
+its own [verification step](/docs/writing-tests/step-constructs#verifications),
+the agent reports it separately, so you see which half broke:
 
 ```md
 7. Click "Save".
@@ -123,11 +123,11 @@ This is also the fix when a test reports `PASSED` although the feature is
 broken: the success criterion was too loose to catch it
 ([more](/docs/best-practices/analyzing-failures#passed-but-it-actually-failed)).
 
-## Preconditions — is the test applicable?
+## Preconditions: is the test applicable?
 
 Preconditions are the test's **entry criteria**: the agent checks them
 first, and a test whose criteria aren't met is reported `SKIPPED`, not
-`FAILED` — it never ran, so it can't have failed. That distinction keeps
+`FAILED`, it never ran, so it can't have failed. That distinction keeps
 your pass rate honest.
 
 ```md title="tests/cancel_order_test.md"
@@ -143,16 +143,16 @@ your pass rate honest.
 - Test passes if the order is listed as "Cancelled" and no longer editable
 ```
 
-- **Preconditions** — what must be true *before* the steps make sense. Name
+- **Preconditions**: what must be true *before* the steps make sense. Name
   state you don't create in the test itself: a role, existing data, a
   starting screen. If setup already establishes it, one line ("Signed in,
   start screen visible") is enough.
-- **Postconditions** — the overall pass criterion, checked at the end. Write
+- **Postconditions**: the overall pass criterion, checked at the end. Write
   it as the sentence that decides the test: *"Test passes if …"*.
 
 Preconditions the agent can't decide from the screen belong in
-[setup](/docs/writing-tests/setup-teardown-rules) instead — seeding the
-order, granting the role — so the test is applicable by construction. The
+[setup](/docs/writing-tests/setup-teardown-rules) instead, seeding the
+order, granting the role, so the test is applicable by construction. The
 opposite of an entry criterion is an
 [optional step](/docs/writing-tests/step-constructs#optional): a step that
 sometimes doesn't apply *within* an otherwise valid test.
@@ -160,7 +160,7 @@ sometimes doesn't apply *within* an otherwise valid test.
 ## Never embed credentials
 
 Test files are version-controlled; credentials must not be. Reference them
-by name — the values live encrypted in
+by name, the values live encrypted in
 [Utils → Secrets](/docs/extending/secrets) and substitute at execution
 time, hidden from the model and redacted from reports:
 
@@ -174,7 +174,7 @@ time, hidden from the model and redacted from reports:
 <div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
 ```md title="✅ by name"
-1. Sign in with the QA credentials —
+1. Sign in with the QA credentials,
    the secrets QA_USERNAME and
    QA_PASSWORD.
 ```
@@ -183,8 +183,8 @@ time, hidden from the model and redacted from reports:
 
 ## Repeated sequences → procedures
 
-The same multi-step sequence in more than one test — signing in, reaching a
-starting state — belongs in a
+The same multi-step sequence in more than one test, signing in, reaching a
+starting state, belongs in a
 [procedure](/docs/writing-tests/procedures). A changed flow (new login
 page, renamed field) is then fixed in one place:
 
@@ -195,11 +195,11 @@ page, renamed field) is then fixed in one place:
 
 ## Shared state → setup and teardown
 
-Preconditions every test in a folder needs — logging in, seeding data —
+Preconditions every test in a folder needs, logging in, seeding data,
 belong in the folder's `setup.md`, cleanup in `teardown.md`
 ([how they cascade](/docs/writing-tests/setup-teardown-rules)). Keep a
 precondition inline only when just some tests need it. Unlike procedures,
-setup and teardown run automatically — nothing calls them.
+setup and teardown run automatically, nothing calls them.
 
 Three order tests that each opened the app and signed in:
 
@@ -211,7 +211,7 @@ Three order tests that each opened the app and signed in:
    until it is fully visible.
 2. Sign in with the QA credentials.
 3. Open "Records" and create an
-   order for customer "Contoso" —
+   order for customer "Contoso",
    it appears with status "New".
 4. Sign out.
 ```
@@ -224,7 +224,7 @@ Three order tests that each opened the app and signed in:
 
 ## Steps
 1. Open "Records" and create an
-   order for customer "Contoso" —
+   order for customer "Contoso",
    it appears with status "New".
 ```
 
@@ -246,7 +246,7 @@ The shared steps move up one level, into the folder every order test lives in:
 ## Setup Steps
 
 1. Open the application under test and wait until it is fully visible.
-2. Sign in using the `login_to_ui` procedure with the QA credentials —
+2. Sign in using the `login_to_ui` procedure with the QA credentials,
    the secrets named `QA_USERNAME` and `QA_PASSWORD`.
 3. Verify the start screen has loaded before any test starts.
 ```
@@ -265,11 +265,11 @@ in a row.
 ## When to reach for a tool
 
 Most steps are UI interaction. A [tool](/docs/extending/tools) is right when
-the screen isn't the best source of truth — enable it in the Tool Store
+the screen isn't the best source of truth, enable it in the Tool Store
 first, then name it in the step
 ([syntax](/docs/writing-tests/step-constructs#tool-invocations)):
 
-- **Verify what the screen can't show** — the record in the database, the
+- **Verify what the screen can't show**: the record in the database, the
   API response, the exported file. The UI can claim success while the data
   is wrong.
 
@@ -277,35 +277,35 @@ first, then name it in the step
   8. Verify the "open_orders" SQL statement lists the order with status "New".
   ```
 
-- **Get data right instead of letting the agent guess** — dates, conversions,
+- **Get data right instead of letting the agent guess**: dates, conversions,
   generated values.
 
   ```md
   3. Enter the date three days from today into "Delivery date".
   ```
 
-- **Prepare and clean state** — in
+- **Prepare and clean state**: in
   [setup and teardown](/docs/writing-tests/setup-teardown-rules), seeding via
   SQL or an API call is faster and more reliable than clicking the same
   forms before every test.
-- **See what the screen hides** — the
+- **See what the screen hides**: the
   [zoom tool](/docs/extending/tools#screen-zoom) for small targets, the QR
   scanner for encoded content, a remote file for the application's log.
-- **Recover from infrastructure** — a
+- **Recover from infrastructure**: a
   [rule](/docs/writing-tests/setup-teardown-rules#rules) plus a tool
   ("if the scanner stops responding, run the `restart_scanner` tool and
   repeat the step") turns a `BROKEN` run into a passing one.
 
 **Don't route around the UI under test.** If the user journey is what you're
-testing, click it — a tool that performs the user's action instead makes the
+testing, click it, a tool that performs the user's action instead makes the
 test pass without testing anything. Create an order through the UI, then
 *verify* it with SQL.
 
 ## Non-deterministic execution
 
-Two runs of the same case can take different paths — by design
+Two runs of the same case can take different paths, by design
 ([why](/docs/concepts/test-automation-harness#why-execution-differs)). The same
-step, two runs, both `PASSED` — here the **environment** differed:
+step, two runs, both `PASSED`, here the **environment** differed:
 
 <div className="grid gap-3 md:grid-cols-2">
 
@@ -323,7 +323,7 @@ then "New order".
    order for "Contoso".
 
 Agent Interpretation: a survey
-pop-up covered the sidebar —
+pop-up covered the sidebar,
 dismissed it, then clicked
 "Records" and "New order".
 ```
@@ -354,13 +354,13 @@ toolbar and pressed Enter.
 
 </div>
 
-None of these runs is wrong: the order was found, the order exists — which
+None of these runs is wrong: the order was found, the order exists, which
 is what the steps demanded. For a tester this means:
 
-- **Judge the result, not the path** — the report's expected vs. actual
+- **Judge the result, not the path**: the report's expected vs. actual
   per step is the contract; the exact clicks are the execution log, not
   the specification.
-- **Precise expected results = stable outcomes** — the agent has freedom
+- **Precise expected results = stable outcomes**: the agent has freedom
   in *how*; your steps define *what must be true afterwards*. The tighter
   the expected result, the less room for a wrong interpretation:
 
@@ -380,7 +380,7 @@ is what the steps demanded. For a tester this means:
 
   </div>
 
-- **Rules constrain the freedom** —
+- **Rules constrain the freedom**,
   [rules.md](/docs/writing-tests/setup-teardown-rules#rules) removes paths
   you never want taken:
 
@@ -391,11 +391,11 @@ is what the steps demanded. For a tester this means:
     behind the magnifier icon.
 
   ## Error handling
-  - If an error dialog appears, document it and mark the step FAILED —
+  - If an error dialog appears, document it and mark the step FAILED,
     never dismiss it and continue.
   ```
 
-- **Watch a run when in doubt** — the
+- **Watch a run when in doubt**: the
   [live conversation log](/docs/running-tests#watch-it-live) shows the
   path the agent chose, and why.
 
@@ -404,10 +404,10 @@ is what the steps demanded. For a tester this means:
 Before committing test files:
 
 - [ ] One goal per file, with a verifiable outcome.
-- [ ] Labels quoted, positions anchored — no bare "click the button".
-- [ ] Every acting step ends in `— what must be true afterwards`.
+- [ ] Labels quoted, positions anchored, no bare "click the button".
+- [ ] Every acting step states what must be true afterwards.
 - [ ] Outcomes that aren't visible where you acted have their own `Verify` step.
 - [ ] Preconditions name the entry criteria; postconditions state the pass criterion.
-- [ ] No credentials in any file — only named references.
+- [ ] No credentials in any file, only named references.
 - [ ] Repeated sequences in `procedures/`, not copy-pasted.
 - [ ] Shared preconditions in `setup.md`, shared cleanup in `teardown.md`.

@@ -1,17 +1,17 @@
 ---
 icon: FileText
 title: Run report
-description: The written reports a run produces — the per-test test report and the run-level summary — and how to read each one.
+description: The written reports a run produces, the per-test test report and the run-level summary, and how to read each one.
 ---
 
-Two written reports per run — the test report per case and the run-level
+Two written reports per run, the test report per case and the run-level
 summary. Where they live and how to open them:
 [Runs](/docs/results).
 
 ## Test report
 
 Each test gets its own `<test_name>_report.md` (with a `step_<n>.png`
-screenshot for every step) — the agent writes it while it executes. It is
+screenshot for every step), the agent writes it while it executes. It is
 the primary record of what the agent did, what it expected, and what it
 actually observed.
 
@@ -27,7 +27,7 @@ actually observed.
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Test Steps</p>
   <div className="mt-2 flex flex-col gap-4">
     <div>
-      <p><b>1. Navigate to the login page</b> — Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
+      <p><b>1. Navigate to the login page</b>, Status: <span className="font-semibold text-fd-primary">PASSED</span></p>
       <ul className="mt-1 list-disc pl-6 text-fd-muted-foreground">
         <li><b>Agent Interpretation:</b> Opened browser and navigated to the login URL.</li>
         <li><b>Expected:</b> Login form visible.</li>
@@ -36,11 +36,11 @@ actually observed.
       <div className="mt-2 flex h-24 w-44 items-center justify-center rounded border bg-fd-muted text-xs text-fd-muted-foreground">step_1.png</div>
     </div>
     <div>
-      <p><b>2. Enter QA credentials and submit</b> — Status: <span className="font-semibold text-amber-600">WARN</span></p>
+      <p><b>2. Enter QA credentials and submit</b>, Status: <span className="font-semibold text-amber-600">WARN</span></p>
       <ul className="mt-1 list-disc pl-6 text-fd-muted-foreground">
         <li><b>Agent Interpretation:</b> Filled the form using the QA credential secrets.</li>
         <li><b>Expected:</b> Dashboard page shown after successful sign-in.</li>
-        <li><b>Actual:</b> Dashboard loaded with the welcome banner — but only after roughly 15 seconds.</li>
+        <li><b>Actual:</b> Dashboard loaded with the welcome banner, but only after roughly 15 seconds.</li>
       </ul>
       <div className="mt-2 flex h-24 w-44 items-center justify-center rounded border bg-fd-muted text-xs text-fd-muted-foreground">step_2.png</div>
     </div>
@@ -48,7 +48,7 @@ actually observed.
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Postconditions</p>
   <p className="mt-2">1. User is signed in and the dashboard is visible.</p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Issues</p>
-  <p className="mt-2">Sign-in took about 15 seconds — well above the usual 2–3 seconds. The dashboard did load completely, so step 2 is WARN rather than FAILED, but this is worth watching before it becomes a timeout.</p>
+  <p className="mt-2">Sign-in took about 15 seconds, well above the usual 2–3 seconds. The dashboard did load completely, so step 2 is WARN rather than FAILED, but this is worth watching before it becomes a timeout.</p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Conclusion</p>
   <p className="mt-2">The login flow works, with one caveat: sign-in is unusually slow. Functionally PASSED behaviour, reported as WARN because of the response time.</p>
 </div>
@@ -110,40 +110,40 @@ Section by section:
 
 - **Test metadata**: who, when, and how it went.
   - **Test Case ID**: ties the report to the
-    [test case](/docs/writing-tests) — its title ID or file name.
+    [test case](/docs/writing-tests), its title ID or file name.
   - **Date**: when the test executed.
-  - **Status**: the overall result — the `**Status:**` line is what the
+  - **Status**: the overall result, the `**Status:**` line is what the
     [runner parses](/docs/writing-tests/agents-and-prompts#report-format) as
     the run's result. One of:
-    - `PASSED` — actual result matches expected.
-    - `FAILED` — the step executed but the result didn't match.
-    - `SKIPPED` — intentionally not executed (e.g. precondition not met).
-    - `WARN` — passed, but with a caveat (slow response, minor visual
+    - `PASSED`, actual result matches expected.
+    - `FAILED`, the step executed but the result didn't match.
+    - `SKIPPED`, intentionally not executed (e.g. precondition not met).
+    - `WARN`, passed, but with a caveat (slow response, minor visual
       deviation).
-    - `BROKEN` — could not execute: crash or infrastructure failure.
+    - `BROKEN`, could not execute: crash or infrastructure failure.
 
     The overall status is the worst of the steps: `BROKEN` if any step
     broke, else `FAILED` if any failed, else `WARN`, else `SKIPPED` if all
     skipped, otherwise `PASSED`.
-- **Summary**: the outcome in two sentences — read this first.
-- **Preconditions**: whether the assumed starting state was actually met —
+- **Summary**: the outcome in two sentences, read this first.
+- **Preconditions**: whether the assumed starting state was actually met,
   a test that began from the wrong state fails here, not misleadingly in a
   step.
 - **Test Steps**: one entry per step.
-  - **Agent Interpretation**: how the agent understood your instruction —
+  - **Agent Interpretation**: how the agent understood your instruction,
     check this when a step surprises you.
   - **Expected** / **Actual**: the step's contract and what was actually
     observed.
   - **Status**: the step's own status, same vocabulary as above.
   - **Screenshot**: the step's evidence (`step_<n>.png`).
 - **Postconditions**: whether the overall pass criterion held at the end.
-- **Issues**: anything worth a look that isn't a failure — the incident
+- **Issues**: anything worth a look that isn't a failure, the incident
   notes. In the example above: the 15-second sign-in.
 - **Conclusion**: the agent's closing assessment of the whole case.
 
 The report's shape is defined by your project's
 [report format](/docs/writing-tests/agents-and-prompts#report-format). What
-to do with a failing report — triage, root cause, where the fix belongs:
+to do with a failing report, triage, root cause, where the fix belongs:
 [Analyzing failures](/docs/best-practices/analyzing-failures).
 
 ---
@@ -173,7 +173,7 @@ derive their pass/fail counters from this table.
 `WARN` counts as passed (tracked separately in the warning total). `SKIPPED`
 tests never executed and are excluded from the total. `BROKEN` tests without
 an execution time in the summary (tests that never started) are also excluded
-from the total — they show in the table but don't affect the pass rate.
+from the total, they show in the table but don't affect the pass rate.
 </Callout>
 
 In CI, upload the whole workspace folder as a build artifact so the reports

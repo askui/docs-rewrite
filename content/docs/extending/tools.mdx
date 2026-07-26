@@ -1,12 +1,12 @@
 ---
 icon: Wrench
 title: Tool Store
-description: What the agent is allowed to do during a run — enable, disable, and configure the toolbox per project.
+description: What the agent is allowed to do during a run, enable, disable, and configure the toolbox per project.
 ---
 
 import { Lucide } from '@/components/lucide';
 
-Everything the agent does happens through a **tool** — mouse, screenshot,
+Everything the agent does happens through a **tool**, mouse, screenshot,
 file access, database query. The toolbox is the boundary of what a test can
 possibly do. Manage it under **Utils → Tool Store**.
 
@@ -18,17 +18,17 @@ possibly do. Manage it under **Utils → Tool Store**.
 
 | Tier | Behavior |
 | --- | --- |
-| **Device tools** | Screenshot, click, type — injected automatically for the run's device kind. Always on, not listed |
+| **Device tools** | Screenshot, click, type, injected automatically for the run's device kind. Always on, not listed |
 | **Default tools** | Enabled unless you switch them off |
-| **Optional tools** | Disabled until you enable them — typically tools with reach beyond the UI under test, like a shell or database access |
-| **[Custom tools](/docs/extending/custom-tools)** | Your own C# tools from `utils/custom_tools/` — always part of the run's toolbox once the file exists |
-| **[MCP tools](/docs/extending/mcp)** | Tools of the MCP servers registered in `utils/mcp.json` — connected at run start |
+| **Optional tools** | Disabled until you enable them, typically tools with reach beyond the UI under test, like a shell or database access |
+| **[Custom tools](/docs/extending/custom-tools)** | Your own C# tools from `utils/custom_tools/`, always part of the run's toolbox once the file exists |
+| **[MCP tools](/docs/extending/mcp)** | Tools of the MCP servers registered in `utils/mcp.json`, connected at run start |
 
-Some tools take configuration when added — a connection string, a base URL.
+Some tools take configuration when added, a connection string, a base URL.
 `${VAR}` values resolve from the environment at run start; credentials belong
 in [named secrets](/docs/extending/secrets).
 
-Choices are saved to `utils/tools.json` — the whole team runs with the same
+Choices are saved to `utils/tools.json`, the whole team runs with the same
 toolbox. An untouched tool follows its tier default.
 
 <Accordions>
@@ -57,16 +57,16 @@ toolbox. An untouched tool follows its tier default.
 
 `true`/`false` is the shorthand for tools without configuration; a configured
 tool stores `enabled` plus its values. A tool that isn't listed follows its
-tier default. Edit via the UI — the file is just what gets committed.
+tier default. Edit via the UI, the file is just what gets committed.
 
 </Accordion>
 </Accordions>
 
 ## The tools in the store
 
-All store tools are currently **Optional** — off until you enable them.
+All store tools are currently **Optional**, off until you enable them.
 Grouped by where they reach; required parameters in bold. Every tool heading
-is a link — copy it to point a colleague at exactly one tool.
+is a link, copy it to point a colleague at exactly one tool.
 
 ### Seeing the screen better
 
@@ -74,7 +74,7 @@ is a link — copy it to point a colleague at exactly one tool.
 
 A zoomed-in crop of a screen region (computer device).
 
-- **Use it when:** the agent keeps missing small targets — tiny checkboxes,
+- **Use it when:** the agent keeps missing small targets, tiny checkboxes,
   dense tables. The last rung of the
   [misclick ladder](/docs/best-practices/analyzing-failures#the-agent-misclicks).
 
@@ -87,7 +87,7 @@ A zoomed-in crop of a screen region (computer device).
 Scan and decode a QR code from the screen or an image (computer, web,
 Android).
 
-- **Use it when:** the application generates a QR code — invoice, ticket —
+- **Use it when:** the application generates a QR code, invoice, ticket,
   and the test must verify it encodes the right content.
 
 ```md
@@ -100,8 +100,8 @@ Android).
 
 The current date/time; the agent can ask with a day offset (1 = tomorrow).
 
-- **Use it when:** a step needs a real date — "enter a delivery date three
-  days from today" — or verifies a timestamp the UI shows.
+- **Use it when:** a step needs a real date, "enter a delivery date three
+  days from today", or verifies a timestamp the UI shows.
 - **Parameters:** Format, Timezone.
 
 ```md
@@ -113,21 +113,21 @@ The current date/time; the agent can ask with a day offset (1 = tomorrow).
 Convert between decimal, hex, binary, octal.
 
 - **Use it when:** the application shows values in one base and the test
-  data is in another — hex device IDs, register values.
+  data is in another, hex device IDs, register values.
 
 ```md
 5. Verify the "Device ID" field shows the hex value of 305419896.
 ```
 
-### Beyond the UI — on this machine
+### Beyond the UI: on this machine
 
 #### <Lucide name="globe" /> HTTP client [#http-client]
 
 HTTP requests (GET, POST, …) against APIs and webhooks; header values
 support `${VAR}` [secrets](/docs/extending/secrets).
 
-- **Use it when:** cross-checking the UI against the backend — after
-  checkout, verify via the API that the order really exists — or triggering
+- **Use it when:** cross-checking the UI against the backend, after
+  checkout, verify via the API that the order really exists, or triggering
   a webhook as test setup.
 - **Parameters:** Allowed hosts (empty = any).
 
@@ -144,8 +144,8 @@ dangerous opt-in.
   seeding and cleaning test data in
   [setup and teardown](/docs/writing-tests/setup-teardown-rules).
 - **Parameters:** **ODBC driver**, **Server**, **Database**, credentials,
-  Allowed statements (`name: SQL` per line — the agent runs statements by
-  these names), Allow raw SQL — full list in the add dialog.
+  Allowed statements (`name: SQL` per line, the agent runs statements by
+  these names), Allow raw SQL, full list in the add dialog.
 
 ```md
 9. Run the "open_orders" SQL statement — the new order appears with status NEW.
@@ -156,7 +156,7 @@ dangerous opt-in.
 Run a pre-configured shell/batch script; the agent invokes it by the name
 you give it.
 
-- **Use it when:** a script already solves it — restarting a scanner
+- **Use it when:** a script already solves it, restarting a scanner
   service as a [recovery](/docs/writing-tests/step-constructs#beyond-steps),
   resetting the test database.
 - **Parameters:** **Tool name**, **Script path**, **Description**.
@@ -169,7 +169,7 @@ you give it.
 
 Check whether a file or directory exists on this machine.
 
-- **Use it when:** the test ends in an export or download — verify the file
+- **Use it when:** the test ends in an export or download, verify the file
   actually appeared.
 - **Parameters:** **Base directory**.
 
@@ -198,7 +198,7 @@ List files in a directory on the machine being controlled.
 
 Read a file's text content from the controlled machine.
 
-- **Use it when:** the content matters, not just the existence — verify a
+- **Use it when:** the content matters, not just the existence, verify a
   log line or an exported CSV on the test machine.
 - **Parameters:** **Base directory**.
 
@@ -208,7 +208,7 @@ Read a file's text content from the controlled machine.
 
 ## Using a tool in a test
 
-Once enabled, a tool is available wherever steps live — test cases,
+Once enabled, a tool is available wherever steps live, test cases,
 [setup and teardown](/docs/writing-tests/setup-teardown-rules), and
 [procedure](/docs/writing-tests/procedures) bodies. Describe the action, or
 name the tool explicitly when two could match:
@@ -223,8 +223,8 @@ The full step vocabulary:
 [Step constructs → Tool invocations](/docs/writing-tests/step-constructs#tool-invocations).
 
 A step that names a tool the run doesn't have is flagged by the agent:
-**WARN** when it accomplished the step reliably another way, **BROKEN** —
-with a hint to enable the tool — when the step depends on it.
+**WARN** when it accomplished the step reliably another way, **BROKEN**,
+with a hint to enable the tool, when the step depends on it.
 
 Need more? [Custom tools](/docs/extending/custom-tools) for anything you can
 write in C#; [MCP servers](/docs/extending/mcp) for existing tool servers.

@@ -5,15 +5,15 @@ description: Understanding run statuses and caching behavior.
 
 ### What is the difference between a failed and a broken status?
 
-- **`FAILED`** — the agent completed the step but the outcome did not match
+- **`FAILED`**: the agent completed the step but the outcome did not match
   expectations. This typically points to a bug in the application under test:
   a button did not appear, a value was wrong, a transition did not happen.
   Investigate the app.
-- **`BROKEN`** — the run could not complete a step due to an infrastructure or
+- **`BROKEN`**: the run could not complete a step due to an infrastructure or
   environment issue: AgentOS unreachable, step limit reached, model error, or
   network timeout. Investigate the environment, not the app. Check the
   [Troubleshooting guide](/docs/troubleshooting) first.
-- **`WARN`** — the step completed but something unexpected was noted. The run
+- **`WARN`**: the step completed but something unexpected was noted. The run
   continues.
 
 See [Reading a run report](/docs/results/run-report) for the full

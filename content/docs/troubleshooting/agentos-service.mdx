@@ -35,7 +35,7 @@ Windows prevents non-elevated processes from sending input to elevated (Run as A
 To enable elevated mode:
 
 - **Service Installer (GUI)**: Open **Windows Add/Remove Programs**, find AskUI AgentOS, click **Modify**, and enable the elevated execution engine option. Alternatively, reinstall AgentOS with the option enabled.
-- **Silent Installer**: Set `SERVICE_EXECUTION_ENGINE_ELEVATED` to `1` — see [Silent installer parameters](/docs/agentos/installation/silent/#parameters).
+- **Silent Installer**: Set `SERVICE_EXECUTION_ENGINE_ELEVATED` to `1`, see [Silent installer parameters](/docs/agentos/installation/silent/#parameters).
 
 <Callout type="warn">
 Running the execution engine elevated grants it higher privileges. Only enable this when you need to automate applications that run as Administrator.
@@ -45,7 +45,7 @@ Running the execution engine elevated grants it higher privileges. Only enable t
 
 If the client fails to connect with an error like `ipv4:127.0.0.1:23000 unavailable` while running in **Standalone** runtime mode, autostart of the local AgentOS instance is likely disabled.
 
-Check the `ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART` environment variable — if it is set to `false`, the client will not start AgentOS automatically and there is nothing listening on port `23000`. Either unset the variable or set it to `true`:
+Check the `ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART` environment variable, if it is set to `false`, the client will not start AgentOS automatically and there is nothing listening on port `23000`. Either unset the variable or set it to `true`:
 
 <Tabs items={['Windows PowerShell', 'macOS/Linux']}>
   <Tab value="Windows PowerShell">
@@ -60,7 +60,7 @@ Check the `ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART` environment variable — if
   </Tab>
 </Tabs>
 
-This variable is intentionally set to `false` when connecting to a remote AgentOS instance — see [Remote Windows VM](/docs/agentos/deployment/ci/#remote-windows-vm).
+This variable is intentionally set to `false` when connecting to a remote AgentOS instance, see [Remote Windows VM](/docs/agentos/deployment/ci/#remote-windows-vm).
 
 ### Need to reinstall or remove
 

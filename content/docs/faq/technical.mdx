@@ -17,7 +17,7 @@ serves more than one hosted model (e.g. Claude and Gemini).
 ### Does AskUI work with virtual machines?
 
 Yes. AgentOS works on VMware, VirtualBox, Hyper-V, and cloud VMs (AWS, Azure,
-GCP). For headless VM scenarios in CI, use AgentOS as an OS service —
+GCP). For headless VM scenarios in CI, use AgentOS as an OS service,
 see [CI/CD integration](/docs/agentos/deployment/ci).
 
 ### Does AskUI work behind a corporate firewall or proxy?
@@ -31,13 +31,13 @@ For the list of domains to allowlist, see
 ### What does our IT team need to allow for AskUI to work?
 
 All AskUI traffic uses standard HTTPS (port 443). The full list of domains and
-ports to allowlist is in [Network requirements](/docs/reference/network-requirements)
-— that page is written so it can be shared directly with an IT department.
+ports to allowlist is in [Network requirements](/docs/reference/network-requirements),
+that page is written so it can be shared directly with an IT department.
 
 Key notes for IT:
 - Both IPv4 and IPv6 are supported; no non-standard ports are required.
 - If the network uses deep-packet inspection (e.g. Zscaler), the AskUI
-  certificate chain must be trusted — see
+  certificate chain must be trusted, see
   [Proxy & TLS troubleshooting](/docs/troubleshooting/proxy-ssl).
 - Contact [support@askui.com](mailto:support@askui.com) to request a
   one-pager formatted for IT firewall review.

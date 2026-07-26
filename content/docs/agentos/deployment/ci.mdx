@@ -51,7 +51,7 @@ graph LR
     end
 ```
 
-The client connects to AgentOS over the network via gRPC. The OS service on the remote VM handles desktop control independently — RDP disconnects, logon screens, and headless operation are all supported.
+The client connects to AgentOS over the network via gRPC. The OS service on the remote VM handles desktop control independently, RDP disconnects, logon screens, and headless operation are all supported.
 
 <details>
 <summary>Connecting to a remote AgentOS</summary>
@@ -127,13 +127,13 @@ graph LR
     end
 ```
 
-Same as local development — AgentOS runs in standalone mode alongside your test code. Ensure the CI runner has a display (real or virtual) available.
+Same as local development, AgentOS runs in standalone mode alongside your test code. Ensure the CI runner has a display (real or virtual) available.
 
 ## Mobile Device in CI
 
 Automate Android or iOS devices connected to your CI runner via USB.
 
-**When to use:** Mobile testing in your pipeline — the device is physically connected to the CI runner.
+**When to use:** Mobile testing in your pipeline, the device is physically connected to the CI runner.
 
 **Install:** [AskUI Desktop installer](/docs/get-started/install-desktop) (includes AgentOS) on the CI runner. A standalone installer is coming soon.
 

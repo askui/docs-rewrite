@@ -1,7 +1,7 @@
 ---
 icon: SquarePen
 title: Test cases
-description: What a test case is and how to create, run, and manage one — with the concept map of everything around it.
+description: What a test case is and how to create, run, and manage one, with the concept map of everything around it.
 ---
 
 Test cases live as files under `tests/` and are managed on the **Tests**
@@ -32,7 +32,7 @@ flowchart LR
   end
 ```
 
-All of it lives in one [Project](/docs/projects) — plain files, shared via
+All of it lives in one [Project](/docs/projects), plain files, shared via
 Git. A **suite** frames its test cases with
 [setup, teardown, and rules](/docs/writing-tests/setup-teardown-rules); how
 suites nest and scope chains is on
@@ -63,8 +63,8 @@ quick-create entries for setup / teardown / rules, **Run on**, and
 
 ### Anatomy & formats
 
-Every test case has the same three parts — preconditions, steps,
-postconditions — whatever the file format:
+Every test case has the same three parts, preconditions, steps,
+postconditions, whatever the file format:
 
 <Tabs items={['Markdown', 'CSV', 'JSON']}>
 <Tab value="Markdown">
@@ -86,7 +86,7 @@ postconditions — whatever the file format:
 ```csv title="tests/example_test_data.csv"
 Test case ID,Test case name,Precondition,Step number,Step description,Expected result
 LOGIN_001,Valid login,App is open on the login screen,1,Enter the QA credentials into the login form,Both fields are filled
-,,,2,Click the Login button,The start screen is visible and the user is signed in
+,,2,Click the Login button,The start screen is visible and the user is signed in
 ```
 </Tab>
 <Tab value="JSON">
@@ -104,28 +104,28 @@ LOGIN_001,Valid login,App is open on the login screen,1,Enter the QA credentials
 </Tab>
 </Tabs>
 
-**Preconditions** — the state the test *assumes*, not work to perform: which
+**Preconditions**: the state the test *assumes*, not work to perform: which
 screen is open, which user is logged out, which data exists. The agent
 checks them before the first step and records whether they were met; a test
 that starts from the wrong state fails here, visibly, instead of producing a
 misleading step failure. Shared preparation work belongs in
 [setup](/docs/writing-tests/setup-teardown-rules), not here.
 
-**Steps** — numbered actions, each paired with what to expect. The agent
+**Steps**: numbered actions, each paired with what to expect. The agent
 executes them one at a time: perform the action, compare what it observes
 against the step's expected result, record both with a screenshot. Each step
 becomes an expected-vs-actual entry in the
-[run report](/docs/results/run-report) — so a step without an expected
-result is a step the report can't judge. Everything a step can express —
-conditions, waits, checks, procedure calls — is on
+[run report](/docs/results/run-report), so a step without an expected
+result is a step the report can't judge. Everything a step can express,
+conditions, waits, checks, procedure calls, is on
 [Step constructs](/docs/writing-tests/step-constructs).
 
-**Postconditions** — the overall pass criterion, phrased as a checkable end
+**Postconditions**: the overall pass criterion, phrased as a checkable end
 state: "Test passes if …". The agent judges it after the last step; this is
 what decides the case's final status, independent of which path the agent
 took to get there.
 
-These templates are starting points, not schemas — the agent reads a test
+These templates are starting points, not schemas, the agent reads a test
 the way a tester would, so you're free to choose your own structure. `.md`
 holds one case per file, `.csv` one case per **row** (data-driven testing),
 and `.json`, `.txt`, or `.pdf` exports from a test-management tool run
@@ -135,19 +135,19 @@ syntax in ten minutes.
 
 ### Target multiple platforms
 
-A first line `platforms: desktop, android` marks a case cross-platform — it
+A first line `platforms: desktop, android` marks a case cross-platform, it
 then runs only on a [Cross-platform profile](/docs/devices/cross-platform),
 and single-platform tests never run there. The steps name the surface, like
 a [multi-computer test](/docs/devices/multi-computer) names machines.
 
 <Callout type="warn" title="Authoring only, for now">
 Cross-platform profiles connect and report status, but runs against them are
-not supported yet — the case is ready for when they are.
+not supported yet, the case is ready for when they are.
 </Callout>
 
 ## Use secrets in a test
 
-Never write credentials into a case — reference
+Never write credentials into a case, reference
 [named secrets](/docs/extending/secrets) by name instead. Add the value once
 under **Utils → Secrets**; the agent sees only the name, and the real value
 is substituted at execution time, redacted from logs and reports:
@@ -160,20 +160,20 @@ Sign in with the QA credentials — the secrets named
 ## Run a test case
 
 1. Pick a connected device in **Run on**.
-2. Press **Run** — or right-click any file or folder → **Run on** → a
+2. Press **Run**, or right-click any file or folder → **Run on** → a
    profile.
 
 Details in [Running a test](/docs/running-tests).
 
 ## Manage a test case
 
-All of it is plain file operations via right-click — visible in Git like any
+All of it is plain file operations via right-click, visible in Git like any
 other change to your [testware](/docs/projects).
 
 ### Duplicate
 
 1. Right-click the file → **Duplicate**.
-2. Rename the copy — it's the starting point for a similar case.
+2. Rename the copy, it's the starting point for a similar case.
 
 ### Rename
 

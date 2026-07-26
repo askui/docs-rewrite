@@ -1,10 +1,10 @@
 ---
 title: CLI reference (Coming Soon)
-description: The askui run command reference — targets, plans, surfaces, model selection, caching, reports, and CI usage.
+description: The askui run command reference, targets, plans, surfaces, model selection, caching, reports, and CI usage.
 ---
 
 The CLI runs the exact Projects you build in AskUI Desktop. The same `tests/`,
-`prompts/`, `plans/`, and `procedures/` drive both — author in the app, run
+`prompts/`, `plans/`, and `procedures/` drive both, author in the app, run
 anywhere with the CLI. See [Install the CLI](/docs/running-tests/install-cli) for
 setup and authentication.
 
@@ -18,7 +18,7 @@ Run from your Project root (or pass `--project-root`). Without arguments,
 ## What a run does
 
 For every test, the agent works in **phases**: the folder's `setup.md` (if
-present) runs first, then the tests, then `teardown.md` — with any `rules.md`
+present) runs first, then the tests, then `teardown.md`, with any `rules.md`
 applied throughout. Each phase is one autonomous agent execution that reads
 the test file, drives the UI, and writes a report with screenshots. When you
 target a nested folder tree, setups run top-down, teardowns bottom-up, and
@@ -30,7 +30,7 @@ target a nested folder tree, setups run top-down, teardowns bottom-up, and
 | --- | --- |
 | *(none)* | Runs the Project's `tests/` folder. |
 | A folder | Runs every test in the folder recursively, with per-folder setup/teardown lifecycle. |
-| A single file | Runs one test — its ancestor folders' setups still run first (top-down) and teardowns after (bottom-up). |
+| A single file | Runs one test, its ancestor folders' setups still run first (top-down) and teardowns after (bottom-up). |
 
 Relative targets resolve against `--project-root`. Supported test file types:
 `.txt`, `.md`, `.pdf`, `.csv`, `.json`.
@@ -42,7 +42,7 @@ askui run --plan smoke
 ```
 
 `--plan <name>` loads `plans/<name>` (any supported extension) and lets the
-agent select the matching tests before running them — e.g. a `smoke` plan
+agent select the matching tests before running them, e.g. a `smoke` plan
 that names a subset of suites. See
 [How a Project is organized](/docs/projects).
 
@@ -50,7 +50,7 @@ that names a subset of suites. See
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `--plan <name>` | — | Plan file (without extension) from the Project's `plans/` directory. |
+| `--plan <name>` |, | Plan file (without extension) from the Project's `plans/` directory. |
 | `--project-root <dir>` | current directory | The Project root (`tests/`, `prompts/`, `procedures/`, `plans/`, `helpers/`). |
 | `--workspace <dir>` | `<project-root>/agent_workspace/<UTC timestamp>` | Output directory for reports, screenshots, and the HTML log. |
 
@@ -78,15 +78,15 @@ askui run --surface android --device-serial emulator-5554
 ## Model options
 
 By default, inference runs through the **AskUI hub**, billed to your
-workspace and authenticated with `ASKUI_WORKSPACE_ID`/`ASKUI_TOKEN` — nothing
+workspace and authenticated with `ASKUI_WORKSPACE_ID`/`ASKUI_TOKEN`, nothing
 to configure. The hub serves more than one model.
 
 | Option | Default | Description |
 | --- | --- | --- |
 | `--model-provider <p>` | `askui` | `askui`, `anthropic`, `openai`, or `openai-compatible`. |
-| `--model-id <id>` | provider default | The model to use. With `askui`, selects the hosted model — e.g. `gemini-3.5-flash`; default is the workspace's Claude model. |
-| `--api-key <key>` | — | API key (BYOM providers only). |
-| `--endpoint-url <url>` | — | Custom base/endpoint URL. Required for `openai-compatible`; a URL ending in `/chat/completions` is used as-is, a base URL gets the path appended. |
+| `--model-id <id>` | provider default | The model to use. With `askui`, selects the hosted model, e.g. `gemini-3.5-flash`; default is the workspace's Claude model. |
+| `--api-key <key>` |, | API key (BYOM providers only). |
+| `--endpoint-url <url>` |, | Custom base/endpoint URL. Required for `openai-compatible`; a URL ending in `/chat/completions` is used as-is, a base URL gets the path appended. |
 
 ```bash
 # Hosted models on the AskUI hub
@@ -102,13 +102,13 @@ askui run --model-provider openai-compatible \
 
 <Callout type="warn">
 The agent drives the UI from **screenshots**, so BYOM models must be
-**vision-capable** — a text-only model will connect but can't see the screen.
+**vision-capable**: a text-only model will connect but can't see the screen.
 </Callout>
 
 ## Caching options
 
 Runs record the agent's action trajectory and **replay** it on the next run of
-the same test — dramatically faster and cheaper than re-deciding every step
+the same test, dramatically faster and cheaper than re-deciding every step
 with the model. Replayed steps are visually validated against the recorded
 screenshots (perceptual hashing); when the UI has drifted too far, the run
 falls back to the model.
@@ -134,7 +134,7 @@ askui run --cache-strategy none
 
 ## Credentials and `.env`
 
-The CLI loads a `.env` file from the Project root at the start of every run —
+The CLI loads a `.env` file from the Project root at the start of every run,
 variables already set in the environment win. This carries the hub
 credentials (`ASKUI_WORKSPACE_ID`, `ASKUI_TOKEN`) and anything your own
 [helper tools](#helper-tools) read.
@@ -150,18 +150,18 @@ instead of committing a `.env` file. See
 The CLI extends the agent with your Project's custom tools: every `*.dll` in
 `<project-root>/helpers/` is loaded, and each public tool class in it becomes
 available to the agent next to the built-in ones. A broken assembly never
-takes down the run — the problem is reported and the rest keeps loading.
+takes down the run, the problem is reported and the rest keeps loading.
 
 ## What a run produces
 
 Each run gets its own workspace folder (see `--workspace`), containing:
 
-- **Per-test artifacts** — `<test_name>/<test_name>_report.md` with the
+- **Per-test artifacts**: `<test_name>/<test_name>_report.md` with the
   verdict and step-by-step results, plus `step_<n>.png` screenshots.
-- **`summary_report.md`** — one table over all executed tests with
+- **`summary_report.md`**: one table over all executed tests with
   pass/fail/broken counts. Tests a plan selected but the run never reached
   appear as broken, so nothing goes missing silently.
-- **The HTML log** — the full agent conversation with screenshots, the same
+- **The HTML log**: the full agent conversation with screenshots, the same
   report you know from
   [Reading a run report](/docs/results/run-report).
 
@@ -175,7 +175,7 @@ The console shows each phase as it starts and finishes
 | `0` | All executed tests passed. |
 | `1` | At least one test failed or broke, or the run produced no verdict. |
 | `2` | Usage or configuration error (bad flags, missing project/target, unreachable surface). |
-| `130` | Interrupted (Ctrl+C) — partial reports and the summary are preserved. |
+| `130` | Interrupted (Ctrl+C), partial reports and the summary are preserved. |
 
 ## Running in CI
 

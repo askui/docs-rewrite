@@ -1,11 +1,11 @@
 ---
 icon: FolderTree
 title: Organisation & Scope
-description: How the tests/ tree is structured — suites as folders, steering files, and how their scope chains at run time.
+description: How the tests/ tree is structured, suites as folders, steering files, and how their scope chains at run time.
 ---
 
 Two rules build the whole structure: **a file is a test case, a folder is a
-suite** — and suites nest, so the tree mirrors your test structure plan:
+suite**, and suites nest, so the tree mirrors your test structure plan:
 
 <Files>
   <Folder name="tests" defaultOpen>
@@ -30,11 +30,11 @@ suite** — and suites nest, so the tree mirrors your test structure plan:
 
 | Entry | What it is |
 | --- | --- |
-| `login_test.md` | A single test case — the file name is the test's name in runs and reports |
-| `user_matrix.csv` | Also test cases — one per row; every [format](/docs/writing-tests#formats) sits side by side in the same tree |
+| `login_test.md` | A single test case, the file name is the test's name in runs and reports |
+| `user_matrix.csv` | Also test cases, one per row; every [format](/docs/writing-tests#anatomy--formats) sits side by side in the same tree |
 | `checkout/` | A suite: its cases run together, framed by the suite's own `setup.md` and under its own `rules.md` **in addition to** the outer one. Nest deeper for sub-suites |
-| `user-management/` | A sibling suite — no steering files of its own, so only the root ones apply. Suites are independent: a failing `checkout/setup.md` never touches it |
-| `rules.md`, `setup.md`, `teardown.md` | [Steering files](/docs/writing-tests/setup-teardown-rules), allowed at **every** level — each scopes to its folder and everything below |
+| `user-management/` | A sibling suite, no steering files of its own, so only the root ones apply. Suites are independent: a failing `checkout/setup.md` never touches it |
+| `rules.md`, `setup.md`, `teardown.md` | [Steering files](/docs/writing-tests/setup-teardown-rules), allowed at **every** level, each scopes to its folder and everything below |
 
 ## Scope
 
@@ -42,9 +42,9 @@ The steering files reach downward, never sideways. In the tree above,
 `tests/checkout/pay_with_card.md` runs framed by `tests/setup.md` *and*
 `tests/checkout/setup.md`, and rules **accumulate**: the root
 `tests/rules.md` applies to every phase, `tests/checkout/rules.md` adds the
-suite's own rules on top — but only inside `tests/checkout/`.
+suite's own rules on top, but only inside `tests/checkout/`.
 `tests/user-management/create_user.md` gets only the root files. Setups run
-top-down, teardowns bottom-up — pressing **Run** on the `checkout` suite:
+top-down, teardowns bottom-up, pressing **Run** on the `checkout` suite:
 
 ```mermaid
 flowchart LR
@@ -74,4 +74,4 @@ teardown.md"]
 
 A failing setup blocks exactly the tests below it; sibling suites are
 unaffected. Any level can be a run target: one file, one suite, or the whole
-tree — folder structure is also your run granularity.
+tree, folder structure is also your run granularity.

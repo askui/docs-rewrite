@@ -1,11 +1,11 @@
 ---
 icon: Android
 title: Android phone (real device)
-description: Test on a physical Android device — discovered via adb, added as a profile with one click.
+description: Test on a physical Android device, discovered via adb, added as a profile with one click.
 ---
 
 A physical Android phone or tablet is discovered automatically and turned
-into a profile with one click — it doesn't go through the Add-profile
+into a profile with one click, it doesn't go through the Add-profile
 dialog.
 
 **Preconditions:** Developer options and **USB debugging** enabled on the
@@ -15,9 +15,9 @@ reachable wirelessly.
 ## Create it
 
 1. Plug the device in. It appears under **Android devices** on the
-   [Devices](/docs/devices) page — use the refresh button if it doesn't.
+   [Devices](/docs/devices) page, use the refresh button if it doesn't.
 2. **Details** shows what was discovered: model, Android version, state.
-3. Click **Add as profile** — the device becomes a regular profile card,
+3. Click **Add as profile**, the device becomes a regular profile card,
    named after the model, bound to its serial.
 
 ## Run it
@@ -25,7 +25,7 @@ reachable wirelessly.
 1. **Connect** the profile card.
 2. Pick the profile in the test's **Run on** dropdown and press **Run**.
 
-Keep the device awake and unlocked during runs — the agent acts on the real
+Keep the device awake and unlocked during runs, the agent acts on the real
 screen.
 
 ## Wireless
@@ -34,5 +34,5 @@ No USB: enable wireless debugging on the device, then enter its `ip:port` in
 the field next to **Connect wireless**. The device joins the list and can be
 added as a profile the same way.
 
-A device shown as `offline` or `unauthorized` can't be added — reconnect the
+A device shown as `offline` or `unauthorized` can't be added, reconnect the
 cable and accept the debugging prompt on the device.

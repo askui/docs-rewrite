@@ -1,18 +1,18 @@
 ---
 icon: FileCodeCorner
 title: Custom tools
-description: Give the agent a project-specific ability by dropping a C# file into utils/custom_tools/ — compiled at run start, with NuGet packages per file.
+description: Give the agent a project-specific ability by dropping a C# file into utils/custom_tools/, compiled at run start, with NuGet packages per file.
 ---
 
 A **custom tool** is one C# file in `utils/custom_tools/`. It joins the
-agent's toolbox for every run of the project — for anything no built-in
+agent's toolbox for every run of the project, for anything no built-in
 covers: your product's admin API, resetting test users, seeding data.
 Manage the files under **Utils → Custom Tools**.
 
 <Callout type="warn" title="Developer territory">
 Custom tools are C# code with full machine access, running inside every run
 of the project. They should be implemented and validated by your developers
-or the AskUI Solution Engineering team — not edited ad hoc by test authors.
+or the AskUI Solution Engineering team, not edited ad hoc by test authors.
 </Callout>
 
 <img
@@ -21,15 +21,15 @@ or the AskUI Solution Engineering team — not edited ad hoc by test authors.
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
-- **File list** — every `.cs` file in `utils/custom_tools/`. The trash icon
+- **File list**: every `.cs` file in `utils/custom_tools/`. The trash icon
   removes one: the file is deleted, the agent loses the tool on the next run.
-- **Drop zone** — drop `.cs` files or click to choose. Copying files into
-  the folder manually works too — the folder is watched.
-- **Open folder** — opens `utils/custom_tools/` in your file explorer.
-- **Warnings** — the same NuGet package requested at different versions
+- **Drop zone**: drop `.cs` files or click to choose. Copying files into
+  the folder manually works too, the folder is watched.
+- **Open folder**: opens `utils/custom_tools/` in your file explorer.
+- **Warnings**: the same NuGet package requested at different versions
   across files is flagged; the higher version wins at run start.
 
-There is no in-app code editor — write tools in your own IDE.
+There is no in-app code editor, write tools in your own IDE.
 
 ## Create a tool
 
@@ -76,30 +76,30 @@ There is no in-app code editor — write tools in your own IDE.
    }
    ```
 
-2. Drop the file onto **Utils → Custom Tools** — or save it straight into
+2. Drop the file onto **Utils → Custom Tools**, or save it straight into
    `utils/custom_tools/`.
-3. Add the secret it uses (`ADMIN_API_KEY`) under **Utils → Secrets** —
+3. Add the secret it uses (`ADMIN_API_KEY`) under **Utils → Secrets**,
    never hard-code credentials into the file.
-4. Use it in a [step](/docs/writing-tests/step-constructs#tool-invocations) —
+4. Use it in a [step](/docs/writing-tests/step-constructs#tool-invocations),
    the file compiles when the run starts:
 
    ```md title="tests/setup.md"
    2. Use the reset_test_user tool for user "qa_user_1".
    ```
 
-What the example uses — and what else a tool file can do:
+What the example uses, and what else a tool file can do:
 
-- **No boilerplate** — common namespaces (`System`, `System.Net.Http`,
+- **No boilerplate**: common namespaces (`System`, `System.Net.Http`,
   `System.Text.Json.Nodes`, the AskUI tool types) work without `using`
   directives.
-- **Secrets** — implement `ISecretsConsumer` and the run hands the tool the
+- **Secrets**: implement `ISecretsConsumer` and the run hands the tool the
   project's [named secrets](/docs/extending/secrets); `ADMIN_API_KEY` above
   comes from Utils → Secrets, not from the file.
-- **Device access** — a constructor asking for `IAgentOs` (desktop),
+- **Device access**: a constructor asking for `IAgentOs` (desktop),
   `IWebAgentOs` (browser), `IAndroidAgentOs`, or `IIosAgentOs` gets the
   run's device layer injected. Parameterless (like above) works on every
   run; a tool whose device isn't part of the run is skipped with a warning.
-- **The .NET standard library** — available without any package: ZIP
+- **The .NET standard library**: available without any package: ZIP
   archives (`System.IO.Compression`), cryptography, regular expressions,
   XML, sockets, starting processes. Namespaces beyond the injected common
   ones need one `using` line:
@@ -110,13 +110,13 @@ What the example uses — and what else a tool file can do:
   ZipFile.ExtractToDirectory("export.zip", "export");
   ```
 
-- **NuGet packages** — for everything the standard library doesn't cover,
-  declared per file at the top — `#:package Npgsql@8.0.3` — resolved
+- **NuGet packages**: for everything the standard library doesn't cover,
+  declared per file at the top, `#:package Npgsql@8.0.3`, resolved
   through your normal `NuGet.config`, so enterprise feeds work unchanged.
 
 ## A tool using all of it
 
-A visual reference check — it pulls a screenshot through the run's device
+A visual reference check, it pulls a screenshot through the run's device
 layer (`IAgentOs` in the constructor), compares pixels with a NuGet package
 (`#:package`), and returns an **image** the agent can look at, not just text:
 
@@ -183,27 +183,27 @@ public sealed class CompareWithReferenceTool : Tool
 ```
 
 ```md title="tests/dashboard_test.md"
-5. Compare the screen with the reference "utils/references/dashboard.png"
-   — at most 1% of the pixels may deviate.
+5. Compare the screen with the reference "utils/references/dashboard.png",
+   at most 1% of the pixels may deviate.
 ```
 
 Because the constructor requires `IAgentOs`, this tool exists only on
-computer and web runs — on an Android run it is skipped with a warning.
+computer and web runs, on an Android run it is skipped with a warning.
 
 ## Keep results small
 
 Everything a tool returns goes into the agent's conversation and is sent to
-the model on every following step — it costs
+the model on every following step, it costs
 [tokens](/docs/troubleshooting/performance-cost) for the rest of the test.
 Return what the agent needs to decide the step, not everything you have:
 
-- Cap lists and truncate long text — the built-in SQL tool pages at 20 rows
+- Cap lists and truncate long text, the built-in SQL tool pages at 20 rows
   for exactly this reason.
-- Aggregate instead of dumping — "3 files, newest: report.pdf" beats 500
+- Aggregate instead of dumping, "3 files, newest: report.pdf" beats 500
   file names.
-- Images are the most expensive result — return one, sized to what the
+- Images are the most expensive result, return one, sized to what the
   agent must see.
 
 Files compile when a run starts (cached; unchanged files cost nothing). A
 file that doesn't compile **aborts the run**, with the error as the first
-entry in the conversation log — a broken tool is a broken test environment.
+entry in the conversation log, a broken tool is a broken test environment.

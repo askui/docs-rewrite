@@ -1,7 +1,7 @@
 ---
 icon: History
 title: Runs
-description: Every run keeps its full results — open them in the app, read the conversation log, share the HTML report, or grab the files.
+description: Every run keeps its full results, open them in the app, read the conversation log, share the HTML report, or grab the files.
 ---
 
 Every run is kept: its reports, screenshots, and the complete conversation.
@@ -10,27 +10,27 @@ The **Runs** page is where you open them.
 ## Open a run's results
 
 1. Open the **Runs** page.
-2. Pick the run in the sidebar — newest first, one entry per run with its
+2. Pick the run in the sidebar, newest first, one entry per run with its
    pass tally.
 3. Choose what to look at:
-   - **Conversation log** — the full execution record (below).
-   - **Summary report** — the run-level table, one row per test.
-   - **The per-test entries** — each test's
+   - **Conversation log**: the full execution record (below).
+   - **Summary report**: the run-level table, one row per test.
+   - **The per-test entries**: each test's
      [test report](/docs/results/run-report) with its status badge.
 
-**Open in Explorer** on a test jumps to its files on disk — the run's folder
+**Open in Explorer** on a test jumps to its files on disk, the run's folder
 is one level up.
 
 ## Conversation log
 
-Beside the written reports, every run keeps its full conversation — each
+Beside the written reports, every run keeps its full conversation, each
 agent message, tool call, and screenshot in order. Where the report gives
 the result, the log is the complete execution record: open it when a status
 alone doesn't explain what happened.
 
 <img
   src="/docs-rewrite/screenshots/desktop-conversation-log.png"
-  alt="The conversation log of a finished run — agent messages, tool calls, and screenshots in order"
+  alt="The conversation log of a finished run, agent messages, tool calls, and screenshots in order"
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
@@ -38,12 +38,12 @@ Reading it element by element:
 
 <include>../../_shared/conversation-elements.mdx</include>
 
-During a run the same view streams live — [Watch it live](/docs/running-tests#watch-it-live).
+During a run the same view streams live, [Watch it live](/docs/running-tests#watch-it-live).
 
 ## Share results
 
 To hand a result to a developer or attach it to a ticket, zip the run's
-timestamped folder (**Open in Explorer** on a test, one level up) — the
+timestamped folder (**Open in Explorer** on a test, one level up), the
 reports are plain Markdown with the step screenshots next to them, readable
 anywhere.
 
@@ -62,8 +62,8 @@ Each run is one timestamped folder under `agent_workspace/`:
         └── step_2.png
 ```
 
-Run folders are independent of each other — archive or delete old ones as
+Run folders are independent of each other, archive or delete old ones as
 your evidence-retention policy requires; the Runs list and
 [Dashboard](/docs/results/dashboard) reflect whatever folders exist. The
-folder is [gitignored](/docs/projects#git--versioning--sync) by design. From
+folder is [gitignored](/docs/projects#git-versioning--sync) by design. From
 the CLI, `--workspace` overrides the location.

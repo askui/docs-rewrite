@@ -1,11 +1,11 @@
 ---
 icon: ListChecks
 title: Plans
-description: A plan names the tests that run together — your smoke set, regression pack, or nightly suite.
+description: A plan names the tests that run together, your smoke set, regression pack, or nightly suite.
 ---
 
 A plan is your test selection: which cases run together, as one unit. The
-classic examples — a fast `smoke` set for every change, the full regression
+classic examples, a fast `smoke` set for every change, the full regression
 pack for the release, a nightly suite.
 
 A plan is a Markdown file in `plans/`:
@@ -19,7 +19,7 @@ Run the following tests in order. Stop on the first failure.
 - All tests in `tests/`
 ```
 
-Reference tests by id, name, or folder — the agent resolves the entries
+Reference tests by id, name, or folder, the agent resolves the entries
 against `tests/`. Because a plan is plain text, it also carries execution
 notes like "stop on the first failure."
 

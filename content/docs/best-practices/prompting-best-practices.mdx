@@ -1,16 +1,16 @@
 ---
 icon: SignpostBig
 title: What goes where
-description: Which file owns which content — system prompt, test files, setup/teardown, rules, and procedures — and how to decide.
+description: Which file owns which content, system prompt, test files, setup/teardown, rules, and procedures, and how to decide.
 ---
 
 AskUI Desktop separates three concerns that are easy to mix up:
 
-- **Who the agent is** — the system prompt (`prompts/`): capabilities,
+- **Who the agent is**: the system prompt (`prompts/`): capabilities,
   device facts, app knowledge, report format.
-- **What to do on this run** — test files (`tests/`): the steps for each
+- **What to do on this run**: test files (`tests/`): the steps for each
   scenario.
-- **Shared lifecycle** — `setup.md`, `teardown.md`, `rules.md`: what runs
+- **Shared lifecycle**: `setup.md`, `teardown.md`, `rules.md`: what runs
   around groups of tests.
 
 Getting this right is what makes a project maintainable: when a run
@@ -31,24 +31,24 @@ misbehaves, you know which file to open.
 ## The system prompt (`prompts/`)
 
 Assembled once at run start, applies to every test. Four files with four
-lifecycles — keeping them separate means a change to one never risks the
+lifecycles, keeping them separate means a change to one never risks the
 others:
 
-- **`system_capabilities.md`** — essentially constant; you rarely edit it.
-- **`device_information.md`** — changes per machine; swap it to retarget.
-- **`ui_information.md`** — grows as you learn the app; your biggest lever.
-- **`report_format.md`** — typically shared org-wide.
+- **`system_capabilities.md`**: essentially constant; you rarely edit it.
+- **`device_information.md`**: changes per machine; swap it to retarget.
+- **`ui_information.md`**: grows as you learn the app; your biggest lever.
+- **`report_format.md`**: typically shared org-wide.
 
 What to write in each: [Agent behavior](/docs/best-practices/agent-behavior).
 
 ## Test files (`tests/`)
 
-A test file describes **what to do in this specific scenario** — nothing
+A test file describes **what to do in this specific scenario**, nothing
 else:
 
-- **Belongs in a test file** — the scenario's steps with expected results,
+- **Belongs in a test file**: the scenario's steps with expected results,
   credentials by name, procedure calls.
-- **Doesn't belong** — app knowledge (→ `ui_information.md`), device facts
+- **Doesn't belong**: app knowledge (→ `ui_information.md`), device facts
   (→ `device_information.md`), steps every test needs (→ setup/teardown),
   sequences shared between tests (→ procedures).
 
@@ -57,16 +57,16 @@ How to write the steps themselves:
 
 ## Setup, teardown, and rules
 
-Three conventional files per test folder, picked up automatically —
+Three conventional files per test folder, picked up automatically,
 setup cascades outer-first, teardown unwinds in reverse
 ([details](/docs/writing-tests/setup-teardown-rules)). The one to remember:
-when a suite needs different behaviour, add a `rules.md` in its folder —
+when a suite needs different behaviour, add a `rules.md` in its folder,
 **don't** edit `system_capabilities.md`, which changes every test in the
 project.
 
 ## Procedures (`procedures/`)
 
-A sequence used by more than one test or setup file — called explicitly
+A sequence used by more than one test or setup file, called explicitly
 from a step, fixed in one place
 ([details](/docs/writing-tests/procedures)). Setup/teardown run
 automatically for a folder; a procedure only runs where a step calls it.

@@ -1,18 +1,18 @@
 ---
 icon: Brain
 title: Computer Use Agent
-description: The agent that executes your test the way a human tester would — its loop, what it is made of, and why it beats a script.
+description: The agent that executes your test the way a human tester would. Its loop, what it is made of, and why it beats a script.
 ---
 
 AskUI executes tests with a **Computer Use Agent (CUA)**: an AI agent that
-operates real software through the same channel a human tester does — the
+operates real software through the same channel a human tester does: the
 screen, the mouse, the keyboard. There is no selector, no recording, no
-object map. You write the test as numbered steps in a Markdown file — the
-same wording you would hand a colleague — and the agent carries it out.
+object map. You write the test as numbered steps in a Markdown file, in the
+same wording you would hand a colleague, and the agent carries it out.
 
 ## The loop
 
-For every step of your test the agent repeats this cycle — often several
+For every step of your test the agent repeats this cycle, often several
 times, until the step's expected result is reached or its attempts run out:
 
 ```mermaid
@@ -23,20 +23,20 @@ flowchart LR
   D --> A
 ```
 
-1. **Screenshot** — read the screen of the device.
-2. **Decide** — interpret your step against what is actually visible, like a
+1. **Screenshot**: read the screen of the device.
+2. **Decide**: interpret your step against what is actually visible, like a
    tester following instructions.
-3. **Act** — through a [tool](/docs/extending/tools): click, type, scroll, or
+3. **Act**: through a [tool](/docs/extending/tools): click, type, scroll, or
    anything else the toolbox allows.
-4. **Verify** — compare what happened against the step's expected result. If
+4. **Verify**: compare what happened against the step's expected result. If
    it matches, the step gets its status and the agent moves on; if not, it
    loops again (within its
-   [attempt limit](/docs/best-practices/agent-behavior#system-capabilities--error-discipline)).
+   [attempt limit](/docs/best-practices/agent-behavior#system-capabilities-error-discipline)).
    Either way it lands in the [report](/docs/results/run-report).
 
 ## One cycle in the conversation log
 
-The same cycle as the app records it —
+The same cycle as the app records it,
 [the log](/docs/results#conversation-log) is where you watch it happen:
 
 <div className="not-prose my-6 overflow-hidden rounded-lg border bg-fd-card text-sm">
@@ -48,7 +48,7 @@ The same cycle as the app records it —
   </div>
   <div className="divide-y">
     <div className="bg-fd-muted/30 px-4 py-1.5 text-[11px] text-fd-muted-foreground">
-      Step 2 from the test file — <span className="font-mono text-fd-foreground">Click "New order" — the empty order form opens.</span>
+      Step 2 from the test file: <span className="font-mono text-fd-foreground">Click "New order". The empty order form opens.</span>
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:gap-4">
       <span className="w-20 shrink-0 pt-0.5 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Screenshot</span>
@@ -62,7 +62,7 @@ The same cycle as the app records it —
             <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
             <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
             <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
-            <span className="ml-1 text-[8px] text-fd-muted-foreground">Contoso Orders — Records</span>
+            <span className="ml-1 text-[8px] text-fd-muted-foreground">Contoso Orders · Records</span>
           </span>
           <span className="block space-y-1.5 p-2">
             <span className="block h-1 w-10 rounded bg-fd-muted-foreground/30" />
@@ -79,7 +79,7 @@ The same cycle as the app records it —
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Decide</span>
-      <span>The Records list is visible. "New order" is top right, next to "Export" — I will click it.</span>
+      <span>The Records list is visible. "New order" is top right, next to "Export". I will click it.</span>
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Act</span>
@@ -91,14 +91,14 @@ The same cycle as the app records it —
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Verify</span>
-      <span>The empty order form is open — the expected result of step 2 is met.</span>
+      <span>The empty order form is open. The expected result of step 2 is met.</span>
     </div>
     <div className="bg-fd-muted/30 px-4 py-1.5 text-[11px] text-fd-muted-foreground">
-      Step 4 — <span className="font-mono text-fd-foreground">Verify order "4711" exists in the backend with status "New".</span> Same cycle, but the truth is not on the screen.
+      Step 4: <span className="font-mono text-fd-foreground">Verify order "4711" exists in the backend with status "New".</span> Same cycle, but the truth is not on the screen.
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Decide</span>
-      <span>The order was created in the UI. The step asks me to confirm it in the backend — I will use the HTTP client.</span>
+      <span>The order was created in the UI. The step asks me to confirm it in the backend, so I will use the HTTP client.</span>
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:gap-4">
       <span className="w-20 shrink-0 pt-0.5 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Act</span>
@@ -115,7 +115,7 @@ The same cycle as the app records it —
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Verify</span>
-      <span>The API returns the order with status "New" — the UI and the backend agree.</span>
+      <span>The API returns the order with status "New". The UI and the backend agree.</span>
     </div>
   </div>
 </div>
@@ -124,14 +124,14 @@ The stage labels on the left are this page's four stages; the app itself
 shows the narration, the screenshots inline, and the tool-call chips with
 their results (plus tokens and latency per step). The cycle is the same whether
 the agent acts on the screen or calls a
-[tool](/docs/extending/tools) like the HTTP client — only the "act" differs.
+[tool](/docs/extending/tools) like the HTTP client. Only the "act" differs.
 Every element of the log: [Runs](/docs/results#conversation-log).
 
 ## Why not a script?
 
 A script is written for a finite set of application behaviors: one path
 through one version of one application, in one environment. Anything outside
-that set fails it — a renamed button, a machine that has drifted since the
+that set fails it: a renamed button, a machine that has drifted since the
 test was written, a survey pop-up nobody planned for.
 
 The agent decides from the live screen instead, so it also handles what
@@ -142,9 +142,9 @@ freedom is why
 
 ## What a CUA agent is made of
 
-Four parts — two you choose, two we provide:
+Four parts, two you choose, two we provide:
 
-- **A CUA model** — the intelligence, and the part you pay per token for.
+- **A CUA model**: the intelligence, and the part you pay per token for.
   It receives the screenshot and the step text and answers with the next
   action, so it must be **vision-capable**: a text-only model can't see the
   screen. Either you consume it through us (billed with your AskUI
@@ -152,40 +152,40 @@ Four parts — two you choose, two we provide:
   [your own provider](/docs/extending/model-providers#supported-models) and
   pay that vendor directly. Which model you pick drives both the run's cost
   and how reliably it reads your UI.
-- **Tools** — everything the agent *can* do, and the boundary of what a test
+- **Tools**: everything the agent *can* do, and the boundary of what a test
   can possibly do. We ship most of them: the device tools (screenshot,
   click, type) come with the device kind, and the
   [Tool Store](/docs/extending/tools) adds ready-made ones like SQL, HTTP or
-  screen zoom. You extend from there where your product needs it — your own
+  screen zoom. You extend from there where your product needs it, your own
   C# [custom tools](/docs/extending/custom-tools), or existing
-  [MCP servers](/docs/extending/mcp) — and you decide which of them a
+  [MCP servers](/docs/extending/mcp), and you decide which of them a
   project actually gets.
-- **AskUI Desktop & AgentOS** — the infrastructure layer you don't have to
+- **AskUI Desktop & AgentOS**: the infrastructure layer you don't have to
   build yourself. [AgentOS](/docs/agentos) gives the agent eyes and hands on
   a machine (Playwright covers browsers, adb covers Android), turning
-  "click 1180, 96" into a real click on a real machine — across operating
+  "click 1180, 96" into a real click on a real machine, across operating
   systems, remote machines, emulators and physical phones, with connection,
   sessions and screen capture already solved. AskUI Desktop is where you
   author tests, [connect devices](/docs/devices), start runs and read the
   results.
-- **The AskUI harness** — the test automation harness around the model: the
+- **The AskUI harness**: the test automation harness around the model: the
   plumbing a test framework normally gives you, built for an agent. This is
   the part we provide, and it decides how disciplined a run is
   ([in detail](/docs/concepts/test-automation-harness)):
-  - **The loop** — screenshot, decide, act, verify, repeat, as above.
-  - **Prompt assembly** — your
+  - **The loop**: screenshot, decide, act, verify, repeat, as above.
+  - **Prompt assembly**: your
     [prompt files](/docs/best-practices/agent-behavior) plus the current
     test's steps, the folder's rules, and the names of available
     [secrets](/docs/extending/secrets), stitched into the instructions the
     model sees.
-  - **The conversation** — the running transcript of screenshots, decisions
+  - **The conversation**: the running transcript of screenshots, decisions
     and tool results. It is the agent's memory, re-sent on every turn, which
-    makes it the run's evidence *and* its cost — the reason tools should
+    makes it the run's evidence *and* its cost, the reason tools should
     [return little](/docs/extending/custom-tools#keep-results-small).
-  - **Stop conditions** — two attempts per step and no creative retries, so
+  - **Stop conditions**: two attempts per step and no creative retries, so
     a `PASSED` means the step actually passed; an infrastructure error ends
     the run as `BROKEN` instead of grinding on.
-  - **The run lifecycle** — setup, the tests, teardown per folder, and the
+  - **The run lifecycle**: setup, the tests, teardown per folder, and the
     [report](/docs/results/run-report) written while it all happens
     ([details](/docs/concepts/test-automation-harness)).
 
