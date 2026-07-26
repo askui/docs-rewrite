@@ -7,15 +7,26 @@ description: How AskUI fits into your environment, what runs where, what leaves 
 Everything here answers one question: what does bringing AskUI into your
 environment actually mean? The short version, screenshots of your
 applications go to an AI model for the agent's decisions; everything else
-(testware, reports, secrets) stays on your machines. The full picture, in the
-order a security or infrastructure review asks for it:
+(testware, reports, secrets) stays on your machines.
+
+Straight to your questions:
+
+| If you are | Start at |
+| --- | --- |
+| **A software architect** | [The four components](#the-four-components), [What talks to what](#what-talks-to-what), [Concurrency and upgrades](#concurrency-and-upgrades) |
+| **IT security** | [What leaves the network](#what-leaves-the-network-and-how-to-stop-it), [What the agent may do on a machine](#what-the-agent-may-do-on-a-machine), [Telemetry](#telemetry-what-we-see), [Inbound ports](#what-talks-to-what) |
+| **Compliance** | [Data protection](#data-protection), [What is stored where](#what-is-stored-where), [What is downloaded at runtime](#what-is-downloaded-at-runtime) |
+| **The team running the lab** | [Running the lab machines](#running-the-lab-machines), [Infrastructure requirements](#infrastructure-requirements) |
+
+The full picture, in the order a review usually asks for it:
 
 ## Start simple: one computer
 
 The smallest setup is one machine: [AskUI Desktop](/docs/get-started/install-desktop)
 and the application under test side by side on the tester's PC, with the
 [project](/docs/projects) — tests, prompts and reports — in a folder next to
-them. The only thing that leaves the machine is the model traffic:
+them. The only thing that leaves the machine is the inference traffic: the
+screenshot, the step text and the conversation of the current test:
 
 ```mermaid
 flowchart BT
@@ -27,7 +38,7 @@ flowchart BT
     D --> A
     D --> F
   end
-  pc -->|"Screenshots, Steps, Conversation"| M["Model Provider"]
+  pc -->|"Inference"| M["Model Provider"]
 ```
 
 The **model provider** is the AI service that makes the agent's decisions:
@@ -73,7 +84,7 @@ flowchart LR
     A1["&lt;&lt;adb&gt;&gt;<br/>Android Phone"]
     I1["&lt;&lt;idb&gt;&gt;<br/>iOS Simulator"]
   end
-  starts -->|"Screenshots, Steps, Conversation"| M
+  starts -->|"Inference"| M
   starts --> R
   starts --> cloud
   starts --> lab
@@ -129,6 +140,12 @@ the enterprise questions, proxy, air-gapped operation, CI runners, are in
 | Desktop/CLI → model provider | HTTPS | See below, the only place test content leaves your network |
 | Desktop → AskUI Hub | HTTPS | Sign-in, tokens, usage. Not involved in test execution itself |
 
+Read the first row as an **inbound port on the target machine**: AgentOS
+listens there, and Desktop or the CLI connects in. Nothing else in the
+picture listens; every other arrow is outbound from the machine that starts
+the run. Restrict the AgentOS port to the machines that are allowed to drive
+tests.
+
 Endpoints and firewall rules:
 [Network requirements](/docs/reference/network-requirements).
 
@@ -158,6 +175,58 @@ content that travels at all. Where it travels is your choice:
   the hardware for it, we can supply a local deployment on NVIDIA hardware
   you purchase, [talk to us](/docs/support/get-help).
 
+## What the agent may do on a machine
+
+The blast radius is the toolbox, not the machine. The agent can only act
+through tools it was given, and you decide which:
+
+- **Screen, keyboard, mouse** come with the device and are always there.
+  Within a session the agent can do what the logged-in user can do.
+- **Reach beyond the UI is opt-in**: the shell, SQL and file tools in the
+  [Tool Store](/docs/extending/tools) are off until someone enables them,
+  and enabling them is recorded in `utils/tools.json` in the project, so it
+  shows up in review.
+- **Custom tools are code**: a `.cs` file in
+  [`utils/custom_tools/`](/docs/extending/custom-tools) runs with the
+  permissions of the run, which is why they belong to developers and get
+  reviewed like any other code in the repository.
+- **Elevation is a deliberate switch**: without
+  ["Allow control of administrative applications"](/docs/agentos/installation/service)
+  the agent cannot drive elevated windows.
+- **Credentials never reach the model**: steps reference
+  [secrets](/docs/extending/secrets) by name, values are substituted at
+  execution time and redacted from reports and logs.
+
+## Telemetry, what we see
+
+- **The hub** sees sign-in, tokens and usage counters for billing, not your
+  test content ([usage dashboard](/docs/account-billing/usage-dashboard)).
+- **Model traffic** goes to the provider you chose, and only that provider,
+  see above.
+- **OpenTelemetry tracing is off by default.** It exists for teams that want
+  traces in their own collector and is enabled explicitly with
+  `ASKUI__OTEL_*` environment variables, pointing at an endpoint you own.
+- **Reports and screenshots stay local**, in the project folder. Nothing
+  uploads them anywhere.
+
+## Data protection
+
+- **Test content that travels** is limited to what the model provider needs
+  for inference: the screenshot, the step text and the conversation of the
+  current phase. Nothing else is transmitted, and with
+  [on-premise inference](#what-leaves-the-network-and-how-to-stop-it) not
+  even that.
+- **Screenshots can contain personal data** if your test data does. That is
+  a processing decision on your side: choose the provider placement
+  accordingly, and prefer synthetic or anonymised test data.
+- **Evidence lives with you**: reports, screenshots and the conversation log
+  are files in your project, so your retention and deletion rules apply
+  unchanged.
+- **DPA, retention at the hub, hosting region, and whether a provider trains
+  on inputs** depend on the provider you choose and your contract with us:
+  [ask us for the current documents](/docs/support/get-help) rather than
+  assuming.
+
 ## What is stored where
 
 | Data | Location |
@@ -177,6 +246,40 @@ action on your side: browser bundles (first
 declared by your [custom tools](/docs/extending/custom-tools) (resolved via
 your own `NuGet.config`, so enterprise feeds and mirrors apply), and
 connections to the [MCP servers](/docs/extending/mcp) your project registers.
+
+## Running the lab machines
+
+What the team providing the machines needs to know:
+
+- **Interactive session required.** The agent works on a real desktop
+  session: a locked screen or a machine with no session has nothing to
+  drive, and a run against it ends as `BROKEN`. Keep sessions unlocked and
+  screensavers/sleep disabled on test machines.
+- **Service or standalone.** AgentOS can run as an installed
+  [Windows service](/docs/agentos/installation/service) (port 26000, starts
+  with the machine, survives reboots, the choice for shared lab machines) or
+  be started by the app on demand (port 23000, fine on a tester's own PC).
+- **Elevation.** Driving elevated windows requires enabling
+  ["Allow control of administrative applications"](/docs/agentos/installation/service)
+  during installation.
+- **Sizing.** Requirements per machine, including what a VM needs:
+  [system requirements](/docs/agentos/reference/system-requirements). No GPU
+  is needed on the test machine, inference happens at the model provider.
+- **Health.** The [Devices](/docs/devices) page shows connection state per
+  profile before a run; when a machine misbehaves, the symptoms and checks
+  are in [Connection & sessions](/docs/troubleshooting/connection-sessions).
+
+## Concurrency and upgrades
+
+- **One run drives one device profile at a time.** Parallelism comes from
+  starting more runs: several CI jobs, several machines, or a
+  [multi-computer profile](/docs/devices/multi-computer) when one agent
+  should hand over between machines inside a single test.
+- **Project files are versioned and migrate forward.** Device profiles and
+  tool configuration carry a version and are migrated on first save by a
+  newer app; renamed or removed built-in tools are mapped automatically.
+  Because everything is a plain file in Git, an upgrade shows up as a diff
+  you can review.
 
 ## Infrastructure requirements
 
