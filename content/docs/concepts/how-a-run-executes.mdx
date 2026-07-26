@@ -1,12 +1,18 @@
 ---
 icon: CirclePlay
-title: How a run executes
-description: Phases, lifecycle files, and why the same test can take a different path on every run.
+title: Test automation harness
+description: What the harness does on every run — phases, lifecycle files, attempt limits, reports — and why the same test can take a different path.
 ---
 
-A run walks your selection of tests in **phases**. Each phase is one
-autonomous agent execution: read the file, drive the UI through the
-[loop](/docs/concepts/how-askui-works#the-loop), write the report as it goes.
+The model decides; the **harness** runs the test. It is the part of AskUI
+that a test framework would otherwise be: it walks your selection in
+**phases**, assembles what the agent is told for each one, holds the limits
+that stop a run from grinding, and writes the reports
+([where it sits](/docs/concepts/how-askui-works#what-a-cua-agent-is-made-of)).
+
+Each phase is one autonomous agent execution: read the file, drive the UI
+through the [loop](/docs/concepts/how-askui-works#the-loop), write the report
+as it goes.
 
 ```mermaid
 flowchart LR
@@ -23,6 +29,25 @@ and rules accumulate per level. ([Where these files live](/docs/writing-tests/or
 Every phase streams into the [live conversation log](/docs/running-tests#watch-it-live)
 and lands in the run's [reports](/docs/results/run-report).
 
+What the harness gives each phase, and what it enforces:
+
+- **The instructions** — the project's
+  [prompt files](/docs/best-practices/agent-behavior), the folder's
+  `rules.md`, the phase's own file, and the names of the
+  [secrets](/docs/extending/secrets) it may use.
+- **The toolbox** — device tools for the run's device kind plus the
+  [tools you enabled](/docs/extending/tools); a tool whose device isn't part
+  of this run is left out with a warning.
+- **The limits** — two attempts per step, no creative retries, and an
+  infrastructure error ends the run as `BROKEN` rather than continuing
+  against a broken machine
+  ([the discipline](/docs/best-practices/agent-behavior#system-capabilities--error-discipline)).
+- **The memory** — one conversation per phase: the agent starts each test
+  with a clean transcript, so a previous test can't confuse it. To carry a
+  value across phases on purpose, a step tells it to write to the
+  [scratchpad](/docs/writing-tests/agents-and-prompts) — setup stores the
+  order number, a later test reads it.
+
 ## Why execution differs
 
 A CUA agent is not a script. It reads the screen before every step — like a
@@ -31,10 +56,10 @@ out. Two runs of the same case can take different paths: one run sees a
 cookie banner and closes it first; the next doesn't get one. One finds the
 button immediately; another scrolls first.
 
-Different execution, same expected result — that is by design. The step's
-**expected result is the contract**; the path is only the execution log. It
-is also why the same suite survives UI changes that break selector-based
-automation.
+Different execution, same expected result — that is by design, and the
+[reason to use an agent at all](/docs/concepts/how-askui-works#why-not-a-script).
+For reading results it means one thing: the step's **expected result is the
+contract**, the path is only the execution log.
 
 What this means for how you write and judge tests — precise expected
 results, rules that constrain the agent's freedom, judging outcomes rather
