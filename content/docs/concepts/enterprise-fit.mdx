@@ -42,9 +42,11 @@ outward in three steps, each one optional and independent:
 ```mermaid
 flowchart TB
   M["«Model provider»<br/>AskUI hub or your own"]
-  subgraph starts["Who starts the run"]
-    D["«AskUI Desktop»<br/>Tester PC"]
-    C["«AskUI CLI»<br/>CI pipeline"]
+  subgraph pc["Tester PC"]
+    D["«AskUI Desktop»<br/>author · run · review"]
+  end
+  subgraph ci["CI pipeline"]
+    C["«AskUI CLI»<br/>headless runs"]
   end
   R[("«Git»<br/>Project repository")]
   subgraph infra["Test infrastructure"]
@@ -53,7 +55,7 @@ flowchart TB
     FARM["«Device farm»<br/>Android &amp; iOS devices"]
     BR["«Playwright»<br/>Browser"]
   end
-  M ~~~ starts
+  M ~~~ pc
   D -->|"screenshots + step text"| M
   C -->|"screenshots + step text"| M
   D --> R
