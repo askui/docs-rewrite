@@ -7,11 +7,13 @@ description: A Computer Use Agent executes your test the way a human tester woul
 AskUI executes tests with a **Computer Use Agent (CUA)**: an AI agent that
 operates real software through the same channel a human tester does — the
 screen, the mouse, the keyboard. There is no selector, no recording, no
-object map. You write the test in plain language; the agent carries it out.
+object map. You write the test as numbered steps in a Markdown file — the
+same wording you would hand a colleague — and the agent carries it out.
 
 ## The loop
 
-For every step of your test the agent repeats one cycle:
+For every step of your test the agent repeats this cycle — often several
+times, until the step's expected result is reached or its attempts run out:
 
 ```mermaid
 flowchart LR
@@ -21,13 +23,16 @@ flowchart LR
   D --> A
 ```
 
-1. **Read** — take a screenshot of the device.
+1. **Screenshot** — read the screen of the device.
 2. **Decide** — interpret your step against what is actually visible, like a
    tester following instructions.
 3. **Act** — through a [tool](/docs/extending/tools): click, type, scroll, or
    anything else the toolbox allows.
-4. **Verify** — compare the observed result against the step's expected
-   result, and record it for the [report](/docs/results/run-report).
+4. **Verify** — compare what happened against the step's expected result. If
+   it matches, the step gets its status and the agent moves on; if not, it
+   loops again (within its
+   [attempt limit](/docs/best-practices/agent-behavior#system-capabilities--error-discipline)).
+   Either way it lands in the [report](/docs/results/run-report).
 
 ## One cycle in the conversation log
 
@@ -43,7 +48,7 @@ The same cycle as the app records it —
   </div>
   <div className="divide-y">
     <div className="bg-fd-muted/30 px-4 py-1.5 text-[11px] text-fd-muted-foreground">
-      Step 2 from the test file — <span className="font-mono text-fd-foreground">Click "Sign-Up" — the start screen shows the signed-in dot.</span>
+      Step 2 from the test file — <span className="font-mono text-fd-foreground">Click "New order" — the empty order form opens.</span>
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:gap-4">
       <span className="w-20 shrink-0 pt-0.5 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Screenshot</span>
@@ -57,7 +62,7 @@ The same cycle as the app records it —
             <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
             <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
             <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
-            <span className="ml-1 text-[8px] text-fd-muted-foreground">Contoso Orders — Sign in</span>
+            <span className="ml-1 text-[8px] text-fd-muted-foreground">Contoso Orders — Records</span>
           </span>
           <span className="block space-y-1.5 p-2">
             <span className="block h-1 w-10 rounded bg-fd-muted-foreground/30" />
@@ -65,8 +70,8 @@ The same cycle as the app records it —
             <span className="block h-1 w-8 rounded bg-fd-muted-foreground/30" />
             <span className="block h-3 w-full rounded border bg-fd-muted/40" />
             <span className="flex justify-end gap-1 pt-1">
-              <span className="rounded border px-1.5 py-0.5 text-[8px] text-fd-muted-foreground">Log in</span>
-              <span className="rounded bg-fd-primary px-1.5 py-0.5 text-[8px] font-medium text-fd-primary-foreground">Sign-Up</span>
+              <span className="rounded border px-1.5 py-0.5 text-[8px] text-fd-muted-foreground">Export</span>
+              <span className="rounded bg-fd-primary px-1.5 py-0.5 text-[8px] font-medium text-fd-primary-foreground">New order</span>
             </span>
           </span>
         </span>
@@ -74,7 +79,7 @@ The same cycle as the app records it —
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Decide</span>
-      <span>The sign-in page is visible. "Sign-Up" is top right, next to "Log in" — I will click it.</span>
+      <span>The Records list is visible. "New order" is top right, next to "Export" — I will click it.</span>
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Act</span>
@@ -86,7 +91,7 @@ The same cycle as the app records it —
     </div>
     <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
       <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Verify</span>
-      <span>The start screen shows the green signed-in dot top right — the expected result of step 2 is met.</span>
+      <span>The empty order form is open — the expected result of step 2 is met.</span>
     </div>
     <div className="bg-fd-muted/30 px-4 py-1.5 text-[11px] text-fd-muted-foreground">
       Step 4 — <span className="font-mono text-fd-foreground">Verify order "4711" exists in the backend with status "New".</span> Same cycle, but the truth is not on the screen.
@@ -122,6 +127,8 @@ the agent acts on the screen or calls a
 [tool](/docs/extending/tools) like the HTTP client — only the "act" differs.
 Every element of the log: [Runs](/docs/results#conversation-log).
 
+## Why not a script?
+
 A script is written for a finite set of application behaviors: one path
 through one version of one application, in one environment. Anything outside
 that set fails it — a renamed button, a machine that has drifted since the
@@ -135,7 +142,7 @@ freedom is why
 
 ## What a CUA agent is made of
 
-Four parts, each one you can inspect or swap:
+Four parts — two you choose, two we provide:
 
 - **A CUA model** — the intelligence, and the part you pay per token for.
   It receives the screenshot and the step text and answers with the next
@@ -153,13 +160,14 @@ Four parts, each one you can inspect or swap:
   C# [custom tools](/docs/extending/custom-tools), or existing
   [MCP servers](/docs/extending/mcp) — and you decide which of them a
   project actually gets.
-- **An infrastructure layer** — the eyes and hands on the target, and the
-  part you don't have to build yourself: [AgentOS](/docs/agentos) on a
-  desktop machine, Playwright for a browser, adb for Android. It turns
+- **AskUI Desktop & AgentOS** — the infrastructure layer you don't have to
+  build yourself. [AgentOS](/docs/agentos) gives the agent eyes and hands on
+  a machine (Playwright covers browsers, adb covers Android), turning
   "click 1180, 96" into a real click on a real machine — across operating
   systems, remote machines, emulators and physical phones, with connection,
-  sessions and screen capture already solved
-  ([devices](/docs/devices)).
+  sessions and screen capture already solved. AskUI Desktop is where you
+  author tests, [connect devices](/docs/devices), start runs and read the
+  results.
 - **A test automation harness** — everything around the model that turns it
   into a tester: the plumbing a test framework normally gives you, adapted to
   an agent. This is the part AskUI provides, and it decides how disciplined a
@@ -181,5 +189,9 @@ Four parts, each one you can inspect or swap:
     [report](/docs/results/run-report) written while it all happens
     ([details](/docs/concepts/how-a-run-executes)).
 
-Where AskUI Desktop, AgentOS, the CLI, and the model provider sit around
-this loop: [Architecture & data flow](/docs/concepts/architecture-and-data-flow).
+Next: how a whole run walks setup, tests and teardown
+([How a run executes](/docs/concepts/how-a-run-executes)), how to write steps
+this loop executes reliably
+([Writing good tests](/docs/best-practices/writing-good-tests)), and where
+the pieces sit in your network
+([Architecture & data flow](/docs/concepts/architecture-and-data-flow)).
