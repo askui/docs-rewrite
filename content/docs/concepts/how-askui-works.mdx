@@ -158,8 +158,10 @@ Four parts, each one you can inspect or swap:
   systems, remote machines, emulators and physical phones, with connection,
   sessions and screen capture already solved
   ([devices](/docs/devices)).
-- **The harness** — everything around the model that turns it into a tester.
-  This is the part AskUI provides, and it decides how disciplined a run is:
+- **A test automation harness** — everything around the model that turns it
+  into a tester: the plumbing a test framework normally gives you, adapted to
+  an agent. This is the part AskUI provides, and it decides how disciplined a
+  run is:
   - **The loop** — screenshot, decide, act, verify, repeat, as above.
   - **Prompt assembly** — your
     [prompt files](/docs/best-practices/agent-behavior) plus the current
