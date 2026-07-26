@@ -137,10 +137,11 @@ freedom is why
 
 Four parts, each one you can inspect or swap:
 
-- **A vision-capable model** — the "decide" step. It receives the screenshot
-  and the step text and answers with the next action. Runs through the AskUI
-  hub by default, or through
-  [your own provider](/docs/extending/model-providers).
+- **A CUA model** — the "decide" step. It receives the screenshot and the
+  step text and answers with the next action, which means it must be
+  **vision-capable**: a text-only model can't see the screen. Runs through
+  the AskUI hub by default, or through
+  [your own provider](/docs/extending/model-providers#supported-models).
 - **Tools** — everything the agent *can* do. Device tools (screenshot,
   click, type) come with the device kind; beyond that you decide what it
   gets: [store tools](/docs/extending/tools),
@@ -151,15 +152,24 @@ Four parts, each one you can inspect or swap:
   [AgentOS](/docs/agentos) on a desktop machine, Playwright for a browser,
   adb for Android. This is what turns "click 1180, 96" into a real click on
   a real machine.
-- **Instructions** — your test steps for *this* scenario, plus the
-  [system prompt](/docs/best-practices/agent-behavior): who the agent is,
-  what your application does, how to report.
-
-Everything the four produce during a run — screenshots, decisions, tool
-results — accumulates in the conversation above. That transcript is both the
-run's evidence and its cost: every step is sent to the model again, which is
-why tools should
-[return little](/docs/extending/custom-tools#keep-results-small).
+- **The harness** — everything around the model that turns it into a tester.
+  This is the part AskUI provides, and it decides how disciplined a run is:
+  - **The loop** — screenshot, decide, act, verify, repeat, as above.
+  - **Prompt assembly** — your
+    [prompt files](/docs/best-practices/agent-behavior) plus the current
+    test's steps, the folder's rules, and the names of available
+    [secrets](/docs/extending/secrets), stitched into the instructions the
+    model sees.
+  - **The conversation** — the running transcript of screenshots, decisions
+    and tool results. It is the agent's memory, re-sent on every turn, which
+    makes it the run's evidence *and* its cost — the reason tools should
+    [return little](/docs/extending/custom-tools#keep-results-small).
+  - **Stop conditions** — two attempts per step and no creative retries, so
+    a `PASSED` means the step actually passed; an infrastructure error ends
+    the run as `BROKEN` instead of grinding on.
+  - **The run lifecycle** — setup, the tests, teardown per folder, and the
+    [report](/docs/results/run-report) written while it all happens
+    ([details](/docs/concepts/how-a-run-executes)).
 
 Where AskUI Desktop, AgentOS, the CLI, and the model provider sit around
 this loop: [Architecture & data flow](/docs/concepts/architecture-and-data-flow).
