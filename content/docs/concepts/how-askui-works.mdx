@@ -109,9 +109,16 @@ the agent acts on the screen or calls a
 [tool](/docs/extending/tools) like the HTTP client — only the "act" differs.
 Every element of the log: [Runs](/docs/results#conversation-log).
 
-Because every decision starts from the live screen, the agent survives UI
-changes that break coordinate- or selector-based automation — and it is also
-why [two runs can take different paths](/docs/concepts/how-a-run-executes#why-execution-differs).
+A script is written for a finite set of application behaviors: one path
+through one version of one application, in one environment. Anything outside
+that set fails it — a renamed button, a machine that has drifted since the
+test was written, a survey pop-up nobody planned for.
+
+The agent decides from the live screen instead, so it also handles what
+nobody wrote down: another application, another environment, a state that
+has decayed. A random pop-up costs it a click, not the run. That same
+freedom is why
+[two runs can take different paths](/docs/concepts/how-a-run-executes#why-execution-differs).
 
 Where AskUI Desktop, AgentOS, the CLI, and the model provider sit around
 this loop: [Architecture & data flow](/docs/concepts/architecture-and-data-flow).
