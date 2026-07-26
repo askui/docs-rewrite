@@ -27,12 +27,12 @@ export function Mermaid({ chart }: { chart: string }) {
         fontFamily: 'inherit',
         theme: resolvedTheme === 'dark' ? 'dark' : 'neutral',
         themeVariables: { fontSize: '16px' },
-        // Render at natural size — wide diagrams scroll horizontally in the
-        // container below instead of shrinking to unreadable text. Tight
-        // spacing keeps tall/wide charts compact at natural scale.
+        // Scale to the content column: a diagram that fits is worth more than
+        // one at natural size behind a horizontal scrollbar. Keep diagrams
+        // lean (few ranks) so the downscale stays readable.
         // curve 'step': right-angled connectors instead of curved splines.
         flowchart: {
-          useMaxWidth: false,
+          useMaxWidth: true,
           nodeSpacing: 40,
           rankSpacing: 36,
           padding: 10,
@@ -63,7 +63,7 @@ export function Mermaid({ chart }: { chart: string }) {
       // horizontally (no flex here — centering would clip the left edge of
       // scrolled content). The [&_.nodeLabel_svg] rules style inline icons
       // inside node labels: centered above the text, foreground color.
-      className="my-6 overflow-x-auto [&>svg]:mx-auto [&>svg]:block [&_.nodeLabel_svg]:mx-auto [&_.nodeLabel_svg]:block [&_.nodeLabel_svg]:mb-1 [&_.nodeLabel_svg]:text-fd-foreground"
+      className="my-6 [&>svg]:mx-auto [&>svg]:block [&_.nodeLabel_svg]:mx-auto [&_.nodeLabel_svg]:block [&_.nodeLabel_svg]:mb-1 [&_.nodeLabel_svg]:text-fd-foreground"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );

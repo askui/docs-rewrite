@@ -41,7 +41,7 @@ const config = {
   theme: 'neutral',
   themeVariables: { fontSize: '16px' },
   flowchart: {
-    useMaxWidth: false,
+    useMaxWidth: true,
     nodeSpacing: 40,
     rankSpacing: 36,
     padding: 10,

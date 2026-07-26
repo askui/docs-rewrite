@@ -21,13 +21,13 @@ them. The only thing that leaves the machine is the model traffic:
 flowchart BT
   subgraph pc["Tester PC"]
     direction LR
-    D["«AskUI Desktop»"]
-    A["«Application under test»<br/>desktop app or browser"]
-    F[("«Project»")]
+    D["AskUI Desktop"]
+    A["Application under test<br/>desktop app or browser"]
+    F[("Project")]
     D --> A
     D --> F
   end
-  pc -->|"screenshots, steps, conversation"| M["«Model provider»"]
+  pc -->|"screenshots, steps, conversation"| M["Model provider"]
 ```
 
 The **model provider** is the AI service that makes the agent's decisions:
@@ -50,28 +50,28 @@ same way Desktop does interactively:
 flowchart LR
   subgraph starts["Who starts the run"]
     subgraph pc["Tester PC"]
-      D["«AskUI Desktop»"]
-      B1["«Playwright»<br/>local browser"]
+      D["AskUI Desktop"]
+      B1["Playwright<br/>local browser"]
     end
     subgraph ci["CI pipeline"]
-      C["«AskUI CLI»"]
-      B2["«Playwright»<br/>local browser"]
+      C["AskUI CLI"]
+      B2["Playwright<br/>local browser"]
     end
     pc ~~~ ci
   end
-  R[("«Git»<br/>project repository")]
-  M["«Model provider»"]
+  R[("Git<br/>project repository")]
+  M["Model provider"]
   subgraph cloud["Cloud provider"]
-    V1["«AgentOS»<br/>Windows VM"]
-    V2["«AgentOS»<br/>Linux VM"]
+    V1["AgentOS<br/>Windows VM"]
+    V2["AgentOS<br/>Linux VM"]
   end
   subgraph lab["On-premise lab"]
-    P1["«AgentOS»<br/>Windows PC"]
-    P2["«AgentOS»<br/>macOS machine"]
+    P1["AgentOS<br/>Windows PC"]
+    P2["AgentOS<br/>macOS machine"]
   end
   subgraph farm["Device farm"]
-    A1["«adb»<br/>Android phone"]
-    I1["«idb»<br/>iOS simulator"]
+    A1["adb<br/>Android phone"]
+    I1["idb<br/>iOS simulator"]
   end
   starts --> R
   starts -->|"screenshots, steps, conversation"| M
