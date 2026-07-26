@@ -109,6 +109,54 @@ always passes:
 
 </div>
 
+Where the outcome isn't visible in the same place you acted, make the check
+its own [verification step](/docs/writing-tests/step-constructs#verifications)
+— the agent reports it separately, so you see which half broke:
+
+```md
+7. Click "Save".
+8. Verify the order appears in "Records" with status "New".
+9. Verify the response of `GET /api/orders` contains the new order number.
+```
+
+This is also the fix when a test reports `PASSED` although the feature is
+broken: the success criterion was too loose to catch it
+([more](/docs/best-practices/analyzing-failures#passed-but-it-actually-failed)).
+
+## Preconditions — is the test applicable?
+
+Preconditions are the test's **entry criteria**: the agent checks them
+first, and a test whose criteria aren't met is reported `SKIPPED`, not
+`FAILED` — it never ran, so it can't have failed. That distinction keeps
+your pass rate honest.
+
+```md title="tests/cancel_order_test.md"
+## Preconditions
+- Signed in as a user with the "Sales" role
+- At least one order with status "New" exists
+
+## Steps
+1. Open "Records" and select the newest order with status "New".
+2. Click "Cancel order" and confirm — the status changes to "Cancelled".
+
+## Postconditions
+- Test passes if the order is listed as "Cancelled" and no longer editable
+```
+
+- **Preconditions** — what must be true *before* the steps make sense. Name
+  state you don't create in the test itself: a role, existing data, a
+  starting screen. If setup already establishes it, one line ("Signed in,
+  start screen visible") is enough.
+- **Postconditions** — the overall pass criterion, checked at the end. Write
+  it as the sentence that decides the test: *"Test passes if …"*.
+
+Preconditions the agent can't decide from the screen belong in
+[setup](/docs/writing-tests/setup-teardown-rules) instead — seeding the
+order, granting the role — so the test is applicable by construction. The
+opposite of an entry criterion is an
+[optional step](/docs/writing-tests/step-constructs#optional): a step that
+sometimes doesn't apply *within* an otherwise valid test.
+
 ## Never embed credentials
 
 Test files are version-controlled; credentials must not be. Reference them
@@ -294,6 +342,8 @@ Before committing test files:
 - [ ] One goal per file, with a verifiable outcome.
 - [ ] Labels quoted, positions anchored — no bare "click the button".
 - [ ] Every acting step ends in `— what must be true afterwards`.
+- [ ] Outcomes that aren't visible where you acted have their own `Verify` step.
+- [ ] Preconditions name the entry criteria; postconditions state the pass criterion.
 - [ ] No credentials in any file — only named references.
 - [ ] Repeated sequences in `procedures/`, not copy-pasted.
 - [ ] Shared preconditions in `setup.md`, shared cleanup in `teardown.md`.
