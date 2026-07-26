@@ -69,6 +69,9 @@ iterate on a copy, and paste the winner back into the MDX.
   subgraph's boundary. To control the shape of a group's contents, split it
   into two smaller groups instead (e.g. "On-premise lab" + "Device farm"
   rather than one four-wide row that gets cut off).
+- **Order within a rank follows EDGE order, not node declaration order.**
+  Declaring `M` before `R` changes nothing; writing the `--> M` edge before
+  the `--> R` edge puts M above R and stops the two edges crossing.
 - **Order within a rank follows declaration order**, so declare the container
   you want first (top/left) first — `pc ~~~ ci` also pins the order.
 - **Nodes in the same rank stack vertically in `LR`**, which is how several
