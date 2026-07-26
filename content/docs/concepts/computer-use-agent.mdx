@@ -18,7 +18,7 @@ times, until the step's expected result is reached or its attempts run out:
 ```mermaid
 flowchart LR
   A[Screenshot<br/>read the screen] --> B{"Decide<br/>match step to<br/>what's visible"}
-  B --> C[Act<br/>click · type · scroll]
+  B --> C[Act<br/>click, type, scroll]
   C --> D[Verify<br/>expected vs. actual]
   D --> A
 ```
@@ -62,7 +62,7 @@ The same cycle as the app records it,
             <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
             <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
             <span className="size-1.5 rounded-full bg-fd-muted-foreground/40" />
-            <span className="ml-1 text-[8px] text-fd-muted-foreground">Contoso Orders · Records</span>
+            <span className="ml-1 text-[8px] text-fd-muted-foreground">Contoso Orders — Records</span>
           </span>
           <span className="block space-y-1.5 p-2">
             <span className="block h-1 w-10 rounded bg-fd-muted-foreground/30" />

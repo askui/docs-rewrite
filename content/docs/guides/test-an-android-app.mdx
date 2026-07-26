@@ -7,7 +7,7 @@ description: End-to-end, define the device, boot it, write the test case, run it
 The whole journey for one goal: a passing (or usefully failing) test against
 an Android app. Each step links to the feature page with the full detail.
 
-## 1 · Define the device
+## 1: Define the device
 
 Emulator or real phone:
 
@@ -17,14 +17,14 @@ Emulator or real phone:
 - **Real phone**: enable USB debugging, plug it in, **Add as profile** from
   the discovered list: [Android phone](/docs/devices/android-phone).
 
-## 2 · Start it
+## 2: Start it
 
 **Start** on the profile card. First emulator boot takes minutes, the
 [card walks through the states](/docs/devices/android-emulator#run-it)
 (Set up → Creating → Booting → Ready). Green dot = the device is an available
 test environment.
 
-## 3 · Write the test case
+## 3: Write the test case
 
 [Create the case](/docs/writing-tests) under `tests/` and name the target
 device in it. Android-specific craft:
@@ -53,13 +53,13 @@ Run this on the **Pixel 9** device.
 - Test passes if the Clock app is open and shows the time.
 ```
 
-## 4 · Run it and watch
+## 4: Run it and watch
 
 Pick the Android profile in **Run on**, press **Run**, and open the **Runs**
 page, [the conversation streams live](/docs/running-tests#watch-it-live):
 every decision, tap, and device screenshot as it happens.
 
-## 5 · Analyze the result
+## 5: Analyze the result
 
 The [run report](/docs/results/run-report) gives per-step expected vs.
 actual with a screenshot each, your incident log when something failed. The

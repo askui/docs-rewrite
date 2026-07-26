@@ -20,13 +20,13 @@ the model traffic:
 flowchart BT
   subgraph pc["Tester PC"]
     direction LR
-    D["«AskUI Desktop»<br/>author · run · review"]
+    D["«AskUI Desktop»<br/>author, run, review"]
     A["«Application under test»<br/>desktop app or browser"]
-    F[("«Project»<br/>tests · prompts · reports")]
+    F[("«Project»<br/>tests, prompts, reports")]
     D --> A
     D --> F
   end
-  pc -->|"screenshots · steps · conversation"| M["«Model provider»"]
+  pc -->|"screenshots, steps, conversation"| M["«Model provider»"]
 ```
 
 The **model provider** is the AI service that makes the agent's decisions:
@@ -47,7 +47,7 @@ outward in three steps, each one optional and independent:
 flowchart LR
   subgraph starts["Who starts the run"]
     subgraph pc["Tester PC"]
-      D["«AskUI Desktop»<br/>author · run · review"]
+      D["«AskUI Desktop»<br/>author, run, review"]
       B1["«Playwright»<br/>local browser"]
     end
     subgraph ci["CI pipeline"]
@@ -71,7 +71,7 @@ flowchart LR
     I1["«simulator»<br/>iOS simulator"]
   end
   starts --> R
-  starts -->|"screenshots · steps · conversation"| M
+  starts -->|"screenshots, steps, conversation"| M
   starts --> cloud
   starts --> lab
   starts --> farm
