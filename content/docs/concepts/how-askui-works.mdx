@@ -151,10 +151,13 @@ Four parts, each one you can inspect or swap:
   [your own](/docs/extending/custom-tools),
   [MCP servers](/docs/extending/mcp). The toolbox is the boundary of what a
   test can possibly do.
-- **A device layer** — the eyes and hands on the target:
-  [AgentOS](/docs/agentos) on a desktop machine, Playwright for a browser,
-  adb for Android. This is what turns "click 1180, 96" into a real click on
-  a real machine.
+- **An infrastructure layer** — the eyes and hands on the target, and the
+  part you don't have to build yourself: [AgentOS](/docs/agentos) on a
+  desktop machine, Playwright for a browser, adb for Android. It turns
+  "click 1180, 96" into a real click on a real machine — across operating
+  systems, remote machines, emulators and physical phones, with connection,
+  sessions and screen capture already solved
+  ([devices](/docs/devices)).
 - **The harness** — everything around the model that turns it into a tester.
   This is the part AskUI provides, and it decides how disciplined a run is:
   - **The loop** — screenshot, decide, act, verify, repeat, as above.
