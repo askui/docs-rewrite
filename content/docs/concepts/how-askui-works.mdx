@@ -9,13 +9,13 @@ operates real software through the same channel a human tester does — the
 screen, the mouse, the keyboard. There is no selector, no recording, no
 object map. You write the test in plain language; the agent carries it out.
 
-## The loop
+## How AskUI agents work
 
 For every step of your test the agent repeats one cycle:
 
 ```mermaid
 flowchart LR
-  A[Screenshot<br/>read the screen] --> B[Decide<br/>match step to what's visible]
+  A[Screenshot<br/>read the screen] --> B{"Decide<br/>match step to<br/>what's visible"}
   B --> C[Act<br/>click · type · scroll]
   C --> D[Verify<br/>expected vs. actual]
   D --> A
@@ -29,11 +29,49 @@ flowchart LR
 4. **Verify** — compare the observed result against the step's expected
    result, and record it for the [report](/docs/results/run-report).
 
+One cycle as it appears in a run's
+[conversation log](/docs/results#conversation-log):
+
+<div className="not-prose my-6 overflow-hidden rounded-lg border bg-fd-card text-sm">
+  <div className="flex flex-wrap items-center gap-2 border-b px-4 py-2 text-xs text-fd-muted-foreground">
+    <span className="flex size-5 items-center justify-center rounded-full bg-fd-primary/10 text-xs font-medium text-fd-primary">2</span>
+    <span className="font-medium text-fd-foreground">TEST · tests/login_test.md</span>
+    <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 font-medium text-emerald-600">PASS</span>
+    <span>13 tool calls</span>
+  </div>
+  <div className="divide-y">
+    <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
+      <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Screenshot</span>
+      <span className="font-mono text-xs"><span className="rounded border bg-fd-muted px-1.5 py-0.5">screenshot</span> <span className="text-fd-muted-foreground">1 image · 480ms</span></span>
+    </div>
+    <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
+      <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Decide</span>
+      <span>The login page is visible. "Sign-Up" is top right, next to "Log in" — I will click it.</span>
+    </div>
+    <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
+      <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Act</span>
+      <span className="font-mono text-xs"><span className="rounded border bg-fd-muted px-1.5 py-0.5">click 1180, 96</span> <span className="text-fd-muted-foreground">350 → 26 · 500ms</span></span>
+    </div>
+    <div className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-baseline sm:gap-4">
+      <span className="w-20 shrink-0 text-[11px] uppercase tracking-wider text-fd-muted-foreground">Verify</span>
+      <span>The start screen shows the green signed-in dot top right — the expected result of step 2 is met.</span>
+    </div>
+  </div>
+</div>
+
+The stage labels on the left are this page's four stages — the app shows the
+narration, the tool-call chips, and the tokens and latency per step. Every
+element of the log: [Runs](/docs/results#conversation-log).
+
 Because every decision starts from the live screen, the agent survives UI
 changes that break coordinate- or selector-based automation — and it is also
 why [two runs can take different paths](/docs/concepts/how-a-run-executes#why-execution-differs).
 
-## The four components
+## How AskUI makes CUA agents usable
+
+A raw CUA can drive a screen. Turning that into test automation your team
+runs every day takes four things:
+
 
 | Component | Role |
 | --- | --- |

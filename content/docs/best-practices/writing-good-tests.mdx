@@ -262,6 +262,45 @@ Each test now reads as its own scenario, the sign-in flow is defined once,
 and a failing setup blocks the tests below it instead of failing three times
 in a row.
 
+## When to reach for a tool
+
+Most steps are UI interaction. A [tool](/docs/extending/tools) is right when
+the screen isn't the best source of truth — enable it in the Tool Store
+first, then name it in the step
+([syntax](/docs/writing-tests/step-constructs#tool-invocations)):
+
+- **Verify what the screen can't show** — the record in the database, the
+  API response, the exported file. The UI can claim success while the data
+  is wrong.
+
+  ```md
+  8. Verify the "open_orders" SQL statement lists the order with status "New".
+  ```
+
+- **Get data right instead of letting the agent guess** — dates, conversions,
+  generated values.
+
+  ```md
+  3. Enter the date three days from today into "Delivery date".
+  ```
+
+- **Prepare and clean state** — in
+  [setup and teardown](/docs/writing-tests/setup-teardown-rules), seeding via
+  SQL or an API call is faster and more reliable than clicking the same
+  forms before every test.
+- **See what the screen hides** — the
+  [zoom tool](/docs/extending/tools#screen-zoom) for small targets, the QR
+  scanner for encoded content, a remote file for the application's log.
+- **Recover from infrastructure** — a
+  [rule](/docs/writing-tests/setup-teardown-rules#rules) plus a tool
+  ("if the scanner stops responding, run the `restart_scanner` tool and
+  repeat the step") turns a `BROKEN` run into a passing one.
+
+**Don't route around the UI under test.** If the user journey is what you're
+testing, click it — a tool that performs the user's action instead makes the
+test pass without testing anything. Create an order through the UI, then
+*verify* it with SQL.
+
 ## Non-deterministic execution
 
 Two runs of the same case can take different paths — by design
