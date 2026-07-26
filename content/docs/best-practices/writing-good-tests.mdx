@@ -266,7 +266,7 @@ in a row.
 
 Two runs of the same case can take different paths — by design
 ([why](/docs/concepts/how-a-run-executes#why-execution-differs)). The same
-step, two runs, both `PASSED`:
+step, two runs, both `PASSED` — here the **environment** differed:
 
 <div className="grid gap-3 md:grid-cols-2">
 
@@ -291,8 +291,32 @@ dismissed it, then clicked
 
 </div>
 
-Neither run is wrong: the order exists afterwards, which is what the step
-demanded. For a tester this means:
+It also happens with an identical environment, when your UI offers **two
+equivalent ways** to do the same thing:
+
+<div className="grid gap-3 md:grid-cols-2">
+
+```md title="Run 1"
+5. Search for order "4711".
+
+Agent Interpretation: clicked the
+magnifier icon, which opened the
+extended search panel, entered
+"4711" and confirmed.
+```
+
+```md title="Run 2"
+5. Search for order "4711".
+
+Agent Interpretation: typed "4711"
+into the search field in the
+toolbar and pressed Enter.
+```
+
+</div>
+
+None of these runs is wrong: the order was found, the order exists — which
+is what the steps demanded. For a tester this means:
 
 - **Judge the result, not the path** — the report's expected vs. actual
   per step is the contract; the exact clicks are the execution log, not
@@ -324,7 +348,8 @@ demanded. For a tester this means:
   ```md title="➕ tests/rules.md"
   ## Interaction
   - Never change application settings to make a step work.
-  - Reach "Records" through the left sidebar, not through search.
+  - Search from the toolbar field — do not use the extended search panel
+    behind the magnifier icon.
 
   ## Error handling
   - If an error dialog appears, document it and mark the step FAILED —
