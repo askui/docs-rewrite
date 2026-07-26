@@ -8,10 +8,10 @@ The model decides; the **harness** runs the test. It is the part of AskUI
 that a test framework would otherwise be: it walks your selection in
 **phases**, assembles what the agent is told for each one, holds the limits
 that stop a run from grinding, and writes the reports
-([where it sits](/docs/concepts/how-askui-works#what-a-cua-agent-is-made-of)).
+([where it sits](/docs/concepts/computer-use-agent#what-a-cua-agent-is-made-of)).
 
 Each phase is one autonomous agent execution: read the file, drive the UI
-through the [loop](/docs/concepts/how-askui-works#the-loop), write the report
+through the [loop](/docs/concepts/computer-use-agent#the-loop), write the report
 as it goes.
 
 ```mermaid
@@ -57,7 +57,7 @@ cookie banner and closes it first; the next doesn't get one. One finds the
 button immediately; another scrolls first.
 
 Different execution, same expected result — that is by design, and the
-[reason to use an agent at all](/docs/concepts/how-askui-works#why-not-a-script).
+[reason to use an agent at all](/docs/concepts/computer-use-agent#why-not-a-script).
 For reading results it means one thing: the step's **expected result is the
 contract**, the path is only the execution log.
 

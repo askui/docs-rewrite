@@ -1,7 +1,7 @@
 ---
 icon: Brain
-title: How AskUI agents work
-description: A Computer Use Agent executes your test the way a human tester would — read the screen, decide, act, verify.
+title: Computer Use Agent
+description: The agent that executes your test the way a human tester would — its loop, what it is made of, and why it beats a script.
 ---
 
 AskUI executes tests with a **Computer Use Agent (CUA)**: an AI agent that
@@ -138,7 +138,7 @@ The agent decides from the live screen instead, so it also handles what
 nobody wrote down: another application, another environment, a state that
 has decayed. A random pop-up costs it a click, not the run. That same
 freedom is why
-[two runs can take different paths](/docs/concepts/how-a-run-executes#why-execution-differs).
+[two runs can take different paths](/docs/concepts/test-automation-harness#why-execution-differs).
 
 ## What a CUA agent is made of
 
@@ -187,10 +187,10 @@ Four parts — two you choose, two we provide:
     the run as `BROKEN` instead of grinding on.
   - **The run lifecycle** — setup, the tests, teardown per folder, and the
     [report](/docs/results/run-report) written while it all happens
-    ([details](/docs/concepts/how-a-run-executes)).
+    ([details](/docs/concepts/test-automation-harness)).
 
 Next: how a whole run walks setup, tests and teardown
-([Test automation harness](/docs/concepts/how-a-run-executes)), how to write steps
+([Test automation harness](/docs/concepts/test-automation-harness)), how to write steps
 this loop executes reliably
 ([Writing good tests](/docs/best-practices/writing-good-tests)), and where
 the pieces sit in your network
