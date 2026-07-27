@@ -8,7 +8,28 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 import { RunEmbed } from '@/components/run-embed';
 import { Mermaid } from '@/components/mermaid';
 import { Lucide } from '@/components/lucide';
+import { basePath } from '@/lib/shared';
 import type { MDXComponents } from 'mdx/types';
+import type { ComponentProps, ElementType } from 'react';
+
+// Raw <img> in MDX is NOT auto-prefixed by Next's basePath (only next/link and
+// next/image are). Content references screenshots root-absolute, and some still
+// carry the historical "/docs-rewrite" prefix literally. Normalize both to the
+// active base path so images resolve whether the site is served under
+// /docs-rewrite (project page) or at the root of docs.askui.com.
+function withBasePath(src: string): string {
+  if (!src.startsWith('/')) return src; // external or relative — leave untouched
+  const rootRelative = src.startsWith('/docs-rewrite/')
+    ? src.slice('/docs-rewrite'.length)
+    : src;
+  return `${basePath}${rootRelative}`;
+}
+
+function Img(props: ComponentProps<'img'>) {
+  const Base = (defaultMdxComponents.img ?? 'img') as ElementType;
+  const src = typeof props.src === 'string' ? withBasePath(props.src) : props.src;
+  return <Base {...props} src={src} />;
+}
 
 // Register the components used across the docs globally, so MDX pages can use
 // <Callout>, <Tabs>, <Steps>, <Cards>, <Files>, <RunEmbed>, <Mermaid> etc.
@@ -31,6 +52,7 @@ export function getMDXComponents(components?: MDXComponents) {
     RunEmbed,
     Mermaid,
     Lucide,
+    img: Img,
     ...components,
   } satisfies MDXComponents;
 }

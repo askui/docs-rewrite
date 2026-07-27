@@ -32,6 +32,14 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build with Next (static export)
         run: pnpm build
+        env:
+          # Cutover toggle: set the repo variable DOCS_SERVE_AT_ROOT to "true"
+          # (Settings → Secrets and variables → Actions → Variables) to build for
+          # the custom-domain root docs.askui.com. Unset/anything else keeps the
+          # project-page build under /docs-rewrite. Both branches are non-empty
+          # on purpose — GitHub Actions expressions treat "" as unset. "ROOT" is
+          # the sentinel the app maps to an empty base path.
+          NEXT_PUBLIC_BASE_PATH: ${{ vars.DOCS_SERVE_AT_ROOT == 'true' && 'ROOT' || '/docs-rewrite' }}
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
