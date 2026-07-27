@@ -1,37 +1,49 @@
 ---
 title: AskUI Documentation
-description: Author and run AI-driven UI tests with AskUI Desktop and the AskUI CLI.
+description: Agentic UI test automation based on Computer Use Agents, author tests in plain language and run them on Desktop, Mobile & Web, from your local machine to CI and multi-device fleets.
 ---
 
-Author and run AI-driven UI tests — on the desktop and from the command line.
+**AskUI** is agentic UI test automation based on **Computer Use Agents (CUA)**. It lets non-technical people automate **Desktop, Mobile & Web** applications without writing code, there is no selector to write and no recording to maintain. You describe a step in plain language ("click the login button", "fill in the email field with the QA credentials"), a CUA agent carries it out on the real screen, and a report shows you exactly what happened and why.
 
-[Get started](/docs/get-started/install-desktop) · [Prompting best practices](/docs/using-askui-desktop/prompting-best-practices)
+You author and run tests in the **Desktop App**, integrate everything into your CI and development workflow with the **AskUI CLI**, rely on **AgentOS** to make any OS available to the CUA agent, and manage your workspace centrally in the **AskUI Hub**.
 
-## Where to start
+## How these docs are organized
 
 <Cards>
-  <Card title="AskUI Desktop" href="/docs/get-started/install-desktop">
-    The local host for authoring and running AI-driven UI tests. Build a test
-    Project, write prompts, and watch runs execute on your machine.
-
-    [Install AskUI Desktop →](/docs/get-started/install-desktop)
+  <Card title="Quickstart" href="/docs/quickstart">
+    Go from zero to a passing test in under 10 minutes. Covers account creation,
+    installation, and your first run.
   </Card>
-  <Card title="AskUI CLI" href="/docs/get-started/install-cli">
-    Run the same Projects headless — in CI, on a schedule, or across many
-    devices.
-
-    [Install the CLI →](/docs/get-started/install-cli)
+  <Card title="Desktop App" href="/docs/get-started/install-desktop">
+    Install AskUI Desktop, connect your devices, and follow the workflow:
+    write tests, run them, read the results.
   </Card>
-  <Card title="Prompting best practices" href="/docs/using-askui-desktop/prompting-best-practices">
-    How to structure a Project's prompts so runs are reliable, reusable, and
-    debuggable.
-
-    [Read the guide →](/docs/using-askui-desktop/prompting-best-practices)
+  <Card title="Writing Tests" href="/docs/writing-tests">
+    Test cases, plans, procedures, and prompts, how to author tests the
+    agent runs reliably.
+  </Card>
+  <Card title="Running Tests" href="/docs/running-tests">
+    Run from the app, schedule recurring runs, or go headless in CI with the
+    CLI.
   </Card>
   <Card title="AgentOS" href="/docs/agentos">
-    The runtime layer that gives agents direct control over a machine's OS —
-    keyboard, mouse, screen, and system functions.
-
-    [Explore AgentOS →](/docs/agentos)
+    The runtime layer that makes any OS available to the CUA agent.
+    Installation, deployment modes, and enterprise configuration.
+  </Card>
+  <Card title="Account & Billing" href="/docs/account-billing/workspaces">
+    Workspaces, access tokens, and plans in the AskUI Hub.
   </Card>
 </Cards>
+
+## The four components
+
+| Component | What it is | When you need it |
+|-----------|-----------|-----------------|
+| **AskUI Desktop** | GUI app for editing and running tests on your local environment, with one-click device management & provisioning and scheduled runs | Always, this is where you write and review tests |
+| **AskUI CLI** | Headless runner (`askui run`) that integrates AskUI into your CI and development workflow | CI pipelines, scheduled runs, multi-device fleets |
+| **AgentOS** | Makes any OS available to the CUA agent, keyboard, mouse, and screen | Desktop and Android targets (installed automatically for local runs) |
+| **AskUI Hub** | The central management platform, workspace, members, access tokens, and usage | Account setup, tokens for CI, billing |
+
+## Not sure where to start?
+
+Go to the **[Quickstart](/docs/quickstart)**, it walks you through account creation, installation, and a first passing test in under 10 minutes.

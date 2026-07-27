@@ -1,0 +1,33 @@
+---
+icon: Chrome
+title: Web browser
+description: A local browser window the app launches and drives itself, Chromium, Firefox, or WebKit.
+---
+
+A **Web browser** profile tests web applications in a browser that AskUI
+Desktop launches and controls itself. No AgentOS, no separate install.
+
+## Create it
+
+1. **Add profile** → **Web browser**.
+2. Fill in the fields:
+   - **Browser**: Chromium, Firefox, or WebKit *(select, default `Chromium`)*
+   - **Start URL**: full URL every session opens with, e.g. `https://staging.example.com` *(text, optional)*
+   - **Headless**: no visible window; the agent still sees the page through screenshots *(toggle, default off)*
+3. **Add profile**.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-profile-web-browser.png"
+  alt="The Web browser profile editor with browser choice, start URL, and headless toggle"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+## Run it
+
+1. **Connect**: the first connect downloads the browser bundle once, expect
+   a short wait.
+2. Pick the profile in the test's **Run on** dropdown and press **Run**.
+
+Headless keeps your screen free; use a visible window when you want to
+watch. One profile per environment works well: `Staging web app`,
+`Prod smoke`, same tests, different start URL.

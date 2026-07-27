@@ -1,1 +1,1 @@
-{ "title": "AgentOS", "pages": ["index", "understanding", "installation", "how-to-guides", "reference", "release-notes"] }
+{ "title": "AgentOS", "icon": "Cpu", "pages": ["index", "understanding", "installation", "deployment", "reference", "release-notes"] }

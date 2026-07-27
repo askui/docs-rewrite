@@ -1,0 +1,230 @@
+---
+icon: Wrench
+title: Tool Store
+description: What the agent is allowed to do during a run, enable, disable, and configure the toolbox per project.
+---
+
+import { Lucide } from '@/components/lucide';
+
+Everything the agent does happens through a **tool**, mouse, screenshot,
+file access, database query. The toolbox is the boundary of what a test can
+possibly do. Manage it under **Utils → Tool Store**.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-utils-tools.png"
+  alt="The Tool Store tab on the Utils page listing built-in tools with enable switches"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+| Tier | Behavior |
+| --- | --- |
+| **Device tools** | Screenshot, click, type, injected automatically for the run's device kind. Always on, not listed |
+| **Default tools** | Enabled unless you switch them off |
+| **Optional tools** | Disabled until you enable them, typically tools with reach beyond the UI under test, like a shell or database access |
+| **[Custom tools](/docs/extending/custom-tools)** | Your own C# tools from `utils/custom_tools/`, always part of the run's toolbox once the file exists |
+| **[MCP tools](/docs/extending/mcp)** | Tools of the MCP servers registered in `utils/mcp.json`, connected at run start |
+
+Some tools take configuration when added, a connection string, a base URL.
+`${VAR}` values resolve at run start, from the project's [secrets](/docs/extending/secrets) first and the environment second; credentials belong
+in [named secrets](/docs/extending/secrets).
+
+Choices are saved to `utils/tools.json`, the whole team runs with the same
+toolbox. An untouched tool follows its tier default.
+
+<Accordions>
+<Accordion title="What utils/tools.json looks like">
+
+```json title="utils/tools.json"
+{
+  "tools": {
+    "datetime": true,
+    "qr_scan": true,
+    "http_request": {
+      "enabled": true,
+      "config": { "AllowedHosts": "api.example.com" }
+    },
+    "shell_script": {
+      "enabled": true,
+      "config": {
+        "ToolName": "restart_scanner",
+        "ScriptPath": "C:/qa/restart_scanner.ps1",
+        "Description": "Restarts the barcode scanner service."
+      }
+    }
+  }
+}
+```
+
+`true`/`false` is the shorthand for tools without configuration; a configured
+tool stores `enabled` plus its values. A tool that isn't listed follows its
+tier default. Edit via the UI, the file is just what gets committed.
+
+</Accordion>
+</Accordions>
+
+## The tools in the store
+
+All store tools are currently **Optional**, off until you enable them.
+Grouped by where they reach; required parameters in bold. Every tool heading
+is a link, copy it to point a colleague at exactly one tool.
+
+### Seeing the screen better
+
+#### <Lucide name="zoom-in" /> Screen zoom [#screen-zoom]
+
+A zoomed-in crop of a screen region (computer device).
+
+- **Use it when:** the agent keeps missing small targets, tiny checkboxes,
+  dense tables. The last rung of the
+  [misclick ladder](/docs/best-practices/analyzing-failures#the-agent-misclicks).
+
+```md
+4. Use the zoom tool to click the "Accept AGB" checkbox.
+```
+
+#### <Lucide name="qr-code" /> QR scanner [#qr-scanner]
+
+Scan and decode a QR code from the screen or an image (computer, web,
+Android).
+
+- **Use it when:** the application generates a QR code, invoice, ticket,
+  and the test must verify it encodes the right content.
+
+```md
+6. Scan the QR code on the invoice — it encodes the order number from step 2.
+```
+
+### Test data
+
+#### <Lucide name="calendar-clock" /> Date & time [#date-time]
+
+The current date/time; the agent can ask with a day offset (1 = tomorrow).
+
+- **Use it when:** a step needs a real date, "enter a delivery date three
+  days from today", or verifies a timestamp the UI shows.
+- **Parameters:** Format, Timezone.
+
+```md
+3. Enter the date three days from today into "Delivery date".
+```
+
+#### <Lucide name="hash" /> Number converter [#number-converter]
+
+Convert between decimal, hex, binary, octal.
+
+- **Use it when:** the application shows values in one base and the test
+  data is in another, hex device IDs, register values.
+
+```md
+5. Verify the "Device ID" field shows the hex value of 305419896.
+```
+
+### Beyond the UI: on this machine
+
+#### <Lucide name="globe" /> HTTP client [#http-client]
+
+HTTP requests (GET, POST, …) against APIs and webhooks; header values
+support `${VAR}` [secrets](/docs/extending/secrets).
+
+- **Use it when:** cross-checking the UI against the backend, after
+  checkout, verify via the API that the order really exists, or triggering
+  a webhook as test setup.
+- **Parameters:** Allowed hosts (empty = any).
+
+```md
+8. Perform a GET request to https://api.example.com/orders — the new order is in the response.
+```
+
+#### <Lucide name="database" /> SQL database [#sql-database]
+
+Run allowlisted SQL statements via any ODBC driver; raw SQL is a separate,
+dangerous opt-in.
+
+- **Use it when:** verifying the record actually landed in the database, or
+  seeding and cleaning test data in
+  [setup and teardown](/docs/writing-tests/setup-teardown-rules).
+- **Parameters:** **ODBC driver**, **Server**, **Database**, credentials,
+  Allowed statements (`name: SQL` per line, the agent runs statements by
+  these names), Allow raw SQL, full list in the add dialog.
+
+```md
+9. Run the "open_orders" SQL statement — the new order appears with status NEW.
+```
+
+#### <Lucide name="terminal" /> Shell script [#shell-script]
+
+Run a pre-configured shell/batch script; the agent invokes it by the name
+you give it.
+
+- **Use it when:** a script already solves it, restarting a scanner
+  service as a [recovery](/docs/writing-tests/step-constructs#beyond-steps),
+  resetting the test database.
+- **Parameters:** **Tool name**, **Script path**, **Description**.
+
+```md title="tests/rules.md"
+- If the scanner stops responding, run the restart_scanner tool and repeat the step.
+```
+
+#### <Lucide name="file-search" /> File exists [#file-exists]
+
+Check whether a file or directory exists on this machine.
+
+- **Use it when:** the test ends in an export or download, verify the file
+  actually appeared.
+- **Parameters:** **Base directory**.
+
+```md
+7. Check that the file "order_export.pdf" exists in C:/exports.
+```
+
+### Files on the controlled machine
+
+For runs where the application under test is on **another machine**
+(computer device) and writes files there.
+
+#### <Lucide name="folder-search" /> List remote files [#list-remote-files]
+
+List files in a directory on the machine being controlled.
+
+- **Use it when:** checking the export folder on the test machine after the
+  run's actions.
+- **Parameters:** **Base directory**, Allowed file extensions.
+
+```md
+5. List the files in the export folder — a new PDF was created.
+```
+
+#### <Lucide name="file-down" /> Read remote file [#read-remote-file]
+
+Read a file's text content from the controlled machine.
+
+- **Use it when:** the content matters, not just the existence, verify a
+  log line or an exported CSV on the test machine.
+- **Parameters:** **Base directory**.
+
+```md
+6. Read the exported CSV — it contains the order number from step 3.
+```
+
+## Using a tool in a test
+
+Once enabled, a tool is available wherever steps live, test cases,
+[setup and teardown](/docs/writing-tests/setup-teardown-rules), and
+[procedure](/docs/writing-tests/procedures) bodies. Describe the action, or
+name the tool explicitly when two could match:
+
+```md
+6. Perform an HTTP GET request to `https://example.com` — the response
+   status is 200.
+7. Use the `sql_database` tool to run the statement `test_data`.
+```
+
+The full step vocabulary:
+[Step constructs → Tool invocations](/docs/writing-tests/step-constructs#tool-invocations).
+
+A step that names a tool the run doesn't have is flagged by the agent:
+**WARN** when it accomplished the step reliably another way, **BROKEN**,
+with a hint to enable the tool, when the step depends on it.
+
+Need more? [Custom tools](/docs/extending/custom-tools) for anything you can
+write in C#; [MCP servers](/docs/extending/mcp) for existing tool servers.

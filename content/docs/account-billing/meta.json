@@ -1,1 +1,1 @@
-{ "title": "Account & Billing", "pages": ["workspaces", "billing"] }
+{ "title": "Account & Billing", "icon": "CreditCard", "pages": ["workspaces", "billing", "usage-dashboard", "members"] }

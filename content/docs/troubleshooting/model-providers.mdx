@@ -1,0 +1,85 @@
+---
+title: Model provider errors
+description: Fix 429, 401, 403, 404, connection refused, and vision-model errors when using a custom model provider (BYOM).
+---
+
+These errors appear when AskUI Desktop tests your API credentials on save, or
+during a run when the model provider rejects a request. They only apply when
+you have configured a [custom model provider](/docs/extending/model-providers).
+
+### 429 Too Many Requests
+
+**What it means:** You've sent too many requests to the AI provider in a short
+time. Their system is temporarily blocking new requests.
+
+Each provider (Anthropic, OpenAI, etc.) limits how many requests you can make
+per minute. A test suite that runs many tests back-to-back can hit this limit
+quickly.
+
+**What to do:**
+1. Wait a few minutes, then try again, the limit resets automatically.
+2. Check your quota in your provider's console:
+   - Anthropic: [console.anthropic.com](https://console.anthropic.com) → Usage
+   - OpenAI: [platform.openai.com](https://platform.openai.com) → Usage
+3. If this happens regularly, upgrade to a higher usage tier with your provider.
+4. Alternatively, switch back to the **AskUI hub** (Settings → Model Provider →
+   Remove key), the hub handles rate limits automatically.
+
+### 401 Unauthorized
+
+**What it means:** The API key you entered is wrong, was typed incorrectly, or
+has been revoked.
+
+**What to do:**
+1. Go to **Settings → Model Provider** and check the key you entered.
+2. Generate a fresh key in your provider's console and paste it in, don't type
+   it by hand.
+3. Make sure you copied the full key. Keys are long strings and it's easy to
+   miss characters at the start or end.
+
+### 403 Forbidden
+
+**What it means:** Your API key is valid, but your account doesn't have
+permission to use this model or feature. Some models (e.g. Claude, GPT-5.4)
+require a paid plan or explicit access request.
+
+**What to do:**
+1. Log in to your provider's console and check whether your plan includes API
+   access to the model you selected.
+2. Try a different model that's included in your current plan, or switch back to
+   the AskUI hub.
+
+### 404 Not Found / Model not found
+
+**What it means:** The model ID you entered doesn't exist, or was typed
+incorrectly. Model IDs are case-sensitive and must match exactly.
+
+**What to do:**
+1. Go to **Settings → Model Provider** and check the **Model** field.
+2. Copy the exact model ID from your provider's documentation:
+   - Anthropic: [docs.anthropic.com/models](https://docs.anthropic.com/en/docs/about-claude/models/overview)
+   - OpenAI: [platform.openai.com/docs/models](https://platform.openai.com/docs/models)
+
+### Connection refused / Could not connect to server
+
+**What it means:** AskUI Desktop tried to reach your model's endpoint but got
+no response. Either the address is wrong or the server isn't running.
+
+Most common with self-hosted models (vLLM, Ollama, llama.cpp).
+
+**What to do:**
+1. Make sure your local model server is running before starting a run.
+2. Check the **Base URL** in **Settings → Model Provider**, it should look like
+   `http://localhost:8000/v1`. Confirm the port matches what your server uses.
+3. If connecting to a remote server, check that it's reachable on your network
+   and no firewall is blocking the port.
+
+### The agent can't see the screen (text-only model)
+
+**What it means:** The model you configured is text-only. It can't process
+screenshots, so the agent can't see the UI it's supposed to test.
+
+**What to do:** Switch to a **vision-capable** model:
+- Anthropic: any Claude 3 or later model
+- OpenAI: `gpt-5.4`, `gpt-5.4-mini`
+- Self-hosted: Qwen-VL, LLaVA, InternVL, or similar vision models

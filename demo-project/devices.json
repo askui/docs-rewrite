@@ -1,0 +1,76 @@
+{
+  "version": 5,
+  "profiles": [
+    {
+      "type": "agent-os",
+      "id": "windows-desktop",
+      "name": "Windows Desktop",
+      "description": "This machine\u0027s desktop, via the AskUI Core Service (system service on port 26000).",
+      "icon": "server",
+      "host": "localhost",
+      "port": 26000,
+      "displayId": 1,
+      "useSystemProxy": false,
+      "browser": "chrome",
+      "headless": false,
+      "startUrl": "",
+      "serial": "",
+      "udid": "",
+      "managed": false,
+      "includeDesktop": true,
+      "includeWeb": false
+    },
+    {
+      "type": "web-browser",
+      "id": "chrome-browser",
+      "name": "Chrome Browser",
+      "description": "A local Chrome window, launched and driven by Playwright.",
+      "icon": "chrome",
+      "host": "localhost",
+      "port": 23000,
+      "displayId": 1,
+      "useSystemProxy": false,
+      "browser": "chrome",
+      "headless": false,
+      "startUrl": "",
+      "serial": "",
+      "udid": "",
+      "managed": false,
+      "includeDesktop": true,
+      "includeWeb": false
+    },
+    {
+      "type": "android",
+      "id": "pixel-9",
+      "name": "Pixel 9",
+      "icon": "smartphone",
+      "host": "localhost",
+      "port": 23000,
+      "displayId": 1,
+      "useSystemProxy": false,
+      "browser": "chrome",
+      "headless": false,
+      "startUrl": "",
+      "serial": "",
+      "udid": "",
+      "managed": false,
+      "includeDesktop": true,
+      "includeWeb": false,
+      "provision": {
+        "targetType": "Mobile",
+        "platform": "Android",
+        "version": "34",
+        "form": "Emulator",
+        "providerId": "android",
+        "options": {
+          "AvdName": "askui-pixel-9",
+          "SystemImage": "system-images;android-34;google_apis;x86_64",
+          "DeviceProfile": "pixel_9",
+          "Headless": "false"
+        },
+        "onConnect": "Reuse",
+        "onDisconnect": "Stop"
+      }
+    }
+  ]
+}

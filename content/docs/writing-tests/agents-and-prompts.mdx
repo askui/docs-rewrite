@@ -1,0 +1,88 @@
+---
+icon: Bot
+title: Agents & Prompts
+description: The agent's standing instructions, four prompt files every Project carries, what each does, and which ones you edit.
+---
+
+The `prompts/` folder is what you'd tell a new tester on day one, standing
+instructions the agent gets before every run. Every new Project is seeded
+with four files; edit them on the **Agents** page or in any editor.
+
+| File | Holds | You edit it? |
+| --- | --- | --- |
+| `system_capabilities.md` | The agent's identity and error discipline | Rarely, the defaults keep runs honest |
+| `device_information.md` | Quirks of the machine under test | Only when the machine has quirks |
+| `ui_information.md` | How **your application** works | Yes, the file you invest the most in |
+| `report_format.md` | Structure and statuses of the report | When your reporting needs differ |
+
+## System capabilities
+
+`system_capabilities.md` defines what the agent is and how it behaves when things go wrong. The
+defaults are deliberately strict:
+
+> You have a maximum of **2 attempts per step**. If a step does not succeed
+> after 2 attempts, stop immediately. Do not try a third time.
+
+Two conventions the agent relies on:
+
+**Credentials** never live in a test. A step references a
+[named secret](/docs/extending/secrets); the agent types a placeholder and
+the real value is substituted at execution time, hidden from the model. \
+**Scratchpad**: the agent can persist notes across phases with the
+scratchpad tools, but only when a test explicitly instructs it to.
+
+## Device information
+
+`device_information.md`, machine quirks the agent can't see for itself, keep it small. The agent
+already sees the screen, so OS and display basics rarely need describing:
+
+```markdown
+* Always execute on display 1.
+* The corporate lock screen appears after 5 minutes of inactivity.
+```
+
+Swap this file when retargeting a Project at a different machine.
+
+## UI information
+
+`ui_information.md`, where the agent learns your application, the domain knowledge that lets a
+[colleague without domain knowledge](/docs/writing-tests/step-constructs)
+execute your tests. The default ships as placeholders:
+
+```markdown
+## Navigation
+The application has these primary areas: Dashboard, Records, Settings…
+
+## State indicators
+"Login state is shown top-right: a green dot means signed in, red means the
+session expired — sign in again."
+
+## Dialogs & quirks
+"Destructive actions open a centered confirmation dialog that must be
+confirmed or dismissed before continuing."
+```
+
+This is also where you steer **how** the agent operates your UI, "enter
+numbers via the on-screen numpad, never the keyboard"
+([more](/docs/writing-tests/step-constructs#beyond-steps)).
+
+## Report format
+
+`report_format.md`, the template for every report the agent writes: title, **Test Case ID**,
+date, status, and the per-step sections. Two parts are load-bearing:
+
+- The **`**Status:**` line is parsed by the runner** to set the run's
+  result, remove it and a passing test is recorded as BROKEN.
+- The status definitions (PASSED / FAILED / SKIPPED / WARN / BROKEN) are the
+  [status vocabulary](/docs/results/run-report#test-report) your
+  reports and Dashboard use.
+
+Customize the sections when your organization needs different evidence,
+keep the `**Status:**` line.
+
+## Per-suite instructions
+
+Standing instructions that apply to one suite only, not to the whole
+Project, go into the suite's
+[rules.md](/docs/writing-tests/setup-teardown-rules#rules), which accumulates
+with these prompt files at run time.

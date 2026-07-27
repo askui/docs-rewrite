@@ -4,7 +4,7 @@ description: What AgentOS is, why it exists, and the key concepts you need to kn
 ---
 
 AgentOS is the runtime layer that gives AI agents direct control over a
-machine's operating system — keyboard, mouse, screen, and system-level
+machine's operating system, keyboard, mouse, screen, and system-level
 functions. It sits between the agent and the OS, handling the low-level
 interactions so agents can focus on tasks.
 
@@ -16,27 +16,27 @@ sensible defaults mean you don't need to touch configuration files to start.
 **Platform independent.** AgentOS runs on Windows, macOS, and Linux. In
 [Companion Mode](/docs/agentos/understanding/control-modes), it can also control
 Android devices, iOS Simulators (experimental), and any machine reachable
-through hardware interfaces — regardless of what OS the target runs.
+through hardware interfaces, regardless of what OS the target runs.
 
 ## How it works
 
 AgentOS operates in two **control modes**:
 
-- **Host Mode** — AgentOS runs directly on the target machine as software. It
+- **Host Mode**: AgentOS runs directly on the target machine as software. It
   controls the desktop via OS-level APIs with full access to screenshots,
   input, windows, and processes.
-- **Companion Mode** — AgentOS runs on an external device (e.g. Raspberry Pi)
+- **Companion Mode**: AgentOS runs on an external device (e.g. Raspberry Pi)
   and controls the target through hardware interfaces (USB, Bluetooth, HDMI
   capture). No software installation on the target required.
 
-Both modes expose the same **capabilities** — the building blocks for screen
+Both modes expose the same **capabilities**, the building blocks for screen
 reading, input simulation, and window management.
 
 ## Why AgentOS?
 
 Building a Computer Use Agent proof-of-concept is straightforward. Getting it
 to **production** is a different story. The gap between "works on my machine"
-and "runs reliably at scale" is where most teams get stuck — especially in
+and "runs reliably at scale" is where most teams get stuck, especially in
 CI/CD, where VMs start at the logon screen, automation needs an interactive
 session, and OS security blocks input injection from non-interactive
 processes. AgentOS solves session management, login automation, and privilege
@@ -44,9 +44,9 @@ escalation so the agent can do its work.
 
 <Cards>
   <Card title="vs Automation Libraries" href="/docs/agentos/understanding/concepts"
-    description="PyAutoGUI, RobotJS, xdotool — and why they fall short in production." />
+    description="PyAutoGUI, RobotJS, xdotool, and why they fall short in production." />
   <Card title="vs Remote Control Software" href="/docs/agentos/understanding/concepts"
-    description="RDP, TeamViewer, VNC — built for humans, not agents." />
+    description="RDP, TeamViewer, VNC, built for humans, not agents." />
 </Cards>
 
 ## What's next?

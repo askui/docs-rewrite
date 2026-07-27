@@ -1,0 +1,67 @@
+---
+title: Network requirements
+description: Which domains and ports have to be reachable, per machine role, and which ones disappear when you bring your own model or a licence key.
+---
+
+Allowlist per **machine role**: the machine that starts runs needs AskUI and
+the model endpoint, a test machine needs neither. How to use that split as a
+security boundary:
+[What the agent may do](/docs/best-practices/security#allowlist-the-domains-nothing-more).
+
+## Outbound, from the machine that starts runs
+
+AskUI Desktop and the [CLI](/docs/running-tests/cli) need HTTPS (443) to:
+
+| Domain | Purpose | Still needed if… |
+|--------|---------|------------------|
+| `auth.askui.com` | Sign-in (OIDC) | Not in [license-key mode](/docs/get-started/licensing) |
+| `workspaces.askui.com` | Workspace API, access-token validation | Not in license-key mode |
+| `inference.askui.com` | Model inference through the AskUI hub | Not with [your own model provider](/docs/extending/model-providers) |
+| `files.askui.com` | Installer and update downloads (release CDN) | Only for installing and updating |
+
+With your own provider, that endpoint replaces `inference.askui.com`, your
+Anthropic account, your Azure AI Foundry resource, or a host inside your own
+network. With **on-premise inference** no external model domain is needed at
+all.
+
+<Callout title="DNS, not firewall">
+Desktop's sign-in callback uses the hostname `desktop-auth.askui.com`, which
+resolves to `127.0.0.1`. No outbound connection is made to it, but the name
+must be **resolvable**: a DNS setup that blocks unknown external names breaks
+the callback even though nothing leaves the machine.
+</Callout>
+
+## Outbound, from a test machine
+
+A machine that only hosts the application under test needs **nothing from
+this list**. It talks to the application under test; the machine driving the
+run does the rest. Downloads are the exception, and only until the machine is
+provisioned: browser bundles for [web profiles](/docs/devices/web-browser),
+the Android SDK for [emulators](/docs/devices/android-emulator), and NuGet
+packages for [custom tools](/docs/extending/custom-tools), all resolvable
+from an internal mirror.
+
+## Inbound
+
+| Port | Where | When |
+|------|-------|------|
+| 23000 | The machine running [AgentOS](/docs/agentos), started by the app | Driving that machine from another one |
+| 26000 | Same, when AgentOS runs as an [installed service](/docs/agentos/installation/service) | Shared lab machines |
+
+Restrict those ports to the machines allowed to start runs. Local runs on a
+single PC need no inbound rule at all, the connection never leaves the
+machine.
+
+## Proxy
+
+AskUI Desktop is configured **in the app**, under **Settings → Network
+proxy** (system proxy, manual address with bypass list, NTLM/Kerberos or
+stored credentials). Setup and what to check when connections fail:
+[Network proxy](/docs/troubleshooting/network-proxy).
+
+## Air-gapped
+
+[License-key mode](/docs/get-started/licensing) plus a model endpoint inside
+your network removes every AskUI domain from the picture. Runtime downloads
+still need a reachable mirror or pre-provisioned tooling. What that setup
+looks like end to end: [Enterprise fit](/docs/concepts/enterprise-fit).

@@ -1,0 +1,28 @@
+---
+icon: ListChecks
+title: Plans
+description: A plan names the tests that run together, your smoke set, regression pack, or nightly suite.
+---
+
+A plan is your test selection: which cases run together, as one unit. The
+classic examples, a fast `smoke` set for every change, the full regression
+pack for the release, a nightly suite.
+
+A plan is a Markdown file in `plans/`:
+
+```md title="plans/smoke.md"
+# Smoke Plan · Run on every change
+
+Run the following tests in order. Stop on the first failure.
+
+- LOGIN_001 · valid login
+- All tests in `tests/`
+```
+
+Reference tests by id, name, or folder, the agent resolves the entries
+against `tests/`. Because a plan is plain text, it also carries execution
+notes like "stop on the first failure."
+
+**Run it:** pick the plan from the Run split button on the **Plans** page,
+headless with [`askui run --plan smoke`](/docs/running-tests/cli), or on a
+[schedule](/docs/running-tests/scheduling).

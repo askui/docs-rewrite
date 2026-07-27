@@ -1,0 +1,47 @@
+---
+title: Troubleshooting
+description: Step-by-step fixes for common AskUI issues, connection, agent behavior, performance, model providers, and more.
+---
+
+<Cards>
+  <Card title="Connection & sessions" href="/docs/troubleshooting/connection-sessions">
+    Session mismatches, post-reboot failures, RDP and locked-screen issues.
+  </Card>
+  <Card title="Misclicks & stuck runs" href="/docs/troubleshooting/misclicks-and-stuck-runs">
+    Wrong clicks, screen misinterpretation, and runs stopping mid-test.
+  </Card>
+  <Card title="Performance & cost" href="/docs/troubleshooting/performance-cost">
+    Unexpected cost increases and slow or crashing long runs.
+  </Card>
+  <Card title="AgentOS service (Windows)" href="/docs/troubleshooting/agentos-service">
+    Restarting the service, CTRL+ALT+DEL, elevated apps, and port errors.
+  </Card>
+  <Card title="Network proxy" href="/docs/troubleshooting/network-proxy">
+    Configuring the proxy AskUI Desktop uses, and what to check when connections fail.
+  </Card>
+  <Card title="Run failures" href="/docs/troubleshooting/run-failures">
+    Debugging FAILED and BROKEN statuses, and runs that produce no results.
+  </Card>
+  <Card title="Model provider errors" href="/docs/troubleshooting/model-providers">
+    429, 401, 403, 404, connection refused, and vision-model errors for BYOM.
+  </Card>
+</Cards>
+
+---
+
+## Logs
+
+The AskUI Core Service and the Remote Device Controller write to two separate
+locations. For most issues, collect logs from **both**:
+
+**Remote Device Controller** (runs in the interactive user session):
+
+```
+%userprofile%\.askui\Logs
+```
+
+**AskUI Core Service** (runs as SYSTEM):
+
+```
+C:\Windows\System32\config\systemprofile\.askui\logs
+```

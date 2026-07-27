@@ -1,0 +1,32 @@
+---
+title: Run failures
+description: Debug FAILED and BROKEN run statuses, and fix runs that produce no results.
+---
+
+### Debugging a failing run
+
+The fastest way to debug a failing run:
+
+1. Open the run report (the `.md` file in your project's workspace folder, or
+   inline in AskUI Desktop).
+2. Find the first step with status `FAILED` or `BROKEN`, that is where to
+   focus.
+3. Check the screenshot for that step. `FAILED` means the expected outcome
+   didn't match; `BROKEN` means an infrastructure problem (connection lost,
+   session expired) stopped the run.
+4. For AgentOS issues, check the [logs](/docs/troubleshooting#logs) for more
+   detail.
+
+If you cannot resolve the issue yourself, see [Get help](/docs/support/get-help)
+for how to generate a diagnostic report and contact support.
+
+### Run completes with 0 results ("No tests ran")
+
+The run started but found no test files to execute.
+
+1. Check that you're running from the correct **Project root**, the folder that
+   contains `tests/`, `prompts/`, etc.
+2. Check that your test files are inside `tests/` and have a supported extension
+   (`.md`, `.txt`, `.pdf`, `.csv`, `.json`).
+3. If you used `--plan`, check that the plan file exists in `plans/` and
+   references valid test paths.

@@ -1,0 +1,97 @@
+---
+title: Overview
+description: Frequently asked questions about AskUI, capabilities, runs, billing, and more.
+---
+
+<Cards>
+  <Card title="General" href="/docs/faq/general">
+    What AskUI is, how it works, platform support, and security.
+  </Card>
+  <Card title="Getting started" href="/docs/faq/getting-started">
+    First steps, free trial, and whether you need to write code.
+  </Card>
+  <Card title="Technical" href="/docs/faq/technical">
+    CI/CD, model providers, virtual machines, proxy, and installation
+    requirements.
+  </Card>
+  <Card title="Runs & reports" href="/docs/faq/runs-reports-cost">
+    Run status meanings, reports, and what a run costs.
+  </Card>
+  <Card title="Pricing & licensing" href="/docs/faq/pricing-licensing">
+    Plans, on-premise options, billing errors, and reading credit consumption.
+  </Card>
+  <Card title="Common use cases" href="/docs/faq/use-cases">
+    What you can automate, including embedded and proprietary UIs.
+  </Card>
+</Cards>
+
+---
+
+Experiencing a specific error or unexpected behavior? See
+[Troubleshooting](/docs/troubleshooting) for step-by-step fixes, or
+[Get help](/docs/support/get-help) to contact the team.
+
+---
+
+## Find your question
+
+The docs answer these directly, each question links to the page that
+answers it.
+
+### Getting started & concepts
+
+| Question | Answered in |
+| --- | --- |
+| What is a CUA agent, and how does AskUI execute a test? | [How AskUI works](/docs/concepts/computer-use-agent) |
+| Why did the agent do it differently than last run? | [Test automation harness](/docs/concepts/test-automation-harness#why-execution-differs) |
+| What leaves our network, and what is stored where? | [Enterprise fit](/docs/concepts/enterprise-fit) |
+| Proxy, air-gapped use, CI runners, OS support? | [Infrastructure requirements](/docs/concepts/enterprise-fit#infrastructure-requirements) |
+| Should testers, developers, or both own the testware? | [Sharing the project](/docs/concepts/team-setups) |
+| Can I run without an AskUI account? | [License key activation](/docs/get-started/licensing) |
+
+### Devices
+
+| Question | Answered in |
+| --- | --- |
+| Which device kinds exist, and how do I create a profile? | [Devices](/docs/devices) |
+| How does a test know which device to use? | [Devices → How a test picks its device](/docs/devices#how-a-test-picks-its-device) |
+| Does a desktop run take over my mouse and keyboard? | [Devices → It uses your mouse and keyboard](/docs/devices#it-uses-your-mouse-and-keyboard) |
+| What do the emulator's Booting / Ready states mean? | [Android emulator → Run it](/docs/devices/android-emulator#run-it) |
+| How do I test on a real Android phone? | [Android phone](/docs/devices/android-phone) |
+| Can I test iOS from Windows? | [iOS simulator](/docs/devices/ios-simulator) |
+| Can one agent drive several machines in one test? | [Multi computer](/docs/devices/multi-computer) |
+
+### Writing tests
+
+| Question | Answered in |
+| --- | --- |
+| How do I create a test case, and what shape does it have? | [Test cases](/docs/writing-tests) |
+| Which file formats can a test case have? | [Test case formats](/docs/writing-tests#anatomy--formats) |
+| When do I use setup.md, teardown.md, rules.md? | [Setup, Teardown & Rules](/docs/writing-tests/setup-teardown-rules) |
+| How do I reuse a step sequence across tests? | [Procedures](/docs/writing-tests/procedures) |
+| How do I keep credentials out of test files? | [Secrets](/docs/extending/secrets) |
+| Can one case target desktop and mobile together? | [Test cases → Target multiple platforms](/docs/writing-tests#target-multiple-platforms) |
+| How do I skip a case temporarily? | [Test cases → skip](/docs/writing-tests#skip) |
+| How do I group tests into smoke / regression sets? | [Plans](/docs/writing-tests/plans) |
+| What can a step express, conditions, waits, checks? | [Step constructs](/docs/writing-tests/step-constructs) |
+| How do I write steps the agent executes reliably? | [Writing good tests](/docs/best-practices/writing-good-tests) |
+
+### Running & results
+
+| Question | Answered in |
+| --- | --- |
+| How do I start a run, and what happens during one? | [Running a test](/docs/running-tests) |
+| Can I watch the agent while it works? | [Running → Watch it live](/docs/running-tests#watch-it-live) |
+| How do I run suites automatically every day? | [Scheduling](/docs/running-tests/scheduling) |
+| How do I run headless in CI? | [AskUI in CI](/docs/guides/askui-in-ci) |
+| How do I read the report, and what do the statuses mean? | [Run report](/docs/results/run-report) |
+| Where do I see trends across runs? | [Dashboard](/docs/results/dashboard) |
+| A test failed, how do I find out why, and where do I fix it? | [Analyzing failures](/docs/best-practices/analyzing-failures) |
+
+### Extending
+
+| Question | Answered in |
+| --- | --- |
+| What is the agent allowed to do, and how do I restrict it? | [Tools](/docs/extending/tools) |
+| The built-in tools aren't enough, now what? | [Custom tools](/docs/extending/custom-tools) · [MCP servers](/docs/extending/mcp) |
+| Can I use my own AI model instead of the AskUI hub? | [Model providers](/docs/extending/model-providers) |

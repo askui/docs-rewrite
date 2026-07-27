@@ -1,0 +1,190 @@
+---
+icon: ShieldCheck
+title: What the agent may do
+description: Keep a run's reach to what the test needs, least-privilege accounts, an opt-in toolbox, scoped tools, secrets, and what belongs in review.
+---
+
+An agent run can do whatever the tools it was given allow, with the rights of
+the session it runs in. Both are yours to set. The rule of thumb: **grant the
+least a test needs, and make every grant visible in the project**.
+
+Where each grant lives, so a reviewer can see it:
+[Enterprise fit](/docs/concepts/enterprise-fit#what-the-agent-may-do-on-a-machine).
+
+## The session decides the floor
+
+The agent acts as the logged-in user, so that account's rights are the
+ceiling of everything it can do, on the operating system and in the
+application under test. Create accounts for testing on both levels:
+
+**On the operating system.** One dedicated local account per test machine,
+not a personal and not an administrative one:
+
+- **Standard user, no administrator group.** If the account can install
+  software or write outside its profile, so can a run.
+- **No domain-wide rights.** A local account, or a domain account whose group
+  memberships are scoped to the test machines, never one that also carries
+  access to production systems, file shares or mailboxes.
+- **Own profile, nothing personal in it.** The agent sees whatever the desktop
+  shows: no private mail client, no signed-in browser profile with saved
+  passwords, no VPN client that grants more reach than the test needs.
+- **Auto sign-in without a personal password.** A shared lab machine needs an
+  unlocked session; give it a session that costs you nothing if someone reads
+  the screen over the tester's shoulder.
+- **Elevation off unless a suite needs it.** Driving elevated windows
+  requires enabling
+  ["Allow control of administrative applications"](/docs/agentos/installation/service).
+  If one suite needs it, give that suite its own machine rather than
+  switching it on lab-wide.
+
+**In the application under test.** A test user per suite, provisioned like
+any other user of your product:
+
+- **The role the scenario needs, nothing above it.** A checkout test does not
+  need an admin role; if a test needs admin, that is a separate suite with its
+  own account.
+- **Read-only where the test only verifies.** The same applies to the
+  [SQL tool's](/docs/extending/tools#sql-database) database user.
+- **Never a production account, and never a real person's.** Test accounts are
+  disposable, personal accounts are not, and a failed run leaves screenshots
+  of whatever that account can see.
+
+**Around both.** Test machines should reach the system under test and nothing
+else, and the
+[AgentOS port](/docs/concepts/enterprise-fit#what-talks-to-what) should be
+restricted to the machines allowed to start runs.
+
+## Allowlist the domains, nothing more
+
+Two different machines need two different allowlists, and the shorter one is
+the test machine's:
+
+- **The machine that starts runs** (a tester's PC or a CI runner) needs
+  outbound HTTPS to AskUI for sign-in, workspace and licence checks, and to
+  the model endpoint. The exact domains are in
+  [Network requirements](/docs/reference/network-requirements); allowlist
+  those, not `*`.
+- **Test machines** need the application under test and nothing else. They
+  do not talk to AskUI or to the model provider, the machine driving the run
+  does that. Deny the rest of their outbound traffic and you have removed the
+  route that a badly written custom tool would need to leak anything.
+- **With your own model endpoint**, the model domain moves inside your
+  network, and with
+  [on-premise inference](/docs/concepts/enterprise-fit#what-leaves-the-network-and-how-to-stop-it)
+  it disappears from the allowlist entirely.
+- **Runtime downloads are separate entries**: browser bundles, the Android
+  SDK toolchain, and NuGet feeds for
+  [custom tools](/docs/extending/custom-tools) resolve through your own
+  `NuGet.config`, so an internal mirror keeps them off the public internet.
+  Pre-provision them and the machines stay closed.
+- **Allowlist inside the app as well.** Network rules stop a host being
+  reachable; the [HTTP client tool's](/docs/extending/tools#http-client)
+  **Allowed hosts** stops a step from *asking*, and it lives in
+  `utils/tools.json` where a reviewer sees it. Same for
+  [MCP servers](/docs/extending/mcp): pin the endpoint, prefer internal
+  servers.
+
+## The toolbox decides the ceiling
+
+Device tools (screenshot, click, type) always exist. Everything with reach
+beyond the UI is off until someone enables it, keep it that way unless a
+test needs it, and scope it when you do:
+
+| Tool | Scope it with |
+| --- | --- |
+| [Shell script](/docs/extending/tools#shell-script) | One fixed script path per tool, so the agent runs *that* script, not arbitrary commands |
+| [SQL database](/docs/extending/tools#sql-database) | Named allowlisted statements; leave **Allow raw SQL** off, and connect with a read-only user where the test only verifies |
+| [HTTP client](/docs/extending/tools#http-client) | **Allowed hosts**, so a step can't call an arbitrary endpoint |
+| [File exists](/docs/extending/tools#file-exists), [List](/docs/extending/tools#list-remote-files) / [Read remote file](/docs/extending/tools#read-remote-file) | A **base directory**, plus allowed extensions for listings |
+
+Two grants deserve a real review, because they are code and third-party
+reach:
+
+- **[Custom tools](/docs/extending/custom-tools)** run with the rights of the
+  run and can do anything C# can. Developer-owned, reviewed like production
+  code, and never a thin wrapper around "run whatever the agent passes".
+- **[MCP servers](/docs/extending/mcp)** hand the agent someone else's tools.
+  Prefer internal servers, pin the endpoint, and know what each server
+  exposes.
+
+## Credentials
+
+- **Only as [named secrets](/docs/extending/secrets).** Steps reference the
+  name; the value is substituted at execution time and redacted from reports
+  and logs. A credential in a test file is a credential in your Git history.
+- **Test accounts, not real ones.** Minimal rights in the system under test,
+  and never a production account reused for testing.
+- **Rotate them like any other credential**, and remember values are per
+  machine: a colleague's fresh clone starts without them, which is the point.
+
+## Test data and screenshots
+
+- Every step's screenshot becomes [evidence](/docs/results/run-report) on
+  disk, and the same screenshot is what the model sees. If your test data
+  contains personal data, both facts matter.
+- Prefer **synthetic or anonymised data**. Where a screen unavoidably shows
+  real data, choose the model placement to match:
+  [your own tenancy or on-premise inference](/docs/concepts/enterprise-fit#what-leaves-the-network-and-how-to-stop-it).
+
+### On a tester's own machine
+
+A run on someone's working PC captures whatever the display shows, so
+Outlook, Teams or an open browser end up in the evidence and in the model
+request. Two habits prevent that:
+
+- **Scope capture to the window under test.** Instead of driving the whole
+  display, have the agent pick the application's window: it lists the open
+  windows and then attaches that one as its capture surface, so every
+  screenshot afterwards contains only that window. Put it in the folder's
+  [rules](/docs/writing-tests/setup-teardown-rules#rules) so it applies to
+  every test:
+
+  ```md title="tests/rules.md"
+  ## Interaction
+  - Before the first step, list the open windows and select the window of the
+    application under test, so screenshots capture only that window.
+  ```
+
+  Where a suite runs on a dedicated machine, a
+  [remote computer profile](/docs/devices/remote-computer) is the cleaner
+  answer, nothing private is on that desktop in the first place.
+- **Delete run folders you no longer need.** Each run keeps full-resolution
+  screenshots of every step under `agent_workspace/<timestamp>/`. Keep the
+  runs you still reason about, delete the rest; they are gitignored, so they
+  only ever existed on that machine. Archive deliberately in
+  [CI](/docs/guides/askui-in-ci) instead of hoarding locally.
+
+Test evidence is yours either way: it stays in the project folder under your
+own retention rules.
+
+## Make grants reviewable
+
+Everything above is a file in the project, so a pull request shows it:
+
+- `utils/tools.json`, which tools are enabled, with their scoping values
+- `utils/mcp.json`, which MCP servers a run connects to
+- `utils/custom_tools/*.cs`, the code the agent can call
+- `devices.json`, which machines a run may drive
+
+Review those diffs the way you review dependency changes. A test that
+suddenly needs the shell tool is a design question, not a checkbox.
+
+## Checklist
+
+- [ ] Outbound allowlist per machine role: run starters reach AskUI and the
+      model endpoint, test machines reach only the system under test.
+- [ ] Dedicated OS account per test machine: standard user, no domain-wide
+      rights, nothing personal in the profile, elevation off unless required.
+- [ ] Application test users carry only the role their scenario needs, and
+      database users are read-only where the test only verifies.
+- [ ] Only the tools a test needs are enabled, each scoped (path, statements,
+      hosts, base directory).
+- [ ] Raw SQL off.
+- [ ] No credentials in test files, named secrets only, test accounts only.
+- [ ] Synthetic or anonymised test data, or a model placement that matches
+      the data's sensitivity.
+- [ ] Runs on a personal machine scope capture to the application's window,
+      and old `agent_workspace/` runs get deleted.
+- [ ] Custom tools and MCP servers reviewed like code.
+- [ ] `tools.json`, `mcp.json`, `devices.json` changes reviewed in pull
+      requests.

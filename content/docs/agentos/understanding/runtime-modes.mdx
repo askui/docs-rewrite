@@ -1,6 +1,6 @@
 ---
 title: Runtime Modes
-description: "Standalone vs OS Service — choose the right AgentOS runtime mode."
+description: "Standalone vs OS Service, choose the right AgentOS runtime mode."
 ---
 
 AgentOS can run in two modes. Choose based on your use case.
@@ -11,11 +11,16 @@ AgentOS runs as a regular process in the current user's session.
 
 **Best for:** Local development, interactive desktop use, and manual testing.
 
-```bash
-pip install askui-agent-os
-```
+AgentOS is installed via the AskUI installer. A dedicated standalone installer
+(without AskUI Desktop) is coming soon.
 
-That's it — AskUI Desktop and the CLI use the local AgentOS instance automatically.
+<Callout title="Standalone installer coming soon">
+For now, standalone AgentOS is installed as part of the
+[AskUI Desktop installer](/docs/get-started/install-desktop). A separate
+standalone installer is in progress.
+</Callout>
+
+Once installed, AskUI Desktop and the CLI use the local AgentOS instance automatically.
 
 ## OS Service
 
@@ -31,12 +36,12 @@ The OS service requires the [Windows installer](/docs/agentos/installation/servi
 | --- | --- | --- |
 | **Primary use** | Local dev / desktop | Enterprise / CI/CD |
 | **CI/CD ready (Windows)** | No (requires OS service) | Yes (unattended/headless) |
-| **CI/CD ready (macOS/Linux)** | Yes | — |
+| **CI/CD ready (macOS/Linux)** | Yes |, |
 | **RDP resilience** | No (session locks on disconnect) | Yes (session transfer) |
 | **Logon screen control** | No | Yes |
 | **Send CTRL+ALT+DEL** | No | Yes (Secure Attention Sequence) |
 | **Privileges** | Current user | SYSTEM |
-| **Install method** | `pip install` | Windows installer |
+| **Install method** | AskUI installer (standalone coming soon) | Windows installer |
 
 <Callout title="Tip">
 **Not sure which to pick?** Start with **standalone** for development. Move to the **OS service** when you need CI/CD, headless VMs, or RDP resilience.

@@ -1,0 +1,189 @@
+---
+icon: BrainCircuit
+title: Model providers (BYOM)
+description: Point AskUI Desktop at your own model, Anthropic, an OpenAI-compatible API, or a self-hosted server, instead of the AskUI hub.
+---
+
+By default, AskUI Desktop runs inference through the **AskUI hub**, billed to
+your workspace, nothing to configure. **Bring your own model (BYOM)** points the
+agent at a model provider you control instead: your own Anthropic key, any
+OpenAI‑compatible API, or a self‑hosted server on your network.
+
+<Callout title="Note">
+BYOM changes only **where inference runs**, the agent, prompts, tools, and run
+reports are identical.
+</Callout>
+
+## Where to configure it
+
+Configure it under **Settings → Model Provider**, switch an already‑running
+install to BYOM, or edit/remove an existing configuration.
+
+## Choose an API type
+
+<Tabs items={['Anthropic (Claude)', 'OpenAI-compatible']}>
+  <Tab value="Anthropic (Claude)">
+
+Run against the **Anthropic Messages API** with your own key, Anthropic
+directly, [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/), or
+any Anthropic‑compatible endpoint (including a self‑hosted server such as vLLM).
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| **Base URL** | Optional | Leave **blank** for Anthropic's own API. Set it for Azure AI Foundry or a self‑hosted Anthropic‑compatible endpoint. |
+| **Model** | Optional | Defaults to a current Claude model if left blank. See Anthropic's [model list](https://docs.anthropic.com/en/docs/about-claude/models/overview). |
+| **API key** | Required | Generate one in the [Anthropic console](https://console.anthropic.com/settings/keys). |
+
+  </Tab>
+  <Tab value="OpenAI-compatible">
+
+<Callout type="warn" title="Experimental, no support provided">
+OpenAI-compatible providers are experimental. They may work with capable
+vision models, but we do not test against them and cannot offer support for
+issues specific to this configuration.
+</Callout>
+
+Run against any **OpenAI Chat Completions–compatible API**,
+[OpenRouter](https://openrouter.ai), OpenAI, or a self‑hosted server (vLLM,
+SGLang, llama.cpp, Ollama).
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| **Base URL** | Required | The endpoint, ending in `/v1`, e.g. `http://localhost:8000/v1`. |
+| **Model** | Required | The provider's model id, e.g. `Qwen/Qwen3-VL-…`. |
+| **API key** | Optional | Omit for local servers that don't require one. |
+
+**Authentication** has a second mode for a gateway fronted by
+**Microsoft Entra ID**: e.g. an internal LLM gateway of your company.
+Choose **Microsoft Entra (OAuth2 client credentials)** instead of
+**API key (or none)** and fill in the app registration:
+
+- **Tenant ID**: GUID or domain, e.g. `contoso.onmicrosoft.com` *(required)*
+- **Client ID**: the application (client) id of your app registration *(required)*
+- **Scope**: the resource scope, usually ending in `/.default`, e.g.
+  `api://<app-id>/.default` *(required)*
+- **Client secret**: stored encrypted on this device, like an API key *(required)*
+
+Saving acquires a token to verify the app registration; during runs, tokens
+are minted and refreshed automatically.
+
+  </Tab>
+</Tabs>
+
+<Callout type="warn">
+The agent drives a UI from **screenshots**, so it needs a **vision‑capable**
+model. A text‑only model will connect but won't be able to see the screen.
+</Callout>
+
+## Supported models
+
+- **Default**: `claude-sonnet-4-6`. Leave the **Model** field blank on the
+  Anthropic tab and this is what runs.
+- **Claude models (recommended)**: the Anthropic Messages API is the tested
+  path, whether you reach it through the AskUI hub, your own Anthropic key,
+  Azure AI Foundry, or an Anthropic-compatible gateway. AWS Bedrock and GCP
+  Vertex AI authenticate differently (SigV4, Google credentials), as do some
+  internal gateways: either put something in front that re-exposes them as an
+  Anthropic- or OpenAI-compatible endpoint, or
+  [talk to us](/docs/support/get-help) and we help you get your
+  authentication scheme supported. Any current Claude
+  model with vision works; ids come from Anthropic's
+  [model list](https://docs.anthropic.com/en/docs/about-claude/models/overview).
+  Newer Claude generations also use adaptive thinking automatically.
+- **GPT-5.4 models**: supported through the OpenAI-compatible tab:
+  `gpt-5.4`, `gpt-5.4-mini` and `gpt-5.4-nano`, from OpenAI directly or via
+  OpenRouter. They see screenshots and call tools, so they drive a UI,
+  they're just not the path AskUI tests against.
+- **Gemini vision models**: `gemini-2.5-pro`, `gemini-3-pro-preview` and
+  the Flash variants work the same way, as long as your gateway exposes them
+  OpenAI-compatibly (OpenRouter, or your own proxy).
+- **Self-hosted VLMs**: a screen-capable model such as `Qwen/Qwen3-VL-…`
+  behind vLLM or SGLang, which keeps screenshots inside your own tenancy.
+- **What won't work**: text-only models, and models without tool/function
+  calling. Every action the agent takes is a tool call on a screenshot;
+  without both it cannot execute a step.
+
+Model choice is the main lever on run cost and duration, the trade-offs and
+what to watch: [Performance & cost](/docs/troubleshooting/performance-cost).
+
+## Add a provider
+
+<Steps>
+<Step>
+Open **Settings → Model Provider** (or reach it via license activation).
+</Step>
+
+<Step>
+Pick the **API type**, then fill in the base URL, model, and key per the
+table above.
+</Step>
+
+<Step>
+Select **Save**. AskUI Desktop makes a **test call** to the endpoint before
+saving, if the key, URL, or model is wrong, you'll see the error here rather
+than mid‑run.
+</Step>
+
+<Step>
+Run a test as usual. The agent now uses your provider.
+</Step>
+</Steps>
+
+Behind a corporate proxy, configure network access **first**, the setup
+wizard's **Behind a proxy? Configure network access** section, or
+**Settings → Network proxy**: otherwise the test call can't reach the
+endpoint. Details: [Network proxy](/docs/troubleshooting/network-proxy).
+
+## Gateway message transforms
+
+Some corporate gateways enforce rules **stricter than the stock OpenAI
+spec**, and reject the agent's requests with HTTP 400 even though the
+model behind them would accept them. For these, an operator project can
+normalize the outgoing `messages` array: drop a class implementing
+`IOpenAiMessageTransform` into `utils/message_transforms/`.
+
+```csharp title="utils/message_transforms/gateway_normalization.cs"
+public sealed class GatewayNormalization : IOpenAiMessageTransform
+{
+    public JsonArray Transform(JsonArray messages)
+    {
+        var output = new JsonArray();
+        foreach (var node in messages)
+        {
+            var message = (JsonObject)node!.DeepClone();
+            // Example gateway rule: an assistant message carrying
+            // tool_calls must have content = null.
+            if ((string?)message["role"] == "assistant"
+                && message["tool_calls"] is JsonArray { Count: > 0 })
+            {
+                message["content"] = null;
+            }
+            output.Add(message);
+        }
+        return output;
+    }
+}
+```
+
+Transform files compile at run start exactly like
+[custom tools](/docs/extending/custom-tools), no `using` directives needed,
+a compile error aborts the run, and the same rule applies: **developer
+territory**. Multiple files compose in discovery order. Only the
+OpenAI-compatible provider consults them; the app ships no gateway-specific
+rules, your project owns them.
+
+## How your credentials are stored
+
+- The **API key** is stored **encrypted on this device** (on Windows, via DPAPI
+  scoped to your user account). The non‑secret fields, provider, model id, base
+  URL, are stored in plain local settings.
+- The key is passed to the run in memory and is **never written to the run
+  report or logs**.
+- Editing other fields won't wipe a saved key, leave the key field blank to
+  keep the existing one.
+
+## Switching back to the AskUI hub
+
+In **Settings → Model Provider**, choose **Remove key**. This reverts to the
+AskUI hub default and forgets the stored key. (In License mode there is no hub
+default, so you replace the provider rather than removing it.)

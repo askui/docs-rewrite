@@ -1,0 +1,4 @@
+# Run artifacts produced by executing the demo tests.
+/agent_workspace/
+# Trajectory cache.
+/.askui_cache/

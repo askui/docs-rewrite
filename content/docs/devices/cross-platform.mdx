@@ -1,0 +1,22 @@
+---
+icon: Layers
+title: Cross-platform
+description: Desktop, Android, and web bundled in one profile. Connect and status only, runs are not supported yet.
+---
+
+A **Cross-platform** profile bundles a desktop, an Android device, and a web
+browser into one profile, for scenarios that will span all three (start a
+flow on the phone, finish it on the desktop).
+
+<Callout type="warn" title="Runs not supported yet">
+The profile connects and reports the status of each surface, but running
+tests against it is not supported yet. Until it is, split the scenario across
+single-surface profiles and run the parts separately.
+</Callout>
+
+## Create it
+
+1. **Add profile** → **Cross-platform**.
+2. Configure the desktop (host, port, display), the Android serial, and the
+   browser.
+3. **Add profile**: then **Connect** to see all three surfaces' status.

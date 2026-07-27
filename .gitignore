@@ -24,3 +24,11 @@ yarn-error.log*
 .env*.local
 .vercel
 next-env.d.ts
+# local preview exports
+/.preview/
+
+# AskUI trajectory caches from capture/demo runs
+.askui_cache/
+
+# mermaid render preview (render-mermaid skill)
+public/_preview/

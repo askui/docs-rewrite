@@ -1,0 +1,303 @@
+---
+icon: ListOrdered
+title: Step constructs
+description: What a test step can express, actions, verifications, conditions, waits, dynamic values, iteration, procedure calls.
+---
+
+Steps are plain language, not syntax. Imagine handing the test to a human
+colleague **without domain knowledge about your application**: whatever they
+would need from you to execute it, which element, what to expect, what to
+do if a dialog appears, what never to touch, is exactly what the agent
+needs. If that colleague could run the step from your wording alone, so can
+the agent.
+
+These constructs are the vocabulary that works, each example is from a real
+seeded test. They apply wherever steps live: in [test cases](/docs/writing-tests), in
+[setup and teardown](/docs/writing-tests/setup-teardown-rules), and inside
+[procedure](/docs/writing-tests/procedures) bodies.
+
+## Actions
+
+Describe intent; the agent works out the clicks and keystrokes:
+
+```md
+1. Open the Start menu, type `Notepad`, and press Enter.
+```
+
+## Locators
+
+Describe a UI element the way you'd point it out to a colleague, by any
+visible feature, combined freely:
+
+| Kind | Example |
+| --- | --- |
+| **Text** | Click the button labeled **"Save"** |
+| **Icon** | Click the **gear icon** in the toolbar |
+| **Color** | Click the **green** Connect button |
+| **Location** | The search field **at the top right** |
+| **Relation** | The Delete button **next to** the second list entry, the field **below** "Username" |
+
+The more distinguishing features, the more reliable the step, "click the
+button" fails on a screen with ten buttons; "the green Connect button on the
+Windows Desktop card" doesn't. Phrasing guidance:
+[Writing good tests](/docs/best-practices/writing-good-tests).
+
+## Expectations
+
+Pair every action with what must be true afterwards, that pair becomes the
+step's expected-vs-actual entry in the [report](/docs/results/run-report):
+
+```md
+2. Click the Login button — the start screen is visible and the user is signed in.
+```
+
+## Verifications
+
+A step can be pure checking:
+
+```md
+3. Verify the response status is 200 and the body contains "Example Domain".
+4. Check whether `tests/example_test_data.csv` exists (expect yes).
+```
+
+## Conditions
+
+Because the agent [reads the screen before every step](/docs/concepts/test-automation-harness#why-execution-differs),
+steps can branch on what is actually there:
+
+```md
+5. If the result says more rows are available, call it again with the
+   suggested offset — otherwise continue.
+6. If a cookie banner appears, dismiss it before continuing.
+```
+
+Bigger decisions read best as sub-steps, one branch per letter, each with
+its own expected result:
+
+```md
+7. Check whether a window named "AskUI Desktop" is already open:
+   a. If yes: bring it to the front — the app window is focused.
+   b. If no: open the Start menu, search for "AskUI Desktop" and start
+      it — the app window opens within a minute.
+```
+
+## Optional
+
+A step that only applies in some situations, and whose absence is **not** a
+failure. Say what to do when the situation doesn't occur, so the report
+shows SKIPPED instead of FAILED:
+
+```md
+8. If the tutorial overlay is shown on first start, dismiss it — otherwise
+   mark this step SKIPPED and continue.
+9. Suppress pop-ups throughout: whenever a "Rate this app" pop-up appears,
+   close it and continue — if none appears, that's fine.
+```
+
+## Waits
+
+Normally you don't need waits, the agent sees the screen and won't act on a
+half-loaded page. When it gets impatient anyway, tell it **what to look
+for**, not how long to wait:
+
+```md
+10. Wait until the start screen loads.
+```
+
+A fixed duration is the last resort, for settling you can't describe:
+
+```md
+11. Wait 3 seconds for the page to settle.
+```
+
+## Timeouts
+
+The counterpart of a wait: bound how long the agent keeps trying, and say
+what happens when time is up, otherwise a hanging application under test
+turns into an endlessly patient agent:
+
+```md
+12. Start the export. If the success message does not appear within about
+   2 minutes, mark the step FAILED and continue with the next test.
+```
+
+Timeouts are approximate, the agent judges elapsed time between
+screenshots, it doesn't run a stopwatch. For hard behavior on errors and
+hangs that applies to every test, use
+[rules.md](/docs/writing-tests/setup-teardown-rules#rules).
+
+## Raising errors
+
+Tell the agent to fail **actively** when the application doesn't react as
+expected, an agent that helpfully works around a defect masks exactly what
+the test exists to find:
+
+```md
+13. Open the customer record ACME-42. If an error dialog appears instead,
+    mark the test FAILED and stop — do NOT retry or work around it.
+```
+
+Use the [status vocabulary](/docs/results/run-report#test-report):
+**FAILED** when the application misbehaves, **BROKEN** for infrastructure
+problems (connection lost, session expired). The seeded
+[rules.md](/docs/writing-tests/setup-teardown-rules#rules) already sets this
+policy for every test, a step-level instruction sharpens it for a specific
+known risk.
+
+## Dynamic values
+
+Values that only exist at run time, an ID the application generates, a
+number shown on screen, can be noted in one step and referenced in a later
+one; the agent carries what it saw through the whole test:
+
+```md
+14. Create a new user — note the user ID shown in the confirmation dialog.
+15. Open the user list and click the entry with the user ID noted in step 12.
+```
+
+The seeded cross-platform example uses the same pattern across devices: read
+the most recent order number on the desktop, then search for exactly that
+number on the phone.
+
+## Iteration
+
+A step can repeat over what's on screen, "for every …" across lists, tabs,
+table rows:
+
+```md
+16. For every tab in the Settings dialog: open it and verify it loads
+    without an error message.
+```
+
+The loop body can hold several sub-steps, the same lettered pattern as
+conditions. Keep the set bounded:
+
+```md
+17. For the first 3 orders in the list:
+    a. Open the order — the detail view shows its order number.
+    b. Verify the order contains at least one line item.
+    c. Add the comment "checked by QA" and save — the comment appears in
+       the order history.
+    d. Return to the order list — it shows the same rows as before.
+```
+
+<Callout type="warn" title="Iteration tends to be unstable">
+The agent has to keep count on a screen that changes with every action,
+long or unbounded iterations drift. Keep the set small and verifiable
+("all 4 tabs"), and when the elements are known up front, prefer one
+[data-driven CSV case per element](/docs/writing-tests#anatomy--formats) instead of
+a loop. This is a limitation of today's models and improves with every
+model generation, expect the caution to relax over time.
+</Callout>
+
+## Exclusions
+
+Say explicitly what must **not** happen, the agent honors prohibitions like
+a tester honors a warning in the test spec:
+
+```md
+18. Click **Submit** exactly once — do NOT press it again, even if the page
+    seems to hang.
+19. Do NOT dismiss the license dialog; the test verifies its content first.
+```
+
+For prohibitions that apply to every test in a folder ("never change the
+language setting", "never sign out"), put them in
+[rules.md](/docs/writing-tests/setup-teardown-rules#rules) instead of
+repeating them per step.
+
+## Comments
+
+HTML comments are notes for maintainers, why a step exists, a ticket
+reference, a review hint. They are not steps:
+
+```md
+<!-- AC-123: card payments only — the invoice path is covered in PAY_002. -->
+```
+
+The agent reads comments as background, not instructions, but it does read
+them, so keep them truthful: a stale or misleading comment can steer
+execution the same way a misleading remark steers a colleague. The seeded
+templates use comments exactly this way.
+
+## Procedure calls
+
+One step runs a whole [procedure](/docs/writing-tests/procedures), name it
+and say what fills its parameters:
+
+```md
+20. Log in using the `login_to_ui` procedure with the QA username and
+   password secrets.
+```
+
+## Secrets
+
+Reference credentials by name, never by value,
+[secrets](/docs/extending/secrets):
+
+```md
+21. Sign in with the QA credentials — the secrets named `QA_USERNAME` and `QA_PASSWORD`.
+```
+
+## Tool invocations
+
+Steps can name anything the [toolbox](/docs/extending/tools) allows, HTTP
+requests, SQL statements, shell scripts, QR scanning. Describing the action
+is usually enough; when two tools could match, name the tool explicitly:
+
+```md
+22. Perform an HTTP GET request to `https://example.com`.
+23. Scan the QR code from the screen — the decoded text contains "wikipedia".
+24. Use the `sql_database` tool to run the statement `test_data`.
+```
+
+Tool names are listed under **Utils → Tool Store**, each card carries the name
+the agent knows it by. A [custom tool](/docs/extending/custom-tools)'s name
+is the `name:` in its C# file.
+
+## Targeting machines and platforms
+
+In a [multi-computer](/docs/devices/multi-computer) test, name the machine
+per step; a `platforms:` first line marks a
+[cross-platform case](/docs/writing-tests#target-multiple-platforms):
+
+```md
+25. On the **server**, start the message service.
+26. On the **client**, send a message to the server.
+```
+## Beyond steps
+
+Some things don't belong in any step, they're the manual tester's tribal
+knowledge, and they have their own homes.
+
+**Real-world disruptions.** Some failures are random and expected:
+the application hangs, the printer is empty, a product is out of stock. A
+manual tester doesn't fail the test, they restart the app, ignore the
+printer, refill the quantity, and carry on. Give the agent the same
+recoveries in [rules.md](/docs/writing-tests/setup-teardown-rules#rules), at
+the [scope](/docs/writing-tests/organisation#scope) that needs them:
+
+```md title="tests/rules.md"
+## Recoveries
+- If the application hangs, restart it and repeat the current step once.
+- If the printer reports empty, ignore the print result and continue.
+- If a product is out of stock, set its quantity to 10 in inventory first.
+```
+
+**The agent operates the UI differently than you wish.** It uses keyboard
+shortcuts where your users click menus, types numbers instead of using the
+on-screen numpad, keeps misreading the same part of your UI. That's not a
+step problem either, teach it the house style in
+[rules.md](/docs/writing-tests/setup-teardown-rules#rules) or, when it's
+about how your application works, in the
+[ui_information prompt](/docs/writing-tests/agents-and-prompts):
+
+```md title="prompts/ui_information.md"
+- Enter numbers via the on-screen numpad with mouse clicks — never type
+  them with the keyboard.
+- Do not use keyboard shortcuts; this application is tested through its
+  menus, like our users work.
+```
+
+What belongs where in detail:
+[What goes where](/docs/best-practices/prompting-best-practices).

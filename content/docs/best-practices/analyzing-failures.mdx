@@ -1,0 +1,242 @@
+---
+icon: Stethoscope
+title: Analyzing failures
+description: The run failed, now what? Find the cause in the reports, then fix it in the right place, product, test, or environment.
+---
+
+The [test report](/docs/results/run-report) tells you **what** failed. This
+page is the loop for **why**, and where the fix belongs.
+
+## Find the cause
+
+1. Start at the [summary report](/docs/results/run-report#summary-report):
+   which cases didn't pass, and with which status?
+   - **`FAILED`**: two possible truths, step 2 decides which:
+     - **The test told the agent the wrong thing** → fix the test
+       ([Fix it](#fix-it), below).
+     - **The application misbehaved** → report it as a defect, with the
+       test report and its screenshots attached as evidence.
+   - **`BROKEN`**: infrastructure, not the application. The agent's report
+     already carries its own diagnosis hint, which kind of problem it saw
+     and what to check, so start there. The usual kinds:
+     - **Device connection dropped**: AgentOS unreachable, emulator died,
+       browser session gone →
+       [Troubleshooting](/docs/troubleshooting/connection-sessions).
+     - **AI model unreachable**: network, proxy, expired token →
+       [Troubleshooting](/docs/troubleshooting/model-providers).
+     - **Test machine not usable**: locked screen, display asleep → fix
+       the machine state; recurring cases belong in
+       [rules](/docs/writing-tests/step-constructs#beyond-steps).
+     - **Peripheral failed**: scanner, printer → fix the hardware, or arm
+       the agent with a [rule](/docs/writing-tests/setup-teardown-rules#rules)
+       plus a [tool](/docs/extending/custom-tools): "if the scanner stops
+       responding, use the `restart_scanner` tool and repeat the step."
+     - **Admin rights missing**: UAC prompt, service restart, installing
+       software → run the affected action outside the test, or enable
+       **Allow control of administrative applications** in the
+       [AgentOS service installation](/docs/agentos/installation/service).
+     - **Clicks and typing don't arrive**: the run looks alive,
+       screenshots work, but nothing happens. Either an admin-rights issue
+       (an elevated window swallows input): start the controller (AgentOS)
+       with admin rights, or non-standard behavior of your device:
+       [contact AskUI](/docs/support/get-help).
+     - **A referenced tool is missing**: the test names a tool that isn't
+       in the run's toolbox → enable it in the
+       [Tool Store](/docs/extending/tools), or check `utils/custom_tools/`
+       and the [MCP configuration](/docs/extending/mcp).
+   - **`WARN`**: passed with a caveat, read the report's **Issues**
+     section, then decide:
+     - **Standard behavior of your application** (a known pop-up, a slow
+       first load)? Make it expected, a
+       [rule](/docs/writing-tests/setup-teardown-rules#rules) or an
+       [optional step](/docs/writing-tests/step-constructs#optional), and
+       the warning disappears from future runs.
+     - **A genuine anomaly**? Keep an eye on it across the next runs, and
+       if it persists or worsens, report it as a defect, with the reports
+       as evidence.
+   - **`SKIPPED`**: an entry criterion wasn't met, or an
+     [optional step](/docs/writing-tests/step-constructs#optional) didn't
+     apply. Check the **Preconditions** section.
+2. Open the failing case's [test report](/docs/results/run-report) and read
+   the failed step:
+   - **Agent Interpretation**: did the agent understand the step the way
+     you meant it? If not, the defect is in the test.
+   - **Expected vs. Actual**: plus the step screenshot, if the expectation
+     is right and the application really did something else, you've found a
+     product defect.
+3. Still unclear? Switch from the test report to the
+   [conversation log](/docs/results#conversation-log), it shows what the
+   agent actually did, in detail: every decision, tool call, and screenshot
+   on the way to the failure.
+4. Before closing: scan **Issues**, also on tests that passed. The agent
+   notes anomalies there (slow responses, odd dialogs) that are often the
+   early warning for the next run's failure.
+
+## Fix it
+
+Match what you saw to the pattern, each shows the file to change, before
+and after.
+
+### The agent misclicks
+
+The [locator](/docs/writing-tests/step-constructs#locators) is ambiguous on
+this screen. Escalate in this order:
+
+1. **Quote the exact label** the UI shows, `"Sign-Up"` beats "the login
+   button".
+2. **Add relations**: position and neighbors
+   ([locator kinds](/docs/writing-tests/step-constructs#locators)).
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ tests/login_test.md — before"
+2. Please press the login button.
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ tests/login_test.md — after"
+2. Press the "Sign-Up" button,
+   top right, next to "Log in".
+```
+
+</div>
+
+3. **Still misclicking?** Tell the agent to use the **Screen zoom**
+   [tool](/docs/extending/tools) for small targets, and add a verification
+   step so the click's effect is checked:
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ tests/signup_test.md — before"
+4. Accept the terms.
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ tests/signup_test.md — after"
+4. Use the zoom tool to click the
+   "Accept AGB" checkbox.
+5. Check afterwards that the
+   checkbox is checked.
+```
+
+</div>
+
+### The agent takes a lot of steps
+
+**How you see it:** the
+[conversation log](/docs/results#conversation-log)'s TEST header shows the
+tool-call count per case, compare it with earlier runs of the same case
+(a case that normally takes ~13 calls suddenly needs 45). Watching
+[live](/docs/running-tests#watch-it-live), wandering looks like repeated
+screenshots and back-and-forth navigation; the token numbers per step add
+up to the cost of it.
+
+**Why:** it is unsure how your application behaves, teach it in
+[UI information](/docs/writing-tests/agents-and-prompts#ui-information) and
+make vague goals precise.
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ prompts/ui_information.md — before"
+## Dialogs & quirks
+<behaviors the agent must know>
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ prompts/ui_information.md — after"
+## Dialogs & quirks
+The confirmation pop-up stays open
+until you click **OK** — clicking
+elsewhere does not close it.
+```
+
+</div>
+
+### FAILED, but the behavior is actually correct
+
+The agent judged against the wrong picture: your expected result is
+under-specified, state precisely what it looks like.
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ tests/login_test.md — before"
+2. Click Login — the user is
+   logged in.
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ tests/login_test.md — after"
+2. Click Login — the start screen
+   shows the green signed-in dot
+   at the top right.
+```
+
+</div>
+
+### PASSED, but it actually failed
+
+The success criterion is too loose to catch the defect, add an explicit
+[verification step](/docs/writing-tests/step-constructs#verifications).
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ tests/create_record.md — before"
+3. Click Save.
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ tests/create_record.md — after"
+3. Click Save.
+4. Verify the new record appears in
+   the list with status "Active".
+```
+
+</div>
+
+### The agent operates the UI wrong
+
+Shortcuts, keyboard instead of the numpad, it doesn't know your house
+style. Teach it in
+[ui_information](/docs/writing-tests/agents-and-prompts#ui-information) or,
+per suite, in [rules](/docs/writing-tests/setup-teardown-rules#rules):
+
+```md title="➕ tests/rules.md — add"
+## Interaction
+- Never use keyboard shortcuts — operate the application through its
+  menus, like our users do.
+- Enter numbers via the on-screen numpad with mouse clicks.
+```
+
+### Random real-world disruptions
+
+The app hangs, the printer is empty, the environment, not the test. Give
+the agent the manual tester's
+[recoveries](/docs/writing-tests/step-constructs#beyond-steps):
+
+```md title="➕ tests/rules.md — add"
+## Recoveries
+- If the application hangs, restart it and repeat the current step once.
+- If the printer reports empty, ignore the print result and continue.
+```
+
+### Odd path, but the right result
+
+That's
+[non-determinism by design](/docs/concepts/test-automation-harness#why-execution-differs),
+change nothing; judge the result, not the path.
+
+### Not the agent's behavior?
+
+- **Wrong starting state** → the suite's
+  [setup](/docs/writing-tests/setup-teardown-rules).
+- **Credentials failed** → [secrets](/docs/extending/secrets), values are
+  per machine; a colleague's fresh clone starts without them.
+- **The device didn't come up** → [Devices](/docs/devices) and
+  [Troubleshooting](/docs/troubleshooting/connection-sessions).
+- **The application genuinely misbehaved** → your bug tracker. The test
+  report with its screenshots **is** the incident evidence, attach it.

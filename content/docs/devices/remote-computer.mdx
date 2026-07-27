@@ -1,0 +1,39 @@
+---
+icon: Monitor
+title: Remote computer
+description: A desktop machine running AgentOS, this PC or a dedicated test machine, addressed by host, port, and display.
+---
+
+A **Remote computer** profile drives a desktop machine through
+[AgentOS](/docs/agentos): your own PC, or a dedicated test machine so your
+mouse and keyboard stay free.
+
+**Preconditions:** for a remote machine, [AgentOS installed as a
+service](/docs/agentos/installation/service) on it (listens on port 26000)
+and reachable over the network. For this PC: none, the seeded **Local**
+profile starts its own AgentOS.
+
+## Create it
+
+1. **Add profile** → **Remote computer**.
+2. Fill in the fields:
+   - **Host**: machine name or IP; `localhost` for this PC *(text, required)*
+   - **Port**: the AgentOS port; 26000 = installed service *(number, default `26000`)*
+   - **Display**: which screen to drive on a multi-monitor machine *(number, default `1`)*
+   - **Use system proxy**: route the connection through your system proxy *(toggle, default off)*
+3. **Add profile**.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-profile-remote-computer.png"
+  alt="The Remote computer profile editor with host, port, and display fields"
+  className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
+/>
+
+## Run it
+
+1. **Connect** on the profile card, the status dot turns green.
+2. Pick the profile in the test's **Run on** dropdown and press **Run**.
+
+The agent sees and acts on exactly one display per session. The session is a
+real user session on that machine, pointer, keyboard, foreground windows.
+Nobody should work on it during a run.

@@ -6,10 +6,13 @@ import { Card, Cards } from 'fumadocs-ui/components/card';
 import { File, Folder, Files } from 'fumadocs-ui/components/files';
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 import { RunEmbed } from '@/components/run-embed';
+import { Mermaid } from '@/components/mermaid';
+import { Lucide } from '@/components/lucide';
 import type { MDXComponents } from 'mdx/types';
 
 // Register the components used across the docs globally, so MDX pages can use
-// <Callout>, <Tabs>, <Steps>, <Cards>, <Files>, <RunEmbed> etc. without imports.
+// <Callout>, <Tabs>, <Steps>, <Cards>, <Files>, <RunEmbed>, <Mermaid> etc.
+// without imports. remarkMermaid rewrites ```mermaid fences to <Mermaid>.
 export function getMDXComponents(components?: MDXComponents) {
   return {
     ...defaultMdxComponents,
@@ -26,6 +29,8 @@ export function getMDXComponents(components?: MDXComponents) {
     Accordion,
     Accordions,
     RunEmbed,
+    Mermaid,
+    Lucide,
     ...components,
   } satisfies MDXComponents;
 }

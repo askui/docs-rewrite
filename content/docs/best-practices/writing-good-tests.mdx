@@ -1,0 +1,413 @@
+---
+icon: PenLine
+title: Writing good tests
+description: How to write test steps the agent executes reliably, one goal per file, precise locators, verifications, named secrets, and shared structure.
+---
+
+A test file is plain Markdown: preconditions, numbered steps, postconditions.
+The agent reads it, acts on the real screen, and writes a
+[report](/docs/results/run-report). Whether the run is reliable depends
+almost entirely on how clearly the steps are written. The bar to clear:
+**someone who has never seen the app should be able to execute the test from
+the file alone.**
+
+## One goal per test file
+
+One coherent scenario with one verifiable outcome per file. When a
+two-goal test fails, you can't tell which goal failed.
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ tests/registration_and_login.md"
+# Registration and Login
+
+## Steps
+1. Register a new account, then
+   log in with the new credentials.
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ tests/registration_test.md"
+# New User Registration
+
+## Steps
+1. Open the registration page.
+2. Fill the form with the test data.
+3. Submit — the confirmation page
+   "Welcome aboard" is shown.
+```
+
+</div>
+
+## Steps the agent can act on
+
+The agent identifies elements from screenshots. Vague descriptions force it
+to guess, the [locator vocabulary](/docs/writing-tests/step-constructs#locators)
+makes each step unambiguous.
+
+**Quote the exact label and anchor the position:**
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ vague"
+3. Click the button.
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ specific"
+3. Click "Save" — bottom right of
+   the dialog, below the comment
+   field.
+```
+
+</div>
+
+**Name the feature that makes an element unique:**
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ vague"
+5. Click the icon.
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ specific"
+5. Click the red trash-can icon in
+   the row labelled "Draft report".
+```
+
+</div>
+
+**Small targets: use the Screen zoom tool**: enable it in the
+[Tool Store](/docs/extending/tools#screen-zoom) first, then say so in the
+step, with a verification after the click:
+
+```md
+4. Use the zoom tool to click the "Accept AGB" checkbox.
+5. Check afterwards that the checkbox is checked.
+```
+
+**Every step states its expected result.** A step without a verification
+always passes:
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ always passes"
+6. Click Submit.
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ verifiable"
+6. Click Submit — the banner
+   "Changes saved" appears at the
+   top of the page.
+```
+
+</div>
+
+Where the outcome isn't visible in the same place you acted, make the check
+its own [verification step](/docs/writing-tests/step-constructs#verifications),
+the agent reports it separately, so you see which half broke:
+
+```md
+7. Click "Save".
+8. Verify the order appears in "Records" with status "New".
+9. Verify the response of `GET /api/orders` contains the new order number.
+```
+
+This is also the fix when a test reports `PASSED` although the feature is
+broken: the success criterion was too loose to catch it
+([more](/docs/best-practices/analyzing-failures#passed-but-it-actually-failed)).
+
+## Preconditions: is the test applicable?
+
+Preconditions are the test's **entry criteria**: the agent checks them
+first, and a test whose criteria aren't met is reported `SKIPPED`, not
+`FAILED`, it never ran, so it can't have failed. That distinction keeps
+your pass rate honest.
+
+```md title="tests/cancel_order_test.md"
+## Preconditions
+- Signed in as a user with the "Sales" role
+- At least one order with status "New" exists
+
+## Steps
+1. Open "Records" and select the newest order with status "New".
+2. Click "Cancel order" and confirm — the status changes to "Cancelled".
+
+## Postconditions
+- Test passes if the order is listed as "Cancelled" and no longer editable
+```
+
+- **Preconditions**: what must be true *before* the steps make sense. Name
+  state you don't create in the test itself: a role, existing data, a
+  starting screen. If setup already establishes it, one line ("Signed in,
+  start screen visible") is enough.
+- **Postconditions**: the overall pass criterion, checked at the end. Write
+  it as the sentence that decides the test: *"Test passes if …"*.
+
+Preconditions the agent can't decide from the screen belong in
+[setup](/docs/writing-tests/setup-teardown-rules) instead, seeding the
+order, granting the role, so the test is applicable by construction. The
+opposite of an entry criterion is an
+[optional step](/docs/writing-tests/step-constructs#optional): a step that
+sometimes doesn't apply *within* an otherwise valid test.
+
+## Never embed credentials
+
+Test files are version-controlled; credentials must not be. Reference them
+by name, the values live encrypted in
+[Utils → Secrets](/docs/extending/secrets) and substitute at execution
+time, hidden from the model and redacted from reports:
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ never"
+1. Sign in as "admin@example.com"
+   with password "hunter2".
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ by name"
+1. Sign in with the QA credentials,
+   the secrets QA_USERNAME and
+   QA_PASSWORD.
+```
+
+</div>
+
+## Repeated sequences → procedures
+
+The same multi-step sequence in more than one test, signing in, reaching a
+starting state, belongs in a
+[procedure](/docs/writing-tests/procedures). A changed flow (new login
+page, renamed field) is then fixed in one place:
+
+```md title="tests/checkout_test.md"
+1. Run procedure `login_to_ui[username, password]` with the QA credentials.
+2. Add the first product to the cart.
+```
+
+## Shared state → setup and teardown
+
+Preconditions every test in a folder needs, logging in, seeding data,
+belong in the folder's `setup.md`, cleanup in `teardown.md`
+([how they cascade](/docs/writing-tests/setup-teardown-rules)). Keep a
+precondition inline only when just some tests need it. Unlike procedures,
+setup and teardown run automatically, nothing calls them.
+
+Three order tests that each opened the app and signed in:
+
+<div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+```md title="❌ tests/create_order_test.md"
+## Steps
+1. Open the application and wait
+   until it is fully visible.
+2. Sign in with the QA credentials.
+3. Open "Records" and create an
+   order for customer "Contoso",
+   it appears with status "New".
+4. Sign out.
+```
+
+<div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+```md title="✅ tests/create_order_test.md"
+## Preconditions
+- Signed in, start screen visible
+
+## Steps
+1. Open "Records" and create an
+   order for customer "Contoso",
+   it appears with status "New".
+```
+
+</div>
+
+The shared steps move up one level, into the folder every order test lives in:
+
+<Files>
+  <Folder name="tests" defaultOpen>
+    <File name="setup.md" />
+    <File name="create_order_test.md" />
+    <File name="cancel_order_test.md" />
+    <File name="search_order_test.md" />
+    <File name="teardown.md" />
+  </Folder>
+</Files>
+
+```md title="tests/setup.md"
+## Setup Steps
+
+1. Open the application under test and wait until it is fully visible.
+2. Sign in using the `login_to_ui` procedure with the QA credentials,
+   the secrets named `QA_USERNAME` and `QA_PASSWORD`.
+3. Verify the start screen has loaded before any test starts.
+```
+
+```md title="tests/teardown.md"
+## Teardown Steps
+
+1. Delete the orders created during the test.
+2. Sign out and close the application under test.
+```
+
+Each test now reads as its own scenario, the sign-in flow is defined once,
+and a failing setup blocks the tests below it instead of failing three times
+in a row.
+
+## When to reach for a tool
+
+Most steps are UI interaction. A [tool](/docs/extending/tools) is right when
+the screen isn't the best source of truth, enable it in the Tool Store
+first, then name it in the step
+([syntax](/docs/writing-tests/step-constructs#tool-invocations)):
+
+- **Verify what the screen can't show**: the record in the database, the
+  API response, the exported file. The UI can claim success while the data
+  is wrong.
+
+  ```md
+  8. Verify the "open_orders" SQL statement lists the order with status "New".
+  ```
+
+- **Get data right instead of letting the agent guess**: dates, conversions,
+  generated values.
+
+  ```md
+  3. Enter the date three days from today into "Delivery date".
+  ```
+
+- **Prepare and clean state**: in
+  [setup and teardown](/docs/writing-tests/setup-teardown-rules), seeding via
+  SQL or an API call is faster and more reliable than clicking the same
+  forms before every test.
+- **See what the screen hides**: the
+  [zoom tool](/docs/extending/tools#screen-zoom) for small targets, the QR
+  scanner for encoded content, a remote file for the application's log.
+- **Recover from infrastructure**: a
+  [rule](/docs/writing-tests/setup-teardown-rules#rules) plus a tool
+  ("if the scanner stops responding, run the `restart_scanner` tool and
+  repeat the step") turns a `BROKEN` run into a passing one.
+
+**Don't route around the UI under test.** If the user journey is what you're
+testing, click it, a tool that performs the user's action instead makes the
+test pass without testing anything. Create an order through the UI, then
+*verify* it with SQL.
+
+## Non-deterministic execution
+
+Two runs of the same case can take different paths, by design
+([why](/docs/concepts/test-automation-harness#why-execution-differs)). The same
+step, two runs, both `PASSED`, here the **environment** differed:
+
+<div className="grid gap-3 md:grid-cols-2">
+
+```md title="Run 1 — 11 tool calls"
+3. Open "Records" and create an
+   order for "Contoso".
+
+Agent Interpretation: clicked
+"Records" in the left sidebar,
+then "New order".
+```
+
+```md title="Run 2 — 14 tool calls"
+3. Open "Records" and create an
+   order for "Contoso".
+
+Agent Interpretation: a survey
+pop-up covered the sidebar,
+dismissed it, then clicked
+"Records" and "New order".
+```
+
+</div>
+
+It also happens with an identical environment, when your UI offers **two
+equivalent ways** to do the same thing:
+
+<div className="grid gap-3 md:grid-cols-2">
+
+```md title="Run 1"
+5. Search for order "4711".
+
+Agent Interpretation: clicked the
+magnifier icon, which opened the
+extended search panel, entered
+"4711" and confirmed.
+```
+
+```md title="Run 2"
+5. Search for order "4711".
+
+Agent Interpretation: typed "4711"
+into the search field in the
+toolbar and pressed Enter.
+```
+
+</div>
+
+None of these runs is wrong: the order was found, the order exists, which
+is what the steps demanded. For a tester this means:
+
+- **Judge the result, not the path**: the report's expected vs. actual
+  per step is the contract; the exact clicks are the execution log, not
+  the specification.
+- **Precise expected results = stable outcomes**: the agent has freedom
+  in *how*; your steps define *what must be true afterwards*. The tighter
+  the expected result, the less room for a wrong interpretation:
+
+  <div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+
+  ```md title="❌ passes on any screen"
+  4. Save the order — it worked.
+  ```
+
+  <div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
+
+  ```md title="✅ one true outcome"
+  4. Save the order — it appears in
+     "Records" with status "New"
+     and today's date.
+  ```
+
+  </div>
+
+- **Rules constrain the freedom**,
+  [rules.md](/docs/writing-tests/setup-teardown-rules#rules) removes paths
+  you never want taken:
+
+  ```md title="➕ tests/rules.md"
+  ## Interaction
+  - Never change application settings to make a step work.
+  - Search from the toolbar field — do not use the extended search panel
+    behind the magnifier icon.
+
+  ## Error handling
+  - If an error dialog appears, document it and mark the step FAILED,
+    never dismiss it and continue.
+  ```
+
+- **Watch a run when in doubt**: the
+  [live conversation log](/docs/running-tests#watch-it-live) shows the
+  path the agent chose, and why.
+
+## Checklist
+
+Before committing test files:
+
+- [ ] One goal per file, with a verifiable outcome.
+- [ ] Labels quoted, positions anchored, no bare "click the button".
+- [ ] Every acting step states what must be true afterwards.
+- [ ] Outcomes that aren't visible where you acted have their own `Verify` step.
+- [ ] Preconditions name the entry criteria; postconditions state the pass criterion.
+- [ ] No credentials in any file, only named references.
+- [ ] Repeated sequences in `procedures/`, not copy-pasted.
+- [ ] Shared preconditions in `setup.md`, shared cleanup in `teardown.md`.

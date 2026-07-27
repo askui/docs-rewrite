@@ -1,0 +1,46 @@
+---
+title: Uninstall AskUI
+description: Remove AskUI Desktop from Windows or macOS.
+---
+
+<Tabs items={['Windows', 'macOS']}>
+  <Tab value="Windows">
+    <Steps>
+    <Step>
+    Open **Settings** and go to **Apps** (or open **Control Panel** and go to
+    **Programs and Features**).
+    </Step>
+    <Step>
+    Find **AskUI Desktop** in the list of installed applications.
+    </Step>
+    <Step>
+    Select it and click **Uninstall**, then follow the prompts.
+    </Step>
+    </Steps>
+
+    The uninstaller removes the application, its Start-menu and desktop
+    shortcuts, and its registry entries. Your settings and sign-in data under
+    `%LOCALAPPDATA%\AskUIDesktop` stay on disk, delete that folder too for a
+    complete removal.
+
+    **Silent uninstall:**
+
+    ```powershell
+    & "$env:LOCALAPPDATA\Programs\AskUI Desktop\uninstall.exe" /S
+    ```
+  </Tab>
+  <Tab value="macOS">
+    <Steps>
+    <Step>
+    Open **Finder** and go to **Applications**.
+    </Step>
+    <Step>
+    Drag **AskUI Desktop** to the Trash, or right-click and select
+    **Move to Trash**.
+    </Step>
+    <Step>
+    Empty the Trash to complete the removal.
+    </Step>
+    </Steps>
+  </Tab>
+</Tabs>
