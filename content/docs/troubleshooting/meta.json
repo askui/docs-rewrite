@@ -1,1 +1,1 @@
-{ "title": "Troubleshooting", "icon": "Wrench", "pages": ["index", "connection-sessions", "misclicks-and-stuck-runs", "performance-cost", "agentos-service", "proxy-ssl", "run-failures", "model-providers", "licensing"] }
+{ "title": "Troubleshooting", "icon": "Wrench", "pages": ["index", "connection-sessions", "misclicks-and-stuck-runs", "performance-cost", "agentos-service", "proxy-ssl", "run-failures", "model-providers"] }

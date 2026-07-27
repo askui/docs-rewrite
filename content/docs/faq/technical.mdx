@@ -5,9 +5,10 @@ description: CI/CD, model providers, virtual machines, proxy, and installation r
 
 ### Can I use AskUI in CI/CD pipelines?
 
-Yes. The AskUI CLI (`askui run`) runs your test projects headless in any CI
-environment. See [CI examples](/docs/agentos/deployment/ci-examples) for
-GitHub Actions, GitLab CI, and Azure DevOps pipeline configurations.
+Not yet. CI execution runs through the AskUI CLI (`askui run`), which is not
+publicly available yet. The setup is documented so you can plan for it:
+[AskUI in CI](/docs/guides/askui-in-ci) and
+[CI examples](/docs/agentos/deployment/ci-examples).
 
 ### Which AI models does AskUI use?
 
@@ -22,8 +23,9 @@ see [CI/CD integration](/docs/agentos/deployment/ci).
 
 ### Does AskUI work behind a corporate firewall or proxy?
 
-Yes. Set the standard `HTTP_PROXY` / `HTTPS_PROXY` environment variables
-before running. For deep-packet-inspection proxies (e.g. Zscaler), see
+Yes. Configure it in the app under **Settings → Network proxy** (system
+proxy, manual address, NTLM/Kerberos). For deep-packet-inspection proxies
+(e.g. Zscaler), see
 [Proxy & TLS troubleshooting](/docs/troubleshooting/proxy-ssl).
 For the list of domains to allowlist, see
 [Network requirements](/docs/reference/network-requirements).
@@ -35,7 +37,7 @@ ports to allowlist is in [Network requirements](/docs/reference/network-requirem
 that page is written so it can be shared directly with an IT department.
 
 Key notes for IT:
-- Both IPv4 and IPv6 are supported; no non-standard ports are required.
+- Both IPv4 and IPv6 are supported; no non-standard ports are required outbound (driving a remote test machine adds an inbound port on that machine, see Network requirements).
 - If the network uses deep-packet inspection (e.g. Zscaler), the AskUI
   certificate chain must be trusted, see
   [Proxy & TLS troubleshooting](/docs/troubleshooting/proxy-ssl).

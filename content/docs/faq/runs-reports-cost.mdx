@@ -1,6 +1,6 @@
 ---
 title: Runs & reports
-description: Understanding run statuses and caching behavior.
+description: Understanding run statuses, reports, and what a run costs.
 ---
 
 ### What is the difference between a failed and a broken status?
@@ -19,15 +19,3 @@ description: Understanding run statuses and caching behavior.
 See [Reading a run report](/docs/results/run-report) for the full
 status reference.
 
-### Should I use caching, and when should I clear it?
-
-Caching stores context between steps so the agent can re-use it without
-recapturing the full screen. It makes long runs faster and cheaper.
-
-**Clear the cache when:**
-- You deploy an update to the application under test.
-- The UI layout or visual design changes.
-- A run produces passes on actions that should have failed (a sign of stale
-  cache returning an outdated screen state).
-
-Rule of thumb: **clear before any run that follows a deployment.**

@@ -9,7 +9,6 @@ Common drivers:
 
 | Driver | What to check |
 |--------|--------------|
-| Stale screenshot cache | Cache holds old, large screenshots re-sent each step. Clear the cache after any UI change. |
 | Oversized images or logs | Very large screen captures or log files raise the token count per step. |
 | Retry loops | A failing step the agent retries many times multiplies cost. Look for high step counts on single actions in the run report. |
 
@@ -25,7 +24,7 @@ memory or significantly slow the host machine.
 Mitigations:
 - Keep test cases short and focused, split a large suite into smaller cases,
   each producing its own report.
-- Archive or delete old run artifacts from the `reports/` folder in your
+- Archive or delete old run folders under `agent_workspace/` in your
   project periodically.
 - If a run must be long, monitor disk and memory usage on the AgentOS host
   and set up log rotation if your OS supports it.

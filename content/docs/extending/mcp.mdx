@@ -35,7 +35,7 @@ This writes `utils/mcp.json` in the project, the whole team and the
 }
 ```
 
-`${VAR}` values resolve from the environment at run start, the token never
+`${VAR}` values resolve at run start, from the project's [secrets](/docs/extending/secrets) first and the environment second, the token never
 lands in the file.
 
 Servers connect when a run starts. An unreachable server is retried once,

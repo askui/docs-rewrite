@@ -107,9 +107,9 @@ LOGIN_001,Valid login,App is open on the login screen,1,Enter the QA credentials
 **Preconditions**: the state the test *assumes*, not work to perform: which
 screen is open, which user is logged out, which data exists. The agent
 checks them before the first step and records whether they were met; a test
-that starts from the wrong state fails here, visibly, instead of producing a
-misleading step failure. Shared preparation work belongs in
-[setup](/docs/writing-tests/setup-teardown-rules), not here.
+whose preconditions aren't met is reported `SKIPPED` instead of producing a
+misleading step failure, because it never ran. Shared preparation work
+belongs in [setup](/docs/writing-tests/setup-teardown-rules), not here.
 
 **Steps**: numbered actions, each paired with what to expect. The agent
 executes them one at a time: perform the action, compare what it observes
@@ -121,9 +121,10 @@ conditions, waits, checks, procedure calls, is on
 [Step constructs](/docs/writing-tests/step-constructs).
 
 **Postconditions**: the overall pass criterion, phrased as a checkable end
-state: "Test passes if …". The agent judges it after the last step; this is
-what decides the case's final status, independent of which path the agent
-took to get there.
+state: "Test passes if …". The agent judges it after the last step,
+independent of which path it took to get there. The case's reported status
+is the worst of its steps
+([how it is derived](/docs/results/run-report#test-report)).
 
 These templates are starting points, not schemas, the agent reads a test
 the way a tester would, so you're free to choose your own structure. `.md`

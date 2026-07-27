@@ -25,7 +25,7 @@ possibly do. Manage it under **Utils → Tool Store**.
 | **[MCP tools](/docs/extending/mcp)** | Tools of the MCP servers registered in `utils/mcp.json`, connected at run start |
 
 Some tools take configuration when added, a connection string, a base URL.
-`${VAR}` values resolve from the environment at run start; credentials belong
+`${VAR}` values resolve at run start, from the project's [secrets](/docs/extending/secrets) first and the environment second; credentials belong
 in [named secrets](/docs/extending/secrets).
 
 Choices are saved to `utils/tools.json`, the whole team runs with the same

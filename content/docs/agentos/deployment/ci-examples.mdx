@@ -3,6 +3,11 @@ title: CI pipeline examples
 description: Ready-to-use pipeline configurations for running AskUI tests in GitHub Actions, GitLab CI, and Azure DevOps.
 ---
 
+<Callout type="warn" title="Coming soon">
+CI execution needs the AskUI CLI, which is not publicly available yet. This
+page describes the setup you will use once it ships, so you can plan for it.
+</Callout>
+
 These examples show how to run `askui run` in the most common CI environments.
 All examples assume:
 
@@ -49,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: askui-reports
-          path: reports/
+          path: agent_workspace/
 ```
 
 ## GitLab CI
@@ -68,7 +73,7 @@ askui-tests:
   artifacts:
     when: always
     paths:
-      - reports/
+      - agent_workspace/
     expire_in: 7 days
 ```
 
@@ -94,7 +99,7 @@ steps:
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
-      pathToPublish: reports/
+      pathToPublish: agent_workspace/
       artifactName: askui-reports
 ```
 

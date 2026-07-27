@@ -1,6 +1,6 @@
 ---
 title: CLI reference (Coming Soon)
-description: The askui run command reference, targets, plans, surfaces, model selection, caching, reports, and CI usage.
+description: The askui run command reference, targets, plans, surfaces, model selection, reports, and CI usage.
 ---
 
 The CLI runs the exact Projects you build in AskUI Desktop. The same `tests/`,
@@ -52,7 +52,7 @@ that names a subset of suites. See
 | --- | --- | --- |
 | `--plan <name>` |, | Plan file (without extension) from the Project's `plans/` directory. |
 | `--project-root <dir>` | current directory | The Project root (`tests/`, `prompts/`, `procedures/`, `plans/`, `helpers/`). |
-| `--workspace <dir>` | `<project-root>/agent_workspace/<UTC timestamp>` | Output directory for reports, screenshots, and the HTML log. |
+| `--workspace <dir>` | `<project-root>/agent_workspace/<UTC timestamp>` | Output directory for reports, screenshots and the conversation. |
 
 ## Surface options
 
@@ -105,33 +105,6 @@ The agent drives the UI from **screenshots**, so BYOM models must be
 **vision-capable**: a text-only model will connect but can't see the screen.
 </Callout>
 
-## Caching options
-
-Runs record the agent's action trajectory and **replay** it on the next run of
-the same test, dramatically faster and cheaper than re-deciding every step
-with the model. Replayed steps are visually validated against the recorded
-screenshots (perceptual hashing); when the UI has drifted too far, the run
-falls back to the model.
-
-| Option | Default | Description |
-| --- | --- | --- |
-| `--cache-strategy <s>` | `auto` | `auto` (replay when cached, record otherwise) or `none` (disable caching). |
-| `--cache-dir <dir>` | `.askui_cache` | Directory for cache files, relative to the working directory. |
-| `--cache-delay-between-actions <seconds>` | `1` | Delay between replayed actions. |
-| `--cache-skip-visual-validation` | off | Skip visual validation during replay. |
-| `--cache-visual-validation-threshold <n>` | `10` | Max perceptual-hash (Hamming) distance for visual validation. |
-| `--cache-parameter-identification-strategy <s>` | `llm` | How dynamic values (dates, order numbers, …) are identified when recording: `llm` or `preset`. |
-| `--cache-visual-verification-method <m>` | `phash` | Hash method for visual verification: `phash`, `ahash`, or `none`. |
-| `--cache-visual-validation-region-size <px>` | `100` | Screenshot region size around each action used for validation. |
-
-```bash
-# First run records, later runs replay
-askui run --plan smoke
-
-# Force a fully model-driven run
-askui run --cache-strategy none
-```
-
 ## Credentials and `.env`
 
 The CLI loads a `.env` file from the Project root at the start of every run,
@@ -161,9 +134,8 @@ Each run gets its own workspace folder (see `--workspace`), containing:
 - **`summary_report.md`**: one table over all executed tests with
   pass/fail/broken counts. Tests a plan selected but the run never reached
   appear as broken, so nothing goes missing silently.
-- **The HTML log**: the full agent conversation with screenshots, the same
-  report you know from
-  [Reading a run report](/docs/results/run-report).
+- **`conversation.json`**: the full agent conversation, which AskUI Desktop
+  re-renders as the [conversation log](/docs/results#conversation-log).
 
 The console shows each phase as it starts and finishes
 (`[test] tests/login.md -> PASSED`) and ends with the totals.
