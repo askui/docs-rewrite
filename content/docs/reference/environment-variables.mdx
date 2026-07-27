@@ -16,19 +16,3 @@ description: All environment variables recognised by AskUI Desktop, the CLI, and
 |----------|---------|-------------|
 | `ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART` | `true` | Set to `false` to prevent the CLI from starting a local AgentOS instance automatically. Use this when connecting to a remote AgentOS. |
 | `ASKUI_CONTROLLER_CLIENT_SERVER_ADDRESS` | `localhost:23000` | Address of the AgentOS gRPC server to connect to. Override when using a remote AgentOS instance. |
-
-## Proxy (CLI only)
-
-AskUI Desktop does **not** read these, configure its proxy under
-**Settings → Network proxy** ([Proxy & TLS](/docs/troubleshooting/proxy-ssl)).
-The CLI honors the standard .NET proxy variables:
-
-| Variable | Description |
-|----------|-------------|
-| `HTTP_PROXY` | URL of an HTTP proxy server (e.g. `http://proxy.example.com:8080`). |
-| `HTTPS_PROXY` | URL of an HTTPS proxy server. |
-| `NO_PROXY` | Comma-separated list of hosts that should bypass the proxy (e.g. `localhost,127.0.0.1`). |
-
-There is no variable to disable TLS verification, a traffic-inspecting
-proxy's root certificate must be
-[trusted by the OS](/docs/troubleshooting/proxy-ssl).

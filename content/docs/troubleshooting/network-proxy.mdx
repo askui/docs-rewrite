@@ -1,0 +1,34 @@
+---
+title: Network proxy
+description: Configure the proxy AskUI Desktop uses, and what to check when connections still fail.
+---
+
+The proxy is configured **in the app**:
+
+1. Open **Settings → Network proxy**. (During license setup, the same form
+   is in the wizard under **Behind a proxy? Configure network access**.)
+2. Choose the **Proxy** mode:
+   - **Use system proxy (recommended)**: the Windows proxy/PAC
+     configuration applies.
+   - **Manual proxy address**: enter the fields:
+     - **Proxy address**: e.g. `http://proxy.corp.example:8080`
+     - **Bypass for**: hosts reached directly, separated by semicolons
+       (e.g. `*.corp.example; 10.0.0.*`). Localhost is always bypassed.
+   - **No proxy (direct connection)**.
+3. Choose **Proxy authentication**:
+   - **Automatic (recommended)**: if the proxy asks for sign-in (HTTP 407),
+     your current OS account answers automatically (NTLM / Kerberos). No
+     password is stored, and nothing is sent unless the proxy actually asks.
+   - **Username and password**: stored encrypted on this machine; it never
+     leaves it.
+   - **Never authenticate**.
+
+### Connections still fail
+
+1. Check the internet connection first, an interrupted connection produces
+   the same errors as a blocked one.
+2. Confirm the domains AskUI needs are reachable through the proxy:
+   [Network requirements](/docs/reference/network-requirements).
+3. If they are allowlisted and it still fails, your network is doing
+   something to the traffic that needs your IT team,
+   [get in touch](/docs/support/get-help) and we will work it out with them.

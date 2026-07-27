@@ -24,9 +24,8 @@ see [CI/CD integration](/docs/agentos/deployment/ci).
 ### Does AskUI work behind a corporate firewall or proxy?
 
 Yes. Configure it in the app under **Settings → Network proxy** (system
-proxy, manual address, NTLM/Kerberos). For deep-packet-inspection proxies
-(e.g. Zscaler), see
-[Proxy & TLS troubleshooting](/docs/troubleshooting/proxy-ssl).
+proxy, manual address, NTLM/Kerberos):
+[Network proxy](/docs/troubleshooting/network-proxy).
 For the list of domains to allowlist, see
 [Network requirements](/docs/reference/network-requirements).
 
@@ -38,9 +37,6 @@ that page is written so it can be shared directly with an IT department.
 
 Key notes for IT:
 - Both IPv4 and IPv6 are supported; no non-standard ports are required outbound (driving a remote test machine adds an inbound port on that machine, see Network requirements).
-- If the network uses deep-packet inspection (e.g. Zscaler), the AskUI
-  certificate chain must be trusted, see
-  [Proxy & TLS troubleshooting](/docs/troubleshooting/proxy-ssl).
 - Contact [support@askui.com](mailto:support@askui.com) to request a
   one-pager formatted for IT firewall review.
 

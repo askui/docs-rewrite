@@ -290,7 +290,7 @@ What the team providing the machines needs to know:
 | Question | Answer |
 | --- | --- |
 | **Operating systems** | AskUI Desktop: Windows and macOS. AgentOS on target machines: Windows 10+/Server 2019+, macOS 10.15+, Ubuntu 18.04+, [full matrix](/docs/agentos/reference/system-requirements) |
-| **Proxy** | A system/corporate proxy is supported app-wide (Settings → Network proxy), including NTLM/Kerberos authentication, covers sign-in, model provider, and MCP traffic. [Troubleshooting proxy & SSL](/docs/troubleshooting/proxy-ssl) |
+| **Proxy** | A system/corporate proxy is supported app-wide (Settings → Network proxy), including NTLM/Kerberos authentication, covers sign-in, model provider, and MCP traffic. [Network proxy](/docs/troubleshooting/network-proxy) |
 | **Air-gapped / no AskUI account** | [License-key mode](/docs/get-started/licensing) removes the hub from the picture entirely: activate locally, bring your own model endpoint. Runtime downloads (browsers, Android SDK) still need a reachable mirror or pre-provisioned tooling |
 | **CI runners** | The [CLI](/docs/running-tests/cli) authenticates via `ASKUI_WORKSPACE_ID` / `ASKUI_TOKEN`. Headless browser targets run on a bare runner; desktop targets need a machine with [AgentOS](/docs/agentos/deployment/ci) and a real session |
 | **Team rollout** | Which teams run what, and on whose machines: [Sharing the project](/docs/concepts/team-setups) |
