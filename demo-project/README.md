@@ -15,13 +15,16 @@ Devices, Tests, Runs and Dashboard pages then populate from the files here.
 |---|---|---|
 | Windows Desktop | `agent-os` (Core Service, `localhost:26000`) | Open Notepad on Windows |
 | Chrome Browser | `web-browser` (Playwright) | Open askui.com in Chrome |
-| Android Emulator | `android` (adb, `emulator-5554`) | Open Calculator on Android |
+| Android Emulator | `android` (adb, `emulator-5554`) | Enable airplane mode on Android |
 
 ## Test cases (`tests/`)
 
 1. `open_notepad_windows.md` — Open Notepad from the Start menu.
 2. `open_askui_com_chrome.md` — Navigate to askui.com.
-3. `open_calculator_android.md` — Launch the Calculator app.
+3. `enable_airplane_mode_android.md` — Toggle airplane mode in Settings.
+   (Settings, rather than an app like Calculator, because the stock
+   `google_apis` image this AVD uses does not ship one — see the Android
+   guide's note on lean emulator images.)
 
 Each test names the device it targets at the top; pick that device in the
 **Run on** dropdown when you run it.

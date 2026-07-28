@@ -22,7 +22,7 @@ quickly.
    - Anthropic: [console.anthropic.com](https://console.anthropic.com) → Usage
    - OpenAI: [platform.openai.com](https://platform.openai.com) → Usage
 3. If this happens regularly, upgrade to a higher usage tier with your provider.
-4. Alternatively, switch back to the **AskUI hub** (Settings → Model Provider →
+4. Alternatively, switch back to the **AskUI hub** (Settings → Account → Model Provider →
    Remove key), the hub handles rate limits automatically.
 
 ### 401 Unauthorized
@@ -31,7 +31,7 @@ quickly.
 has been revoked.
 
 **What to do:**
-1. Go to **Settings → Model Provider** and check the key you entered.
+1. Go to **Settings → Account → Model Provider** and check the key you entered.
 2. Generate a fresh key in your provider's console and paste it in, don't type
    it by hand.
 3. Make sure you copied the full key. Keys are long strings and it's easy to
@@ -55,7 +55,7 @@ require a paid plan or explicit access request.
 incorrectly. Model IDs are case-sensitive and must match exactly.
 
 **What to do:**
-1. Go to **Settings → Model Provider** and check the **Model** field.
+1. Go to **Settings → Account → Model Provider** and check the **Model** field.
 2. Copy the exact model ID from your provider's documentation:
    - Anthropic: [docs.anthropic.com/models](https://docs.anthropic.com/en/docs/about-claude/models/overview)
    - OpenAI: [platform.openai.com/docs/models](https://platform.openai.com/docs/models)
@@ -69,7 +69,7 @@ Most common with self-hosted models (vLLM, Ollama, llama.cpp).
 
 **What to do:**
 1. Make sure your local model server is running before starting a run.
-2. Check the **Base URL** in **Settings → Model Provider**, it should look like
+2. Check the **Base URL** in **Settings → Account → Model Provider**, it should look like
    `http://localhost:8000/v1`. Confirm the port matches what your server uses.
 3. If connecting to a remote server, check that it's reachable on your network
    and no firewall is blocking the port.

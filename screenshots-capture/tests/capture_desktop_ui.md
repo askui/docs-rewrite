@@ -14,16 +14,22 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
    1. Open the **Devices** page. If the **Pixel 9** profile is not connected,
       click **Start** and wait until it shows Ready (a cold boot can take
       several minutes — the card shows the phases).
-   2. Open the **Tests** page and select `open_calculator_android.md`. Run it
+   2. Open the **Tests** page and select `enable_airplane_mode_android.md`. Run it
       on the **Pixel 9** device (Run-on picker or right-click → Run on).
    3. Open the **Runs** page and select the run that just started. Wait until
       the conversation is visibly streaming — at least one agent message and
       one Android screenshot in the log, run still in progress.
    4. Call `save_screenshot[desktop-runs-live]` while the run is still
       executing.
-   5. Let the run finish — do NOT stop it. When it is done, with the full
-      conversation log of the finished run visible, call
-      `save_screenshot[desktop-conversation-log]`.
+   5. Let the run finish — do NOT stop it. When it is done, open the finished
+      run's conversation log and scroll to a stretch that shows **both** an
+      inline screenshot image **and** at least one tool call (the collapsible
+      rows naming a tool, e.g. `move_mouse` / `mouse_click` / `screenshot`) —
+      that pairing is the point of the shot: it shows what the agent looked at
+      next to what it did. Expand a tool call if they render collapsed. With both
+      visible in the same frame, call `save_screenshot[desktop-conversation-log]`.
+      If no single frame can show both, capture the frame containing the image
+      plus the nearest tool calls rather than a log of plain text.
 
 2. Open the **Dashboard** page. Wait until its cards/counters have loaded, then
    call `save_screenshot[desktop-dashboard]`.
@@ -31,22 +37,32 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
 3. Open the **Devices** page (Device Center). Wait until the device list is
    shown, then call `save_screenshot[desktop-devices]`.
 
-4. Still on the Devices page, click **Add profile**. When the dialog with the
+4. Still on the Devices page, click **Add device**. When the dialog with the
    device-kind cards is shown, call `save_screenshot[desktop-add-profile]`.
 
+   For steps 5–8: the **Name** field keeps whatever was typed before, so after
+   switching kind it still shows the previous kind's name — a Multi-computer
+   screenshot labelled "An Android Device" teaches the reader the wrong thing.
+   Before each of those captures, clear the Name field and type the name given
+   for that kind, and check every other visible field belongs to the kind on
+   screen (no leftover host, port, or image from the previous one).
+
 5. In the same dialog, select the **Remote computer** kind so its fields (Host,
-   Port, Display) are shown, then call
+   Port, Display) are shown. Set **Name** to `Build Server`, then call
    `save_screenshot[desktop-profile-remote-computer]`.
 
-6. Select the **Web browser** kind (Browser, Start URL, Headless fields), then
-   call `save_screenshot[desktop-profile-web-browser]`.
+6. Select the **Web browser** kind (Browser, Start URL, Headless fields). Set
+   **Name** to `Chrome Browser`, then call
+   `save_screenshot[desktop-profile-web-browser]`.
 
 7. Select the **Android emulator** kind (Device type, System image, Lifecycle),
-   wait until its dropdowns have loaded, then call
+   wait until its dropdowns have loaded. Set **Name** to `Pixel 9`, then call
    `save_screenshot[desktop-profile-android-emulator]`.
 
-8. Select the **Multi computer** kind (rows of Name/Host/Port/Display), then
-   call `save_screenshot[desktop-profile-multi-computer]`.
+8. Select the **Multi computer** kind (rows of Name/Host/Port/Display). Set the
+   profile **Name** to `Build Farm`, and give the per-computer rows names that
+   read as machines (e.g. `builder-01`, `builder-02`) — not a phone or browser
+   name. Then call `save_screenshot[desktop-profile-multi-computer]`.
 
 9. Close the dialog with **Cancel** — do NOT save any profile.
 
@@ -72,7 +88,7 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     `save_screenshot[desktop-utils-secrets]`. Do NOT add, edit, or reveal any
     secret.
 
-15. Switch to the **MCP** tab, then call `save_screenshot[desktop-utils-mcp]`.
+15. Switch to the **MCP Servers** tab, then call `save_screenshot[desktop-utils-mcp]`.
 
 15b. Switch to the **Custom Tools** tab. Wait until the file list (or the
     empty drop zone) is shown, then call `save_screenshot[desktop-utils-custom]`.
