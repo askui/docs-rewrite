@@ -44,6 +44,16 @@ screenshots-capture/
    controller the desktop app installed; set `ASKUI_CONTROLLER_PATH` to use a
    different one.
 
+### Capturing a fresh build instead of the installed app
+
+Start the app from the app repo yourself, sign in, then run the capture — the
+flow uses whichever AskUI Desktop window is already open (window matching is
+by title, so the `dotnet`-hosted dev process is found too):
+
+- **macOS**: `src/AskUI.Desktop.Mac/run-mac.sh` (publishes and launches;
+  plain `dotnet run` does not assemble the wwwroot).
+- **Windows**: `dotnet run --project src/AskUI.Desktop.Windows`.
+
 ## Run
 
 From the docs-rewrite repo root:
