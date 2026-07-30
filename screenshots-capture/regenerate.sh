@@ -28,6 +28,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOCS_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 TARGET="${1:-tests/capture_desktop_ui.md}"
 
+# Optional driver settings from the project's .env (the same file the CLI
+# reads for credentials). Environment variables win over the file:
+#   APP_REPO=<path to the app repo checkout>
+#   CAPTURE_DISPLAY=<display the app is visible on, default 1>
+ENV_FILE="$SCRIPT_DIR/.env"
+env_get() { [[ -f "$ENV_FILE" ]] && sed -n "s/^[[:space:]]*$1=//p" "$ENV_FILE" | tail -1 | tr -d '"' || true; }
+APP_REPO="${APP_REPO:-$(env_get APP_REPO)}"
+CAPTURE_DISPLAY="${CAPTURE_DISPLAY:-$(env_get CAPTURE_DISPLAY)}"
+CAPTURE_DISPLAY="${CAPTURE_DISPLAY:-1}"
+
 # Locate the app repo (holds AskUI.Cli): $APP_REPO wins, then the known
 # checkout layouts next to this repo.
 CANDIDATES=(
@@ -64,7 +74,7 @@ if ! pgrep -q "AskUI.Desktop" 2>/dev/null; then
 fi
 
 echo "Capturing '$TARGET' -> $DOCS_SCREENSHOTS_DIR"
-dotnet run --project "$CLI_PROJECT" -- run "$TARGET" --project-root "$SCRIPT_DIR"
+dotnet run --project "$CLI_PROJECT" -- run "$TARGET" --project-root "$SCRIPT_DIR" --display "$CAPTURE_DISPLAY"
 EXIT=$?
 
 echo

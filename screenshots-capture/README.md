@@ -38,7 +38,10 @@ screenshots-capture/
    `AskUI.Cli` (not shipped standalone yet). Override its location with
    `-AppRepo` (Windows) / `APP_REPO=` (macOS) if it lives elsewhere.
 3. **Credentials**: `cp screenshots-capture/.env.example screenshots-capture/.env`
-   and fill in your AskUI workspace id + token (or run under `op run`).
+   and fill in your AskUI workspace id + token (or run under `op run`). The
+   same file optionally carries the driver settings `APP_REPO` (app repo
+   checkout) and `CAPTURE_DISPLAY` (the display the app is visible on,
+   default 1).
 4. **macOS only**: the AskUI controller needs **Screen Recording** permission
    (System Settings → Privacy & Security). The driver falls back to the
    controller the desktop app installed; set `ASKUI_CONTROLLER_PATH` to use a
