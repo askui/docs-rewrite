@@ -26,14 +26,27 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOCS_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-APP_REPO="${APP_REPO:-$DOCS_ROOT/../integrated-task-plattform}"
 TARGET="${1:-tests/capture_desktop_ui.md}"
 
-CLI_PROJECT="$APP_REPO/src/AskUI.Cli"
-if [[ ! -d "$CLI_PROJECT" ]]; then
-    echo "AskUI.Cli not found at '$CLI_PROJECT'. Set APP_REPO=<path-to-integrated-task-plattform>." >&2
+# Locate the app repo (holds AskUI.Cli): $APP_REPO wins, then the known
+# checkout layouts next to this repo.
+CANDIDATES=(
+    "${APP_REPO:-}"
+    "$DOCS_ROOT/../integrated-task-plattform"
+    "$DOCS_ROOT/../../2-DesktopApp/main"
+    "$DOCS_ROOT/../integrated-task-platform"
+)
+APP_REPO=""
+for c in "${CANDIDATES[@]}"; do
+    [[ -n "$c" && -d "$c/src/AskUI.Cli" ]] && { APP_REPO="$(cd "$c" && pwd)"; break; }
+done
+if [[ -z "$APP_REPO" ]]; then
+    echo "AskUI.Cli not found. Probed:" >&2
+    printf '  %s\n' "${CANDIDATES[@]:1}" >&2
+    echo "Set APP_REPO=<path-to-the-app-repo-checkout>." >&2
     exit 2
 fi
+CLI_PROJECT="$APP_REPO/src/AskUI.Cli"
 
 # Output folder that save_screenshot writes into — the docs static asset dir.
 export DOCS_SCREENSHOTS_DIR="$DOCS_ROOT/public/screenshots"
