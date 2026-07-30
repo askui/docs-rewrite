@@ -7,7 +7,7 @@
     "build": "next build",
     "dev": "next dev",
     "start": "serve out",
-    "screenshots": "powershell -NoProfile -ExecutionPolicy Bypass -File screenshots-capture/regenerate.ps1",
+    "screenshots": "node -e \"const{spawnSync}=require('child_process');const win=process.platform==='win32';const r=spawnSync(win?'powershell':'bash',win?['-NoProfile','-ExecutionPolicy','Bypass','-File','screenshots-capture/regenerate.ps1']:['screenshots-capture/regenerate.sh'],{stdio:'inherit'});process.exit(r.status??1)\"",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
     "postinstall": "fumadocs-mdx"
   },
