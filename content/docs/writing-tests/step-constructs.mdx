@@ -251,7 +251,7 @@ is usually enough; when two tools could match, name the tool explicitly:
 24. Use the `sql_database` tool to run the statement `test_data`.
 ```
 
-Tool names are listed under **Utils → Tool Store**, each card carries the name
+Tool names are listed under **Extending → Tool Store**, each card carries the name
 the agent knows it by. A [custom tool](/docs/extending/custom-tools)'s name
 is the `name:` in its C# file.
 
@@ -290,9 +290,9 @@ on-screen numpad, keeps misreading the same part of your UI. That's not a
 step problem either, teach it the house style in
 [rules.md](/docs/writing-tests/setup-teardown-rules#rules) or, when it's
 about how your application works, in the
-[ui_information prompt](/docs/writing-tests/agents-and-prompts):
+[UI information file](/docs/writing-tests/agents-and-prompts#ui-information):
 
-```md title="prompts/ui_information.md"
+```md title="tests/ui.md"
 - Enter numbers via the on-screen numpad with mouse clicks — never type
   them with the keyboard.
 - Do not use keyboard shortcuts; this application is tested through its

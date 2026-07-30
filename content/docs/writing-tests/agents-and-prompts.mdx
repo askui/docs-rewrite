@@ -1,24 +1,25 @@
 ---
 icon: Bot
-title: Agents & Prompts
-description: The agent's standing instructions, four prompt files every Project carries, what each does, and which ones you edit.
+title: The system prompt
+description: The agent's standing instructions, where each part lives in the project, what each does, and which ones you edit.
 ---
 
-The `prompts/` folder is what you'd tell a new tester on day one, standing
-instructions the agent gets before every run. Every new Project is seeded
-with four files; edit them on the **Agents** page or in any editor.
+The system prompt is what you'd tell a new tester on day one, standing
+instructions the agent gets before every run. Each part lives where it
+belongs, versioned with your testware:
 
-| File | Holds | You edit it? |
+| Part | Lives in | You edit it? |
 | --- | --- | --- |
-| `system_capabilities.md` | The agent's identity and error discipline | Rarely, the defaults keep runs honest |
-| `device_information.md` | Quirks of the machine under test | Only when the machine has quirks |
-| `ui_information.md` | How **your application** works | Yes, the file you invest the most in |
-| `report_format.md` | Structure and statuses of the report | When your reporting needs differ |
+| Capabilities and error discipline | Built into the app | No, it keeps runs honest |
+| Device prompt | Each device profile (`devices.json`) | Only when the machine has quirks |
+| UI information | `tests/ui.md` | Yes, the file you invest the most in |
+| Report format | `utils/format.md` | When your reporting needs differ |
+| Rules | `tests/rules.md` (and per suite) | Yes, your rules override everything above |
 
-## System capabilities
+## Capabilities
 
-`system_capabilities.md` defines what the agent is and how it behaves when things go wrong. The
-defaults are deliberately strict:
+The agent's identity and its error discipline are built in and not
+editable. The defaults are deliberately strict:
 
 > You have a maximum of **2 attempts per step**. If a step does not succeed
 > after 2 attempts, stop immediately. Do not try a third time.
@@ -31,21 +32,33 @@ the real value is substituted at execution time, hidden from the model. \
 **Scratchpad**: the agent can persist notes across phases with the
 scratchpad tools, but only when a test explicitly instructs it to.
 
-## Device information
+When the built-in behaviour doesn't fit your suite, don't look for a file to
+edit, write a [rule](#rules): rules are appended last and take precedence
+over the built-in instructions on conflicts.
 
-`device_information.md`, machine quirks the agent can't see for itself, keep it small. The agent
-already sees the screen, so OS and display basics rarely need describing:
+## Device prompt
+
+Machine quirks the agent can't see for itself live on the device profile,
+keep it small. The agent already sees the screen, so OS and display basics
+rarely need describing.
+
+1. Open **Devices** and click **Edit** on the profile.
+2. Fill the **Prompt** field:
 
 ```markdown
 * Always execute on display 1.
 * The corporate lock screen appears after 5 minutes of inactivity.
 ```
 
-Swap this file when retargeting a Project at a different machine.
+The text is stored with the profile in `devices.json` and goes into the
+system prompt of every run on that device. Retargeting a project at a
+different machine means picking a different profile, its prompt travels
+with it.
 
 ## UI information
 
-`ui_information.md`, where the agent learns your application, the domain knowledge that lets a
+`tests/ui.md`, where the agent learns your application, the domain knowledge
+that lets a
 [colleague without domain knowledge](/docs/writing-tests/step-constructs)
 execute your tests. The default ships as placeholders:
 
@@ -66,10 +79,17 @@ This is also where you steer **how** the agent operates your UI, "enter
 numbers via the on-screen numpad, never the keyboard"
 ([more](/docs/writing-tests/step-constructs#beyond-steps)).
 
+A suite that tests a different part of the system can carry its own
+`ui.md`: like `rules.md`, the files accumulate top-down, the top-level
+`tests/ui.md` first, then each folder's on the way to the test. `ui.md` is
+never executed as a test, the Tests page marks it **Context only**.
+
 ## Report format
 
-`report_format.md`, the template for every report the agent writes: title, **Test Case ID**,
-date, status, and the per-step sections. Two parts are load-bearing:
+`utils/format.md`, the template for every report the agent writes: title,
+**Test Case ID**, date, status, and the per-step sections. Edit it under
+**Extending → Report Format**, it applies to all runs of the project. Two
+parts are load-bearing:
 
 - The **`**Status:**` line is parsed by the runner** to set the run's
   result, remove it and a passing test is recorded as BROKEN.
@@ -80,9 +100,36 @@ date, status, and the per-step sections. Two parts are load-bearing:
 Customize the sections when your organization needs different evidence,
 keep the `**Status:**` line.
 
-## Per-suite instructions
+## Rules
 
-Standing instructions that apply to one suite only, not to the whole
-Project, go into the suite's
-[rules.md](/docs/writing-tests/setup-teardown-rules#rules), which accumulates
-with these prompt files at run time.
+`tests/rules.md` holds your standing corrections, appended at the very end
+of the system prompt behind an explicit note that **your rules take
+precedence** where they conflict with anything above. Instructions that
+apply to one suite only go into that folder's
+[rules.md](/docs/writing-tests/setup-teardown-rules#rules); the files
+accumulate top-down at run time.
+
+## Checking what the agent got
+
+Every run records the exact system prompt per phase: open the run's
+conversation log and expand the **System prompt** section under an act
+header. What you read there is what the agent read.
+
+## Upgrading an older project
+
+Projects created before this layout carry a `prompts/` folder. Opening one
+shows the **Migrate Project** dialog:
+
+1. Click **Migrate**. `ui_information.md` becomes `tests/ui.md`,
+   `report_format.md` becomes `utils/format.md`, and the folder is renamed
+   to `prompts_legacy/`, nothing is deleted, existing files are never
+   overwritten.
+2. If you had customized `system_capabilities.md`, the dialog offers to
+   append **your additions** (not the standard text) to `tests/rules.md`,
+   where they keep working, and now take precedence.
+3. Text you wrote in `device_information.md` is not migrated automatically:
+   copy it into the device profile's **Prompt** field on the Devices page.
+   The original stays in `prompts_legacy/`.
+
+**Not now** dismisses the dialog for this project; the legacy files are
+simply no longer read.

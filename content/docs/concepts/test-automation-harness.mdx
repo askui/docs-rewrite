@@ -75,7 +75,7 @@ What it hands each phase, what it enforces, and what it leaves behind:
   defined by what is checked into your repository, the same folder produces
   the same run on a colleague's machine or a CI runner.
 - **The agent files**: *who* is testing: the four
-  [prompt files](/docs/best-practices/agent-behavior) in `prompts/`, the
+  [system-prompt files](/docs/best-practices/agent-behavior) of the project, the
   agent's identity and error discipline, facts about the machine, knowledge
   of your application, and the report contract. They apply to every phase and
   change rarely.
@@ -92,7 +92,7 @@ What it hands each phase, what it enforces, and what it leaves behind:
   isn't part of this run is left out with a warning.
 - **The limits and the default behavior in error cases**: what happens when
   a step doesn't work out, so a result means the same thing in every project
-  ([the discipline](/docs/best-practices/agent-behavior#system-capabilities-error-discipline)):
+  ([the discipline](/docs/best-practices/agent-behavior#error-discipline-built-in)):
   - **Two attempts per step**: then stop, no third try, no creative
     workarounds, no navigating back to retry.
   - **The application misbehaved** → the step is `FAILED` and the test

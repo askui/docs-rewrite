@@ -4,7 +4,7 @@ description: The askui run command reference, targets, plans, surfaces, model se
 ---
 
 The CLI runs the exact Projects you build in AskUI Desktop. The same `tests/`,
-`prompts/`, `plans/`, and `procedures/` drive both, author in the app, run
+`plans/`, `procedures/`, and `utils/` drive both, author in the app, run
 anywhere with the CLI. See [Install the CLI](/docs/running-tests/install-cli) for
 setup and authentication.
 
@@ -13,7 +13,8 @@ askui run [<target>] [options]
 ```
 
 Run from your Project root (or pass `--project-root`). Without arguments,
-`askui run` executes the whole `tests/` folder against your local desktop.
+`askui run` executes the whole tests folder against your local desktop
+(`tests/`, or the folder `askui.json` names as the tests path).
 
 ## What a run does
 
@@ -22,7 +23,9 @@ present) runs first, then the tests, then `teardown.md`, with any `rules.md`
 applied throughout. Each phase is one autonomous agent execution that reads
 the test file, drives the UI, and writes a report with screenshots. When you
 target a nested folder tree, setups run top-down, teardowns bottom-up, and
-`rules.*` accumulate per level; a failing setup blocks the tests it guards.
+`rules.*` and `ui.*` accumulate per level, always starting at the tests
+root, so `tests/rules.md` and `tests/ui.md` apply to every run shape; a
+failing setup blocks the tests it guards.
 
 ### The target
 
@@ -51,10 +54,14 @@ that names a subset of suites. See
 | Option | Default | Description |
 | --- | --- | --- |
 | `--plan <name>` |, | Plan file (without extension) from the Project's `plans/` directory. |
-| `--project-root <dir>` | current directory | The Project root (`tests/`, `prompts/`, `procedures/`, `plans/`, `helpers/`). |
+| `--project-root <dir>` | current directory | The Project root (`tests/`, `procedures/`, `plans/`, `utils/`). |
 | `--workspace <dir>` | `<project-root>/agent_workspace/<UTC timestamp>` | Output directory for reports, screenshots and the conversation. |
 
 ## Surface options
+
+When the project's `devices.json` has exactly one profile matching the
+surface options, its name and [prompt text](/docs/writing-tests/agents-and-prompts#device-prompt)
+join the agent's system prompt, the same device knowledge as an in-app run.
 
 | Option | Default | Description |
 | --- | --- | --- |
