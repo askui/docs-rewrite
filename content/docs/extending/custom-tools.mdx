@@ -7,7 +7,7 @@ description: Give the agent a project-specific ability by dropping a C# file int
 A **custom tool** is one C# file in `utils/custom_tools/`. It joins the
 agent's toolbox for every run of the project, for anything no built-in
 covers: your product's admin API, resetting test users, seeding data.
-Manage the files under **Utils → Custom Tools**.
+Manage the files under **Extending → Custom Tools**.
 
 <Callout type="warn" title="Developer territory">
 Custom tools are C# code with full machine access, running inside every run
@@ -17,7 +17,7 @@ or the AskUI Solution Engineering team, not edited ad hoc by test authors.
 
 <img
   src="/docs-rewrite/screenshots/desktop-utils-custom.png"
-  alt="The Custom Tools tab on the Utils page listing the project's .cs tool files with a drop zone"
+  alt="The Custom Tools tab on the Extending page listing the project's .cs tool files with a drop zone"
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
@@ -76,9 +76,9 @@ There is no in-app code editor, write tools in your own IDE.
    }
    ```
 
-2. Drop the file onto **Utils → Custom Tools**, or save it straight into
+2. Drop the file onto **Extending → Custom Tools**, or save it straight into
    `utils/custom_tools/`.
-3. Add the secret it uses (`ADMIN_API_KEY`) under **Utils → Secrets**,
+3. Add the secret it uses (`ADMIN_API_KEY`) under **Extending → Secrets**,
    never hard-code credentials into the file.
 4. Use it in a [step](/docs/writing-tests/step-constructs#tool-invocations),
    the file compiles when the run starts:
@@ -94,7 +94,7 @@ What the example uses, and what else a tool file can do:
   directives.
 - **Secrets**: implement `ISecretsConsumer` and the run hands the tool the
   project's [named secrets](/docs/extending/secrets); `ADMIN_API_KEY` above
-  comes from Utils → Secrets, not from the file.
+  comes from Extending → Secrets, not from the file.
 - **Device access**: a constructor asking for `IAgentOs` (desktop),
   `IWebAgentOs` (browser), `IAndroidAgentOs`, or `IIosAgentOs` gets the
   run's device layer injected. Parameterless (like above) works on every

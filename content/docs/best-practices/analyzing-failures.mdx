@@ -139,14 +139,14 @@ make vague goals precise.
 
 <div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
 
-```md title="❌ prompts/ui_information.md — before"
+```md title="❌ tests/ui.md — before"
 ## Dialogs & quirks
 <behaviors the agent must know>
 ```
 
 <div className="flex items-center justify-center text-3xl font-bold text-fd-primary select-none"><span className="md:hidden">↓</span><span className="hidden md:inline">→</span></div>
 
-```md title="✅ prompts/ui_information.md — after"
+```md title="✅ tests/ui.md — after"
 ## Dialogs & quirks
 The confirmation pop-up stays open
 until you click **OK** — clicking
@@ -202,7 +202,7 @@ The success criterion is too loose to catch the defect, add an explicit
 
 Shortcuts, keyboard instead of the numpad, it doesn't know your house
 style. Teach it in
-[ui_information](/docs/writing-tests/agents-and-prompts#ui-information) or,
+[UI information](/docs/writing-tests/agents-and-prompts#ui-information) or,
 per suite, in [rules](/docs/writing-tests/setup-teardown-rules#rules):
 
 ```md title="➕ tests/rules.md — add"

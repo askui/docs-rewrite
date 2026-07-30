@@ -30,7 +30,9 @@ defaults stay deleted.
 
 1. Click **Add device**.
 2. Pick the kind.
-3. Enter a name and the kind's fields.
+3. Enter a name and the kind's fields. The optional **Prompt** field holds
+   what the agent gets told about this device on every run, quirks the
+   screen doesn't show ("always execute on display 1").
 4. Click **Add device**, then **Connect** the new card.
 
 <img
@@ -76,5 +78,6 @@ keep working.
 
 ## Where profiles live
 
-`devices.json` in the project. Colleagues get the same device list and only
-connect. See [How a Project is organized](/docs/projects).
+`devices.json` in the project, including each profile's **Prompt** text.
+Colleagues get the same device list and only connect. See
+[How a Project is organized](/docs/projects).

@@ -5,7 +5,7 @@ of pasting screenshots in by hand, an AskUI agent drives the app to each screen
 and saves a named PNG into [`../public/screenshots/`](../public/screenshots),
 which the MDX pages embed.
 
-This is a normal AskUI operator project (`tests/`, `prompts/`, `utils/`) run by
+This is a normal AskUI operator project (`tests/`, `utils/`) run by
 the AskUI CLI. The agent captures the app's *own* UI (Runs, Dashboard, Devices,
 …) as real screenshots — complementing the hand-built CSS mocks elsewhere in the
 docs.
@@ -18,11 +18,10 @@ screenshots-capture/
     setup.md                # opens AskUI Desktop from the Start menu + scopes the window
     capture_desktop_ui.md   # the capture flow — one step per screen
     rules.md                # navigate-and-capture rules (do no harm)
-  prompts/
-    device_information.md   # "the app is open and signed in on display 1"
-    report_format.md        # keep the run report short
-  utils/custom_tools/
-    save_screenshot.cs       # save_screenshot[name] -> ../public/screenshots/<name>.png
+  utils/
+    format.md               # keep the run report short
+    custom_tools/
+      save_screenshot.cs    # save_screenshot[name] -> ../public/screenshots/<name>.png
   regenerate.ps1            # driver: runs the CLI, points output at public/screenshots
   .env.example             # ASKUI_WORKSPACE_ID / ASKUI_TOKEN
 ```

@@ -16,7 +16,7 @@ behaves like yours:
 - **Testware**: test cases, [procedures](/docs/writing-tests/procedures),
   [plans](/docs/writing-tests/plans), and each folder's `rules.md`,
   `setup.md`, `teardown.md`.
-- **Agent files**: the [`prompts/`](/docs/best-practices/agent-behavior)
+- **Agent files**: the [system-prompt files](/docs/best-practices/agent-behavior)
   folder, so everyone's runs get the same instructions and report format.
 - **Device profiles**: `devices.json`, so every member sees the same
   [devices](/docs/devices) list instead of wiring machines by hand.
@@ -49,7 +49,7 @@ local instead of bloating the repository. Archive them in
 Roles, not job titles, one person often wears several:
 
 - **Test author**: writes cases and expected results, curates plans, keeps
-  `ui_information.md` current as the application changes.
+  `tests/ui.md` current as the application changes.
 - **Developer**: fixes what a run exposes, owns
   [custom tools](/docs/extending/custom-tools), wires the suite into CI.
 - **Lab owner**: provisions the machines, keeps sessions unlocked and AgentOS

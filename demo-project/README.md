@@ -46,6 +46,6 @@ Runs are created by executing the tests in the app (nothing is pre-fabricated):
   `devices.json`.
 - No credentials live here. The agent's model credentials come from the app's
   signed-in session (or a `.env` for CLI runs).
-- `prompts/report_format.md` defines the report shape. It must include the
+- `utils/format.md` defines the report shape. It must include the
   `**Status:** PASSED` line — the runner parses that to set each run's verdict;
   without it a passing run is recorded as BROKEN.

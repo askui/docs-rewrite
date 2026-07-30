@@ -1,23 +1,21 @@
 ---
 icon: ScrollText
 title: Agent behavior
-description: How to shape the way the agent acts, what to write in each prompt file, error discipline, device facts, UI knowledge, the report contract, and per-folder rules.
+description: How to shape the way the agent acts, the built-in error discipline, the device prompt, UI knowledge, the report contract, and rules that win.
 ---
 
-The system prompt is assembled at run start from the four Markdown files in
-`prompts/`, plus each folder's `rules.md`. It applies to every test in the
-project. When tests fail consistently, this is often the fix, which file
-holds what: [What goes where](/docs/best-practices/prompting-best-practices).
+The system prompt is assembled at run start from the project's files: the
+device profile's prompt, `tests/ui.md`, `utils/format.md`, and each
+folder's `rules.md` and `ui.md`. It applies to every test in the project.
+When tests fail consistently, this is often the fix, which file holds what:
+[What goes where](/docs/best-practices/prompting-best-practices).
 
-## System capabilities: error discipline
+## Error discipline: built in
 
-`prompts/system_capabilities.md` defines the agent's identity and its
-always-on rules. The scaffolded default is a good starting point, edit with
-care; a small change here changes every test.
+The agent's identity and its always-on rules are built into the app, they
+are not a file you edit. The core is the error discipline:
 
-Its core is the error discipline:
-
-```md title="prompts/system_capabilities.md (excerpt)"
+```md title="built-in capabilities (excerpt)"
 ## Error Handling
 - You have a maximum of **2 attempts per step**. If a step does not
   succeed after 2 attempts, stop immediately. Do not try a third time.
@@ -34,29 +32,33 @@ Its core is the error discipline:
   infrastructure). The triage this enables:
   [Analyzing failures](/docs/best-practices/analyzing-failures).
 
-## Device information: only what the agent can't see
+When a suite genuinely needs different behaviour, write a
+[rule](#rules-targeted-patches-that-win): rules land at the end of the
+system prompt and take precedence over the built-in instructions.
 
-`prompts/device_information.md` holds quirks of **this machine** that the
-screen doesn't show. The agent sees the screen, OS and display basics
-rarely need describing.
+## Device prompt: only what the agent can't see
 
-```md title="prompts/device_information.md"
+Each device profile carries a **Prompt** field (Devices page → Edit) with
+quirks of **this machine** that the screen doesn't show. The agent sees the
+screen, OS and display basics rarely need describing.
+
+```md title="Prompt field of the device profile"
 * Always execute on display 1 — display 2 shows the corporate dashboard.
 * The corporate lock screen appears after 5 minutes of inactivity.
 ```
 
-Swap this file to retarget the project at a different machine without
-touching anything else.
+The text lives with the profile in `devices.json`, so retargeting a project
+at a different machine means picking a different profile, no file editing.
 
 ## UI information: your biggest lever
 
-`prompts/ui_information.md` is where the agent learns your application. The
-agent has no built-in knowledge of your app, everything it must recognise
-has to be written down. This is the file you invest the most in, and the
-first place to look when the agent
+`tests/ui.md` is where the agent learns your application. The agent has no
+built-in knowledge of your app, everything it must recognise has to be
+written down. This is the file you invest the most in, and the first place
+to look when the agent
 [wanders](/docs/best-practices/analyzing-failures#the-agent-takes-a-lot-of-steps).
 
-```md title="prompts/ui_information.md"
+```md title="tests/ui.md"
 You are operating: Contoso Orders — order entry for the sales back office.
 
 ## Navigation
@@ -87,21 +89,27 @@ What belongs here:
   reference them by name.
 - **What not to do**: destructive actions that are easy to trigger.
 
+A suite that exercises a different part of the system can add its own
+`ui.md` in its folder, it accumulates after the top-level file, closest to
+the test last.
+
 ## Report format: the report contract
 
-`prompts/report_format.md` defines the report the agent writes: the
-Markdown structure and the status vocabulary (`PASSED`, `FAILED`,
-`SKIPPED`, `WARN`, `BROKEN`). Keep the standard vocabulary, the runner
-parses the report's `**Status:**` line, and the
-[Runs and Dashboard pages](/docs/results) count results from it. Tailor
+`utils/format.md` defines the report the agent writes: the Markdown
+structure and the status vocabulary (`PASSED`, `FAILED`, `SKIPPED`,
+`WARN`, `BROKEN`). Edit it under **Extending → Report Format**. Keep the
+standard vocabulary, the runner parses the report's `**Status:**` line, and
+the [Runs and Dashboard pages](/docs/results) count results from it. Tailor
 the sections if your organisation needs different evidence; the shape is
 explained in [Run report](/docs/results/run-report#test-report).
 
-## Rules: targeted patches per folder
+## Rules: targeted patches that win
 
-A `rules.md` next to your tests patches the prompt for that folder only,
-use it instead of editing `system_capabilities.md` when one suite needs
-different behaviour. A good rule reads like a bug fix:
+A `rules.md` next to your tests patches the prompt, `tests/rules.md` for
+the whole project, a folder's `rules.md` for that suite only. Rules are
+appended at the very end of the system prompt behind an explicit note that
+they take precedence, so this is the place to correct built-in behaviour. A
+good rule reads like a bug fix:
 
 - **How the agent identifies the situation**: what it sees on screen.
 - **What to do**: the exact sequence.
@@ -124,12 +132,15 @@ different behaviour. A good rule reads like a bug fix:
   scaffold ships and what keeps the files auditable.
 - **One language**: clear English throughout the prompt, tests, and all
   inputs. Mixed languages degrade performance.
-- **No contradictions**: a rule in `rules.md` that conflicts with
-  `system_capabilities.md` produces undefined behaviour. Review across
-  files.
+- **No contradictions**: two rules that conflict produce undefined
+  behaviour, and a rule that contradicts `ui.md` makes the agent guess.
+  Review across files.
 - **Overly specific is right**: if you feel you are being too detailed,
   you are doing it right. Only you know your UI.
 
 After a prompt change, run the affected folder and read the
 [run report](/docs/results/run-report), the **Agent Interpretation** per
-step shows whether the new wording landed the way you meant it.
+step shows whether the new wording landed the way you meant it. The run's
+conversation log also records the exact system prompt per phase, expand
+the **System prompt** section under the act header to see precisely what
+the agent got.
