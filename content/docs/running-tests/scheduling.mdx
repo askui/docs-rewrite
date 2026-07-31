@@ -3,8 +3,10 @@ title: Scheduling
 description: Run a test or plan automatically, daily at a time or every N minutes, while AskUI Desktop is open.
 ---
 
-A schedule runs a test or [plan](/docs/writing-tests/plans) on
-a device profile without you pressing Run.
+A schedule runs a test or [test plan](/docs/writing-tests/plans)
+without you pressing Run. A test runs on the device profile you pick in
+the dialog; a plan runs on the devices recorded in the plan, one run per
+device.
 
 <Callout type="warn" title="A closed app means missed runs">
 Schedules fire only while AskUI Desktop is running, it is not a background
@@ -17,10 +19,11 @@ your CI scheduler.
 
 ## Create a schedule
 
-1. Open the test on the **Tests** page (or the plan on **Plans**).
+1. Open the test on the **Tests** page (or the plan on **Test Plans**).
 2. Click the alarm-clock button, the **Scheduled runs** dialog opens,
    prefilled with this file.
-3. Pick the **Device profile**.
+3. Pick the **Device profile** (for a plan this step disappears, the
+   plan's own devices are used).
 4. Pick the **Cadence**: **Daily at a time** (with weekdays) or
    **Every N minutes**.
 5. Click **Add schedule**.

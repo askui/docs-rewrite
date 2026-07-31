@@ -1,28 +1,82 @@
 ---
 icon: ListChecks
-title: Plans
-description: A plan names the tests that run together, your smoke set, regression pack, or nightly suite.
+title: Test plans
+description: A test plan is a yaml file naming exactly which tests run on which devices, selected with checkboxes, not inferred.
 ---
 
-A plan is your test selection: which cases run together, as one unit. The
-classic examples, a fast `smoke` set for every change, the full regression
-pack for the release, a nightly suite.
+A test plan is your test selection: which cases run together, and on which
+devices. The classic examples, a fast `smoke` set for every change, the full
+regression pack for the release, a nightly suite.
 
-A plan is a Markdown file in `plans/`:
+A plan is a yaml file in `plans/`. You never write it by hand — you check
+tests and devices on the **Test Plans** page and the file is written for
+you — but it reads (and diffs) like this:
 
-```md title="plans/smoke.md"
-# Smoke Plan · Run on every change
-
-Run the following tests in order. Stop on the first failure.
-
-- LOGIN_001 · valid login
-- All tests in `tests/`
+```yaml title="plans/smoke.yaml"
+version: 1
+tests:
+  - tests/login/
+  - tests/checkout/happy_path.md
+devices:
+  - id: a1b2c3
+    name: Windows VM
 ```
 
-Reference tests by id, name, or folder, the agent resolves the entries
-against `tests/`. Because a plan is plain text, it also carries execution
-notes like "stop on the first failure."
+- **`tests`**: the selection, in execution order. An entry ending in `/` is
+  a whole folder — it is expanded when the run starts, so a test added to
+  the folder later is included without touching the plan.
+- **`devices`**: the device profiles the plan runs on, by profile id from
+  `devices.json`. The name is a snapshot for readability; the id decides.
 
-**Run it:** pick the plan from the Run split button on the **Plans** page,
-headless with [`askui run --plan smoke`](/docs/running-tests/cli), or on a
-[schedule](/docs/running-tests/scheduling).
+The run contains exactly what the plan lists. Nothing infers the selection,
+and a plan that selects no tests cannot be run.
+
+## Create a plan
+
+1. Open **Test Plans** and click **+** in the sidebar.
+2. Type a name, for example `smoke`, and press Enter. The plan is saved as
+   `plans/smoke.yaml` (the folder is created with the first plan).
+3. Check tests in the tree: individual files, or a folder to include
+   everything in it. Files inside a checked folder show as included; uncheck
+   the folder to pick them individually.
+4. Check the devices the plan targets. Every profile from the
+   [Devices page](/docs/devices) is offered.
+
+Changes save automatically. A plan change shows up in review as a small
+yaml diff, like the rest of your testware.
+
+## Run a plan
+
+Press **Run** on the plan. One run starts per selected device, and each run
+executes every selected test — no further input. The runs appear on the
+**Runs** page; runs on different devices execute in parallel, runs on the
+same device queue.
+
+The button is disabled while the plan selects no tests or no devices, with
+the reason in the tooltip.
+
+Two things to know about how a plan run reports:
+
+- A selected test the run never reaches is listed as `BROKEN` in the
+  [run report](/docs/results/run-report) — selected means accounted for.
+- A plan entry whose file was renamed or deleted is skipped with a notice in
+  the conversation log; the run continues with the rest.
+
+You can also run a plan headless with
+[`askui run --plan smoke`](/docs/running-tests/cli) — the CLI runs the
+selection on the device its flags configure and ignores the plan's device
+list — or on a [schedule](/docs/running-tests/scheduling), which starts the
+same one-run-per-device fan-out.
+
+## If a device disappears
+
+A plan remembers devices by profile id. When a referenced profile no longer
+exists, the editor shows it as a missing device with a remove button, and
+Run warns and skips it while the other devices still run.
+
+## Older prose plans
+
+Plans used to be free-form Markdown files that an agent interpreted at run
+time. Those files are no longer runnable; they appear dimmed in the plan
+list until you delete them. Recreate the selection as a test plan — the
+checkboxes cover what the prose described.

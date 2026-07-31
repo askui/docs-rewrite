@@ -38,22 +38,23 @@ failing setup blocks the tests it guards.
 Relative targets resolve against `--project-root`. Supported test file types:
 `.txt`, `.md`, `.pdf`, `.csv`, `.json`.
 
-### Plans
+### Test plans
 
 ```bash
 askui run --plan smoke
 ```
 
-`--plan <name>` loads `plans/<name>` (any supported extension) and lets the
-agent select the matching tests before running them, e.g. a `smoke` plan
-that names a subset of suites. See
-[How a Project is organized](/docs/projects).
+`--plan <name>` loads `plans/<name>.yaml`, a
+[test plan](/docs/writing-tests/plans), and runs exactly the tests it
+selects, in plan order. The plan's device list is ignored — the CLI runs on
+the surface its flags configure and prints a note saying so. A plan that
+selects no tests, or does not exist, is a configuration error (exit code 2).
 
 ## Run options
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `--plan <name>` |, | Plan file (without extension) from the Project's `plans/` directory. |
+| `--plan <name>` |, | [Test plan](/docs/writing-tests/plans) (without extension) from the Project's `plans/` directory; its device list is ignored. |
 | `--project-root <dir>` | current directory | The Project root (`tests/`, `procedures/`, `plans/`, `utils/`). |
 | `--workspace <dir>` | `<project-root>/agent_workspace/<UTC timestamp>` | Output directory for reports, screenshots and the conversation. |
 
