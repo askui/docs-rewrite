@@ -14,7 +14,7 @@ Everything that defines a run is in the folder, so a colleague's clone
 behaves like yours:
 
 - **Testware**: test cases, [procedures](/docs/writing-tests/procedures),
-  [plans](/docs/writing-tests/plans), and each folder's `rules.md`,
+  [test plans](/docs/writing-tests/plans), and each folder's `rules.md`,
   `setup.md`, `teardown.md`.
 - **Agent files**: the [system-prompt files](/docs/best-practices/agent-behavior)
   folder, so everyone's runs get the same instructions and report format.
@@ -94,7 +94,7 @@ the merge like a failed unit test.
 ### One repository, two roles
 
 Testers curate suites, expected results and
-[plans](/docs/writing-tests/plans); developers wire the smoke plan into CI
+[test plans](/docs/writing-tests/plans); developers wire the smoke plan into CI
 and fix against the reports. Git is the collaboration layer: changes arrive
 as pull requests either side can review, and
 [configuration management of the testware](/docs/projects#git-versioning--sync)

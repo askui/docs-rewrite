@@ -39,8 +39,8 @@ suites nest and scope chains is on
 [Organisation & Scope](/docs/writing-tests/organisation). Cases and setups
 call [procedures](/docs/writing-tests/procedures) for repeated sequences,
 and reference [secrets](#use-secrets-in-a-test) instead of containing
-credentials. [Plans](/docs/writing-tests/plans) select which cases run
-together.
+credentials. [Test plans](/docs/writing-tests/plans) select which cases run
+together, and on which device.
 
 ## Create a test case
 
@@ -189,5 +189,5 @@ other change to your [testware](/docs/projects).
 ### Skip
 
 There is no skip flag: to leave a case out temporarily, run a
-[plan](/docs/writing-tests/plans) that doesn't include it, or move the file
-out of `tests/`.
+[test plan](/docs/writing-tests/plans) that doesn't select it, or move the
+file out of `tests/`.
