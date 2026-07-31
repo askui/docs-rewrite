@@ -33,17 +33,20 @@ and a plan that selects no tests cannot be run.
 
 ## Create a plan
 
-1. Open **Test Plans** and click **+** in the sidebar.
-2. Type a name, for example `smoke`, and press Enter. The plan is saved as
-   `plans/smoke.yaml` (the folder is created with the first plan).
+1. Open **Test Plans** and click **New test plan**. A dialog opens.
+2. Type a name, for example `smoke`.
 3. Check tests in the tree: individual files, or a folder to include
    everything in it. Files inside a checked folder show as included; uncheck
    the folder to pick them individually.
 4. Check the devices the plan targets. Every profile from the
-   [Devices page](/docs/devices) is offered.
+   [Devices page](/docs/devices) is offered — a device does not need to be
+   connected while you edit, only when the plan runs.
+5. Click **Create plan**. The plan is saved as `plans/smoke.yaml` (the
+   folder is created with the first plan).
 
-Changes save automatically. A plan change shows up in review as a small
-yaml diff, like the rest of your testware.
+The page lists each plan with its test and device counts; the pencil on a
+row reopens the dialog. A plan change shows up in review as a small yaml
+diff, like the rest of your testware.
 
 ## Run a plan
 
@@ -71,8 +74,9 @@ same one-run-per-device fan-out.
 ## If a device disappears
 
 A plan remembers devices by profile id. When a referenced profile no longer
-exists, the editor shows it as a missing device with a remove button, and
-Run warns and skips it while the other devices still run.
+exists, the plan's row shows a missing-device warning and the edit dialog
+offers a remove button, and Run warns and skips it while the other devices
+still run.
 
 ## Older prose plans
 
