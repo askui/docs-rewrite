@@ -19,15 +19,15 @@ tests:
   - tests/checkout/happy_path.md
 devices:
   - id: a1b2c3
-    name: Windows VM
 ```
 
 - **`tests`**: the selection, in execution order. An entry ending in `/` is
   a whole folder — it is expanded when the run starts, so a test added to
   the folder later is included without touching the plan.
 - **`devices`**: the device the plan runs on, by profile id from
-  `devices.json` (a list in the file, one entry via the app). The name is a
-  snapshot for readability; the id decides.
+  `devices.json` (a list in the file, one entry via the app). Only the id
+  is stored — the app shows the device's current name, so renaming a
+  device never touches your plan files.
 
 The run contains exactly what the plan lists. Nothing infers the selection,
 and a plan that selects no tests cannot be run.
@@ -75,8 +75,8 @@ the plan's device the same way.
 ## If a device disappears
 
 A plan remembers its device by profile id. When the referenced profile no
-longer exists, the plan's row says so and the edit dialog offers a remove
-button — pick a new device and the plan runs again.
+longer exists, the plan's row says so and the edit dialog shows the orphaned
+id with a remove button — pick a new device and the plan runs again.
 
 ## Older prose plans
 
