@@ -15,19 +15,19 @@ thing to a test execution status report across your whole suite. Open the
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
-Tile by tile:
+Section by section:
 
-- **Total runs**: runs recorded in this project.
-- **Avg pass rate**: share of passed tests across all runs, warnings count
-  as passed; broken tests that never executed are excluded.
-- **Passed / Failed / Broken (latest)**: the same tally for the most recent
-  run only, where things stand right now.
-- **Warnings (all)**: tests that passed but flagged something, across every
-  run.
-- **Test status over time**: one bar per run, green passed, red failed. A
-  regression shows as a red bar breaking a green streak.
-- **Pass rate over time / Latest run**: the trend, and a shortcut into the
-  newest run's report.
+- **In flight**: what is running or queued right now — green dot running,
+  amber dot queued with the reason it waits. Links to the
+  [Runs page](/docs/running-tests#watch-it-live). Shown only while
+  something is active.
+- **Upcoming schedules**: the next few [schedules](/docs/running-tests/scheduling)
+  by their due time. Shown only when schedules exist.
+- **The verdict**: one sentence on the latest run — did it pass, and when.
+- **Needs attention**: the failing or broken tests of the latest run, each
+  a link into its report.
+- **Trend**: pass-rate over the recent runs, once there are at least two.
+- **Recent runs**: the run history, newest first.
 
 The numbers derive from each run's
 [summary report](/docs/results/run-report#summary-report), the counting

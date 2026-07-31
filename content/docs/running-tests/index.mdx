@@ -24,6 +24,25 @@ description: Start a run from the Tests page and watch the agent execute it live
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
+## If it can't start right away
+
+A run needs its device to itself, and the app runs at most **two runs in
+parallel** (on different devices — two runs never share a device). When you
+press Run and the run cannot start immediately, a dialog asks what to do:
+
+- **Queue run**: the run waits its turn and starts automatically as soon as
+  the device is free and a parallel slot opens. A queued run gives up after
+  30 minutes of waiting, with the reason recorded in its result.
+- **Don't start**: nothing is queued, nothing runs.
+
+Queued runs appear in the Runs sidebar under **Queued**, each with the
+reason it waits; the ✕ on the row cancels it. Runs started by a
+[schedule](/docs/running-tests/scheduling) skip the dialog and queue
+silently.
+
+Closing the app discards the queue — you are warned first when anything is
+still queued or running.
+
 ## What a run does
 
 The agent works in phases: the folder's `setup.md` first, then the tests,

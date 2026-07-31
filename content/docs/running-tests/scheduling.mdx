@@ -5,7 +5,9 @@ description: Run a test or plan automatically, daily at a time or every N minute
 
 A schedule runs a test or [test plan](/docs/writing-tests/plans)
 without you pressing Run. A test runs on the device profile you pick in
-the dialog; a plan runs on the device recorded in the plan.
+the dialog; a plan runs on the device recorded in the plan. A scheduled run
+whose device is busy [queues silently](/docs/running-tests#if-it-cant-start-right-away)
+and starts when the device is free.
 
 <Callout type="warn" title="A closed app means missed runs">
 Schedules fire only while AskUI Desktop is running, it is not a background
@@ -15,6 +17,14 @@ when the app comes back. For runs that must never be missed, the nightly
 regression, use the [CLI](/docs/running-tests/cli) on a build server with
 your CI scheduler.
 </Callout>
+
+## Manage all schedules in one place
+
+The alarm-clock button at the top of the **Runs** page's sidebar opens the
+same dialog without a preselected file: pick any plan or test of the
+project in **What to run**, and the list below shows every schedule with an
+on/off toggle, a pencil to edit its cadence, and delete. The Dashboard
+shows the next few upcoming schedules at a glance.
 
 ## Create a schedule
 

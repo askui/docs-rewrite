@@ -57,7 +57,9 @@ every selected test — no further input. It appears on the **Runs** page;
 runs on the same device queue behind each other.
 
 The button is disabled while the plan selects no tests or no device, with
-the reason in the tooltip.
+the reason in the tooltip. If the plan's device is busy (or the two-runs
+limit is reached), a dialog asks whether to
+[queue the run](/docs/running-tests#if-it-cant-start-right-away).
 
 Two things to know about how a plan run reports:
 
