@@ -47,7 +47,7 @@ definitions, the tooling the agent may use: every artifact is a plain file.
 | Folder / file | In tester terms | Example |
 | --- | --- | --- |
 | `tests/` | Test suites and test cases. A file is a case (steps, expected results); a sub-folder is a suite with its own `setup.md` / `teardown.md` (entry criteria and cleanup); `rules.md` = standing test instructions; [`ui.md`](/docs/writing-tests/agents-and-prompts#ui-information) = how the application under test works | `checkout/pay_with_card.md` |
-| `plans/` | Test plans: which cases make up the smoke set, the regression pack, and on which devices they run | [`smoke.yaml`](/docs/writing-tests/plans) |
+| `plans/` | Test plans: which cases make up the smoke set, the regression pack, and on which device they run | [`smoke.yaml`](/docs/writing-tests/plans) |
 | `procedures/` | Keywords, as in keyword-driven testing: write a sequence once, call it from any case with parameters | [`login_to_ui.md`](/docs/writing-tests/procedures) |
 | `utils/` | The permitted tooling and output conventions: [built-in tools](/docs/extending/tools), [MCP servers](/docs/extending/mcp), [custom C# tools](/docs/extending/custom-tools), the [report format](/docs/writing-tests/agents-and-prompts#report-format) | `format.md`, `custom_tools/query_admin_api.cs` |
 | `devices.json` | The test environments, each with its own [prompt text](/docs/writing-tests/agents-and-prompts#device-prompt), see [Devices](/docs/devices) |, |

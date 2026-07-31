@@ -1,16 +1,16 @@
 ---
 icon: ListChecks
 title: Test plans
-description: A test plan is a yaml file naming exactly which tests run on which devices, selected with checkboxes, not inferred.
+description: A test plan is a yaml file naming exactly which tests run and on which device, selected with checkboxes, not inferred.
 ---
 
 A test plan is your test selection: which cases run together, and on which
-devices. The classic examples, a fast `smoke` set for every change, the full
+device. The classic examples, a fast `smoke` set for every change, the full
 regression pack for the release, a nightly suite.
 
 A plan is a yaml file in `plans/`. You never write it by hand — you check
-tests and devices on the **Test Plans** page and the file is written for
-you — but it reads (and diffs) like this:
+tests and pick a device on the **Test Plans** page and the file is written
+for you — but it reads (and diffs) like this:
 
 ```yaml title="plans/smoke.yaml"
 version: 1
@@ -25,8 +25,9 @@ devices:
 - **`tests`**: the selection, in execution order. An entry ending in `/` is
   a whole folder — it is expanded when the run starts, so a test added to
   the folder later is included without touching the plan.
-- **`devices`**: the device profiles the plan runs on, by profile id from
-  `devices.json`. The name is a snapshot for readability; the id decides.
+- **`devices`**: the device the plan runs on, by profile id from
+  `devices.json` (a list in the file, one entry via the app). The name is a
+  snapshot for readability; the id decides.
 
 The run contains exactly what the plan lists. Nothing infers the selection,
 and a plan that selects no tests cannot be run.
@@ -35,27 +36,27 @@ and a plan that selects no tests cannot be run.
 
 1. Open **Test Plans** and click **New test plan**. A dialog opens.
 2. Type a name, for example `smoke`.
-3. Check tests in the tree: individual files, or a folder to include
-   everything in it. Files inside a checked folder show as included; uncheck
-   the folder to pick them individually.
-4. Check the devices the plan targets. Every profile from the
-   [Devices page](/docs/devices) is offered — a device does not need to be
+3. Check tests in the tree: individual files, a folder to include
+   everything in it, or **All tests** to run the whole project. Files inside
+   a checked folder show as included; uncheck the folder to pick them
+   individually.
+4. Pick the device the plan targets. Every profile from the
+   [Devices page](/docs/devices) is offered — the device does not need to be
    connected while you edit, only when the plan runs.
 5. Click **Create plan**. The plan is saved as `plans/smoke.yaml` (the
    folder is created with the first plan).
 
-The page lists each plan with its test and device counts; the pencil on a
+The page lists each plan with its test count and device; the pencil on a
 row reopens the dialog. A plan change shows up in review as a small yaml
 diff, like the rest of your testware.
 
 ## Run a plan
 
-Press **Run** on the plan. One run starts per selected device, and each run
-executes every selected test — no further input. The runs appear on the
-**Runs** page; runs on different devices execute in parallel, runs on the
-same device queue.
+Press **Run** on the plan. A run starts on the plan's device and executes
+every selected test — no further input. It appears on the **Runs** page;
+runs on the same device queue behind each other.
 
-The button is disabled while the plan selects no tests or no devices, with
+The button is disabled while the plan selects no tests or no device, with
 the reason in the tooltip.
 
 Two things to know about how a plan run reports:
@@ -68,19 +69,18 @@ Two things to know about how a plan run reports:
 You can also run a plan headless with
 [`askui run --plan smoke`](/docs/running-tests/cli) — the CLI runs the
 selection on the device its flags configure and ignores the plan's device
-list — or on a [schedule](/docs/running-tests/scheduling), which starts the
-same one-run-per-device fan-out.
+list — or on a [schedule](/docs/running-tests/scheduling), which runs it on
+the plan's device the same way.
 
 ## If a device disappears
 
-A plan remembers devices by profile id. When a referenced profile no longer
-exists, the plan's row shows a missing-device warning and the edit dialog
-offers a remove button, and Run warns and skips it while the other devices
-still run.
+A plan remembers its device by profile id. When the referenced profile no
+longer exists, the plan's row says so and the edit dialog offers a remove
+button — pick a new device and the plan runs again.
 
 ## Older prose plans
 
 Plans used to be free-form Markdown files that an agent interpreted at run
-time. Those files are no longer runnable; they appear dimmed in the plan
-list until you delete them. Recreate the selection as a test plan — the
-checkboxes cover what the prose described.
+time. Those files are no longer runnable and no longer appear on the Test
+Plans page (they stay on disk until you delete them). Recreate the
+selection as a test plan — the checkboxes cover what the prose described.
