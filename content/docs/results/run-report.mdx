@@ -150,24 +150,40 @@ to do with a failing report, triage, root cause, where the fix belongs:
 
 ## Summary report
 
-`summary_report.md` in the run folder contains one Markdown table across all
-tests in the run, with status and execution time per test.
+`summary_report.md` in the run folder summarizes the whole run: a totals head
+(test-case count, per-status counts, run duration), one Markdown table across
+all tests with status and execution time per test, and detail sections that
+quote each warned, failed, or broken test's issues from its own report.
 
 ```markdown
-# Run Summary
+# Summary Report
 
-| ID | Name | Status | Duration |
-|---|---|---|---|
-| login_test | login_test | PASSED | 1m 12s |
-| settings_test | settings_test | PASSED | 0m 48s |
-| checkout_test | checkout_test | FAILED | 2m 03s |
+**Date:** 2026-08-06
 
-**Total: 3 · Passed: 2 · Failed: 1 · Broken: 0**
+**Total:** 3 Test Cases
+- **✅ Passed:** 2
+- **❌ Failed:** 1
+- **⏱️ Duration:** 00:04:03
+
+| Test Case ID | Test Case Name | Status | Duration |
+| --- | --- | --- | --- |
+| login_test | login_test | ✅ Passed | 00:01:12 |
+| settings_test | settings_test | ✅ Passed | 00:00:48 |
+| checkout_test | checkout_test | ❌ Failed | 00:02:03 |
+
+# ❌ Fails
+
+## checkout_test
+The pay button never appeared after entering the voucher code.
 ```
 
-Tests that a [test plan](/docs/writing-tests/plans) selected but the run never reached are listed as `BROKEN`
-so nothing goes missing silently. The Dashboard and Runs pages in AskUI Desktop
-derive their pass/fail counters from this table.
+The detail sections carry each test's `## Issues` (else `## Conclusion`)
+section, so a red run can be triaged from this one document; a test that ran
+but produced no report reads "No report written". Tests that a
+[test plan](/docs/writing-tests/plans) selected but the run never reached are
+listed as `💥 Broken` with a duration of `—`, so nothing goes missing
+silently. The Dashboard and Runs pages in AskUI Desktop derive their pass/fail
+counters from this table.
 
 <Callout title="Counting rules">
 `WARN` counts as passed (tracked separately in the warning total). `SKIPPED`
