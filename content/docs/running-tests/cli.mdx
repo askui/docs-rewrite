@@ -139,9 +139,11 @@ Each run gets its own workspace folder (see `--workspace`), containing:
 
 - **Per-test artifacts**: `<test_name>/<test_name>_report.md` with the
   result and step-by-step details, plus `step_<n>.png` screenshots.
-- **`summary_report.md`**: one table over all executed tests with
-  pass/fail/broken counts. Tests a plan selected but the run never reached
-  appear as broken, so nothing goes missing silently.
+- **`summary_report.md`**: the run at a glance — totals with per-status
+  counts and run duration, one table over all tests with status and duration
+  each, and detail sections quoting every warned, failed, or broken test's
+  issues. Tests a plan selected but the run never reached appear as broken,
+  so nothing goes missing silently.
 - **`conversation.json`**: the full agent conversation, which AskUI Desktop
   re-renders as the [conversation log](/docs/results#conversation-log).
 
