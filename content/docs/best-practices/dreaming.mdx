@@ -1,0 +1,74 @@
+---
+icon: Sparkles
+title: Dreaming
+description: Let your suite learn from its own runs. Dreaming reviews past runs and proposes small, reviewed improvements to your rules and tests, so reliability compounds the more you run.
+---
+
+Where [analyzing failures](/docs/best-practices/analyzing-failures) is the manual
+loop — read the report, find the cause, fix it in the right place — **Dreaming**
+runs that loop for you in the background and brings you the proposed fixes to
+approve. It reviews your recent runs and suggests small improvements to your
+tests' rules, so your suite gets more reliable the more you run it. You stay in
+control: Dreaming only *proposes* changes; nothing is edited until you approve it.
+
+## How it works
+
+<Steps>
+<Step>
+### A prompt appears on the Dashboard
+After some runs finish, you'll see **"N test runs to analyze"** with **Analyze
+now** and **Remind me later**.
+</Step>
+<Step>
+### Analyze
+Click **Analyze now**. Dreaming studies each run's conversation together with
+whether it passed or failed — the outcome is what makes the suggestions
+trustworthy rather than guesswork. A progress bar shows it working. This uses the
+model provider you configured in [Settings](/docs/extending/model-providers); no
+device is needed.
+</Step>
+<Step>
+### Review
+When it finishes, the Dashboard shows **"Dreaming results ready for review"**.
+Click **Review now** to open the proposals.
+</Step>
+<Step>
+### Accept or reject
+Each proposal is shown as a diff — the exact line it would add to a `rules.md` or
+change in a test — with a short reason and the runs it came from. Accept the ones
+you like (individually or **Accept all**), reject the rest. Accepted changes are
+written to your project files; rejected ones leave your files untouched.
+</Step>
+</Steps>
+
+Once you've reviewed a test's proposals, those runs won't be proposed again — so
+each run is only ever analyzed once, unless the test regresses on later runs.
+
+## What Dreaming changes
+
+- **Rules** (`rules.md`) — the guidance your agent follows for a test or folder.
+  Most proposals are here: a new rule learned from a failure, or a small
+  refinement to an existing one. See [agent behavior](/docs/best-practices/agent-behavior)
+  for how rules shape a run.
+- **Test definitions** — occasionally, a proposed tweak to a test's own steps.
+
+Dreaming only ever **appends** a rule or **refines** an existing line — it never
+rewrites your files wholesale.
+
+## Good to know
+
+<Callout type="info">
+Dreaming never edits a file on its own. Every change waits for your approval.
+</Callout>
+
+- **It pays off most on suites you run repeatedly** (for example nightly
+  regression) — that's where the accumulated lessons compound.
+- **It runs in the background** and never interferes with or slows down an actual
+  test run.
+- If analysis can't finish (for example the model provider is unreachable), the
+  banner tells you, and your files are left untouched.
+
+## Settings it uses
+
+Dreaming uses the **model provider** from
+[Settings](/docs/extending/model-providers). No extra configuration is required.
