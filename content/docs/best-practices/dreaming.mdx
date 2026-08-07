@@ -50,10 +50,14 @@ each run is only ever analyzed once, unless the test regresses on later runs.
   Most proposals are here: a new rule learned from a failure, or a small
   refinement to an existing one. See [agent behavior](/docs/best-practices/agent-behavior)
   for how rules shape a run.
+- **App knowledge** (`ui.md`) — facts about the app under test.
+- **Setup / teardown** (`setup.md`, `teardown.md`) — steps run before and after a test.
+- **Procedures** (`procedures/*`) — your reusable, shared steps.
 - **Test definitions** — occasionally, a proposed tweak to a test's own steps.
 
-Dreaming only ever **appends** a rule or **refines** an existing line — it never
-rewrites your files wholesale.
+Dreaming only ever **appends** a line or **refines** an existing one — it never
+rewrites your files wholesale. It does **not** change your device information —
+that lives with your [device profiles](/docs/devices), not in a prose file.
 
 ## Good to know
 
