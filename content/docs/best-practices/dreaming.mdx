@@ -59,10 +59,20 @@ Dreaming only ever **appends** a line or **refines** an existing one — it neve
 rewrites your files wholesale. It does **not** change your device information —
 that lives with your [device profiles](/docs/devices), not in a prose file.
 
+## You need Git
+
+Dreaming works only when your project is a **Git repository**, and you turn it on
+in **Settings** — the toggle stays disabled until Git is initialized. Every edit
+Dreaming applies is committed to Git as its own commit (authored by
+"AskUI Dreaming"), so you can see it in your history and revert it in one step if
+it turns out wrong. It only ever commits the files it edits — never your other
+changes, your secrets, or your run artifacts.
+
 ## Good to know
 
 <Callout type="info">
-Dreaming never edits a file on its own. Every change waits for your approval.
+Dreaming never edits a file on its own. Every change waits for your approval, and
+every applied change lands as its own Git commit you can revert.
 </Callout>
 
 - **It pays off most on suites you run repeatedly** (for example nightly
