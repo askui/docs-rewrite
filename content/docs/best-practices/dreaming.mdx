@@ -87,8 +87,14 @@ every applied change lands as its own Git commit you can revert.
 
 - **It won't change things for the sake of it.** If your tests keep passing,
   Dreaming proposes nothing — that's the expected, healthy outcome.
-- **It remembers what it changed**, so it won't undo itself or flip a file back
-  and forth from one session to the next.
+- **It shows how confident it is.** Each suggestion says how many of your recent
+  runs back it up (e.g. "4 of 5 runs"), so a recurring problem stands out from a
+  one-off.
+- **It checks whether its past changes helped.** From your real runs since a
+  change, Dreaming works out whether it helped — and if a change made things
+  worse, it offers to undo it (you still approve the undo).
+- **It remembers what it changed**, so it won't flip a file back and forth from
+  one session to the next.
 - **It pays off most on suites you run repeatedly** (for example nightly
   regression) — that's where the accumulated lessons compound.
 - **It runs in the background** (with a progress bar and estimated time remaining)
