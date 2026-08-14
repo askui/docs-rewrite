@@ -84,21 +84,21 @@ A suite that tests a different part of the system can carry its own
 `tests/ui.md` first, then each folder's on the way to the test. `ui.md` is
 never executed as a test, the Tests page marks it **Context only**.
 
-### Generate it from screenshots
+### VisionForge — generate it from screenshots
 
 You don't have to write `ui.md` by hand. Open it in the Tests editor and
-click **Generate from screenshots**:
+click **Forge from screenshots**:
 
 1. Upload screenshots of the app (up to 30) and write a short bullet-point
    description (at least 160 characters), then click **Verify**. The model
    checks the inputs and echoes back its understanding of your UI.
 2. If it needs more, it tells you what to add — correct it and verify again.
-3. Click **Accept & Create ui.md** to write the section, or **Add another UI
+3. Click **Accept & Update ui.md** to write the section, or **Add another UI
    section** to describe another screen first. Every section lands in the
    same `tests/ui.md`.
 
 The model is the same one your tests run on by default; change it under
-**Settings → Generation Model**. Generated context is a draft — read it and
+**Settings → Forge Model**. Generated context is a draft — read it and
 refine it, since it's what steers every run.
 
 ## Report format

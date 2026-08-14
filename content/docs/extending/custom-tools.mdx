@@ -32,9 +32,9 @@ or the AskUI Solution Engineering team, not edited ad hoc by test authors.
 There is no in-app code editor, write tools in your own IDE — or let the app
 draft one for you (below).
 
-## Generate a tool
+## Forge a tool (ToolForge)
 
-If you'd rather not write the C# yourself, click **Generate a tool** on the
+If you'd rather not write the C# yourself, click **Forge a tool** on the
 Custom Tools tab. Describe the tool in plain language — what it does, its
 input fields, what it returns, and which device it needs — and the model
 drafts it following the tool contract.
@@ -43,7 +43,7 @@ drafts it following the tool contract.
    it and echoes back its understanding.
 2. If something's missing, it tells you what to add — correct it and verify
    again. Repeat until it's ready.
-3. Click **Accept & Generate Tool**. The `.cs` file is written into
+3. Click **Accept & Forge Tool**. The `.cs` file is written into
    `utils/custom_tools/`, and the
    [inference cost](/docs/troubleshooting/performance-cost) of generating it
    is shown.
@@ -60,8 +60,8 @@ falls outside those boundaries, generation is **rejected** instead and you're
 pointed to an AskUI solution engineer. Your description is preserved and
 copyable, so you can send it to <support@askui.com> without retyping it.
 
-You choose which model powers generation under **Settings → Generation
-Model**; by default it's the same model as your test runs. See
+You choose which model powers Forge under **Settings → Forge Model**; by
+default it's the same model as your test runs. See
 [Model providers](/docs/extending/model-providers).
 
 ## Create a tool
