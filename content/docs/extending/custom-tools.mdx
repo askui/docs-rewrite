@@ -53,6 +53,13 @@ A generated tool is a starting point — read it, and validate it like any
 other custom tool before trusting it in a run.
 </Callout>
 
+**Not everything is a tool.** A custom tool is code the agent calls during a
+run — it can't install software on the machine, change system or network
+settings, or duplicate a built-in tool from the Tool Store. If your request
+falls outside those boundaries, generation is **rejected** instead and you're
+pointed to an AskUI solution engineer. Your description is preserved and
+copyable, so you can send it to <support@askui.com> without retyping it.
+
 You choose which model powers generation under **Settings → Generation
 Model**; by default it's the same model as your test runs. See
 [Model providers](/docs/extending/model-providers).
