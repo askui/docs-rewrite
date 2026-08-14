@@ -99,11 +99,13 @@ artifacts.
 Everything about Dreaming lives on one tab — **Extending → Dreaming**:
 
 - **Turn it on** (the experimental warning and Git requirement above).
-- **Choose the analysis model.** We recommend — and default to — the **best
-  available** model. Dreaming runs only occasionally, so stronger reasoning over
-  your runs is worth far more than saving a few cents. You can instead pick "same
-  as your test runs" or a specific model. (This applies on the AskUI hub; a
-  bring-your-own-model setup always analyzes on your configured model.)
+- **Choose the analysis model.** On the AskUI hub, we recommend — and default to —
+  the **best available** model. Dreaming runs only occasionally, so stronger reasoning
+  over your runs is worth far more than saving a few cents; you can instead pick "same
+  as your test runs" or a specific model. If you **bring your own model**, Dreaming
+  uses the same model as your test runs by default — untick "Same as for my test
+  runs" to configure a **separate** model for Dreaming (endpoint, model, API key),
+  for example a cheaper one, since it only reads run transcripts.
 - **See what it costs.** After each pass, the tab shows the **cost of the last
   analysis** and **how many analysis sessions** you've run. The same cost also
   appears on the review banner and at the top of the review page, so you always
