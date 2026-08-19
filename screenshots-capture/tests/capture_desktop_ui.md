@@ -81,7 +81,13 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     `save_screenshot[desktop-schedule-dialog]`, then close it — do NOT add a
     schedule.
 
-13. Open the **Utils** page, **Tool Store** tab. Wait for the tool list, then call
+12b. Open the **Test Plans** page. Wait until the plans list is shown (each row
+    is a `plans/<name>.yaml` plan with its test count, device and Run button) —
+    or, if the project has no plans yet, its empty state. Then call
+    `save_screenshot[desktop-plans]`. Do NOT create, edit, run, or delete a
+    plan.
+
+13. Open the **Extending** page, **Tool Store** tab. Wait for the tool list, then call
     `save_screenshot[desktop-utils-tools]`.
 
 14. Switch to the **Secrets** tab, then call
@@ -93,6 +99,12 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
 15b. Switch to the **Custom Tools** tab. Wait until the file list (or the
     empty drop zone) is shown, then call `save_screenshot[desktop-utils-custom]`.
     Do NOT add or remove any file.
+
+15c. Switch to the **Report Format** tab. Wait until the `utils/format.md`
+    editor is shown (or, if the project has no format file yet, its
+    "Create utils/format.md" call-to-action), then call
+    `save_screenshot[desktop-utils-format]`. Do NOT edit the file or click
+    Create.
 
 16. With the demo project open, click the git branch chip in the top bar so
     the source-control flyout opens (changes list, commit field, sync row).
