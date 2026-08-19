@@ -1,0 +1,45 @@
+---
+icon: Lightbulb
+title: When to use Dreaming
+description: Dreaming pays off when the same lessons keep coming up across runs — here's when to reach for it, and when to leave it off.
+---
+
+[Dreaming](/docs/extending/dreaming) turns the manual
+[analyzing-failures](/docs/best-practices/analyzing-failures) loop into reviewed
+suggestions. It's powerful, but it's not something to leave running mindlessly on
+every project. Here's when it earns its keep.
+
+## Reach for it when…
+
+- **You keep fixing the same kind of thing by hand.** If [analyzing
+  failures](/docs/best-practices/analyzing-failures) has you adding the *same* rule
+  again and again — "dismiss the cookie banner first", "wait for the spinner" —
+  that's exactly the signal Dreaming learns from. Let it propose the rule so you
+  stop re-typing it.
+- **You run a suite repeatedly.** Nightly regression and other suites you run often
+  are where the lessons compound: each run is more evidence, and a recurring problem
+  stands out from a one-off (Dreaming shows "4 of 5 runs" so you can tell the
+  difference).
+- **The app under test drifts.** When the UI changes in small ways over time,
+  Dreaming spots the new obstacles from real runs and keeps your rules current —
+  instead of you chasing each drift manually.
+
+## Leave it off when…
+
+- **The suite is brand new or changing fast.** With only a run or two, there isn't
+  enough signal yet — write the first rules yourself, then turn Dreaming on to
+  maintain them.
+- **A run failed for an external reason** — a flaky environment, a device that
+  dropped, an SDK/tooling problem. That's not a testware fix, and Dreaming will say
+  so (it raises an [advisory](/docs/extending/dreaming) pointing you at support
+  rather than inventing a rule). Sort the environment first.
+- **You want a specific one-off tweak.** For a single deliberate change, just edit
+  the file — Dreaming is for the patterns that recur, not individual edits.
+
+## How it fits your workflow
+
+Treat Dreaming as the **maintenance loop that runs after** you've analyzed
+failures, not a replacement for reading a report. You still decide what's true:
+Dreaming only *proposes*, you approve each change, and every accepted edit is a
+normal change in your project you can review and revert. See
+[Dreaming](/docs/extending/dreaming) for how to turn it on and what it can change.
