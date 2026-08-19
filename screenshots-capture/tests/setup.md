@@ -20,3 +20,6 @@ window.
    Every screenshot from now on captures only that window — no desktop, taskbar,
    or other apps.
 7. Take a screenshot to confirm the app window is framed correctly.
+
+## Open the Demo Project
+8. Open the project `demo-project`. It is part of the `docs-rewrite` repository. If it is not under recent projects and you cannot find it on the system, throw an AgentException with the exception_tool to abort the execution
