@@ -18,20 +18,17 @@ models usably reliable without giving up on running them.
 
 <img
   src="/docs-rewrite/screenshots/desktop-utils-inflight.png"
-  alt="The In-Flight Guidance tab on the Extending page with the enable toggle, cadence, reviewer model and criteria"
+  alt="The In-Flight Guidance tab on the Extending page with the enable toggle, cadence slider and reviewer model"
 />
 
 ## Settings
 
-- **Enable** — off by default; set per project.
-- **Review every N steps** — how often the reviewer runs (a typical value is
-  20–50). Lower is a tighter safety net but costs more reviewer calls; higher is
-  cheaper.
+- **Enable** — off by default; set per project. In-Flight Guidance is
+  **experimental**.
+- **Review every N steps** — a slider with discrete stops (5 / 20 / 50 / 100).
+  Lower is a tighter safety net but costs more reviewer calls; higher is cheaper.
 - **Reviewer model** — *Same as the test run*, or a specific model. Choose a
   stronger model to supervise a cheaper or local executor.
-- **Guidance criteria** (optional) — free text telling the reviewer what "on
-  track" means for this project, e.g. *"The run must reach the checkout page; stop
-  and fail if a login error keeps appearing."*
 
 Settings are stored in your project at `utils/inflight.json`.
 
