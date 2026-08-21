@@ -27,8 +27,10 @@ models usably reliable without giving up on running them.
   **experimental**.
 - **Review every N steps** — a slider with discrete stops (5 / 20 / 50 / 100).
   Lower is a tighter safety net but costs more reviewer calls; higher is cheaper.
-- **Reviewer model** — *Same as the test run*, or a specific model. Choose a
-  stronger model to supervise a cheaper or local executor.
+- **Reviewer model** — *Same as the test run*, a specific hosted model, or **Bring
+  your own model** (your own provider + key). Choose a stronger model to supervise a
+  cheaper or local executor — you can point the reviewer at your own provider even
+  when your test itself runs on AskUI.
 
 Settings are stored in your project at `utils/inflight.json`.
 
