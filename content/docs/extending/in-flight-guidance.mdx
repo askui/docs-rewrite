@@ -30,7 +30,8 @@ models usably reliable without giving up on running them.
 - **Reviewer model** — *Same as the test run*, a specific hosted model, or **Bring
   your own model** (your own provider + key). Choose a stronger model to supervise a
   cheaper or local executor — you can point the reviewer at your own provider even
-  when your test itself runs on AskUI.
+  when your test itself runs on AskUI. In local-licence mode (no AskUI hosted
+  models), the reviewer simply runs on your own provider.
 
 Settings are stored in your project at `utils/inflight.json`.
 
