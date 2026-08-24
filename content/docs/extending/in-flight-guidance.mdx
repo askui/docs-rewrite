@@ -45,8 +45,11 @@ Settings are stored in your project at `utils/inflight.json`.
    `[In-Flight Guidance]`) and honors it next: refocusing, breaking out of a loop,
    or stopping and marking the test **failed** when it clearly cannot succeed.
 
-Every reviewer check — its verdict, rationale and any injected message — is
-recorded in the run's report, so a run's outcome stays fully auditable.
+Every reviewer check — its verdict, rationale, any injected message and that check's
+token count — is recorded in the run's report, so a run's outcome stays fully
+auditable. The run summary also shows a separate **In-Flight Guidance** line (total
+tokens, cost and number of checks), priced at the reviewer model's own rate and kept
+apart from your execution cost.
 
 <Callout type="info">
 In-Flight Guidance only sends messages to the running agent. It never edits your
