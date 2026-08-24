@@ -53,9 +53,11 @@ Settings are stored in your project at `utils/inflight.json`.
 
 Every reviewer check — its verdict, rationale, any injected message and that check's
 token count — is recorded in the run's report, so a run's outcome stays fully
-auditable. Each **test section** shows its own In-Flight Guidance roll-up (tokens, cost
-and number of checks) priced at the reviewer model's own rate, and the report's
-top-line **Cost** is all-in — test execution plus In-Flight Guidance.
+auditable. A test's **Cost** is its total (its own execution plus its In-Flight
+Guidance, priced at the reviewer model's own rate), and the top-line **Cost** is the
+sum of those. The guidance share is broken out quietly as a small collapsible under
+each test's metrics, and the reviewer model is shown once in the run's provenance
+strip.
 
 <Callout type="info">
 In-Flight Guidance only sends messages to the running agent. It never edits your
