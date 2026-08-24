@@ -43,7 +43,9 @@ Settings are stored in your project at `utils/inflight.json`.
 ## During a run
 
 1. Every N steps the reviewer receives the recent (truncated) trace plus the test
-   being run, in a clean context.
+   being run — including the latest few screenshots as real images — in a clean
+   context, so it can see when the screen has stopped changing (a stuck loop). Use a
+   vision-capable reviewer model.
 2. A healthy run gets **no** message — the reviewer has no bias toward intervening.
 3. If the run is off track, the agent receives one message (prefixed
    `[In-Flight Guidance]`) and honors it next: refocusing, breaking out of a loop,
