@@ -52,6 +52,19 @@ Settings are stored in your project at `utils/inflight.json`.
    `[In-Flight Guidance]`) and honors it next: refocusing, breaking out of a loop,
    or stopping and marking the test **failed** when it clearly cannot succeed.
 
+The reviewer only has to *classify* — it never has to phrase the fix — so it works even
+on a small or local model. Alongside the on/off judgment it returns one decisive flag,
+*cannot succeed*, for a run that can no longer reach its goal (stuck with no approach
+left, the same screen recurring, an impossible objective). When it's set, the **app**
+issues a fixed stop-and-fail directive using the reviewer's rationale as the reason — so
+a weak reviewer that can only notice a doomed run still yields a clean FAIL instead of an
+endless loop. The reviewer is also never allowed to tell the agent to "try again", the
+one nudge that keeps a loop going.
+
+The reviewer can neither crash nor stall a run: reviewer errors are recorded and the run
+continues, and because the check runs inline each reviewer call is **time-bounded** — a
+slow or hung reviewer is skipped for that step, not waited on.
+
 Every reviewer check — its verdict, rationale, any injected message and that check's
 token count — is recorded in the run's report, so a run's outcome stays fully
 auditable. A test's **Cost** is its total (its own execution plus its In-Flight
