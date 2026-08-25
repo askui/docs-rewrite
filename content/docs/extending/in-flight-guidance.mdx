@@ -31,8 +31,9 @@ models usably reliable without giving up on running them.
   your own model** (your own provider + key). Choose a stronger model to supervise a
   cheaper or local executor — you can point the reviewer at your own provider even
   when your test itself runs on AskUI. In local-licence mode (no AskUI hosted
-  models), the reviewer runs on your own provider — the form comes pre-filled with
-  your test-run model's settings, so you only change what differs.
+  models), a **"Same as for my test runs"** checkbox (on by default) reuses your run
+  model for the reviewer; untick it to configure a separate reviewer provider (its
+  form is pre-filled from your test-run model, so you only change what differs).
 - **Reviewer model rates** — when the reviewer runs on a custom (BYOM) model, its
   provider form includes a **Model rates** section (input / output / cache $/Mtok) so
   the report can show the guidance cost. Hosted reviewer models are priced
