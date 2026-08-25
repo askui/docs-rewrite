@@ -65,6 +65,10 @@ The reviewer can neither crash nor stall a run: reviewer errors are recorded and
 continues, and because the check runs inline each reviewer call is **time-bounded** — a
 slow or hung reviewer is skipped for that step, not waited on.
 
+Each reviewer check also appears **inline in the live Conversation Log** while the run
+executes — its own "In-Flight Guidance" notice, quiet when on track and showing the sent
+message when it intervenes — so you can watch the Guide work, not just read it afterwards.
+
 Every reviewer check — its verdict, rationale, any injected message and that check's
 token count — is recorded in the run's report, so a run's outcome stays fully
 auditable. A test's **Cost** is its total (its own execution plus its In-Flight
