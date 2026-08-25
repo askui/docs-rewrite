@@ -107,6 +107,11 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     `save_screenshot[desktop-utils-format]`. Do NOT edit the file or click
     Create.
 
+15d. Switch to the **In-Flight Guidance** tab. Wait until the "Enable In-Flight
+    Guidance" card is shown (the enable checkbox with its description), then call
+    `save_screenshot[desktop-utils-inflight]`. Do NOT toggle it on or change any
+    field.
+
 16. With the demo project open, click the git branch chip in the top bar so
     the source-control flyout opens (changes list, commit field, sync row).
     Call `save_screenshot[desktop-git-chip]`, then press Escape — do NOT

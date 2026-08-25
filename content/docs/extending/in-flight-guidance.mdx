@@ -1,0 +1,85 @@
+---
+icon: Compass
+title: In-Flight Guidance
+description: An independent reviewer watches each run every few steps and can nudge the agent back on course — useful for keeping weaker or local models on track.
+---
+
+In-Flight Guidance puts a second, independent reviewer over the shoulder of the
+agent **while a test runs**. Every N steps it looks at the run so far — with a
+fresh, clean context — and answers one question: *is this run still on track
+toward its objective?* When it isn't, the reviewer sends the agent one short
+corrective message to nudge it back on course. Manage it under
+**Extending → In-Flight Guidance**.
+
+It exists for weaker or local (BYOM) models, which tend to drift off-task, loop,
+or fail to stop and mark a test failed when something has clearly gone wrong. A
+cheap, periodic outside check — optionally from a **stronger** model — makes those
+models usably reliable without giving up on running them.
+
+<img
+  src="/docs-rewrite/screenshots/desktop-utils-inflight.png"
+  alt="The In-Flight Guidance tab on the Extending page with the enable toggle, cadence slider and reviewer model"
+/>
+
+## Settings
+
+- **Enable** — off by default; set per project. In-Flight Guidance is
+  **experimental**.
+- **Review every N steps** — a slider with discrete stops (5 / 10 / 20 / 50 / 100).
+  Lower is a tighter safety net but costs more reviewer calls; higher is cheaper.
+- **Reviewer model** — *Same as the test run*, a specific hosted model, or **Bring
+  your own model** (your own provider + key). Choose a stronger model to supervise a
+  cheaper or local executor — you can point the reviewer at your own provider even
+  when your test itself runs on AskUI. In local-licence mode (no AskUI hosted
+  models), a **"Same as for my test runs"** checkbox (on by default) reuses your run
+  model for the reviewer; untick it to configure a separate reviewer provider (its
+  form is pre-filled from your test-run model, so you only change what differs).
+- **Reviewer model rates** — when the reviewer runs on a custom (BYOM) model, its
+  provider form includes a **Model rates** section (input / output / cache $/Mtok) so
+  the report can show the guidance cost. Hosted reviewer models are priced
+  automatically.
+
+Settings are stored in your project at `utils/inflight.json`.
+
+## During a run
+
+1. Every N steps the reviewer receives the recent (truncated) trace plus the test
+   being run — including the latest few screenshots as real images — in a clean
+   context, so it can see when the screen has stopped changing (a stuck loop). Use a
+   vision-capable reviewer model.
+2. A healthy run gets **no** message — the reviewer has no bias toward intervening.
+3. If the run is off track, the agent receives one message (prefixed
+   `[In-Flight Guidance]`) and honors it next: refocusing, breaking out of a loop,
+   or stopping and marking the test **failed** when it clearly cannot succeed.
+
+The reviewer only has to *classify* — it never has to phrase the fix — so it works even
+on a small or local model. Alongside the on/off judgment it returns one decisive flag,
+*cannot succeed*, for a run that can no longer reach its goal (stuck with no approach
+left, the same screen recurring, an impossible objective). When it's set, the **app**
+issues a fixed stop-and-fail directive using the reviewer's rationale as the reason — so
+a weak reviewer that can only notice a doomed run still yields a clean FAIL instead of an
+endless loop. The reviewer is also never allowed to tell the agent to "try again", the
+one nudge that keeps a loop going.
+
+The reviewer can neither crash nor stall a run: reviewer errors are recorded and the run
+continues, and because the check runs inline each reviewer call is **time-bounded** — a
+slow or hung reviewer is skipped for that step, not waited on.
+
+Each reviewer check also appears **inline in the live Conversation Log** while the run
+executes — its own "In-Flight Guidance" notice, quiet when on track and showing the sent
+message when it intervenes — so you can watch the Guide work, not just read it afterwards.
+
+Every reviewer check — its verdict, rationale, any injected message and that check's
+token count — is recorded in the run's report, so a run's outcome stays fully
+auditable. A test's **Cost** is its total (its own execution plus its In-Flight
+Guidance, priced at the reviewer model's own rate), and the top-line **Cost** is the
+sum of those. The guidance share is broken out quietly as a small collapsible under
+each test's metrics, and the reviewer model is shown once in the run's provenance
+strip.
+
+<Callout type="info">
+In-Flight Guidance only sends messages to the running agent. It never edits your
+tests, rules, or any project file — improving your suite between runs is what
+Dreaming does. The reviewer runs on its own model call over a truncated trace, so
+it does not interfere with the agent's prompt caching.
+</Callout>
