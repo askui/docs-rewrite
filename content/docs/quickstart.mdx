@@ -132,6 +132,32 @@ single most important file for reliable runs. See
 
 ---
 
+## Automate a computer: install AgentOS
+
+Every run is powered by **AgentOS**, the runtime that actually controls a
+computer, its screen, keyboard, and mouse. Step 4 didn't ask you to install
+anything extra because AgentOS ships inside AskUI Desktop: runs against *this*
+machine use the bundled runtime automatically.
+
+To automate a **different** computer, a remote machine, a headless CI runner,
+or a device in a fleet, install AgentOS on that target machine. AskUI Desktop
+and the CLI detect it automatically and run against it instead of your local
+session.
+
+<Cards>
+  <Card title="Standalone" href="/docs/agentos/installation/standalone"
+    description="Run AgentOS as a regular process in your user session, the fastest option for a dev machine." />
+  <Card title="OS Service (Windows)" href="/docs/agentos/installation/service"
+    description="Install as a system service for CI/CD and headless VMs that boot to the login screen." />
+</Cards>
+
+<Callout title="Just this machine?">
+If you only automate your own computer, you're already set, the AgentOS bundled
+with AskUI Desktop powered Step 4. Come back here when you need a second machine.
+</Callout>
+
+---
+
 ## What's next
 
 You have a working project. Here is where to go from here:
@@ -148,9 +174,5 @@ You have a working project. Here is where to go from here:
   <Card title="Run from the CLI" href="/docs/running-tests/install-cli">
     Once your project runs locally, move it to CI in minutes with `askui run`.
     Works with GitHub Actions, GitLab CI, and any headless environment.
-  </Card>
-  <Card title="AgentOS setup" href="/docs/agentos">
-    Running tests on a remote machine or in a multi-device fleet? Learn how to
-    install and configure AgentOS as a background service.
   </Card>
 </Cards>
