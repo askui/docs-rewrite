@@ -101,6 +101,29 @@ example test and the context files (`ui.md`, `rules.md`), ready to run.
 
 ---
 
+## Optional: Install AgentOS to automate a computer
+
+Runs are powered by **AgentOS**, the runtime that actually controls a computer,
+its screen, keyboard, and mouse. AskUI Desktop does **not** bundle it, so to run
+tests that drive a machine you install AgentOS on whichever computer you want to
+automate, your own machine, a remote host, a headless CI runner, or a device in
+a fleet. Once installed, AskUI Desktop and the CLI detect it automatically and
+run against it.
+
+<Cards>
+  <Card title="Standalone" href="/docs/agentos/installation/standalone"
+    description="Run AgentOS as a regular process in your user session, the fastest option for a dev machine." />
+  <Card title="OS Service (Windows)" href="/docs/agentos/installation/service"
+    description="Install as a system service for CI/CD and headless VMs that boot to the login screen." />
+</Cards>
+
+<Callout title="Not sure yet?">
+You can come back to this any time. When a run has no AgentOS to talk to, AskUI
+Desktop tells you and points you here.
+</Callout>
+
+---
+
 ## Step 4: Run your first test locally (3 min)
 
 The default template ships with a runnable example test, run it against your
@@ -128,32 +151,6 @@ Once the example passes, open `tests/ui.md` on the Tests page and describe your 
 app, its main screens, how to tell you're signed in, and any quirks. It's the
 single most important file for reliable runs. See
 [Prompting best practices](/docs/best-practices/prompting-best-practices).
-</Callout>
-
----
-
-## Automate a computer: install AgentOS
-
-Every run is powered by **AgentOS**, the runtime that actually controls a
-computer, its screen, keyboard, and mouse. Step 4 didn't ask you to install
-anything extra because AgentOS ships inside AskUI Desktop: runs against *this*
-machine use the bundled runtime automatically.
-
-To automate a **different** computer, a remote machine, a headless CI runner,
-or a device in a fleet, install AgentOS on that target machine. AskUI Desktop
-and the CLI detect it automatically and run against it instead of your local
-session.
-
-<Cards>
-  <Card title="Standalone" href="/docs/agentos/installation/standalone"
-    description="Run AgentOS as a regular process in your user session, the fastest option for a dev machine." />
-  <Card title="OS Service (Windows)" href="/docs/agentos/installation/service"
-    description="Install as a system service for CI/CD and headless VMs that boot to the login screen." />
-</Cards>
-
-<Callout title="Just this machine?">
-If you only automate your own computer, you're already set, the AgentOS bundled
-with AskUI Desktop powered Step 4. Come back here when you need a second machine.
 </Callout>
 
 ---
