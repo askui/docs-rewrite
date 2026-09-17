@@ -23,13 +23,34 @@ commercial deployments a license is required, see
 
 ## Install
 
-AgentOS ships with the AskUI Desktop installer, so most users get it
-automatically when they [install AskUI Desktop](/docs/get-started/install-desktop).
-
-<Callout title="Standalone installer coming soon">
-A dedicated AgentOS installer for machines without AskUI Desktop is in
-progress. For now, use the AskUI Desktop installer to get AgentOS on a machine.
+<Callout title="Manual install required (current version)" type="warn">
+We're migrating AgentOS to a newer version with a more seamless setup, and these
+docs already describe that new flow. The currently released version still needs
+AgentOS installed **manually**, before or after AskUI Desktop. If it's missing,
+the app shows an error when you start a run.
 </Callout>
+
+On macOS, the quickest way to install AgentOS today is with `pip`:
+
+```bash
+pip install askui-agent-os
+```
+
+Then point AskUI Desktop at the installed binary:
+
+<Steps>
+<Step>
+Open **Settings** in AskUI Desktop and go to **This machine**.
+</Step>
+<Step>
+Under **AgentOS**, paste the path to the installed controller. For a `pip`
+install it looks like:
+
+```
+~/py-env/lib/python3.12/site-packages/askui_agent_os/bin/AskuiRemoteDeviceController
+```
+</Step>
+</Steps>
 
 ## What's next?
 
