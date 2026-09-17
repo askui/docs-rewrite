@@ -109,17 +109,41 @@ a computer, such as your local machine, AgentOS must be installed on whichever
 computer you want to automate. This can be your own machine, a remote host, a
 headless CI runner, or a device in a fleet.
 
+<Callout title="Manual install required (current version)">
+We're currently migrating to a newer App version with a more seamless setup
+experience. The currently released version still requires the manual
+installation of AgentOS.
+</Callout>
+
+On macOS, the quickest way to install AgentOS today is with `pip`:
+
+```bash
+pip install askui-agent-os
+```
+
+If you want to use AgentOS with the AskUI Desktop App, point the app at the
+installed binary:
+
+<Steps>
+<Step>
+Open **Settings** in AskUI Desktop and go to **This machine**.
+</Step>
+<Step>
+Under **AgentOS**, paste the path to the installed controller. For a `pip`
+install it looks like:
+
+```
+~/py-env/lib/python3.12/site-packages/askui_agent_os/bin/AskuiRemoteDeviceController
+```
+</Step>
+</Steps>
+
 <Cards>
   <Card title="Standalone" href="/docs/agentos/installation/standalone"
     description="Run AgentOS as a regular process in your user session, the fastest option for a dev machine." />
   <Card title="OS Service (Windows)" href="/docs/agentos/installation/service"
     description="Install as a system service for CI/CD and headless VMs that boot to the login screen." />
 </Cards>
-
-<Callout title="Not sure yet?">
-You can come back to this any time. When a run has no AgentOS to talk to, AskUI
-Desktop tells you and points you here.
-</Callout>
 
 ---
 
