@@ -27,23 +27,37 @@ updated with `pip install --upgrade askui-agent-os`.
 Machines that must stay on a fixed version can
 [turn automatic updates off](#turn-off-automatic-updates).
 
-## Update now
+## Manual update
 
-Two ways to trigger an update by hand. Both run the same updater, both run
-silently, and neither needs administrator rights.
+Three ways to update on demand. All of them keep your configuration and your
+license key.
 
-From the notification area:
+**Run the updater from the notification area.**
 
 1. Open the notification area at the right end of the Windows taskbar.
 2. Find the **AskUI AgentOS** icon and click it.
 
-From File Explorer:
+**Run the updater from File Explorer.**
 
 1. Open `C:\Program Files\askui GmbH\AskUI AgentOS`.
 2. Double-click **AskUI AgentOS Updater.exe**.
 
-The updater downloads the new installer first, then runs it. Nothing is shown
-while it works. Afterwards, confirm the new version, see
+Both routes run the same updater. It downloads the new installer first, then
+runs it. Nothing is shown while it works, and no administrator rights are
+needed.
+
+**Install the new version yourself.** Use this when the machine cannot reach the
+update feed, or when you roll a specific version out across a fleet.
+
+1. Download the current installer, [AMD64](https://files.askui.com/releases/Installer/Latest/AskUI-Agent-OS-Latest-Service-Installer-Win-AMD64.exe)
+   or [ARM64](https://files.askui.com/releases/Installer/Latest/AskUI-Agent-OS-Latest-Service-Installer-Win-ARM64.exe).
+2. Run it on the existing installation. It upgrades in place, no uninstall
+   first.
+
+This route needs administrator rights, same as the original install. For
+unattended rollout, see [Silent (exe)](/docs/agentos/installation/silent).
+
+Afterwards, confirm the new version, see
 [Check the installed version](#check-the-installed-version).
 
 ## Check the installed version
