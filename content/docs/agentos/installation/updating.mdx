@@ -181,9 +181,9 @@ administrator action.
 ## Verify after an update
 
 - **Version** — increased, see [Check the installed version](#check-the-installed-version).
-- **Service** — the AgentOS service is running again, see
+- **Service** — **AskUI.AgentOS.Service** is running again, see
   [AgentOS service issues](/docs/troubleshooting/agentos-service#restart-the-agentos-service).
 - **Firewall** — your inbound rule for the AgentOS port still exists, if you
   added one.
-- **License** — the encoded license key is still present at the end of the
-  execution engine config in `C:\Program Files\askui GmbH\AskUI AgentOS\Configs\`.
+- **License** — your license is still active. An update keeps the configuration
+  written by the previous version instead of overwriting it, so the key survives.
