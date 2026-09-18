@@ -36,11 +36,11 @@ Windows prevents non-elevated processes from sending input to elevated (Run as A
 
 To enable elevated mode:
 
-- **Service Installer (GUI)**: Open **Windows Add/Remove Programs**, find AskUI AgentOS, click **Modify**, and enable the elevated execution engine option. Alternatively, reinstall AgentOS with the option enabled.
+- **Service Installer (GUI)**: Open **Windows Add/Remove Programs**, find AskUI AgentOS, click **Modify**, and enable the elevated AgentOS Execution Engine option. Alternatively, reinstall AgentOS with the option enabled.
 - **Silent Installer**: Set `SERVICE_EXECUTION_ENGINE_ELEVATED` to `1`, see [Silent installer parameters](/docs/agentos/installation/silent/#parameters).
 
 <Callout type="warn">
-Running the execution engine elevated grants it higher privileges. Only enable this when you need to automate applications that run as Administrator.
+Running the AgentOS Execution Engine elevated grants it higher privileges. Only enable this when you need to automate applications that run as Administrator.
 </Callout>
 
 ### `ipv4:127.0.0.1:23000 unavailable` in Standalone mode
