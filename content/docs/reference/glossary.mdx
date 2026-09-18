@@ -7,6 +7,8 @@ description: Definitions for key terms used across AskUI documentation.
 |------|-----------|
 | **Access token** | A credential that authenticates the CLI or an external integration with the AskUI Hub. Every token belongs to exactly one workspace and has an expiry date. See [Workspaces](/docs/account-billing/workspaces). |
 | **AgentOS** | The runtime layer that gives the AI agent direct OS-level control: keyboard, mouse, screen capture, and system functions. Runs on Windows, macOS, and Linux. |
+| **AgentOS Service** | The Windows system service that runs AgentOS, `AskUI.AgentOS.Service`. Installed by the service installer and started automatically. On installations older than 26.8 it is named `AskuiCoreService`. See [AgentOS service issues](/docs/troubleshooting/agentos-service). |
+| **AgentOS Updater** | The Windows service that checks for and installs new AgentOS versions, `AskUI AgentOS Updater`. Checks every 2 days and installs without administrator rights. See [Updating](/docs/agentos/installation/updating). |
 | **Annotation** | A marked region around a UI element with metadata including its name, text content, and bounding box coordinates. |
 | **Bounding box** | A rectangle defined by coordinates that describes the location and size of a UI element on screen. |
 | **Companion Mode** | An AgentOS control mode where AgentOS runs on an external device (e.g. Raspberry Pi) and controls the target through hardware interfaces. No software installation on the target is required. |
