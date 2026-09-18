@@ -1,0 +1,152 @@
+---
+title: Updating
+description: "How AgentOS keeps itself up to date, how to trigger an update manually, and how to serve updates from your own server."
+---
+
+AgentOS installed with the Windows service installer ships with its own updater.
+It runs as a separate Windows service, **AskUI AgentOS Updater**, and installs
+new versions without administrator rights.
+
+<Callout title="Note">
+This page applies to installs made with the [OS Service](/docs/agentos/installation/service)
+or [Silent](/docs/agentos/installation/silent) installer. A `pip` install is
+updated with `pip install --upgrade askui-agent-os`.
+</Callout>
+
+## Automatic updates
+
+- **Check interval** — every 2 days. The updater compares the installed version
+  against the update feed.
+- **No prompt** — a newer version is downloaded and installed silently. Users
+  are not asked to accept or defer.
+- **No administrator rights** — a standard user account is enough. The update
+  runs minimized, with no installer UI.
+- **Configuration is preserved** — files written by the previous version are
+  kept, not overwritten. This includes your activated license key.
+
+## Update now
+
+<Steps>
+
+<Step>
+Open the install directory:
+
+```
+C:\Program Files\askui GmbH\AskUI AgentOS
+```
+</Step>
+
+<Step>
+Double-click **AskUI AgentOS Updater.exe**.
+
+The updater downloads the new binary first, then installs it. Nothing is shown
+while it works.
+</Step>
+
+<Step>
+Confirm the new version, see [Check the installed version](#check-the-installed-version).
+</Step>
+
+</Steps>
+
+## Check the installed version
+
+From the notification area:
+
+1. Open the notification area at the right end of the Windows taskbar.
+2. Right-click the **AskUI** icon.
+3. Read the version shown next to **AgentOS**.
+
+From the registry:
+
+```
+HKEY_LOCAL_MACHINE\SOFTWARE\askui GmbH\AskUI AgentOS
+```
+
+- **Path** — install directory, for example `C:\Program Files\askui GmbH\AskUI AgentOS\`.
+- **Version** — installed AgentOS version, for example `26.8.8.114`.
+
+The key is readable by any user and needs no administrator rights, so
+provisioning scripts and health checks can read it directly.
+
+<Callout type="warn">
+Installed is not the same as running. The registry key only tells you that
+AgentOS is present. To confirm the service is up, check **AskuiCoreService**,
+see [AgentOS service issues](/docs/troubleshooting/agentos-service#restart-the-agentos-service).
+</Callout>
+
+## Updater configuration
+
+The updater reads its settings from:
+
+```
+C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.ini
+```
+
+| Key | Default | Description |
+| --- | --- | --- |
+| `URL` | AskUI update feed on `files.askui.com` | Update feed the updater polls. Point it at your own server to serve updates internally. |
+| `DownloadsFolder` | `C:\ProgramData\askui GmbH\AskUI AgentOS\updates` | Where downloaded installers are stored before they run. |
+| `CheckFrequency` | `2` | Days between update checks. |
+| `AppDir` | `C:\Program Files\askui GmbH\AskUI AgentOS` | Install directory the updater writes to. Set by the installer. |
+| `ApplicationVersion` | Installed version | Version the updater compares against the feed. Maintained by the updater. |
+| `DefaultCommandLine` | `/silentall` | Command line used to run the downloaded installer. |
+| `Flags` | `PerMachine\|ShowConfigOptionsButton\|NoUpdaterInstallGUI\|LockUrlSettings` | Updater behaviour flags. Set by the installer. |
+| `SupportServiceName` | `AskUI AgentOS Updater` | Windows service that performs the scheduled check. |
+| `ID` | GUID | Product identifier. Set by the installer. |
+
+<Callout type="warn">
+Only `URL` and `DownloadsFolder` are meant to be changed. The file lives under
+`C:\Program Files`, so editing it requires administrator rights.
+</Callout>
+
+Example:
+
+```ini title="AskUI AgentOS Updater.ini"
+[General]
+AppDir=C:\Program Files\askui GmbH\AskUI AgentOS
+ApplicationName=AskUI AgentOS
+CompanyName=askui GmbH
+ApplicationVersion=26.8.8.114
+DefaultCommandLine=/silentall
+CheckFrequency=2
+DownloadsFolder=C:\ProgramData\askui GmbH\AskUI AgentOS\updates
+Flags=PerMachine|ShowConfigOptionsButton|NoUpdaterInstallGUI|LockUrlSettings
+ID={4B14B653-F6BC-432E-B56D-120A660B5262}
+SupportServiceName=AskUI AgentOS Updater
+URL=https://files.askui.com/releases/Installer/RC/updates.txt
+```
+
+## Serve updates from your own server
+
+Machines that must not reach `files.askui.com` can pull updates from an
+internal artifact repository instead.
+
+<Steps>
+
+<Step>
+Mirror the AskUI update feed and the installers it references to your artifact
+repository.
+</Step>
+
+<Step>
+Set `URL` in `AskUI AgentOS Updater.ini` to your mirrored feed.
+</Step>
+
+<Step>
+Optionally set `DownloadsFolder` to a path that matches your endpoint policy.
+</Step>
+
+</Steps>
+
+Roll the edited `.ini` out with your usual configuration management, the same
+way you deploy the [silent installer](/docs/agentos/installation/silent).
+
+## Verify after an update
+
+- **Version** — increased, see [Check the installed version](#check-the-installed-version).
+- **Service** — **AskuiCoreService** is running.
+- **Firewall** — your inbound rule for the AgentOS port still exists, if you
+  added one.
+- **License** — the encoded license key is still present at the end of the
+  execution engine config in `C:\Program Files\askui GmbH\AskUI AgentOS\Configs\`.
