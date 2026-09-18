@@ -73,7 +73,7 @@ C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.ini
 | `AppDir` | `C:\Program Files\askui GmbH\AskUI AgentOS` | Install directory the updater writes to. Set by the installer. |
 | `ApplicationVersion` | Installed version | Version the updater compares against the feed. Maintained by the updater. |
 | `DefaultCommandLine` | `/silentall` | Command line used to run the downloaded installer. |
-| `Flags` | `PerMachine\|ShowConfigOptionsButton\|NoUpdaterInstallGUI\|LockUrlSettings` | Updater behaviour flags. Set by the installer. |
+| `Flags` | `PerMachine\|ShowConfigOptionsButton\|NoUpdaterInstallGUI\|LockUrlSettings` | Updater behaviour. `PerMachine` updates the machine-wide install, `ShowConfigOptionsButton` exposes the **Configure** dialog, `NoUpdaterInstallGUI` hides the updater's own install UI, `LockUrlSettings` stops end users from repointing the update URL. |
 | `SupportServiceName` | `AskUI AgentOS Updater` | Windows service that performs the scheduled check. |
 | `ID` | GUID | Product identifier. Set by the installer. |
 
@@ -101,41 +101,40 @@ URL=https://files.askui.com/releases/Installer/RC/updates.txt
 
 ## Turn off automatic updates
 
-The scheduled check is performed by the **AskUI AgentOS Updater** Windows
-service. Disabling that service stops automatic updates for the whole machine.
-Manual updates keep working.
+For a single machine, use the updater's own configuration dialog:
 
-<Steps>
+1. Open `C:\Program Files\askui GmbH\AskUI AgentOS`.
+2. Run **AskUI AgentOS Updater.exe**.
+3. Select **Configure** and turn the automatic update check off.
 
-<Step>
-Open a command prompt as administrator.
-</Step>
+The setting is stored per user, so each account on the machine chooses for
+itself. Manual updates keep working.
 
-<Step>
-Stop and disable the service:
+For a fleet, disable the **AskUI AgentOS Updater** service instead. That covers
+every account on the machine and rolls out through your configuration
+management:
 
 ```bash
 sc.exe stop "AskUI AgentOS Updater"
 sc.exe config "AskUI AgentOS Updater" start= disabled
 ```
 
-The space after `start=` is required by `sc.exe`.
-</Step>
-
-</Steps>
-
-To switch automatic updates back on, restore the installed default:
+The space after `start=` is required by `sc.exe`. To switch automatic updates
+back on, restore the installed default:
 
 ```bash
 sc.exe config "AskUI AgentOS Updater" start= demand
 ```
 
 <Callout type="warn">
-There is no setting in `AskUI AgentOS Updater.ini` that turns checks off,
-`CheckFrequency` only controls the interval. A machine with the service disabled
-never picks up fixes on its own, so plan a managed rollout for it, for example
-by running the updater through your configuration management.
+Do not use `CheckFrequency` as an off switch. It sets the interval in days, and
+`0` removes the interval so the updater checks every time it runs, the opposite
+of switching updates off.
 </Callout>
+
+A machine with automatic updates off never picks up fixes on its own. Plan a
+managed rollout for it, for example by running the updater from your
+configuration management.
 
 ## Serve updates from your own registry
 
@@ -160,6 +159,10 @@ Optionally set `DownloadsFolder` to a path that matches your endpoint policy.
 
 Roll the edited `.ini` out with your usual configuration management, the same
 way you deploy the [silent installer](/docs/agentos/installation/silent).
+
+The shipped `Flags` include `LockUrlSettings`, so end users cannot point their
+own machine at a different update source. Changing `URL` in the `.ini` is an
+administrator action.
 
 ## Verify after an update
 
