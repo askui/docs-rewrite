@@ -71,6 +71,57 @@
         "onConnect": "Reuse",
         "onDisconnect": "Stop"
       }
+    },
+    {
+      "type": "agent-os",
+      "id": "this-computer",
+      "name": "This computer",
+      "icon": "laptop",
+      "host": "localhost",
+      "port": 23000,
+      "displayId": 1,
+      "useSystemProxy": false,
+      "browser": "chrome",
+      "headless": false,
+      "startUrl": "",
+      "serial": "",
+      "udid": "",
+      "managed": false,
+      "includeDesktop": true,
+      "includeWeb": false
+    },
+    {
+      "type": "android",
+      "id": "an-android-device",
+      "name": "Pixel 9 (for Mac)",
+      "icon": "smartphone",
+      "host": "localhost",
+      "port": 23000,
+      "displayId": 1,
+      "useSystemProxy": false,
+      "browser": "chrome",
+      "headless": false,
+      "startUrl": "",
+      "serial": "",
+      "udid": "",
+      "managed": false,
+      "includeDesktop": true,
+      "includeWeb": false,
+      "provision": {
+        "targetType": "Mobile",
+        "platform": "Android",
+        "version": "34",
+        "form": "Emulator",
+        "providerId": "android",
+        "options": {
+          "AvdName": "askui-pixel-9-for-mac",
+          "SystemImage": "system-images;android-36;google_apis;arm64-v8a",
+          "DeviceProfile": "pixel_9",
+          "Headless": "false"
+        },
+        "onConnect": "Reuse",
+        "onDisconnect": "Stop"
+      }
     }
   ]
 }

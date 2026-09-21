@@ -6,9 +6,9 @@ using SixLabors.ImageSharp.Processing;
 
 public sealed class CompareWithReferenceTool : Tool
 {
-    private readonly IAgentOs _agentOs;
+    private readonly IAndroidAgentOs _agentOs;
 
-    public CompareWithReferenceTool(IAgentOs agentOs)
+    public CompareWithReferenceTool(IAndroidAgentOs agentOs)
         : base(
             name: "compare_with_reference",
             description: "Compares the current screen against a reference image. "
@@ -42,12 +42,12 @@ public sealed class CompareWithReferenceTool : Tool
         long deviating = 0;
         using var diff = new Image<Rgba32>(actual.Width, actual.Height);
         for (var y = 0; y < actual.Height; y++)
-        for (var x = 0; x < actual.Width; x++)
-        {
-            var same = actual[x, y] == expected[x, y];
-            if (!same) deviating++;
-            diff[x, y] = same ? actual[x, y] : new Rgba32(255, 0, 0);
-        }
+            for (var x = 0; x < actual.Width; x++)
+            {
+                var same = actual[x, y] == expected[x, y];
+                if (!same) deviating++;
+                diff[x, y] = same ? actual[x, y] : new Rgba32(255, 0, 0);
+            }
 
         using var png = new MemoryStream();
         await diff.SaveAsPngAsync(png, cancellationToken);

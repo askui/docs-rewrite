@@ -22,21 +22,40 @@ screenshots-capture/
     format.md               # keep the run report short
     custom_tools/
       save_screenshot.cs    # save_screenshot[name] -> ../public/screenshots/<name>.png
-  regenerate.ps1            # driver: runs the CLI, points output at public/screenshots
+  regenerate.ps1            # Windows driver: runs the CLI, points output at public/screenshots
+  regenerate.sh             # macOS/Linux driver (same flow; falls back to the app-installed controller)
   .env.example             # ASKUI_WORKSPACE_ID / ASKUI_TOKEN
 ```
 
 ## Prerequisites
 
-1. **AskUI Desktop installed** (Programs → `C:\Program Files\AskUI Desktop`) with
-   a user **signed in** on this machine. The capture flow opens the app from the
-   Start menu itself, so it need not already be running — but it operates on
-   **display 1**, so keep that display available.
+1. **AskUI Desktop installed** (Windows: Programs → `C:\Program Files\AskUI Desktop`;
+   macOS: `/Applications/AskUI Desktop.app`) with a user **signed in** on this
+   machine. The capture flow opens the app itself (Start menu / Spotlight), so it
+   need not already be running — but it operates on **display 1**, so keep that
+   display available.
 2. **Sibling `integrated-task-plattform` checkout** next to this repo — it holds
    `AskUI.Cli` (not shipped standalone yet). Override its location with
-   `-AppRepo` if it lives elsewhere.
+   `-AppRepo` (Windows) / `APP_REPO=` (macOS) if it lives elsewhere.
 3. **Credentials**: `cp screenshots-capture/.env.example screenshots-capture/.env`
-   and fill in your AskUI workspace id + token (or run under `op run`).
+   and fill in your AskUI workspace id + token (or run under `op run`). The
+   same file optionally carries the driver settings `APP_REPO` (app repo
+   checkout) and `CAPTURE_DISPLAY` (the display the app is visible on,
+   default 1).
+4. **macOS only**: the AskUI controller needs **Screen Recording** permission
+   (System Settings → Privacy & Security). The driver falls back to the
+   controller the desktop app installed; set `ASKUI_CONTROLLER_PATH` to use a
+   different one.
+
+### Capturing a fresh build instead of the installed app
+
+Start the app from the app repo yourself, sign in, then run the capture — the
+flow uses whichever AskUI Desktop window is already open (window matching is
+by title, so the `dotnet`-hosted dev process is found too):
+
+- **macOS**: `src/AskUI.Desktop.Mac/run-mac.sh` (publishes and launches;
+  plain `dotnet run` does not assemble the wwwroot).
+- **Windows**: `dotnet run --project src/AskUI.Desktop.Windows`.
 
 ## Run
 
@@ -49,7 +68,13 @@ npm run screenshots
 or directly:
 
 ```powershell
+# Windows
 powershell -NoProfile -ExecutionPolicy Bypass -File screenshots-capture/regenerate.ps1
+```
+
+```bash
+# macOS / Linux
+./screenshots-capture/regenerate.sh
 ```
 
 The wrapper sets `DOCS_SCREENSHOTS_DIR` to `../public/screenshots` (absolute),

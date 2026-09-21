@@ -34,6 +34,22 @@ plan automatically, with nothing to re-check. The **Test Plans** page lists
 each plan with its test count and device, and the pencil on a row reopens it
 for editing.
 
+## Order the tests
+
+Tests run top to bottom in the order shown in the plan's tree, and you can
+change that order by dragging. Hover a selected row, grab its drag handle, and
+drop it above or below one of its siblings.
+
+- A **folder is one ordered slot**: drag the folder to move everything under it
+  at once. To place a test ahead of tests in another folder, move the folder.
+- Inside a **whole-checked folder** you can still order the tests: expand it and
+  drag its rows. The order you set is pinned, and the folder keeps auto-including
+  tests you add later (those run after the ones you pinned). Until you drag inside
+  it, a checked folder runs its tests alphabetically.
+
+Selecting a test never changes the order — only dragging does. The order is saved
+in the plan file, so it travels with your project.
+
 ## Run it with one click
 
 Press **Run** on the plan. Every selected test runs on the plan's device, in
@@ -94,7 +110,9 @@ devices:
 
 - **`tests`**: your selection, in run order. An entry ending in `/` is a
   whole folder, expanded when the run starts (this is why a checked folder
-  keeps up with tests added to it later).
+  keeps up with tests added to it later). When you order tests inside a checked
+  folder, those files are listed explicitly *before* the folder entry: they run
+  in that order first, then the folder contributes anything not already listed.
 - **`devices`**: the device the plan runs on, by profile id from
   `devices.json`. The file holds a list for forward compatibility; the app
   sets exactly one.
