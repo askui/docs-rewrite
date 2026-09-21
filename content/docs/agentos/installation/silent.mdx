@@ -37,7 +37,7 @@ With custom options (replace `<installer_path>` with the full path to where you 
 | `APPDIR` | `C:\Program Files\askui GmbH\AskUI AgentOS` | Install location. Must be accessible to all users. |
 | `SERVICE_SUBNET` | `127.0.0.1` | Network subnet the service listens on. |
 | `SERVICE_LISTENING_PORT` | `26000` | Main service port. |
-| `SERVICE_LOG_LEVEL` | `Debug` | Log verbosity: `Info` or `Debug`. |
+| `SERVICE_LOG_LEVEL` | `Info` | Log verbosity: `Info` or `Debug`. |
 | `SERVICE_ENABLE_SAS` | `1` | Enable Secure Attention Sequence (CTRL+ALT+DEL). `0` to disable. |
 | `SERVICE_EXECUTION_ENGINE_ELEVATED` | `0` | Run the AgentOS Execution Engine with elevated privileges. `1` to enable. |
 | `SERVICE_EXECUTION_ENGINE_LISTENING_PORT` | `23000` | AgentOS Execution Engine port. |
@@ -49,6 +49,50 @@ With custom options (replace `<installer_path>` with the full path to where you 
 ```bash
 "<installer_path>" /qn SERVICE_LISTENING_PORT=27000 SERVICE_LOG_LEVEL=Info SERVICE_ENABLE_SAS=1 /l*vx installer.log
 ```
+
+## Licensing
+
+Activate the license during the silent install instead of afterwards. Pick a
+mode with `LICENSE_TYPE`, then pass the values that mode needs.
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `LICENSE_TYPE` | `FLOATING` | Licensing mode: `FLOATING`, `RELAY` or `FILE`. Determines which of the parameters below are read. |
+| `LICENSE_KEY` | — | Your license key. Required for `FLOATING` and `RELAY`. |
+| `LICENSE_RELAY_ADDRESS` | — | Address of your license relay. Required for `RELAY`. |
+| `LICENSE_RELAY_PORT` | — | Port of your license relay. Required for `RELAY`. |
+| `LICENSE_FILE` | — | Absolute path to an offline `.lic` file. Required for `FILE`. |
+
+**Floating license** — the machine validates the key against AskUI online:
+
+```bash
+"<installer_path>" /qn LICENSE_TYPE=FLOATING LICENSE_KEY="<your_key>"
+```
+
+**Enterprise license server** — the machine validates against a relay you run:
+
+```bash
+"<installer_path>" /qn LICENSE_TYPE=RELAY LICENSE_KEY="<your_key>" LICENSE_RELAY_ADDRESS="license.example.internal" LICENSE_RELAY_PORT="8080"
+```
+
+**Offline license file** — for machines with no route to a license server. The
+path must be readable by the installer at install time:
+
+```bash
+"<installer_path>" /qn LICENSE_TYPE=FILE LICENSE_FILE="C:\licenses\agentos.lic"
+```
+
+<Callout type="warn">
+A mode is only applied when every parameter it requires is present. Pass
+`LICENSE_TYPE=RELAY` without `LICENSE_RELAY_ADDRESS`, for example, and the
+installer completes successfully with no license configured. Check the install
+log, or the activation state after install, rather than relying on the exit code.
+</Callout>
+
+<Callout title="Note">
+Licensing can also be changed later without reinstalling: open **Windows
+Add/Remove Programs**, find AskUI AgentOS and click **Modify**.
+</Callout>
 
 ## Runtime Configuration
 

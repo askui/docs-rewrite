@@ -1,11 +1,11 @@
 ---
 title: Updating
-description: "How AgentOS keeps itself up to date, how to trigger an update manually, and how to serve updates from your own server."
+description: "How AgentOS keeps itself up to date, how to update on demand, and how to serve updates from your own server."
 ---
 
 AgentOS installed with the Windows service installer ships with its own updater.
 It runs as a separate Windows service, **AskUI AgentOS Updater**, and installs
-new versions without administrator rights.
+new versions in the background.
 
 <Callout title="Note">
 This page applies to installs made with the [OS Service](/docs/agentos/installation/service)
@@ -19,8 +19,9 @@ updated with `pip install --upgrade askui-agent-os`.
   against the update feed.
 - **No prompt** — a newer version is downloaded and installed silently. Users
   are not asked to accept or defer.
-- **No administrator rights** — a standard user account is enough. The update
-  runs minimized, with no installer UI.
+- **No elevation prompt** — the check and the install are performed by the
+  **AskUI AgentOS Updater** service, which runs as `LocalSystem`. A signed-in
+  standard user sees no UAC dialog and needs no administrator rights.
 - **Configuration is preserved** — files written by the previous version are
   kept, not overwritten. This includes your activated license key.
 
@@ -37,14 +38,23 @@ license key.
 1. Open the notification area at the right end of the Windows taskbar.
 2. Find the **AskUI AgentOS** icon and click it.
 
-**Run the updater from File Explorer.**
+**Run the updater from the command line.**
 
-1. Open `C:\Program Files\askui GmbH\AskUI AgentOS`.
-2. Double-click **AskUI AgentOS Updater.exe**.
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /checknow
+```
 
-Both routes run the same updater. It downloads the new installer first, then
-runs it. Nothing is shown while it works, and no administrator rights are
-needed.
+<Callout type="warn">
+Double-clicking **AskUI AgentOS Updater.exe** appears to do nothing. It runs a
+silent check and closes without a window. To change settings, use the
+**AskUI AgentOS Update Settings** shortcut in the same folder, see
+[Configure the updater](#configure-the-updater). To update, pass a command such
+as `/checknow`, see [Updater commands](#updater-commands).
+</Callout>
+
+Both routes rely on the **AskUI AgentOS Updater** service to install without an
+elevation prompt. If you have [turned automatic updates off](#turn-off-automatic-updates)
+by disabling that service, a standard user can no longer update this way.
 
 **Install the new version yourself.** Use this when the machine cannot reach the
 update feed, or when you roll a specific version out across a fleet.
@@ -57,9 +67,6 @@ update feed, or when you roll a specific version out across a fleet.
 This route needs administrator rights, same as the original install. For
 unattended rollout, see [Silent (exe)](/docs/agentos/installation/silent).
 
-Afterwards, confirm the new version, see
-[Check the installed version](#check-the-installed-version).
-
 ## Check the installed version
 
 1. Open **Settings → Apps → Installed apps**.
@@ -71,64 +78,197 @@ Installed is not the same as running. To confirm the AgentOS service is up, see
 [AgentOS service issues](/docs/troubleshooting/agentos-service#restart-the-agentos-service).
 </Callout>
 
-## Updater configuration
+## Updater commands
 
-The updater reads its settings from:
+The updater is installed at:
 
+```text
+C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe
 ```
+
+The path contains spaces, so always quote it. In **Command Prompt** and in the
+**Win+R** run box, quote the path on its own:
+
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /configure
+```
+
+In **PowerShell**, add the call operator `&` in front, otherwise the quoted path
+is treated as text and nothing runs:
+
+```powershell
+& "C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /configure
+```
+
+### Commands
+
+| Command | What it does |
+| --- | --- |
+| `/configure` | Opens the configuration window |
+| `/checknow` | Checks now and shows the result, whether or not an update was found |
+| `/silent` | Checks quietly, and only opens a window if an update is found |
+| `/silentall` | Checks quietly and installs every available update |
+| `/silentcritical` | Checks quietly and installs only critical updates |
+
+`/checknow` checks straight away. `/silent`, `/silentall` and `/silentcritical`
+honour the check interval, so they may do nothing if the last check was recent.
+
+### Options
+
+Add these to a command to change how that one run behaves. They are not saved.
+
+| Option | What it does |
+| --- | --- |
+| `-url <address>` | Uses a different update feed for this run |
+| `-justdownload` | Downloads updates without installing them |
+| `-nogui` | Runs without a window |
+| `-reducedgui` | Runs with a minimal window |
+
+Example — check against a different feed for this one run:
+
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /checknow -url "https://updates.example.com/agentos/updates.txt"
+```
+
+### Saved settings
+
+`/set` changes a setting and keeps it, so these are the scriptable equivalent of
+the [configuration window](#configure-the-updater). The value follows the setting
+name, with no dash. No administrator rights are needed, and the settings apply to
+the account that ran the command.
+
+| Command | Accepted values |
+| --- | --- |
+| `/set autoupdatepolicy <policy>` | `Disable`, `Prompt`, `AutoCritical`, `AutoAll` |
+| `/set downloadsfolder <folder>` | Any writable folder |
+| `/set proxy <host:port>` | An address or a name, with the port |
+| `/set retryattempts <count>` | `0` to `6` |
+| `/set loglevel <levels>` | `Error`, `Trace`, `Debug`, `Off`. Combine with `\|` |
+| `/set rememberpassword <user> <password>` | Credentials for a protected feed |
+
+<Callout type="warn">
+Quote any value containing `|`, because both Command Prompt and PowerShell read
+it as a pipe: `/set loglevel "Debug|Trace"`.
+</Callout>
+
+The update policies are:
+
+| Policy | Behaviour |
+| --- | --- |
+| `Disable` | Never check automatically |
+| `Prompt` | Check, then ask before installing |
+| `AutoCritical` | Install critical updates automatically, ask about the rest |
+| `AutoAll` | Install every update automatically |
+
+Until you set a policy, the updater follows the default chosen by the installer,
+which installs updates automatically.
+
+Example — stop this machine installing updates on its own:
+
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /set autoupdatepolicy Disable
+```
+
+<Callout title="Note">
+There is no `/set` option for the update feed or the check interval. Change the
+feed in the [configuration file](#change-the-update-feed), and the interval in
+the [configuration window](#configure-the-updater).
+</Callout>
+
+## Configure the updater
+
+Open the install folder and double-click **AskUI AgentOS Update Settings**:
+
+```text
+C:\Program Files\askui GmbH\AskUI AgentOS\
+```
+
+Or open the same window from a command line:
+
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /configure
+```
+
+No administrator rights needed. The window sets:
+
+- **Automatic update policy** — whether the updater checks on its own
+- **Check interval** — how many days between checks
+- **Download folder** — where installers are staged before they run
+
+These settings apply to the account that changed them, and they are kept when
+AgentOS updates.
+
+The policy and the download folder can also be set without opening the window,
+see [Saved settings](#saved-settings). That is the route to use when rolling a
+setting out across many machines.
+
+<Callout type="warn">
+Do not set the check interval to `0` to switch updates off. A zero interval does
+not mean "never" — it makes the updater check every time it runs. Use the
+automatic update policy instead.
+</Callout>
+
+## Change the update feed
+
+Machines that must not reach `files.askui.com` can pull updates from your own
+artifact registry, such as Artifactory.
+
+**Try it first.** `-url` points a single run at a different feed without
+changing the saved setting, so you can confirm your mirror answers correctly
+before committing to it. The check installs anything it finds there, so run it
+on a test machine:
+
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /checknow -url "https://updates.example.com/agentos/updates.txt"
+```
+
+**Then make it permanent.** The feed is a machine-wide setting in:
+
+```text
 C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.ini
 ```
 
-| Key | Default | Description |
-| --- | --- | --- |
-| `URL` | `https://files.askui.com/releases/Installer/RC/updates.txt` | Update feed the updater polls. Set it to a feed in your own artifact registry, for example Artifactory, to distribute updates internally. |
-| `DownloadsFolder` | `C:\ProgramData\askui GmbH\AskUI AgentOS\updates` | Where downloaded installers are stored before they run. |
-| `CheckFrequency` | `2` | Days between update checks. |
-| `AppDir` | `C:\Program Files\askui GmbH\AskUI AgentOS` | Install directory the updater writes to. Set by the installer. |
-| `ApplicationVersion` | Installed version | Version the updater compares against the feed. Maintained by the updater. |
-| `DefaultCommandLine` | `/silentall` | Command line used to run the downloaded installer. |
-| `Flags` | `PerMachine\|ShowConfigOptionsButton\|NoUpdaterInstallGUI\|LockUrlSettings` | Updater behaviour. `PerMachine` updates the machine-wide install, `ShowConfigOptionsButton` exposes the **Configure** dialog, `NoUpdaterInstallGUI` hides the updater's own install UI, `LockUrlSettings` stops end users from repointing the update URL. |
-| `SupportServiceName` | `AskUI AgentOS Updater` | Windows service that performs the scheduled check. |
-| `ID` | GUID | Product identifier. Set by the installer. |
+Change the `URL` value:
+
+```ini
+[General]
+URL=https://updates.example.com/agentos/updates.txt
+```
+
+The file is under `C:\Program Files`, so editing it needs administrator rights.
 
 <Callout type="warn">
-Only `URL` and `DownloadsFolder` are meant to be changed. The file lives under
-`C:\Program Files`, so editing it requires administrator rights.
+Installing an update rewrites this file, including `URL`. Deploy your edited
+copy from configuration management and re-apply it after each version change,
+the same way you deploy the [silent installer](/docs/agentos/installation/silent).
+Otherwise the machine silently returns to the AskUI feed.
 </Callout>
 
-Example:
-
-```ini title="AskUI AgentOS Updater.ini"
-[General]
-AppDir=C:\Program Files\askui GmbH\AskUI AgentOS\
-ApplicationName=AskUI AgentOS
-CompanyName=askui GmbH
-ApplicationVersion=26.8.8.114
-DefaultCommandLine=/silentall
-CheckFrequency=2
-DownloadsFolder=C:\ProgramData\askui GmbH\AskUI AgentOS\updates\
-Flags=PerMachine|ShowConfigOptionsButton|NoUpdaterInstallGUI|LockUrlSettings
-ID={4B14B653-F6BC-432E-B56D-120A660B5262}
-SupportServiceName=AskUI AgentOS Updater
-URL=https://files.askui.com/releases/Installer/RC/updates.txt
-```
+Mirror both the update feed and the installers it references into your registry,
+or the updater will find a new version and fail to download it.
 
 ## Turn off automatic updates
 
-For a single machine, use the updater's own configuration dialog:
+**For one user**, set the update policy to `Disable`:
 
-1. Open `C:\Program Files\askui GmbH\AskUI AgentOS`.
-2. Run **AskUI AgentOS Updater.exe**.
-3. Select **Configure** and turn the automatic update check off.
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /set autoupdatepolicy Disable
+```
 
-The setting is stored per user, so each account on the machine chooses for
-itself. Manual updates keep working.
+To allow updates again, choose the policy you want, for example `AutoAll` to
+restore the installed default or `Prompt` to be asked first:
 
-For a fleet, disable the **AskUI AgentOS Updater** service instead. That covers
-every account on the machine and rolls out through your configuration
-management:
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /set autoupdatepolicy AutoAll
+```
 
-```bash
+The same setting is in the [configuration window](#configure-the-updater) if you
+prefer to change it there.
+
+**For the whole machine**, disable the updater service, which owns the scheduled
+check:
+
+```cmd
 sc.exe stop "AskUI AgentOS Updater"
 sc.exe config "AskUI AgentOS Updater" start= disabled
 ```
@@ -136,53 +276,36 @@ sc.exe config "AskUI AgentOS Updater" start= disabled
 The space after `start=` is required by `sc.exe`. To switch automatic updates
 back on, restore the installed default:
 
-```bash
+```cmd
 sc.exe config "AskUI AgentOS Updater" start= demand
 ```
 
+Check the current state at any time:
+
+```cmd
+sc.exe qc "AskUI AgentOS Updater"
+```
+
 <Callout type="warn">
-Do not use `CheckFrequency` as an off switch. It sets the interval in days, and
-`0` removes the interval so the updater checks every time it runs, the opposite
-of switching updates off.
+Disabling the service also removes the non-elevated manual update path. With the
+service off, updating the machine requires an administrator to run the installer.
+
+Repairing, modifying or upgrading AgentOS re-registers the service and can
+re-enable it. Confirm with `sc.exe qc` after any of those.
 </Callout>
 
 A machine with automatic updates off never picks up fixes on its own. Plan a
-managed rollout for it, for example by running the updater from your
-configuration management.
-
-## Serve updates from your own registry
-
-Machines that must not reach `files.askui.com` can pull updates from your own
-artifact registry instead.
-
-<Steps>
-
-<Step>
-Mirror the AskUI update feed and the installers it references into your registry.
-</Step>
-
-<Step>
-Set `URL` in `AskUI AgentOS Updater.ini` to your mirrored feed.
-</Step>
-
-<Step>
-Optionally set `DownloadsFolder` to a path that matches your endpoint policy.
-</Step>
-
-</Steps>
-
-Roll the edited `.ini` out with your usual configuration management, the same
-way you deploy the [silent installer](/docs/agentos/installation/silent).
-
-The shipped `Flags` include `LockUrlSettings`, so end users cannot point their
-own machine at a different update source. Changing `URL` in the `.ini` is an
-administrator action.
+managed rollout for it.
 
 ## Verify after an update
 
 - **Version** — increased, see [Check the installed version](#check-the-installed-version).
 - **Service** — **AskUI.AgentOS.Service** is running again, see
   [AgentOS service issues](/docs/troubleshooting/agentos-service#restart-the-agentos-service).
+- **Updater** — if you disabled automatic updates, **AskUI AgentOS Updater** is
+  still disabled.
+- **Update feed** — if you use your own registry, `URL` in
+  `AskUI AgentOS Updater.ini` still points at it.
 - **Firewall** — your inbound rule for the AgentOS port still exists, if you
   added one.
 - **License** — your license is still active. An update keeps the configuration
