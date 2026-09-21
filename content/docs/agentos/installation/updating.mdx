@@ -46,8 +46,10 @@ license key.
 
 <Callout type="warn">
 Double-clicking **AskUI AgentOS Updater.exe** appears to do nothing. It runs a
-silent check and closes without a window. Always pass a command such as
-`/checknow`, see [Updater commands](#updater-commands).
+silent check and closes without a window. To change settings, use the
+**AskUI AgentOS Update Settings** shortcut in the same folder, see
+[Configure the updater](#configure-the-updater). To update, pass a command such
+as `/checknow`, see [Updater commands](#updater-commands).
 </Callout>
 
 Both routes rely on the **AskUI AgentOS Updater** service to install without an
@@ -176,6 +178,14 @@ the [configuration window](#configure-the-updater).
 </Callout>
 
 ## Configure the updater
+
+Open the install folder and double-click **AskUI AgentOS Update Settings**:
+
+```text
+C:\Program Files\askui GmbH\AskUI AgentOS\
+```
+
+Or open the same window from a command line:
 
 ```cmd
 "C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /configure
