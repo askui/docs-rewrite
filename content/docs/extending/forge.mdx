@@ -1,0 +1,119 @@
+---
+icon: Hammer
+title: Forge
+description: Let the model draft the pieces of your project you would otherwise write by hand — UI prompts from screenshots, custom tools from a description, and soon tests from recordings.
+---
+
+**Forge** is the family of features that lets the model draft parts of your
+project for you, instead of you writing them by hand. Every Forge follows the
+same loop: you describe what you want, the model **verifies** it understands and
+asks about anything missing, and only when you **accept** does it write a file
+into your project. Nothing is written before you accept, and what it writes is a
+draft to read and refine — not a finished product.
+
+There are two Forges today and a third on the way:
+
+- **[PromptForge](#promptforge--ui-prompts-from-screenshots)** drafts your
+  [UI information](/docs/writing-tests/agents-and-prompts#ui-information) (`ui.md`)
+  from screenshots of the app under test.
+- **[ToolForge](#toolforge--custom-tools-from-a-description)** drafts a
+  [custom tool](/docs/extending/custom-tools) (a `.cs` file) from a plain-language
+  description.
+- **[TestForge](#testforge--tests-from-recordings-coming-soon)** — coming soon —
+  turns a narrated screencast or a written spec into a test.
+
+All of them run on the same **Forge Model** (below).
+
+## The Verify loop
+
+Each Forge page works the same way:
+
+1. Fill in the inputs and click **Verify**. The model checks them and echoes back
+   **its understanding**, together with the
+   [inference cost](/docs/troubleshooting/performance-cost) of that check.
+2. If something is missing, it lists its questions under **Please add**. Answer
+   them in the reply box and click **Verify again**. Each round continues the same
+   conversation, so your original inputs stay exactly as you entered them.
+3. Once the model reports it is ready, an **Accept** button appears. Accepting
+   writes the file and shows the cost of generating it.
+
+Leaving a Forge page mid-way asks for confirmation, since an unaccepted draft is
+not saved anywhere.
+
+## PromptForge — UI prompts from screenshots
+
+`ui.md` tells the agent what your app looks like and how it behaves — see
+[UI information](/docs/writing-tests/agents-and-prompts#ui-information). Instead of
+writing it, open a `ui.md` in the Tests editor and click **Forge from
+screenshots**.
+
+- Upload **screenshots** of the app (PNG or JPEG, up to 30) and write a short
+  **bullet-point description** of what they show (at least 160 characters). Verify
+  stays disabled until both are there.
+- Run the Verify loop above.
+- Click **Accept & Update ui.md** to write the section, or **Add another UI
+  section** to describe another screen first — the finished sections wait until you
+  accept them all together.
+
+All sections are appended to the `ui.md` you opened Forge from (a fresh, still
+empty scaffold is replaced), and the editor reopens on that file. Read the result
+and refine it: `ui.md` steers every run.
+
+## ToolForge — custom tools from a description
+
+A [custom tool](/docs/extending/custom-tools) is a C# file the agent can call
+during a run. If you would rather not write the C# yourself, click **Forge a
+tool** on **Extending → Custom Tools**.
+
+- Write a **structured description**: what the tool does, which input fields it
+  takes (name and type), what it returns, and which device it needs (desktop, web,
+  Android, iOS, or none).
+- Optionally point it at an **Example source** folder — working code that already
+  does what the tool should do. ToolForge reads those files and then asks only about
+  the tool's contract and configuration, not about logic the code already shows.
+- Run the Verify loop above.
+- Click **Accept & Forge Tool**. The `.cs` file is written into
+  `utils/custom_tools/` once it compiles, and it joins the agent's toolbox on the
+  next run.
+
+<Callout type="info" title="Review before you rely on it">
+A generated tool is a starting point — read it, and validate it like any other
+custom tool before trusting it in a run. See the
+[developer-territory note](/docs/extending/custom-tools) on custom tools.
+</Callout>
+
+**Not everything is a tool.** A custom tool is code the agent calls during a run.
+It can't install software on the machine, change system or network settings, or
+duplicate a built-in tool from the [Tool Store](/docs/extending/tools). If your
+request falls outside those boundaries, generation is **rejected** and you're
+pointed to an AskUI solution engineer (if a built-in tool already covers it, you're
+told which one). The same happens if the generated code doesn't compile after a
+few attempts — nothing is written. Either way your description and answers are
+preserved and copyable, so you can send them to <support@askui.com> without
+retyping them.
+
+## TestForge — tests from recordings (coming soon)
+
+The third Forge turns material you already have into tests: upload a narrated
+screencast of someone walking through a flow, or a written spec as PDF or CSV, and
+TestForge drafts one askui test per file through the same Verify loop. Folders and
+zip archives turn into a batch of tests that keep their file and folder names.
+
+TestForge is in development and not yet in the app. This page will be updated
+when it ships.
+
+## The Forge Model
+
+Every Forge runs on the model you choose under **Settings → Account → Forge
+Model**. By default it is the **same model as your test runs**.
+
+- On the AskUI hub you can instead pick the **best available** model or any other
+  hosted model. Forge runs only occasionally, so a stronger model is usually worth
+  it.
+- If you **bring your own model**, untick **Same as for my test runs** to
+  configure a separate provider for Forge (endpoint, model, API key). See
+  [Model providers](/docs/extending/model-providers).
+
+Every Verify and every accepted generation shows its estimated cost and token
+count; with your own model the dollar amount is omitted unless you have entered
+its rates.

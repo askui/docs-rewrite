@@ -29,50 +29,13 @@ or the AskUI Solution Engineering team, not edited ad hoc by test authors.
 - **Warnings**: the same NuGet package requested at different versions
   across files is flagged; the higher version wins at run start.
 
-There is no in-app code editor, write tools in your own IDE — or let the app
-draft one for you (below).
+There is no in-app code editor, write tools in your own IDE.
 
-## Forge a tool (ToolForge)
-
-If you'd rather not write the C# yourself, click **Forge a tool** on the
-Custom Tools tab. Describe the tool in plain language — what it does, its
-input fields, what it returns, and which device it needs — and the model
-drafts it following the tool contract.
-
-1. Write a **structured description** and click **Verify**. The model checks
-   it and echoes back its understanding, together with the
-   [inference cost](/docs/troubleshooting/performance-cost) of that check.
-2. If something's missing, it lists its questions. Answer them in the reply
-   box and click **Verify again** — each round continues the same
-   conversation, so your original description stays as you wrote it. Repeat
-   until it's ready.
-3. Click **Accept & Forge Tool**. The `.cs` file is written into
-   `utils/custom_tools/` once it compiles, and the cost of generating it is
-   shown.
-
-Optionally point ToolForge at an **Example source** folder — working code
-that already does what the tool should do. It reads those files and then only
-asks about the tool's contract and configuration, not about logic the code
-already shows.
-
-<Callout type="info" title="Review before you rely on it">
-A generated tool is a starting point — read it, and validate it like any
-other custom tool before trusting it in a run.
+<Callout type="info" title="Or let the app draft it">
+You don't have to write the C# yourself: **Forge a tool** on the Custom Tools tab
+drafts a tool from a plain-language description and writes it into
+`utils/custom_tools/` once you accept it. See [Forge](/docs/extending/forge).
 </Callout>
-
-**Not everything is a tool.** A custom tool is code the agent calls during a
-run — it can't install software on the machine, change system or network
-settings, or duplicate a built-in tool from the Tool Store. If your request
-falls outside those boundaries, generation is **rejected** instead and you're
-pointed to an AskUI solution engineer (if a built-in tool already covers it,
-you're told which one). The same happens if the generated code doesn't compile
-after a few attempts — nothing is written. Either way your description and
-answers are preserved and copyable, so you can send them to
-<support@askui.com> without retyping them.
-
-You choose which model powers Forge under **Settings → Account → Forge
-Model**; by default it's the same model as your test runs. See
-[Model providers](/docs/extending/model-providers).
 
 ## Create a tool
 
