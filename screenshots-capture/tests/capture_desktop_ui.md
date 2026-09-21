@@ -125,6 +125,12 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     `save_screenshot[desktop-utils-format]`. Do NOT edit the file or click
     Create.
 
+15d. Switch to the **In-Flight Guidance** tab. Wait until the "In-Flight
+    Guidance" card is shown (the "Enable In-Flight Guidance for this project"
+    switch with its description), then call
+    `save_screenshot[desktop-utils-inflight]`. Do NOT toggle it on or change any
+    field.
+
 15e. Switch to the **Dreaming** tab. Wait until the "Dreaming" card (with its
     "Experimental" badge and the "Enable Dreaming for this project" toggle) is
     shown, then call `save_screenshot[desktop-utils-dreaming]`. Do NOT turn
