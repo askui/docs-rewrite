@@ -128,6 +128,42 @@ interval and without installing:
 "C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /justcheck -url "https://updates.example.com/agentos/updates.txt" -nofreqcheck
 ```
 
+### Saved settings
+
+`/set` changes a setting and keeps it, so these are the scriptable equivalent of
+the [configuration window](#configure-the-updater). The value follows the setting
+name, with no dash.
+
+| Command | Accepted values |
+| --- | --- |
+| `/set autoupdatepolicy <policy>` | `Disable`, `Prompt`, `AutoCritical`, `AutoAll` |
+| `/set downloadsfolder <folder>` | Any writable folder |
+| `/set proxy <host:port>` | An address or a name, with the port |
+| `/set retryattempts <count>` | `0` to `6` |
+| `/set loglevel <levels>` | `Error`, `Trace`, `Debug`, `Off`. Combine with `\|` |
+| `/set rememberpassword <user> <password>` | Credentials for a protected feed |
+
+The update policies are:
+
+| Policy | Behaviour |
+| --- | --- |
+| `Disable` | Never check automatically |
+| `Prompt` | Check, then ask before installing |
+| `AutoCritical` | Install critical updates automatically, ask about the rest |
+| `AutoAll` | Install every update automatically. This is the installed default |
+
+Example — stop this machine installing updates on its own:
+
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /set autoupdatepolicy Disable
+```
+
+<Callout title="Note">
+There is no `/set` option for the update feed or the check interval. Change the
+feed in the [configuration file](#change-the-update-feed), and the interval in
+the [configuration window](#configure-the-updater).
+</Callout>
+
 ## Configure the updater
 
 ```cmd
@@ -142,6 +178,10 @@ No administrator rights needed. The window sets:
 
 These settings apply to the account that changed them, and they are kept when
 AgentOS updates.
+
+The policy and the download folder can also be set without opening the window,
+see [Saved settings](#saved-settings). That is the route to use when rolling a
+setting out across many machines.
 
 <Callout type="warn">
 Do not set the check interval to `0` to switch updates off. A zero interval does
@@ -189,8 +229,21 @@ or the updater will find a new version and fail to download it.
 
 ## Turn off automatic updates
 
-**For one user**, open the [configuration window](#configure-the-updater) and set
-the automatic update policy to disabled.
+**For one user**, set the update policy to `Disable`:
+
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /set autoupdatepolicy Disable
+```
+
+To allow updates again, choose the policy you want, for example `AutoAll` to
+restore the installed default or `Prompt` to be asked first:
+
+```cmd
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /set autoupdatepolicy AutoAll
+```
+
+The same setting is in the [configuration window](#configure-the-updater) if you
+prefer to change it there.
 
 **For the whole machine**, disable the updater service, which owns the scheduled
 check:
