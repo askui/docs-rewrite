@@ -70,6 +70,17 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     the Run controls (Run button, Run-on picker) are visible. Call
     `save_screenshot[desktop-tests-run]`.
 
+10b. Still on the **Tests** page, select the project's `ui.md` in the file tree
+    (the file the Tests page marks **Context only**). Below its editor a bar
+    reads "Rather not write it by hand? PromptForge drafts your UI prompt from
+    screenshots." — click its **Forge from screenshots** button. Wait until the
+    PromptForge page is shown (the "Add screenshots" drop zone, the
+    "Description (bullet points)" field and the disabled **Verify** button),
+    then call `save_screenshot[desktop-tests-forge-ui]`. Return to the Tests
+    page afterwards — do NOT upload a screenshot, type a description, or click
+    Verify. If the project has no `ui.md`, skip this step and say so in the
+    report.
+
 11. Right-click on an empty area of the file tree (below the last file) so the
     context menu opens with its **Create** section — "New Markdown",
     "New CSV", "New folder", and any "New setup.md"-style entries. With the
@@ -93,6 +104,13 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
 15b. Switch to the **Custom Tools** tab. Wait until the file list (or the
     empty drop zone) is shown, then call `save_screenshot[desktop-utils-custom]`.
     Do NOT add or remove any file.
+
+15b2. Still on the **Custom Tools** tab, click **Forge a tool**. Wait until the
+    ToolForge page is shown (the "Structured description" field, the "Example
+    source" folder field and the disabled **Verify** button), then call
+    `save_screenshot[desktop-utils-forge-tool]`. Return to **Extending → Custom
+    Tools** afterwards — do NOT type a description, pick a folder, or click
+    Verify.
 
 16. With the demo project open, click the git branch chip in the top bar so
     the source-control flyout opens (changes list, commit field, sync row).
