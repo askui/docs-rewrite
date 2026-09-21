@@ -106,14 +106,12 @@ is treated as text and nothing runs:
 | --- | --- |
 | `/configure` | Opens the configuration window |
 | `/checknow` | Checks now and shows the result, whether or not an update was found |
-| `/justcheck` | Checks and returns a result code, without a window and without installing |
 | `/silent` | Checks quietly, and only opens a window if an update is found |
 | `/silentall` | Checks quietly and installs every available update |
 | `/silentcritical` | Checks quietly and installs only critical updates |
 
-`/checknow` and `/justcheck` check straight away. `/silent`, `/silentall` and
-`/silentcritical` honour the check interval, so they may do nothing if the last
-check was recent.
+`/checknow` checks straight away. `/silent`, `/silentall` and `/silentcritical`
+honour the check interval, so they may do nothing if the last check was recent.
 
 ### Options
 
@@ -126,10 +124,10 @@ Add these to a command to change how that one run behaves. They are not saved.
 | `-nogui` | Runs without a window |
 | `-reducedgui` | Runs with a minimal window |
 
-Example — check against a test feed without installing anything:
+Example — check against a different feed for this one run:
 
 ```cmd
-"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /justcheck -url "https://updates.example.com/agentos/updates.txt"
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /checknow -url "https://updates.example.com/agentos/updates.txt"
 ```
 
 ### Saved settings
@@ -215,12 +213,13 @@ automatic update policy instead.
 Machines that must not reach `files.askui.com` can pull updates from your own
 artifact registry, such as Artifactory.
 
-**Try it first without changing anything.** `-url` overrides the feed for a
-single run, so you can confirm your mirror answers correctly before committing
-to it:
+**Try it first.** `-url` points a single run at a different feed without
+changing the saved setting, so you can confirm your mirror answers correctly
+before committing to it. The check installs anything it finds there, so run it
+on a test machine:
 
 ```cmd
-"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /justcheck -url "https://updates.example.com/agentos/updates.txt"
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /checknow -url "https://updates.example.com/agentos/updates.txt"
 ```
 
 **Then make it permanent.** The feed is a machine-wide setting in:
