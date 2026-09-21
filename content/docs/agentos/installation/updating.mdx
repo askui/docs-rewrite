@@ -132,7 +132,8 @@ interval and without installing:
 
 `/set` changes a setting and keeps it, so these are the scriptable equivalent of
 the [configuration window](#configure-the-updater). The value follows the setting
-name, with no dash.
+name, with no dash. No administrator rights are needed, and the settings apply to
+the account that ran the command.
 
 | Command | Accepted values |
 | --- | --- |
@@ -150,7 +151,10 @@ The update policies are:
 | `Disable` | Never check automatically |
 | `Prompt` | Check, then ask before installing |
 | `AutoCritical` | Install critical updates automatically, ask about the rest |
-| `AutoAll` | Install every update automatically. This is the installed default |
+| `AutoAll` | Install every update automatically |
+
+Until you set a policy, the updater follows the default chosen by the installer,
+which installs updates automatically.
 
 Example — stop this machine installing updates on its own:
 
