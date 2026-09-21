@@ -92,14 +92,17 @@ click **Forge from screenshots**:
 1. Upload screenshots of the app (up to 30) and write a short bullet-point
    description (at least 160 characters), then click **Verify**. The model
    checks the inputs and echoes back its understanding of your UI.
-2. If it needs more, it tells you what to add — correct it and verify again.
+2. If it needs more, it lists its questions. Answer them in the reply box and
+   click **Verify again** — each round continues the same conversation, and
+   your screenshots and description stay as you uploaded them.
 3. Click **Accept & Update ui.md** to write the section, or **Add another UI
-   section** to describe another screen first. Every section lands in the
-   same `tests/ui.md`.
+   section** to describe another screen first. All sections are appended to
+   the `ui.md` you opened Forge from (a fresh, still-empty scaffold is
+   replaced).
 
 The model is the same one your tests run on by default; change it under
-**Settings → Forge Model**. Generated context is a draft — read it and
-refine it, since it's what steers every run.
+**Settings → Account → Forge Model**. Generated context is a draft — read it
+and refine it, since it's what steers every run.
 
 ## Report format
 
