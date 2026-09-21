@@ -103,11 +103,14 @@ is treated as text and nothing runs:
 | Command | What it does |
 | --- | --- |
 | `/configure` | Opens the configuration window |
-| `/checknow` | Checks for updates and shows the result |
-| `/justcheck` | Checks for updates without installing anything |
-| `/silent` | Checks for updates without showing a window |
-| `/silentall` | Checks and installs all available updates, without a window |
-| `/silentcritical` | Checks and installs only critical updates, without a window |
+| `/checknow` | Checks now and shows the result, whether or not an update was found |
+| `/justcheck` | Checks and returns a result code, without a window and without installing |
+| `/silent` | Checks quietly, and only opens a window if an update is found |
+| `/silentall` | Checks quietly and installs every available update |
+| `/silentcritical` | Checks quietly and installs only critical updates |
+
+`/checknow` checks straight away. The three quiet commands honour the check
+interval, so add `-nofreqcheck` if you want them to check immediately.
 
 ### Options
 
@@ -143,6 +146,11 @@ the account that ran the command.
 | `/set retryattempts <count>` | `0` to `6` |
 | `/set loglevel <levels>` | `Error`, `Trace`, `Debug`, `Off`. Combine with `\|` |
 | `/set rememberpassword <user> <password>` | Credentials for a protected feed |
+
+<Callout type="warn">
+Quote any value containing `|`, because both Command Prompt and PowerShell read
+it as a pipe: `/set loglevel "Debug|Trace"`.
+</Callout>
 
 The update policies are:
 
