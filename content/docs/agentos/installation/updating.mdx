@@ -109,8 +109,9 @@ is treated as text and nothing runs:
 | `/silentall` | Checks quietly and installs every available update |
 | `/silentcritical` | Checks quietly and installs only critical updates |
 
-`/checknow` checks straight away. The three quiet commands honour the check
-interval, so add `-nofreqcheck` if you want them to check immediately.
+`/checknow` and `/justcheck` check straight away. `/silent`, `/silentall` and
+`/silentcritical` honour the check interval, so they may do nothing if the last
+check was recent.
 
 ### Options
 
@@ -119,16 +120,14 @@ Add these to a command to change how that one run behaves. They are not saved.
 | Option | What it does |
 | --- | --- |
 | `-url <address>` | Uses a different update feed for this run |
-| `-nofreqcheck` | Checks now even if the interval has not elapsed |
 | `-justdownload` | Downloads updates without installing them |
 | `-nogui` | Runs without a window |
 | `-reducedgui` | Runs with a minimal window |
 
-Example — check immediately against a test feed, without waiting for the
-interval and without installing:
+Example — check against a test feed without installing anything:
 
 ```cmd
-"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /justcheck -url "https://updates.example.com/agentos/updates.txt" -nofreqcheck
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /justcheck -url "https://updates.example.com/agentos/updates.txt"
 ```
 
 ### Saved settings
@@ -211,7 +210,7 @@ single run, so you can confirm your mirror answers correctly before committing
 to it:
 
 ```cmd
-"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /justcheck -url "https://updates.example.com/agentos/updates.txt" -nofreqcheck
+"C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.exe" /justcheck -url "https://updates.example.com/agentos/updates.txt"
 ```
 
 **Then make it permanent.** The feed is a machine-wide setting in:
