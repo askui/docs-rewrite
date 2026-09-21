@@ -23,8 +23,8 @@ models usably reliable without giving up on running them.
 
 ## Settings
 
-- **Enable** — off by default; set per project. In-Flight Guidance is
-  **experimental**.
+- **Enable** — the *Enable In-Flight Guidance for this project* switch; off by
+  default and set per project. In-Flight Guidance is **experimental**.
 - **Review every N steps** — a slider with discrete stops (5 / 10 / 20 / 50 / 100).
   Lower is a tighter safety net but costs more reviewer calls; higher is cheaper.
 - **Reviewer model** — *Same as the test run*, a specific hosted model, or **Bring
@@ -35,11 +35,16 @@ models usably reliable without giving up on running them.
   model for the reviewer; untick it to configure a separate reviewer provider (its
   form is pre-filled from your test-run model, so you only change what differs).
 - **Reviewer model rates** — when the reviewer runs on a custom (BYOM) model, its
-  provider form includes a **Model rates** section (input / output / cache $/Mtok) so
-  the report can show the guidance cost. Hosted reviewer models are priced
-  automatically.
+  provider form includes a **Model rates** section (input / output / cache-write /
+  cache-read $/Mtok) so the report can show the guidance cost. Hosted reviewer
+  models are priced automatically.
 
-Settings are stored in your project at `utils/inflight.json`.
+Settings are stored in your project at `utils/inflight.json`. A custom reviewer's
+endpoint, model and API key stay on your machine (like your other model
+providers); only the choice to use one is in the project file. The CLI (`askui
+run`) reads the same file and honors the cadence and a hosted reviewer model; a
+custom reviewer is a desktop-only choice, so headless runs review with the run's
+own model instead.
 
 ## During a run
 
@@ -62,8 +67,8 @@ endless loop. The reviewer is also never allowed to tell the agent to "try again
 one nudge that keeps a loop going.
 
 The reviewer can neither crash nor stall a run: reviewer errors are recorded and the run
-continues, and because the check runs inline each reviewer call is **time-bounded** — a
-slow or hung reviewer is skipped for that step, not waited on.
+continues, and because the check runs inline each reviewer call is **time-bounded**
+(90 seconds) — a slow or hung reviewer is skipped for that step, not waited on.
 
 Each reviewer check also appears **inline in the live Conversation Log** while the run
 executes — its own "In-Flight Guidance" notice, quiet when on track and showing the sent
