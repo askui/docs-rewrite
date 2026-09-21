@@ -5,7 +5,7 @@ description: "How AgentOS keeps itself up to date, how to trigger an update manu
 
 AgentOS installed with the Windows service installer ships with its own updater.
 It runs as a separate Windows service, **AskUI AgentOS Updater**, and installs
-new versions without administrator rights.
+new versions in the background.
 
 <Callout title="Note">
 This page applies to installs made with the [OS Service](/docs/agentos/installation/service)
@@ -19,8 +19,9 @@ updated with `pip install --upgrade askui-agent-os`.
   against the update feed.
 - **No prompt** — a newer version is downloaded and installed silently. Users
   are not asked to accept or defer.
-- **No administrator rights** — a standard user account is enough. The update
-  runs minimized, with no installer UI.
+- **No elevation prompt** — the check and the install are performed by the
+  **AskUI AgentOS Updater** service, which runs as `LocalSystem`. A signed-in
+  standard user sees no UAC dialog and needs no administrator rights.
 - **Configuration is preserved** — files written by the previous version are
   kept, not overwritten. This includes your activated license key.
 
@@ -43,8 +44,16 @@ license key.
 2. Double-click **AskUI AgentOS Updater.exe**.
 
 Both routes run the same updater. It downloads the new installer first, then
-runs it. Nothing is shown while it works, and no administrator rights are
-needed.
+runs it. Nothing is shown while it works.
+
+<Callout type="warn">
+Both routes rely on the **AskUI AgentOS Updater** service to perform the install
+without an elevation prompt. If you have
+[turned automatic updates off](#turn-off-automatic-updates) by disabling that
+service, a standard user can no longer update this way. Either re-enable the
+service for the duration of the update, or install the new version yourself as
+an administrator.
+</Callout>
 
 **Install the new version yourself.** Use this when the machine cannot reach the
 update feed, or when you roll a specific version out across a fleet.
@@ -66,6 +75,14 @@ Afterwards, confirm the new version, see
 2. Search for **AskUI AgentOS**.
 3. Read the version next to the entry.
 
+Across a fleet, read it from the registry instead:
+
+```powershell
+Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*' |
+  Where-Object DisplayName -eq 'AskUI AgentOS' |
+  Select-Object DisplayName, DisplayVersion
+```
+
 <Callout type="warn">
 Installed is not the same as running. To confirm the AgentOS service is up, see
 [AgentOS service issues](/docs/troubleshooting/agentos-service#restart-the-agentos-service).
@@ -81,7 +98,7 @@ C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.ini
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `URL` | `https://files.askui.com/releases/Installer/RC/updates.txt` | Update feed the updater polls. Set it to a feed in your own artifact registry, for example Artifactory, to distribute updates internally. |
+| `URL` | `https://files.askui.com/releases/Installer/updates.txt` | Update feed the updater polls. Set it to a feed in your own artifact registry, for example Artifactory, to distribute updates internally. |
 | `DownloadsFolder` | `C:\ProgramData\askui GmbH\AskUI AgentOS\updates` | Where downloaded installers are stored before they run. |
 | `CheckFrequency` | `2` | Days between update checks. |
 | `AppDir` | `C:\Program Files\askui GmbH\AskUI AgentOS` | Install directory the updater writes to. Set by the installer. |
@@ -94,6 +111,10 @@ C:\Program Files\askui GmbH\AskUI AgentOS\AskUI AgentOS Updater.ini
 <Callout type="warn">
 Only `URL` and `DownloadsFolder` are meant to be changed. The file lives under
 `C:\Program Files`, so editing it requires administrator rights.
+
+An update rewrites this file. Keep your edited copy under configuration
+management and re-apply it after a version change, see
+[Serve updates from your own registry](#serve-updates-from-your-own-registry).
 </Callout>
 
 Example:
@@ -103,30 +124,21 @@ Example:
 AppDir=C:\Program Files\askui GmbH\AskUI AgentOS\
 ApplicationName=AskUI AgentOS
 CompanyName=askui GmbH
-ApplicationVersion=26.8.8.114
+ApplicationVersion=26.8.8
 DefaultCommandLine=/silentall
 CheckFrequency=2
 DownloadsFolder=C:\ProgramData\askui GmbH\AskUI AgentOS\updates\
 Flags=PerMachine|ShowConfigOptionsButton|NoUpdaterInstallGUI|LockUrlSettings
 ID={4B14B653-F6BC-432E-B56D-120A660B5262}
 SupportServiceName=AskUI AgentOS Updater
-URL=https://files.askui.com/releases/Installer/RC/updates.txt
+URL=https://files.askui.com/releases/Installer/updates.txt
 ```
 
 ## Turn off automatic updates
 
-For a single machine, use the updater's own configuration dialog:
-
-1. Open `C:\Program Files\askui GmbH\AskUI AgentOS`.
-2. Run **AskUI AgentOS Updater.exe**.
-3. Select **Configure** and turn the automatic update check off.
-
-The setting is stored per user, so each account on the machine chooses for
-itself. Manual updates keep working.
-
-For a fleet, disable the **AskUI AgentOS Updater** service instead. That covers
-every account on the machine and rolls out through your configuration
-management:
+Disable the **AskUI AgentOS Updater** service. This is the reliable route: the
+service owns the scheduled check, so stopping it stops the check for every
+account on the machine, and it rolls out through your configuration management.
 
 ```bash
 sc.exe stop "AskUI AgentOS Updater"
@@ -139,6 +151,21 @@ back on, restore the installed default:
 ```bash
 sc.exe config "AskUI AgentOS Updater" start= demand
 ```
+
+<Callout type="warn">
+Repairing, modifying or upgrading AgentOS re-registers the updater service and
+can re-enable it. After any of those, confirm the service is still disabled:
+
+```bash
+sc.exe qc "AskUI AgentOS Updater"
+```
+</Callout>
+
+On a single machine you can also use the updater's own dialog: run
+**AskUI AgentOS Updater.exe** from `C:\Program Files\askui GmbH\AskUI AgentOS`,
+select **Configure** and turn the automatic check off. This is a per-user
+preference and does not stop the machine-wide service, so prefer the service
+route whenever the machine must genuinely stay on a fixed version.
 
 <Callout type="warn">
 Do not use `CheckFrequency` as an off switch. It sets the interval in days, and
@@ -169,6 +196,12 @@ Set `URL` in `AskUI AgentOS Updater.ini` to your mirrored feed.
 Optionally set `DownloadsFolder` to a path that matches your endpoint policy.
 </Step>
 
+<Step>
+Re-apply the file after every version change. An update rewrites
+`AskUI AgentOS Updater.ini`, including `URL`, so deploy it from configuration
+management rather than editing it by hand on each machine.
+</Step>
+
 </Steps>
 
 Roll the edited `.ini` out with your usual configuration management, the same
@@ -183,6 +216,10 @@ administrator action.
 - **Version** — increased, see [Check the installed version](#check-the-installed-version).
 - **Service** — **AskUI.AgentOS.Service** is running again, see
   [AgentOS service issues](/docs/troubleshooting/agentos-service#restart-the-agentos-service).
+- **Updater** — if you disabled automatic updates, **AskUI AgentOS Updater** is
+  still disabled.
+- **Update feed** — if you serve updates from your own registry, `URL` in
+  `AskUI AgentOS Updater.ini` still points at it.
 - **Firewall** — your inbound rule for the AgentOS port still exists, if you
   added one.
 - **License** — your license is still active. An update keeps the configuration
