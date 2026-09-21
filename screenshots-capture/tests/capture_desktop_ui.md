@@ -107,6 +107,11 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     `save_screenshot[desktop-utils-format]`. Do NOT edit the file or click
     Create.
 
+15e. Switch to the **Dreaming** tab. Wait until the "Dreaming" card (with its
+    "Experimental" badge and the "Enable Dreaming for this project" toggle) is
+    shown, then call `save_screenshot[desktop-utils-dreaming]`. Do NOT turn
+    Dreaming on, click "Analyze now", or change any field.
+
 16. With the demo project open, click the git branch chip in the top bar so
     the source-control flyout opens (changes list, commit field, sync row).
     Call `save_screenshot[desktop-git-chip]`, then press Escape — do NOT
