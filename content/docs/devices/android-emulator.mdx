@@ -60,13 +60,17 @@ problem. A piece that cannot be used says why, for example a Java older than 17,
 or on Windows a Java under a folder with parentheses such as
 `C:\Program Files (x86)\…`, which the Android tools' scripts cannot read.
 
-Three of them let you choose **Machine** or **AskUI**: the SDK location, the
-command-line tools and the JDK. Pick **AskUI** and the app downloads its own copy
-into the SDK folder and uses only that one, leaving the tooling your other
-software relies on untouched. The emulator, platform-tools and the system image
-are installed into whichever SDK folder is in use, so they follow the location
-and have no separate choice. Press **Re-check** in the setup dialog afterwards,
-no restart needed.
+The JDK row lets you choose **Machine** or **AskUI**. Pick **AskUI** and the app
+downloads its own JDK into the SDK folder and uses only that one, leaving the Java
+your other software relies on untouched. Then press **Set up** on the card, which
+installs whatever is missing.
+
+**Rebuilding the Android SDK from scratch** — the same card has **Delete…**. It
+removes the whole SDK folder, including the JDK inside it and the emulators created
+from it, whether or not AskUI installed them; the confirmation shows the exact
+folder. Afterwards every row reads *not installed* and **Set up** rebuilds it.
+A running setup can be stopped from the setup dialog; what was already downloaded
+is kept and the next Set up carries on from there.
 
 Testing on a physical phone instead? See
 [Android phone (real device)](/docs/devices/android-phone), discovered via
