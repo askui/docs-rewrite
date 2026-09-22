@@ -53,6 +53,15 @@ The card shows each state while Start works:
 A Start that hangs in **Booting…** past ~8 minutes times out with an error,
 the emulator may still come up; Start again reconnects to it.
 
+**Set up fails with "Install did not complete"** — the setup counts any Java
+it finds on the machine (`JAVA_HOME`, `PATH`) as the JDK, but the Android
+tools need Java 17 or newer, and on Windows a Java installed under a folder
+with parentheses such as `C:\Program Files (x86)\…` cannot be used at all.
+Set the environment variable `ASKUI_USE_BUNDLED_JDK=1` before starting AskUI
+Desktop. The app then ignores the machine's Java and downloads its own JDK 17
+into the SDK folder during Set up; the Java your other software relies on
+stays untouched.
+
 Testing on a physical phone instead? See
 [Android phone (real device)](/docs/devices/android-phone), discovered via
 USB and added as a profile with one click.
