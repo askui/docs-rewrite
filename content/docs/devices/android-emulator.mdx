@@ -57,10 +57,13 @@ the emulator may still come up; Start again reconnects to it.
 it finds on the machine (`JAVA_HOME`, `PATH`) as the JDK, but the Android
 tools need Java 17 or newer, and on Windows a Java installed under a folder
 with parentheses such as `C:\Program Files (x86)\…` cannot be used at all.
-Set the environment variable `ASKUI_USE_BUNDLED_JDK=1` before starting AskUI
-Desktop. The app then ignores the machine's Java and downloads its own JDK 17
-into the SDK folder during Set up; the Java your other software relies on
-stays untouched.
+Open **Settings → Machine → Android SDK** and turn on **Use AskUI's own JDK**.
+The card shows which Java the setup would use, so you can tell whether it is
+the culprit. With the switch on, the app ignores the machine's Java and
+downloads its own JDK 17 into the SDK folder during Set up; the Java your other
+software relies on stays untouched. Press **Re-check** in the setup dialog
+afterwards, no restart needed. For unattended machines the environment variable
+`ASKUI_USE_BUNDLED_JDK=1` does the same.
 
 Testing on a physical phone instead? See
 [Android phone (real device)](/docs/devices/android-phone), discovered via
