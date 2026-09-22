@@ -53,16 +53,20 @@ The card shows each state while Start works:
 A Start that hangs in **Booting…** past ~8 minutes times out with an error,
 the emulator may still come up; Start again reconnects to it.
 
-**Set up fails with "Install did not complete"** — the setup counts any Java
-it finds on the machine (`JAVA_HOME`, `PATH`) as the JDK, but the Android
-tools need Java 17 or newer, and on Windows a Java installed under a folder
-with parentheses such as `C:\Program Files (x86)\…` cannot be used at all.
-Open **Settings → Machine → Android SDK** and turn on **Use AskUI's own JDK**.
-The card shows which Java the setup would use, so you can tell whether it is
-the culprit. With the switch on, the app ignores the machine's Java and
-downloads its own JDK 17 into the SDK folder during Set up; the Java your other
-software relies on stays untouched. Press **Re-check** in the setup dialog
-afterwards, no restart needed.
+**Set up fails with "Install did not complete"** — open **Settings → Machine →
+Android SDK**. The **Dependencies** list shows every piece the emulator needs,
+which version was found and where it came from, so you can see which one is the
+problem. A piece that cannot be used says why, for example a Java older than 17,
+or on Windows a Java under a folder with parentheses such as
+`C:\Program Files (x86)\…`, which the Android tools' scripts cannot read.
+
+Three of them let you choose **Machine** or **AskUI**: the SDK location, the
+command-line tools and the JDK. Pick **AskUI** and the app downloads its own copy
+into the SDK folder and uses only that one, leaving the tooling your other
+software relies on untouched. The emulator, platform-tools and the system image
+are installed into whichever SDK folder is in use, so they follow the location
+and have no separate choice. Press **Re-check** in the setup dialog afterwards,
+no restart needed.
 
 Testing on a physical phone instead? See
 [Android phone (real device)](/docs/devices/android-phone), discovered via
