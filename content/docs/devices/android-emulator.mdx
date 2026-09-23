@@ -55,10 +55,11 @@ the emulator may still come up; Start again reconnects to it.
 
 **Set up fails with "Install did not complete"** — open **Settings → Machine →
 Android SDK**. The **Dependencies** list shows every piece the emulator needs,
-which version was found and where it came from, so you can see which one is the
-problem. A piece that cannot be used says why, for example a Java older than 17,
-or on Windows a Java under a folder with parentheses such as
-`C:\Program Files (x86)\…`, which the Android tools' scripts cannot read.
+which version was found and where it lives, so you can see which one is the
+problem. A piece that is there but cannot be used says why: a Java older than 17,
+a JRE rather than a full JDK, or on Windows a Java under a folder with parentheses
+such as `C:\Program Files (x86)\…`, which the Android tools' scripts cannot read.
+A piece that was never installed says where **Set up** will put it.
 
 The JDK row lets you choose **Installed** or **Downloaded**. Pick **Downloaded** and
 the app fetches its own JDK into the SDK folder and uses only that one, leaving the
