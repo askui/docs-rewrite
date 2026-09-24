@@ -11,7 +11,11 @@ The **Runs** page is where you open them.
 
 1. Open the **Runs** page.
 2. Pick the run in the sidebar, newest first, one entry per run with its
-   pass tally.
+   pass tally. Each entry is named after the plan it ran, or after its
+   tests (`login_test +2 more`); a run that failed during setup still
+   carries the names of the tests it was started for. A run in progress
+   sits under **Running**, and moves into the history the moment it
+   completes.
 3. Choose what to look at:
    - **Conversation log**: the full execution record (below).
    - **Summary report**: the run-level table, one row per test.

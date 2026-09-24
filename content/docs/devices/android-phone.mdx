@@ -5,8 +5,8 @@ description: Test on a physical Android device, discovered via adb, added as a p
 ---
 
 A physical Android phone or tablet is discovered automatically and turned
-into a profile with one click, it doesn't go through the Add-profile
-dialog.
+into a profile with one click, from the Add-device dialog or from the
+**Android devices** list on the Devices page.
 
 **Preconditions:** Developer options and **USB debugging** enabled on the
 device; connected via USB (accept the debugging prompt on the phone), or
@@ -14,11 +14,17 @@ reachable wirelessly.
 
 ## Create it
 
-1. Plug the device in. It appears under **Android devices** on the
-   [Devices](/docs/devices) page, use the refresh button if it doesn't.
-2. **Details** shows what was discovered: model, Android version, state.
-3. Click **Add as profile**, the device becomes a regular profile card,
-   named after the model, bound to its serial.
+1. Plug the device in.
+2. **Add device** → **An Android device**. The dialog lists the phones this
+   computer can see, and says what to fix when it sees none, use the rescan
+   button after you fixed it.
+3. Click **Add as device** next to the phone, the device becomes a regular
+   profile card, named after the model, bound to its serial, and the dialog
+   closes.
+
+The same phone also appears under **Android devices** on the
+[Devices](/docs/devices) page, where **Details** shows what was discovered
+(model, Android version, state) and **Add as device** does the same thing.
 
 ## Run it
 
@@ -31,8 +37,9 @@ screen.
 ## Wireless
 
 No USB: enable wireless debugging on the device, then enter its `ip:port` in
-the field next to **Connect wireless**. The device joins the list and can be
-added as a profile the same way.
+the Wi-Fi field of the Add-device dialog, or in the field next to **Connect
+wireless** on the Devices page. The device joins the list and can be added as
+a profile the same way.
 
 A device shown as `offline` or `unauthorized` can't be added, reconnect the
 cable and accept the debugging prompt on the device.

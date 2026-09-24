@@ -45,11 +45,11 @@ defaults stay deleted.
 | --- | --- | --- |
 | [**Remote computer**](/docs/devices/remote-computer) | Any machine running [AgentOS](/docs/agentos), host, port, display | Test on a dedicated machine instead of your own |
 | [**Web browser**](/docs/devices/web-browser) | Local browser session, Chromium, Firefox, or WebKit | Optional start URL, headless |
-| [**Android emulator**](/docs/devices/android-emulator) | Virtual device on this machine | Device type + Android version; created on first Start |
+| [**Android emulator**](/docs/devices/android-emulator) | Virtual device on this machine | Profiles from earlier versions and the project default keep working; the dialog no longer creates new ones |
 | [**iOS simulator**](/docs/devices/ios-simulator) | Apple simulator | macOS only, greyed out on Windows |
 | [**Multi computer**](/docs/devices/multi-computer) | Several desktops, one agent | The test names the machine per step ("on the server …, on the client …") |
 | [**Cross-platform**](/docs/devices/cross-platform) | Desktop + Android + web in one profile | Connect/status only, runs not supported yet |
-| [**Android phone**](/docs/devices/android-phone) | A physical device via USB or wireless | Not in this dialog, added from the **Android devices** list below |
+| [**Android phone**](/docs/devices/android-phone) | A physical device via USB or wireless | **An Android device** in this dialog lists the phones `adb` sees, **Add as device** adds one; also from the **Android devices** list below |
 
 Each kind has its own page with the exact fields and setup. Missing tooling
 (e.g. no Android SDK) shows up on the profile card as a one-click setup or as

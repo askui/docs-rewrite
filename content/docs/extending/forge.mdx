@@ -29,13 +29,14 @@ All of them run on the same **Forge Model** (below).
 Each Forge page works the same way:
 
 1. Fill in the inputs and click **Verify**. The model checks them and echoes back
-   **its understanding**, together with the
-   [inference cost](/docs/troubleshooting/performance-cost) of that check.
+   **its understanding**. One **Cost so far** line above the buttons keeps the
+   [inference cost](/docs/troubleshooting/performance-cost) of the whole page:
+   every Verify and every generation adds to it.
 2. If something is missing, it lists its questions under **Please add**. Answer
    them in the reply box and click **Verify again**. Each round continues the same
    conversation, so your original inputs stay exactly as you entered them.
 3. Once the model reports it is ready, an **Accept** button appears. Accepting
-   writes the file and shows the cost of generating it.
+   writes the file; the cost of generating it joins the total.
 
 Leaving a Forge page mid-way asks for confirmation, since an unaccepted draft is
 not saved anywhere.
@@ -114,6 +115,7 @@ Model**. By default it is the **same model as your test runs**.
   configure a separate provider for Forge (endpoint, model, API key). See
   [Model providers](/docs/extending/model-providers).
 
-Every Verify and every accepted generation shows its estimated cost and token
-count; with your own model the dollar amount is omitted unless you have entered
-its rates.
+The **Cost so far** line adds up every Verify and every generation on the page
+as an estimated cost and token count; with your own model the dollar amount is
+omitted unless you have entered its rates (with a dot as decimal separator,
+`1.25`).
