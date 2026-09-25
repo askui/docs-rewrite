@@ -1,28 +1,24 @@
 ---
 icon: Android
 title: Android emulator
-description: A virtual Android device managed on this machine, device type, Android version, lifecycle.
+description: A virtual Android device created and managed on this machine, device type, Android version, lifecycle.
 ---
 
 An **Android emulator** profile provisions a virtual Android device on this
-machine. The app boots it and connects it, you never touch `avdmanager`.
+machine. The app creates it, boots it, and connects it, you never touch
+`avdmanager`.
 
-<Callout title="Existing profiles only">
-  **Add device → An Android device** adds a phone or tablet this computer can
-  see, see [Android phone](/docs/devices/android-phone). The dialog no longer
-  creates emulators; emulator profiles you created earlier keep working exactly
-  as described here, and a new project still gets its ready-made **Android
-  Emulator** profile where the machine supports it.
-</Callout>
+## Create it
 
-## Its fields
-
-**Edit** on the profile card shows them:
-
-- **Device type**: hardware profile: screen size, resolution *(select, default `Pixel 9`)*
-- **System image**: the Android version the device runs *(select, default `Android 34 · Google APIs`)*
-- **Lifecycle**: what Start and Stop do, see below *(select, default `Persistent`)*
-- **Headless**: boot without an emulator window *(toggle, default off)*
+1. **Add device** → **An Android emulator**. (A phone plugged into this
+   computer is the other entry, **An Android device**, see
+   [Android phone](/docs/devices/android-phone).)
+2. Fill in the fields:
+   - **Device type**: hardware profile: screen size, resolution *(select, default `Pixel 9`)*
+   - **System image**: the Android version the device runs *(select, default `Android 34 · Google APIs`)*
+   - **Lifecycle**: what Start and Stop do, see below *(select, default `Persistent`)*
+   - **Headless**: boot without an emulator window *(toggle, default off)*
+3. **Add device**.
 
 <img
   src="/docs-rewrite/screenshots/desktop-profile-android-emulator.png"
