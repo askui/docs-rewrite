@@ -71,7 +71,17 @@ tool** on **Extending → Custom Tools**.
 - Optionally point it at an **Example source** folder — working code that already
   does what the tool should do. ToolForge reads those files and then asks only about
   the tool's contract and configuration, not about logic the code already shows.
-- Run the Verify loop above.
+- Optionally **attach files** the tool should know: screenshots of the device or
+  app (PNG or JPEG, up to 15 MB each) and text files such as a sample config, an API
+  response or a data file (JSON, YAML, CSV, TXT, MD, XML, up to 200 KB each and
+  500 KB in total). Each attachment shows as a chip with its name and size; the ×
+  removes it, and a file with the same name replaces the earlier one. The model
+  takes formats, field names and values from them instead of asking you. The files
+  stay in memory for this page only — nothing is written to your project. Anything
+  else (a PDF, an executable) is refused with a message naming the file.
+- Run the Verify loop above. Once you have answered the model's first questions,
+  the description, the example source and the attachments are locked — they are
+  what the conversation is about. To change them, start a new ToolForge.
 - Click **Accept & Forge Tool**. The `.cs` file is written into
   `utils/custom_tools/` once it compiles, and it joins the agent's toolbox on the
   next run.
