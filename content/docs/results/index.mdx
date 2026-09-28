@@ -21,6 +21,25 @@ The **Runs** page is where you open them.
 **Open in Explorer** on a test jumps to its files on disk, the run's folder
 is one level up.
 
+## Find a past run
+
+The sidebar shows the newest eight runs; **Show all** expands the list.
+Once history grows past a screen, search it instead:
+
+- **Search box**: type part of a plan name or a test name. The list keeps
+  only the runs that ran it, still grouped by day, and a line reads
+  **N of M runs**. Matching ignores case.
+- **Filter** (the funnel button): narrow by a date-time window (**From** /
+  **To**, your local time, both edges included), **Kind** (plan run or test
+  run), **Trigger** (manual, scheduled, email, Telegram) and **Outcome**
+  (passed, or has failures — a broken test counts as a failure). Every
+  field is optional; set ones combine with each other and with the search
+  text.
+
+While a search or filter is active the eight-run cap is lifted, so every
+match is listed. **Clear** next to the count drops the text and every
+filter; **Reset filters** inside the popover drops the filters alone.
+
 ## Conversation log
 
 Beside the written reports, every run keeps its full conversation, each
