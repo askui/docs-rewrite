@@ -52,8 +52,10 @@ defaults stay deleted.
 | [**Android phone**](/docs/devices/android-phone) | A physical device via USB or wireless | Not in this dialog, added from the **Android devices** list below |
 
 Each kind has its own page with the exact fields and setup. Missing tooling
-(e.g. no Android SDK) shows up on the profile card as a one-click setup or as
-manual steps with exact commands.
+(no Android SDK for an emulator, no `adb` for a phone) shows up while you add
+the device and on its profile card as **Android tools are not installed on this
+computer**, with an **Install** button: one click installs everything missing,
+or follow the manual steps with exact commands.
 
 ## Android devices (discovery)
 
@@ -61,7 +63,9 @@ The **Android devices** section lists what `adb` sees: USB-connected phones
 (USB debugging enabled) and already-running emulators. **Add as profile**
 turns a discovered device into a regular profile, see
 [Android phone](/docs/devices/android-phone). For a wireless device, enter
-its `ip:port` and click **Connect wireless**.
+its `ip:port` and click **Connect wireless**. Without `adb` the list stays
+empty; the Add-device dialog's **An Android device** entry says so and offers
+**Install**.
 
 ## How a test picks its device
 
