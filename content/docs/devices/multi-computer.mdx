@@ -22,12 +22,20 @@ over the network.
 
 1. **Add device** → **Multi computer**.
 2. Add one row per machine (at least two). **Add from profile…** copies an
-   existing Remote-computer profile into a row. Per row:
+   existing Remote-computer profile into a row, its **Prompt** included. Per row:
    - **Name**: how tests refer to the machine: role names (`server`, `client`), not hostnames *(text, required)*
    - **Host**: machine name or IP *(text, required)*
    - **Port**: the AgentOS port *(number, default `26000`)*
    - **Display**: which screen to drive on that machine *(number, default `1`)*
+   - **Prompt**: what the agent gets told about this machine, quirks the
+     screen doesn't show ("Windows 11, always execute on display 1") *(text, optional)*
 3. **Add device**.
+
+The profile's own **Prompt** field above the rows is for what every machine
+shares (one domain account, say). The agent gets it first, then each
+machine's prompt under the machine's name; a row with an empty prompt adds
+nothing. The row keeps a copy of the source profile's prompt: editing the
+Remote-computer profile later doesn't change the row, edit the row instead.
 
 <img
   src="/docs-rewrite/screenshots/desktop-profile-multi-computer.png"
