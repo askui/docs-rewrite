@@ -37,3 +37,25 @@ profile starts its own AgentOS.
 The agent sees and acts on exactly one display per session. The session is a
 real user session on that machine, pointer, keyboard, foreground windows.
 Nobody should work on it during a run.
+
+## Restart the controller on this PC
+
+The **Local** profile (`localhost`, port 23000) starts its own AgentOS
+controller. When that controller stops answering, or a Connect fails with
+**Device is busy** because an earlier AskUI Desktop never let go of it, hover
+the profile card and click **Restart controller** (the ↺ icon next to edit and
+delete). AskUI Desktop then:
+
+1. releases the profile's session, if it has one;
+2. stops every `AskuiRemoteDeviceController` process on this PC, killing one
+   that ignores the stop request;
+3. starts a fresh controller and connects the profile to it.
+
+The card reads **restarting controller…** while this runs; the profile ends
+up connected. If a process survives even the kill, a message names its PID:
+end it in Activity Monitor (macOS) or Task Manager (Windows), then press
+**Connect**.
+
+The action is only offered for the controller AskUI Desktop starts itself. A
+remote machine, or a local [AgentOS service](/docs/agentos/installation/service)
+on port 26000, is never touched, restart those on the machine they run on.
