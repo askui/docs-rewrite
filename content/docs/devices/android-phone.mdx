@@ -36,3 +36,23 @@ added as a profile the same way.
 
 A device shown as `offline` or `unauthorized` can't be added, reconnect the
 cable and accept the debugging prompt on the device.
+
+## No adb on this computer
+
+Talking to a phone needs Google's `adb` tool. When it is not installed, the
+**An Android device** entry of the Add-device dialog lists no phones and says
+**Android tools are not installed on this computer**, followed by what will be
+installed and an **Install** button.
+
+**Install** runs the same Android SDK setup as the
+[Android emulator](/docs/devices/android-emulator) and the **Android SDK** card
+in Settings: a dialog asks you to accept the Android SDK licences and start the
+download, shows the progress, and can be stopped. The set it installs
+(command-line tools, a JDK, the emulator, `platform-tools` and a system image,
+about 1–1.5 GB in total) is the emulator's; `adb` is in `platform-tools`, so a
+phone gets what it needs from the same folder. Prefer to install it yourself?
+The dialog also shows the manual steps with the exact commands.
+
+Once `adb` is there the phone list scans by itself, close the setup dialog and
+your phone is in the list. A profile card whose `adb` has gone missing later
+shows the same notice with **Install**, and **Set up** in place of **Connect**.
