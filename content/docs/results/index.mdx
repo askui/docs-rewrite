@@ -11,7 +11,9 @@ The **Runs** page is where you open them.
 
 1. Open the **Runs** page.
 2. Pick the run in the sidebar, newest first, one entry per run with its
-   pass tally.
+   pass tally. The icon before the name says what the run executed: the
+   **Test Plans** icon for a test plan, the **Tests** icon for a test or a
+   folder, the same icons as in the left navigation.
 3. Choose what to look at:
    - **Conversation log**: the full execution record (below).
    - **Summary report**: the run-level table, one row per test.
@@ -20,6 +22,33 @@ The **Runs** page is where you open them.
 
 **Open in Explorer** on a test jumps to its files on disk, the run's folder
 is one level up.
+
+## Run it again
+
+**Rerun** is the first entry under the selected run, and in the run's
+right-click menu. It starts the same thing again:
+
+- A test plan run runs the plan again, on the devices the plan names now.
+- A test or folder run runs the same test or folder on the device the run
+  used.
+
+The rerun starts exactly like a first run: if the device is busy you are
+asked whether to queue it, see [Running tests](/docs/running-tests).
+
+When the app cannot tell which device the run used, because the run is from
+before the app recorded it or that device has since been deleted, a picker
+asks you to choose one. A rerun never picks a device for you. Runs from
+before the app recorded their target can be rerun only when they ran a
+single test whose file still exists; otherwise **Rerun** is disabled and says
+why.
+
+## Open the test in the editor
+
+Each test under a run has a pencil at the right of its row. It opens that
+test's file on the **Tests** page, so a failed test is one click from its
+fix. The pencil is disabled when no file is known for the row: a setup or
+teardown entry, a test file that was renamed or removed since the run, or an
+older run whose test name matches two files.
 
 ## Conversation log
 
