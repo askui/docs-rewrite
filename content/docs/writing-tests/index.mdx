@@ -58,8 +58,8 @@ postconditions. The file name is the test's name in runs and reports.
 />
 
 The same menu holds everything on this page: creating files and folders, the
-quick-create entries for setup / teardown / rules, **Run on**, and
-**Duplicate / Rename / Delete**.
+quick-create entries for setup / teardown / rules, **Run on**,
+**Copy / Paste**, and **Duplicate / Rename / Delete**.
 
 ### Anatomy & formats
 
@@ -175,6 +175,39 @@ other change to your [testware](/docs/projects).
 
 1. Right-click the file → **Duplicate**.
 2. Rename the copy, it's the starting point for a similar case.
+
+### Copy & paste
+
+Duplicate puts the copy beside the original; copy and paste puts it where
+you want it — into another suite, or several cases at once.
+
+1. Select what to copy: one file or folder, or several with the checkboxes,
+   <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+click or <kbd>Shift</kbd>+click. A folder
+   copies with everything inside it.
+2. Right-click → **Copy**, or press <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>C</kbd>
+   while the tree has focus (click a row first). With nothing selected, the
+   shortcut copies the open test.
+3. Right-click the target folder → **Paste**, or click a folder (or a file
+   in it) and press <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>V</kbd>. Pasting onto a
+   file pastes into that file's folder.
+
+The tree selects the copies without opening them, so you can rename them
+right away. Names stay as they are unless the folder already has one; then
+the copy gets ` copy` before the extension, and ` copy 2`, ` copy 3` … after
+that — so pasting into the same folder always works
+(`login.md` → `login copy.md`).
+
+Two things a paste never does:
+
+- **Rename a steering file.** `setup.md`, `teardown.md`, `rules.md` and
+  `ui.md` copy like any file, but a folder holds only one of each, so where
+  the target already has one, that file is skipped and a message says so —
+  the rest of the paste goes ahead.
+- **Touch the system clipboard.** The copied files live in the app; text you
+  copied elsewhere stays, and the shortcuts keep their usual meaning while
+  you are typing in the editor, the search box or a name.
+
+Copy and paste is available in the `tests/` tree only.
 
 ### Rename
 
