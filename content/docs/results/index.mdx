@@ -32,14 +32,17 @@ Once history grows past a screen, search it instead:
 - **Filter** (the funnel button): narrow by a date-time window and by ticking
   boxes.
   - **From** / **To**, your local time, both edges included. **To 10:30**
-    runs through the end of that minute. Tick **Now** to fill the end with
-    the current time.
+    runs through the end of that minute. **Now** beside the field fills it
+    with the current time.
   - **Kind**: plan run, test run.
   - **Trigger**: only the triggers your history actually holds are offered.
     A project that has never had a scheduled run gets no Scheduled box.
-  - **Outcome**: passed, has failures, has warnings. These are not
-    alternatives: a run that passed *with* warnings is found by either box.
-    A broken test counts as a failure.
+  - **Outcome**: passed, failures, broken, warnings. These are not
+    alternatives, a run is found by every box that is true of it: one that
+    passed *with* warnings answers to Passed and Warnings, and one holding
+    both a failed and a broken test answers to Failures and Broken.
+    Failures and Broken are apart because they are different problems: a
+    failed test made its check and lost, a broken one never got that far.
 
   Ticking several boxes in one group widens it, "any of these". Different
   groups narrow each other, and so does the search text.
