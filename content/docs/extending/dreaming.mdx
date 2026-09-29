@@ -22,11 +22,12 @@ Once **three runs have finished** since you turned Dreaming on, you'll see
 hides the prompt until you next open the Dashboard). You can also start a pass from
 **Extending → Dreaming**, which shows a dot whenever Dreaming has something for you.
 
-Until then, both places tell you how far along you are — for example
-*"2 of 3 runs — Dreaming starts after the next completed run."* — and **Analyze
-now** stays disabled (hover it for the reason). One run is an anecdote and two can
-still share a one-off cause; three is the least Dreaming needs to tell a recurring
-problem from noise.
+Until then the Dashboard shows nothing for Dreaming. The **Extending → Dreaming**
+tab tells you how far along you are — for example *"2 of 3 runs — Dreaming session
+can be started after the next completed run."* — and its **Analyze now** stays
+disabled (hover it for the reason). One run is an anecdote and two can still share
+a one-off cause; three is the least Dreaming needs to tell a recurring problem from
+noise.
 </Step>
 <Step>
 ### Analyze
@@ -114,9 +115,9 @@ Everything about Dreaming lives on one tab — **Extending → Dreaming**:
   appears on the review banner and at the top of the review page, so you always
   know what a round of Dreaming cost you.
 - **Run it on demand.** If there are new runs to analyze, an **Analyze now** button
-  starts a pass right there — the same one the Dashboard offers. Until three runs
-  have finished since you turned Dreaming on, the button is disabled and the tab
-  shows how many more runs it needs.
+  starts a pass right there — the same one the Dashboard offers. Until three new
+  runs have finished, the button is disabled and the tab shows how many more runs
+  it needs.
 
 ## Good to know
 
@@ -129,10 +130,10 @@ every applied change is an ordinary edit to your project files that you can undo
   make *after* enabling it — turning it on never trawls your entire history, so you
   won't come back to hundreds of old runs waiting to be analyzed. Turning it off
   and on again starts fresh once more.
-- **It waits for three finished runs.** Only runs made after you turned it on
-  count, and a run still in progress doesn't count until it ends. Runs Dreaming has
-  already analyzed still count, so once a project has dreamed, a single new run is
-  enough for the next pass.
+- **It waits for three finished runs — every time.** Only runs made after you
+  turned it on count, a run still in progress doesn't count until it ends, and runs
+  an earlier pass already analyzed don't count again. So after each pass, Dreaming
+  waits for three new runs before the next one.
 - **It respects edits you make yourself.** If you changed a test or rule after a
   run and only then run Dreaming, it works from your *current* version — it won't
   undo your change or re-suggest something you've already fixed.
