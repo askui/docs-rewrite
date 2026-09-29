@@ -61,14 +61,16 @@ the report exists.
 2. Pick the run in the runs sidebar on the left, it lists every run of the
    project, and **several runs can be active at once**; each streams its own
    conversation.
-3. Follow along, the controls at the top of the conversation:
-   - **Autofollow**: keeps the view pinned to the newest entry while the
-     run streams; scroll up to inspect something and it pauses, click it to
-     snap back.
-   - **Quiet**: just the story: the agent's narration, minimal noise.
-   - **Detailed**: the default: narration plus every tool call with its
-     result, tokens, and latency.
-   - **Raw**: the underlying messages as JSON, for debugging.
+3. Read the bar at the top of the conversation. It counts the tests the run
+   is for, setups and teardowns excluded, and the time the run has been
+   going, which ticks while the run streams.
+4. Follow along with **Autofollow**: it keeps the view pinned to the newest
+   entry while the run streams; scroll up to inspect something and it
+   pauses, click it to snap back. It is offered only while the run is
+   live, since nothing more arrives once a run has finished.
+
+There is one view of the conversation, and it holds everything: the agent's
+narration and every tool call with its result, output, and screenshots.
 
 <img
   src="/docs-rewrite/screenshots/desktop-runs-live.png"

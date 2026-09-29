@@ -28,6 +28,11 @@ agent message, tool call, and screenshot in order. Where the report gives
 the result, the log is the complete execution record: open it when a status
 alone doesn't explain what happened.
 
+The bar at the top of the log names the run and states three things about
+it: how many tests it was for (setups and teardowns are not counted), how
+long it took, and what it cost in inference. A run whose model has no known
+price shows no cost.
+
 <img
   src="/docs-rewrite/screenshots/desktop-conversation-log.png"
   alt="The conversation log of a finished run, agent messages, tool calls, and screenshots in order"
