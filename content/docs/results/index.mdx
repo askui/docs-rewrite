@@ -27,25 +27,28 @@ is one level up.
 
 Right-click a run in the sidebar:
 
-- **Rerun all** starts the same thing again, on the device the run used. A
-  test plan run runs the plan again: the plan still decides which tests run,
-  so a plan you edited since is respected, but the devices it names now are
-  not used. The rerun appears in the history as `<plan> (Rerun)`.
-- **Rerun only failed** starts only the tests of that run whose result was
-  FAILED or BROKEN, one run per test, on the device the run used, queued
-  one after the other. For a test plan they appear as
-  `<plan> (Rerun Failed)`. It is greyed out, with the reason, when nothing
-  failed or when none of the failed tests' files can be found.
+- **Rerun all** runs that run again: the same tests, in the same order, on
+  the device it used. A test plan run does not re-read the plan, so tests
+  you added to it since are not picked up and tests you removed still run —
+  it repeats the run, not the plan. It appears in the history as
+  `<plan> (Rerun)`.
+- **Rerun only failed** runs only the tests of that run whose result was
+  FAILED or BROKEN, as a single run on the device it used. For a test plan
+  it appears as `<plan> (Rerun Failed)`. It is greyed out, with the reason,
+  when nothing failed or when none of the failed tests' files can be found.
 
-To run a test plan on the device it names today, use its Run button on the
-**Test Plans** page. Rerun always repeats the device the run used.
+To run a test plan as it stands today, on the devices it names today, use
+its Run button on the **Test Plans** page.
+
+If a test the rerun would repeat has been renamed or deleted, the rerun is
+refused and says which one. It never runs part of a run.
 
 Right-click a test under the selected run for **Rerun this test**: only that
 test, on the device the run used, whether the run was a test plan or not.
 
 A rerun starts exactly like a first run: if the device is busy you are asked
-whether to queue it, see [Running tests](/docs/running-tests). Several
-failed tests that cannot start right away are queued with one answer.
+whether to queue it, see [Running tests](/docs/running-tests). A rerun is one
+run however many tests it repeats, so the question is asked once.
 
 When the app cannot tell which device the run used, because the run is from
 before the app recorded it or that device has since been deleted, a picker
