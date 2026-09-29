@@ -25,30 +25,38 @@ is one level up.
 
 ## Run it again
 
-**Rerun** is the first entry under the selected run, and in the run's
-right-click menu. It starts the same thing again:
+Right-click a run in the sidebar:
 
-- A test plan run runs the plan again, on the devices the plan names now.
-- A test or folder run runs the same test or folder on the device the run
-  used.
+- **Rerun all** starts the same thing again. A test plan run runs the plan
+  again, on the devices the plan names now; a test or folder run runs the
+  same test or folder on the device the run used.
+- **Rerun failed** starts only the tests of that run whose result was
+  FAILED or BROKEN, one run per test, on the device the run used, queued
+  one after the other. It is greyed out, with the reason, when nothing
+  failed or when none of the failed tests' files can be found.
 
-The rerun starts exactly like a first run: if the device is busy you are
-asked whether to queue it, see [Running tests](/docs/running-tests).
+Right-click a test under the selected run for **Rerun this test**: only that
+test, on the device the run used, whether the run was a test plan or not.
+
+A rerun starts exactly like a first run: if the device is busy you are asked
+whether to queue it, see [Running tests](/docs/running-tests). Several
+failed tests that cannot start right away are queued with one answer.
 
 When the app cannot tell which device the run used, because the run is from
 before the app recorded it or that device has since been deleted, a picker
 asks you to choose one. A rerun never picks a device for you. Runs from
-before the app recorded their target can be rerun only when they ran a
-single test whose file still exists; otherwise **Rerun** is disabled and says
-why.
+before the app recorded their target can be rerun as a whole only when they
+ran a single test whose file still exists; otherwise **Rerun all** is greyed
+out and says why.
 
 ## Open the test in the editor
 
-Each test under a run has a pencil at the right of its row. It opens that
-test's file on the **Tests** page, so a failed test is one click from its
-fix. The pencil is disabled when no file is known for the row: a setup or
-teardown entry, a test file that was renamed or removed since the run, or an
-older run whose test name matches two files.
+Each test under a run has a pencil at the right of its row, and **Open in
+editor** in its right-click menu. Either opens that test's file on the
+**Tests** page, so a failed test is one click from its fix. Both are
+disabled when no file is known for the row: a setup or teardown entry, a
+test file that was renamed or removed since the run, or an older run whose
+test name matches two files.
 
 ## Conversation log
 
