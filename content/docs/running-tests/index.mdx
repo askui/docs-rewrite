@@ -64,8 +64,8 @@ the report exists.
 3. Read the bar at the top of the conversation. It is the run's header, and
    it states, from left to right: the icon for a test run or a plan run, a
    dot that pulses while the run goes, the run's name, what started it, how
-   many tests the run is for (setups and teardowns are not counted), how
-   long it has been going, and where the run is.
+   many tests the run is for (setups and teardowns are not counted), and how
+   long it has been going.
 4. Follow along with **Autofollow**, at the right of the same bar: it keeps
    the view pinned to the newest entry; scroll up to inspect something and
    it pauses, click it to snap back. It is offered only while the run is
@@ -73,6 +73,9 @@ the report exists.
 5. Cut a run short with **Stop**, beside Autofollow. It reads *Canceling…*
    until the run unwinds. A run that has not started yet still shows the
    bar, so you can stop it before it does.
+6. When the run finishes, the view becomes the finished run's log, with the
+   outcome counts and the cost. It is the same view you get by picking the
+   run in the list, see [results](/docs/results#conversation-log).
 
 There is one view of the conversation, and it holds everything: the agent's
 narration and every tool call with its result, output, and screenshots.
