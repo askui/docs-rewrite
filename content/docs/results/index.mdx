@@ -27,13 +27,18 @@ is one level up.
 
 Right-click a run in the sidebar:
 
-- **Rerun all** starts the same thing again. A test plan run runs the plan
-  again, on the devices the plan names now; a test or folder run runs the
-  same test or folder on the device the run used.
-- **Rerun failed** starts only the tests of that run whose result was
+- **Rerun all** starts the same thing again, on the device the run used. A
+  test plan run runs the plan again: the plan still decides which tests run,
+  so a plan you edited since is respected, but the devices it names now are
+  not used. The rerun appears in the history as `<plan> (Rerun)`.
+- **Rerun only failed** starts only the tests of that run whose result was
   FAILED or BROKEN, one run per test, on the device the run used, queued
-  one after the other. It is greyed out, with the reason, when nothing
+  one after the other. For a test plan they appear as
+  `<plan> (Rerun Failed)`. It is greyed out, with the reason, when nothing
   failed or when none of the failed tests' files can be found.
+
+To run a test plan on the device it names today, use its Run button on the
+**Test Plans** page. Rerun always repeats the device the run used.
 
 Right-click a test under the selected run for **Rerun this test**: only that
 test, on the device the run used, whether the run was a test plan or not.
