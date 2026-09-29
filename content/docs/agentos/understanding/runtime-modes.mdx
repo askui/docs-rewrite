@@ -22,9 +22,11 @@ standalone installer is in progress.
 
 Once installed, AskUI Desktop and the CLI use the local AgentOS instance automatically.
 AskUI Desktop starts the standalone controller when the **Local** profile
-connects and stops it on disconnect. A controller that stops answering, or
-one a crashed AskUI Desktop left behind, is restarted from the profile card,
+connects and stops it on disconnect. When connecting fails because that
+controller stopped answering, or because a crashed AskUI Desktop left one
+behind, the error offers a force restart,
 see [Restart the controller on this PC](/docs/devices/remote-computer#restart-the-controller-on-this-pc).
+Restarting the OS service below is a separate job, done on the machine it runs on.
 
 ## OS Service
 

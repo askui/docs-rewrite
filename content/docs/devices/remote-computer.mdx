@@ -40,11 +40,11 @@ Nobody should work on it during a run.
 
 ## Restart the controller on this PC
 
-The **Local** profile (`localhost`, port 23000) starts its own AgentOS
-controller. When that controller stops answering, or a Connect fails with
-**Device is busy** because an earlier AskUI Desktop never let go of it, hover
-the profile card and click **Restart controller** (the ↺ icon next to edit and
-delete). AskUI Desktop then:
+The **Local** profile (`localhost`, port 23000) starts its own standalone
+AgentOS controller. When a Connect to it fails — the controller stopped
+answering, or an earlier AskUI Desktop never let go of it and the error reads
+**Device is busy** — the error on the card offers **Force restart** beside the
+retry. AskUI Desktop then:
 
 1. releases the profile's session, if it has one;
 2. stops every `AskuiRemoteDeviceController` process on this PC, killing one
@@ -56,6 +56,18 @@ up connected. If a process survives even the kill, a message names its PID:
 end it in Activity Monitor (macOS) or Task Manager (Windows), then press
 **Connect**.
 
-The action is only offered for the controller AskUI Desktop starts itself. A
-remote machine, or a local [AgentOS service](/docs/agentos/installation/service)
-on port 26000, is never touched, restart those on the machine they run on.
+The button appears only where it can help: a standalone local controller whose
+connection has just failed. A working connection never shows it, and neither
+does a remote machine.
+
+<Callout type="warn">
+Standalone AgentOS only. Restarting an
+[AgentOS service](/docs/agentos/installation/service) (port 26000) is a
+different job — restart the service on the machine it runs on.
+
+On Windows, if that service is running, AgentOS quietly serves the **Local**
+profile from the service instead of a standalone controller, and AskUI Desktop
+cannot currently tell. On such a machine **Force restart** would stop the
+service's controller too. It is offered only after a failed connection, which a
+running service normally does not produce, but be aware of it.
+</Callout>
