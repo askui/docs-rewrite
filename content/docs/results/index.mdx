@@ -29,16 +29,29 @@ Once history grows past a screen, search it instead:
 - **Search box**: type part of a plan name or a test name. The list keeps
   only the runs that ran it, still grouped by day, and a line reads
   **N of M runs**. Matching ignores case.
-- **Filter** (the funnel button): narrow by a date-time window (**From** /
-  **To**, your local time, both edges included), **Kind** (plan run or test
-  run), **Trigger** (manual, scheduled, email, Telegram) and **Outcome**
-  (passed, or has failures — a broken test counts as a failure). Every
-  field is optional; set ones combine with each other and with the search
-  text.
+- **Filter** (the funnel button): narrow by a date-time window and by ticking
+  boxes.
+  - **From** / **To**, your local time, both edges included. **To 10:30**
+    runs through the end of that minute. Tick **Now** to fill the end with
+    the current time.
+  - **Kind**: plan run, test run.
+  - **Trigger**: only the triggers your history actually holds are offered.
+    A project that has never had a scheduled run gets no Scheduled box.
+  - **Outcome**: passed, has failures, has warnings. These are not
+    alternatives: a run that passed *with* warnings is found by either box.
+    A broken test counts as a failure.
+
+  Ticking several boxes in one group widens it, "any of these". Different
+  groups narrow each other, and so does the search text.
 
 While a search or filter is active the eight-run cap is lifted, so every
-match is listed. **Clear** next to the count drops the text and every
-filter; **Reset filters** inside the popover drops the filters alone.
+match is listed, and only matches are listed — including the run you have
+open, whose report stays in the right pane until you pick another.
+**Clear** next to the count drops the text and every filter;
+**Reset filters** inside the popover drops the filters alone.
+
+Your search stays as you left it when you go to another page and come back.
+Each project keeps its own, and it is forgotten when you quit the app.
 
 ## Conversation log
 
