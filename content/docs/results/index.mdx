@@ -28,10 +28,13 @@ agent message, tool call, and screenshot in order. Where the report gives
 the result, the log is the complete execution record: open it when a status
 alone doesn't explain what happened.
 
-The bar at the top of the log names the run and states three things about
-it: how many tests it was for (setups and teardowns are not counted), how
-long it took, and what it cost in inference. A run whose model has no known
-price shows no cost.
+The bar at the top of the log names the run and states four things about it:
+how its tests ended, how many tests it was for (setups and teardowns are not
+counted), how long it took, and what it cost in inference.
+
+The outcome counts read the good news first, for example *4 passed · 1
+warning · 2 failed*. An outcome no test reached is left out, and so is a cost
+for a run whose model has no known price.
 
 <img
   src="/docs-rewrite/screenshots/desktop-conversation-log.png"

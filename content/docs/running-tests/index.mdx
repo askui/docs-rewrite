@@ -61,13 +61,18 @@ the report exists.
 2. Pick the run in the runs sidebar on the left, it lists every run of the
    project, and **several runs can be active at once**; each streams its own
    conversation.
-3. Read the bar at the top of the conversation. It counts the tests the run
-   is for, setups and teardowns excluded, and the time the run has been
-   going, which ticks while the run streams.
-4. Follow along with **Autofollow**: it keeps the view pinned to the newest
-   entry while the run streams; scroll up to inspect something and it
-   pauses, click it to snap back. It is offered only while the run is
+3. Read the bar at the top of the conversation. It is the run's header, and
+   it states, from left to right: the icon for a test run or a plan run, a
+   dot that pulses while the run goes, the run's name, what started it, how
+   many tests the run is for (setups and teardowns are not counted), how
+   long it has been going, and where the run is.
+4. Follow along with **Autofollow**, at the right of the same bar: it keeps
+   the view pinned to the newest entry; scroll up to inspect something and
+   it pauses, click it to snap back. It is offered only while the run is
    live, since nothing more arrives once a run has finished.
+5. Cut a run short with **Stop**, beside Autofollow. It reads *Canceling…*
+   until the run unwinds. A run that has not started yet still shows the
+   bar, so you can stop it before it does.
 
 There is one view of the conversation, and it holds everything: the agent's
 narration and every tool call with its result, output, and screenshots.
