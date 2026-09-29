@@ -71,14 +71,25 @@ tool** on **Extending → Custom Tools**.
 - Optionally point it at an **Example source** folder — working code that already
   does what the tool should do. ToolForge reads those files and then asks only about
   the tool's contract and configuration, not about logic the code already shows.
-- Optionally **attach files** the tool should know: screenshots of the device or
-  app (PNG or JPEG, up to 15 MB each) and text files such as a sample config, an API
-  response or a data file (JSON, YAML, CSV, TXT, MD, XML, up to 200 KB each and
-  500 KB in total). Each attachment shows as a chip with its name and size; the ×
-  removes it, and a file with the same name replaces the earlier one. The model
-  takes formats, field names and values from them instead of asking you. The files
-  stay in memory for this page only — nothing is written to your project. Anything
-  else (a PDF, an executable) is refused with a message naming the file.
+- Optionally **attach files** the tool should know:
+  - **Images** of the device or app: PNG, JPEG, GIF, WebP or BMP, up to 15 MB each.
+  - **Text files** such as a sample config, an API response or a data file: JSON,
+    YAML, YML, CSV, TXT, MD, XML, TOML, INI or LOG, up to 200 KB each and 500 KB
+    across all of them.
+  - Up to **30 files** in total.
+
+  Each attachment shows as a chip with its name and size; the × removes it, and a
+  file with the same name replaces the earlier one, so you can fix a config and
+  attach it again. The model takes formats, field names and values from them
+  instead of asking you. The files stay in memory for this page only — nothing is
+  written to your project. Anything else (a PDF, an executable) is refused with a
+  message naming the file.
+
+  <Callout type="warn">
+  What you attach goes into the prompt as it is, and what the model writes from it
+  becomes a tool that runs on your machines. Attach files you would vouch for, and
+  read the generated source on the Accept screen before you keep it.
+  </Callout>
 - Run the Verify loop above. Once you have answered the model's first questions,
   the description, the example source and the attachments are locked — they are
   what the conversation is about. To change them, start a new ToolForge.
