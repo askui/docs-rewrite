@@ -43,8 +43,25 @@ The tree works like a file manager as well as a checkbox list:
   Shift-click a row that is already selected and the same range is unselected
   instead.
 - **Cmd-click** (macOS) or **Ctrl-click** (Windows) toggles just that row, the
-  way it does in a file manager. A plain click does the same here, because
-  every row is a checkbox; the modifier simply keeps working.
+  way it does in a file manager.
+
+## A folder has three states
+
+Clicking a folder walks it through all three, in this order:
+
+| Checkbox | Meaning |
+| --- | --- |
+| Empty | Not in the plan. |
+| Ticked | The whole folder. A test you add to it later runs too. |
+| Dashed | The tests it has right now, listed one by one. A test you add later does **not** run. |
+
+The same legend sits under the box in the editor. The difference between the
+last two is the one that matters when the folder keeps growing: pick the whole
+folder for a suite that should stay complete, pick the listed tests when the
+plan is meant to be exactly what you chose today.
+
+Cmd-click and Shift-click keep their meaning: they select and unselect rows
+rather than walking the cycle.
 
 ## Leave a test out of a checked folder
 
