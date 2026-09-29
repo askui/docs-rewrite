@@ -43,8 +43,8 @@ Nobody should work on it during a run.
 The **Local** profile (`localhost`, port 23000) starts its own standalone
 AgentOS controller. When a Connect to it fails — the controller stopped
 answering, or an earlier AskUI Desktop never let go of it and the error reads
-**Device is busy** — the error on the card offers **Force restart** beside the
-retry. AskUI Desktop then:
+**Device is busy** — a **Force restart** button (↺) appears next to **Retry** on
+the row. AskUI Desktop then:
 
 1. releases the profile's session, if it has one;
 2. stops every `AskuiRemoteDeviceController` process on this PC, killing one
