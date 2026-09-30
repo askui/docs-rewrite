@@ -30,8 +30,9 @@ alone doesn't explain what happened.
 
 The bar at the top of the log states, from left to right: the icon for a test
 run or a plan run, the run's name, how many tests it was for (setups and
-teardowns are not counted), how those tests ended, how long it took, and what
-it cost in inference.
+teardowns are not counted), how those tests ended, how long it ran, and what
+it cost in inference. The duration covers the run itself — a wait for a busy
+device is not counted.
 
 The outcome counts read the good news first, for example *5 tests · 4 passed
 · 1 warning*, and each carries the same colour that status has in the run
