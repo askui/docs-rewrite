@@ -3,19 +3,20 @@ title: CI pipeline examples
 description: Ready-to-use pipeline configurations for running AskUI tests in GitHub Actions, GitLab CI, and Azure DevOps.
 ---
 
-<Callout type="warn" title="Coming soon">
-CI execution needs the AskUI CLI, which is not publicly available yet. This
-page describes the setup you will use once it ships, so you can plan for it.
-</Callout>
-
 These examples show how to run `askui run` in the most common CI environments.
 All examples assume:
 
-- The AskUI Desktop installer has been run on the CI machine (or a
-  self-hosted runner with AskUI installed), since the CLI ships with the
-  Desktop installer.
+- The CLI is on the runner: AskUI Desktop is installed there (its installer
+  puts `askui` on `PATH`), or the CLI release archive is installed, see
+  [AskUI in CI](/docs/guides/askui-in-ci#1-get-the-cli-onto-the-runner).
 - `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN` are stored as CI secrets.
-- Your test project is checked into the repository.
+- Your test project is checked into the repository, with the
+  [device profile](/docs/running-tests/cli#choosing-the-device) the run uses
+  in its `devices.json`.
+
+Each example writes JUnit XML next to the HTML and Markdown reports
+(`--reporter html,md,junit`), so the CI system shows pass and fail per test,
+and keeps the whole output folder as an artifact, also when tests fail.
 
 <Callout title="AgentOS on Windows CI runners">
 Desktop automation on Windows requires AgentOS running as a service. Install
@@ -37,7 +38,10 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest  # or macos-latest for macOS desktop / web
+    runs-on: [self-hosted, windows, askui]  # a runner with AskUI installed
+    permissions:
+      contents: read
+      checks: write
 
     steps:
       - name: Checkout
@@ -47,14 +51,22 @@ jobs:
         env:
           ASKUI_WORKSPACE_ID: ${{ secrets.ASKUI_WORKSPACE_ID }}
           ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
-        run: askui run
+        run: askui run --plan smoke --output run-artifacts --reporter html,md,junit
 
       - name: Upload run reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: askui-reports
-          path: agent_workspace/
+          path: run-artifacts/
+
+      - name: Publish test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: AskUI tests
+          path: run-artifacts/junit.xml
+          reporter: java-junit
 ```
 
 ## GitLab CI
@@ -69,11 +81,13 @@ askui-tests:
     ASKUI_WORKSPACE_ID: $ASKUI_WORKSPACE_ID
     ASKUI_TOKEN: $ASKUI_TOKEN
   script:
-    - askui run
+    - askui run --plan smoke --output run-artifacts --reporter html,md,junit
   artifacts:
     when: always
     paths:
-      - agent_workspace/
+      - run-artifacts/
+    reports:
+      junit: run-artifacts/junit.xml
     expire_in: 7 days
 ```
 
@@ -85,38 +99,64 @@ trigger:
   - main
 
 pool:
-  vmImage: windows-latest  # or a self-hosted agent with AskUI installed
+  name: askui  # a self-hosted agent pool with AskUI installed
 
 steps:
   - checkout: self
 
-  - script: askui run
+  - script: askui run --plan smoke --output run-artifacts --reporter html,md,junit
     displayName: Run AskUI tests
     env:
       ASKUI_WORKSPACE_ID: $(ASKUI_WORKSPACE_ID)
       ASKUI_TOKEN: $(ASKUI_TOKEN)
 
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFormat: JUnit
+      testResultsFiles: run-artifacts/junit.xml
+      testRunTitle: AskUI tests
+
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
-      pathToPublish: agent_workspace/
+      pathToPublish: run-artifacts/
       artifactName: askui-reports
 ```
+
+## Reading the exit code
+
+Every example fails the job on a non-zero exit code. The code tells you who
+has to act: `1` is a failed or broken test, `3` is a runner or project
+problem (credentials, device, MCP server, an unset `${VAR}`), `4` means no
+test ran. All codes: [Exit codes](/docs/running-tests/cli#exit-codes).
 
 ## Connecting to a remote AgentOS
 
 If your CI runner is not the machine being automated (e.g. a Linux runner
-automating a separate Windows VM), disable AgentOS autostart and point the
-CLI at the remote instance:
+automating a separate Windows VM), the device profile points at the remote
+AgentOS. Leave the host to the pipeline with a variable in the profile's
+**host** field:
 
-```bash
-export ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART=false
-export ASKUI_CONTROLLER_CLIENT_SERVER_ADDRESS=<vm-ip>:26000
-askui run
+```json title="devices.json (excerpt)"
+{
+  "id": "win-vm",
+  "name": "Windows test VM",
+  "type": "agent-os",
+  "host": "${AGENTOS_HOST}",
+  "port": 26000
+}
 ```
 
-See [Remote Windows VM](/docs/agentos/deployment/ci#remote-windows-vm)
-for the full setup.
+```bash
+export AGENTOS_HOST=<vm-ip>
+askui run --device win-vm
+```
+
+A remote host is attached to; the CLI starts a local AgentOS only for a
+profile on `localhost`. An unset `AGENTOS_HOST` stops the run with exit
+code 3. See [Remote Windows VM](/docs/agentos/deployment/ci#remote-windows-vm)
+for setting up the VM.
 
 ## Storing credentials
 
@@ -128,6 +168,10 @@ Use your CI platform's secret store:
 | GitHub Actions | Repository Settings → Secrets and variables → Actions |
 | GitLab CI | Settings → CI/CD → Variables |
 | Azure DevOps | Pipeline → Edit → Variables |
+
+The project's [secrets](/docs/extending/secrets) go into the same store:
+in a headless run, a secret named `QA_PASSWORD` resolves from the variable
+`QA_PASSWORD`.
 
 Create a dedicated access token per pipeline so you can rotate or revoke
 individual pipelines without affecting others. See

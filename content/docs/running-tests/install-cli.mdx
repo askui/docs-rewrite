@@ -1,51 +1,95 @@
 ---
-title: Install the CLI (Coming Soon)
-description: Set up the AskUI CLI to run Projects headless, in CI, or across many devices.
+title: Install the CLI
+description: Set up the AskUI CLI to run Projects headless, from a terminal or in CI.
 ---
 
 The AskUI CLI (`askui`) runs the same Projects you author in AskUI Desktop,
-without the UI. One command, `askui run`, executes your tests against a
-desktop, a browser, or an Android device and writes the same reports the app
-produces. Use it locally for scripted runs, in CI, or on a schedule.
+without the UI. One command, `askui run`, executes your tests on the
+Project's device, a desktop, a browser, an Android device, or an iOS
+simulator, and writes the reports of the run. Use it locally for scripted
+runs, or in CI.
 
 <Steps>
 
 <Step>
-**Install the CLI** *(coming soon)*
+**Install the CLI**
 
-The CLI is **not yet publicly available**, the installer is in progress. This
-page documents what running it looks like so you can plan your CI setup; the
-steps below apply once the CLI ships.
+The CLI ships with [AskUI Desktop](/docs/get-started/install-desktop).
+
+<Tabs items={['Windows', 'macOS', 'CI runner']}>
+  <Tab value="Windows">
+    The AskUI Desktop installer puts `askui` on your `PATH`, and the
+    uninstaller removes it again. Open a new terminal after the install.
+  </Tab>
+  <Tab value="macOS">
+    Dragging the app into Applications runs no installer, so you add the
+    command once: open **Settings → This machine → Command line** and click
+    **Add to PATH**. AskUI Desktop links `~/.local/bin/askui` to the CLI inside
+    the app and adds `~/.local/bin` to your `PATH` if no shell profile has it
+    yet. Open a new terminal afterwards.
+
+    If you move the app, the card offers **Repair**; **Remove** takes the
+    link away again.
+  </Tab>
+  <Tab value="CI runner">
+    A build server needs no AskUI Desktop. Each release publishes the CLI as
+    an archive per platform, `askui-cli-<version>-<rid>.tar.gz` (`.zip` for
+    Windows), with a `.sha256` checksum file beside it, for example
+    `askui-cli-<version>-linux-x64.tar.gz`. Platforms: `win-x64`,
+    `osx-arm64`, `linux-x64`, `linux-arm64`.
+
+    The archives are published under
+    `files.askui.com/releases/AskUIDesktop/<version>/`. That download location
+    is still being set up; until it is live, ask your AskUI contact for the
+    archive. See [AskUI in CI](/docs/guides/askui-in-ci) for a pinned,
+    checksum-verified install step.
+  </Tab>
+</Tabs>
 </Step>
 
 <Step>
 **Verify the install**
 
 ```bash
-askui --help
+askui --version
+askui run --help
 ```
 
-You should see the `askui run` usage with its options.
+`askui run --help` lists every option, the environment variables, and the
+exit codes.
 </Step>
 
 <Step>
-**Set up the surface you want to drive**
+**Set up the device you want to drive**
 
-<Tabs items={['Desktop (AgentOS)', 'Browser', 'Android']}>
+The CLI runs on the Project's [device profiles](/docs/devices) in
+`devices.json`, the same ones the app uses (see
+[Choosing the device](/docs/running-tests/cli#choosing-the-device)). The
+CLI connects to a device; it does not start an emulator, a simulator, or a
+VM for you.
+
+<Tabs items={['Desktop (AgentOS)', 'Browser', 'Android', 'iOS']}>
   <Tab value="Desktop (AgentOS)">
-    Desktop runs need [AgentOS](/docs/agentos) on the machine under test. On
-    your own machine, the CLI **starts a local AgentOS automatically** for the
-    run; if AgentOS is installed as a [service](/docs/agentos/installation/service),
-    the CLI detects and attaches to it instead. For a remote machine, install
-    AgentOS there and point the CLI at it with `--controller-host`.
+    Desktop runs need [AgentOS](/docs/agentos) on the machine under test. For
+    a profile on `localhost`, the CLI **starts a local AgentOS** for the run
+    when none is running. For a remote machine, install AgentOS there and set
+    the profile's host and port to it; the CLI attaches to a remote AgentOS
+    instead of starting one.
   </Tab>
   <Tab value="Browser">
-    Nothing to install up front: on the first `--surface web` run, the CLI
-    downloads the browser it drives (Chromium via Playwright) automatically.
+    The CLI downloads the browser it drives (Chromium via Playwright) the
+    first time it connects. On a clean Linux runner, install the browser and
+    its system libraries up front, see
+    [Runner requirements](/docs/guides/askui-in-ci#runner-requirements).
   </Tab>
   <Tab value="Android">
-    `adb` must be on your `PATH` and the device (or emulator) visible to
-    `adb devices`. See the [ADB setup guide](/docs/agentos/deployment/local#android-setting-up-adb).
+    `adb` must be on your `PATH` and the device (or emulator) already
+    running and visible to `adb devices`. See the
+    [ADB setup guide](/docs/agentos/deployment/local#android-setting-up-adb).
+  </Tab>
+  <Tab value="iOS">
+    A booted simulator or a connected device with the profile's udid, and
+    `idb_companion` for a simulator.
   </Tab>
 </Tabs>
 </Step>
@@ -62,9 +106,11 @@ export ASKUI_TOKEN="<your access token>"
 ```
 
 Create the access token in the [AskUI Hub](https://hub.askui.com), see
-[Workspaces & access tokens](/docs/account-billing/workspaces). Instead of
-exporting, you can also put both lines in a `.env` file in your Project root;
-the CLI loads it on every run (variables already set in the environment win).
+[Workspaces & access tokens](/docs/account-billing/workspaces). The CLI does
+not use your AskUI Desktop sign-in. Instead of exporting, you can also put
+both lines in a `.env` file in your Project root; the CLI loads it on every
+run (variables already set in the environment win). A new Project's
+`.gitignore` already keeps `.env` out of git.
 </Step>
 
 <Step>
@@ -76,7 +122,8 @@ askui run
 ```
 
 See [Running from the CLI](/docs/running-tests/cli) for the full
-command reference, test plans, surfaces, model selection, and CI usage.
+command reference, test plans, devices, model selection, reports, and exit
+codes.
 </Step>
 
 </Steps>

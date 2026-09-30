@@ -1,39 +1,157 @@
 ---
 icon: Workflow
-title: AskUI in CI (coming soon)
+title: AskUI in CI
 description: End-to-end, run your project's suites headless on every pull request or nightly.
 ---
 
-<Callout type="warn" title="Coming soon">
-CI execution needs the AskUI CLI, which is not publicly available yet. This
-page describes the setup you will use once it ships, so you can plan for it.
-</Callout>
-
-The project your team authors in AskUI Desktop will run unchanged on a build
-server, same testware, headless execution.
+The project your team authors in AskUI Desktop runs unchanged on a build
+server, same testware, headless execution, and the pipeline fails exactly
+when a test fails.
 
 ## 1: Get the CLI onto the runner
 
-[Install the CLI](/docs/running-tests/install-cli) and provide credentials as
-environment variables: `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN` (create the
-token in the [Hub](/docs/account-billing/workspaces)).
+On a machine with AskUI Desktop, the CLI is already there
+([Install the CLI](/docs/running-tests/install-cli)). A clean runner installs
+a pinned version from the release archive, `askui-cli-<version>-<rid>.tar.gz`
+(`.zip` for Windows), and checks it against the `.sha256` file beside it:
+
+```bash
+VERSION=<version>
+ASSET=askui-cli-$VERSION-linux-x64.tar.gz
+BASE=https://files.askui.com/releases/AskUIDesktop/$VERSION
+curl -fsSLO "$BASE/$ASSET" -O "$BASE/$ASSET.sha256"
+sha256sum -c "$ASSET.sha256"
+tar -xzf "$ASSET"
+export PATH="$PWD/askui-cli-$VERSION-linux-x64:$PATH"
+askui --version
+```
+
+Archives exist for `win-x64`, `osx-arm64`, `linux-x64`, and `linux-arm64`.
+
+<Callout type="warn">
+The download location for the CLI archives is still being set up. Until it
+is live, install AskUI Desktop on the runner, or ask your AskUI contact for
+the archive.
+</Callout>
+
+Provide credentials as environment variables from the CI secret store:
+`ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN` (create the token in the
+[Hub](/docs/account-billing/workspaces)). The same goes for every value the
+project references: a `${VAR}` in a device profile, and every
+[secret](/docs/running-tests/cli#secrets-in-a-headless-run), resolve from
+the environment variable of that name.
 
 ## 2: Give it a device
 
-A [headless browser](/docs/devices/web-browser) runs on the bare runner.
+The CLI runs on the project's [device profiles](/docs/devices), picked with
+`--device` by id or name, or the plan's device. Leave the runner-specific
+parts to the runner: write `${AGENTOS_HOST}` or `${ANDROID_SERIAL}` into the
+profile's host or serial, and set the variable in the pipeline (see
+[Environment variables in a profile](/docs/running-tests/cli#environment-variables-in-a-profile)).
+
+A [browser](/docs/devices/web-browser) runs on the bare runner; use a
+profile with **Headless** on when the runner has no display.
 Desktop targets need a test machine with
-[AgentOS](/docs/agentos/deployment/ci) the runner can reach.
+[AgentOS](/docs/agentos/deployment/ci) the runner can reach. The CLI
+connects to a device, it does not start an emulator, a simulator, or a VM,
+so start it in an earlier pipeline step.
+
+### Runner requirements
+
+The archive carries the CLI and the browser driver. Each device kind needs
+more on the runner:
+
+| Device | The runner needs |
+| --- | --- |
+| Browser (`web`) | A browser. From the extracted folder: `.playwright/node/<platform>/node .playwright/package/cli.js install --with-deps chromium` (for example `<platform>` = `linux-x64`). `firefox` and `webkit` install the same way. |
+| Desktop (`agent-os`) | The AskUI [AgentOS](/docs/agentos) controller, running and listening at the profile's host and port. |
+| Android | `adb` on `PATH`, and the device or emulator already running. The profile's serial picks the device. |
+| iOS | A booted simulator or a connected device with the profile's udid, and `idb_companion` for a simulator. |
+
+Every device needs outbound HTTPS to the model: the AskUI hub, or the
+endpoint of `--model-endpoint` (see
+[Network requirements](/docs/reference/network-requirements)). A project with
+[custom tools](/docs/extending/custom-tools) also needs NuGet access for
+their `#:package` lines: nuget.org, or the feeds of the runner's
+`NuGet.config`.
 
 ## 3: Run a plan
 
 ```bash
-askui run --plan smoke --project-root .
+askui run --plan smoke --output ./run-artifacts --reporter html,md,junit
 ```
 
-Gate the pipeline on the exit code, and archive `agent_workspace/` as the
-build artifact, reports and screenshots included; the
-[CLI reference](/docs/running-tests/cli) shows the report-path and CI
-options.
+In a pipeline the CLI never prompts, and prints one plain line per event.
+Gate the pipeline on the exit code:
+
+| Code | Meaning |
+| --- | --- |
+| `0` | All tests passed. |
+| `1` | A test failed, broke, or was never reached: the product team acts. |
+| `2` | The command line is wrong. |
+| `3` | The runner or the project is wrong: credentials, device, MCP server, an unset `${VAR}`. Nothing was sent to the model. |
+| `4` | No test ran, for example an empty plan. |
+| `130` | Canceled. |
+
+Archive the output folder as the build artifact, reports and screenshots
+included; the [CLI reference](/docs/running-tests/cli) has every option.
+
+## 4: Publish the test report
+
+With `--reporter` including `junit`, the run writes `<output>/junit.xml`, and
+your CI system shows pass and fail per test. `FAILED` is a failure, `BROKEN`
+and a test the run never reached are errors, and a `WARNING` passes with its
+notes in the test output ([JUnit mapping](/docs/running-tests/cli#junit-mapping)).
+
+<Tabs items={['GitHub Actions', 'GitLab CI']}>
+  <Tab value="GitHub Actions">
+    ```yaml title=".github/workflows/ui-tests.yml"
+    jobs:
+      ui-tests:
+        runs-on: [self-hosted, askui]
+        permissions:
+          contents: read
+          checks: write
+        env:
+          ASKUI_WORKSPACE_ID: ${{ vars.ASKUI_WORKSPACE_ID }}
+          ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
+        steps:
+          - uses: actions/checkout@v4
+          - run: askui run --plan smoke --output ./run-artifacts --reporter html,md,junit
+          - uses: actions/upload-artifact@v4
+            if: always()
+            with:
+              name: askui-run
+              path: ./run-artifacts
+          - uses: dorny/test-reporter@v1
+            if: always()
+            with:
+              name: AskUI tests
+              path: run-artifacts/junit.xml
+              reporter: java-junit
+    ```
+  </Tab>
+  <Tab value="GitLab CI">
+    ```yaml title=".gitlab-ci.yml"
+    askui-tests:
+      stage: test
+      tags:
+        - askui
+      script:
+        - askui run --plan smoke --output run-artifacts --reporter html,md,junit
+      artifacts:
+        when: always
+        paths:
+          - run-artifacts/
+        reports:
+          junit: run-artifacts/junit.xml
+        expire_in: 7 days
+    ```
+  </Tab>
+</Tabs>
+
+More pipelines, Azure DevOps included:
+[CI pipeline examples](/docs/agentos/deployment/ci-examples).
 
 Which team runs what in CI, and who owns the results, is a working-model
 question: [Sharing the project](/docs/concepts/team-setups).
