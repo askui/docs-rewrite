@@ -84,10 +84,27 @@ run.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| Identification | Only ones I marked myself | Only `{{placeholders}}` you wrote into the test become parameters. |
-| | Let the model find them | Reserved for a coming release, where the model reviews what was typed during the recording and picks out the values that must change. It behaves the same as marking them yourself until then. |
+| Identification | Let the model find them | The model reviews what was typed during the recording and picks out the values that must change. It is deliberately cautious and often finds none, which is normal. |
+| | Only ones I marked myself | Only `{{placeholders}}` you wrote into the test become parameters. |
 
 **Reset to defaults** restores the shipped parameters and leaves caching on.
+
+## Running the same project from the CLI
+
+`askui run` reads the project's setting too. With `utils/caching.json` present it uses
+everything in it — whether caching runs at all, the replay parameters, and the same
+`.askui_cache` folder the app records into — so a nightly pipeline and your desktop
+behave the same without the settings being written twice.
+
+Any `--cache-*` flag you pass still wins, so a pipeline can override one value without
+restating the rest:
+
+```bash
+# Uses the project's settings, but refuses a drifted screen more strictly
+askui run tests --cache-visual-validation-threshold 2
+```
+
+A project with no `utils/caching.json` is unaffected: the CLI keeps its own defaults.
 
 ## Turning it off
 
