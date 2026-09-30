@@ -10,10 +10,8 @@ run costs far fewer tokens and, when nothing has changed, finishes faster.
 
 <Callout type="warn" title="Experimental — and not on by default">
 We do not recommend caching by default. A replay only knows the state it was recorded
-in, so it can produce a wrong result when your app behaves differently. In practice we
-have seen caching move cost rather than remove it: out of tokens and into time spent
-working out why a replay went wrong. Try it on a few stable tests and compare the
-reports before turning it on for a whole suite.
+in, so it can produce a wrong result when your app behaves differently. Try it on a
+few stable tests and compare the reports before turning it on for a whole suite.
 </Callout>
 
 ## Turning it on
