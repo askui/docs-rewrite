@@ -1,0 +1,113 @@
+---
+icon: History
+title: Caching
+description: Replay what the agent did last time instead of deciding every step again. Cheaper regression runs, with a trade-off you should understand before you turn it on.
+---
+
+**Caching** records what the agent did the first time a test runs, and replays those
+steps on later runs instead of asking the model to decide each one again. A replayed
+run costs far fewer tokens and, when nothing has changed, finishes faster.
+
+<Callout type="warn" title="Experimental — and not on by default">
+We do not recommend caching by default. A replay only knows the state it was recorded
+in, so it can produce a wrong result when your app behaves differently. Try it on a
+few stable tests and compare the reports before turning it on for a whole suite.
+</Callout>
+
+## Turning it on
+
+<Steps>
+<Step>
+### Open Extending → Caching
+The tab explains what caching does and what it gives up. Caching is **off for every
+project** until you turn it on here.
+</Step>
+<Step>
+### Move the switch
+A dialog states the trade-off. Nothing changes until you tick the acknowledgement and
+confirm — cancelling leaves caching off.
+</Step>
+<Step>
+### Run your tests as usual
+The first run of each test records it. The next run replays that recording. The
+conversation log of a run says what the cache did: a hit or a miss, where a replay
+paused, and whether the agent judged the result correct.
+</Step>
+</Steps>
+
+The setting is stored with your project in `utils/caching.json`, so a teammate who
+opens the same project gets the same setting. Recordings live in `.askui_cache/` inside
+your project, one file per test — delete a file to force a fresh recording.
+
+## What a replay can and cannot do
+
+- **It only knows the state it was recorded in.** A banner that appeared, a device
+  that did not connect, an item that moved position in a list — the recording knows
+  nothing about them.
+- **It checks the screen before it acts.** Before each step that acts on a position,
+  the screen around that position is compared with the recording. When it has drifted
+  too far the step is refused and the agent takes over from there. That is correct,
+  and slower than a straight run.
+- **It repairs itself.** A test whose replay keeps failing is re-recorded on the next
+  run, so a trajectory that no longer fits your app does not stay wrong.
+- **It never replays a decision.** Steps the agent has to think about are recorded as
+  hand-off points; the model performs those live.
+- **You give up some robustness.** Re-deciding every step is what lets one test travel
+  across product lines and projects without being rewritten. A recording is tied to
+  the app it was recorded against.
+
+## Advanced settings
+
+Once caching is on, **Advanced settings** holds the parameters that tune a replay. The
+defaults suit most projects.
+
+### Screen check
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| Comparison method | Perceptual hash | How the screen is compared with the recording. *Perceptual hash* tolerates small rendering differences; *average hash* is faster and less forgiving of them; *off* records no screen state at all. |
+| Drift tolerated | 10 | How different the screen may look before a step is refused, from `0` (an identical screen) to `64` (any screen at all). Higher values attempt more, and produce more wrong results. |
+| Pixels compared | 100 | The size of the square compared around each action. |
+| Replay without checking the screen | off | Skips the check entirely. Fastest, and nothing notices when your app has changed. |
+
+### Pace
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| Seconds between actions | 1 | A replay does not wait for your app the way the agent does. Keep this at a second or more unless your app settles faster. Up to 30. |
+
+### Values that change each run
+
+Some values must not be replayed literally — today's date, a one-time code, a
+generated reference number. These are recorded as parameters and filled in fresh each
+run.
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| Identification | Let the model find them | The model reviews what was typed during the recording and picks out the values that must change. It is deliberately cautious and often finds none, which is normal. |
+| | Only ones I marked myself | Only `{{placeholders}}` you wrote into the test become parameters. |
+
+**Reset to defaults** restores the shipped parameters and leaves caching on.
+
+## Running the same project from the CLI
+
+`askui run` reads the project's setting too. With `utils/caching.json` present it uses
+everything in it — whether caching runs at all, the replay parameters, and the same
+`.askui_cache` folder the app records into — so a nightly pipeline and your desktop
+behave the same without the settings being written twice.
+
+Any `--cache-*` flag you pass still wins, so a pipeline can override one value without
+restating the rest:
+
+```bash
+# Uses the project's settings, but refuses a drifted screen more strictly
+askui run tests --cache-visual-validation-threshold 2
+```
+
+A project with no `utils/caching.json` is unaffected: the CLI keeps its own defaults.
+
+## Turning it off
+
+Move the switch back. No confirmation is asked — going back to deciding every step is
+not the risky direction. Your recordings stay in `.askui_cache/`; nothing reads them
+while caching is off.
