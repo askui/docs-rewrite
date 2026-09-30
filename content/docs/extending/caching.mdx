@@ -36,8 +36,8 @@ paused, and whether the agent judged the result correct.
 </Steps>
 
 The setting is stored with your project in `utils/caching.json`, so a teammate who
-opens the same project gets the same setting. Recordings live in `.askui_cache/`, one
-file per test — delete a file to force a fresh recording.
+opens the same project gets the same setting. Recordings live in `.askui_cache/` inside
+your project, one file per test — delete a file to force a fresh recording.
 
 ## What a replay can and cannot do
 
@@ -66,7 +66,7 @@ defaults suit most projects.
 | Setting | Default | What it does |
 | --- | --- | --- |
 | Comparison method | Perceptual hash | How the screen is compared with the recording. *Perceptual hash* tolerates small rendering differences; *average hash* is faster and less forgiving of them; *off* records no screen state at all. |
-| Drift tolerated | 10 | How different the screen may look before a step is refused. `0` demands an identical screen. Higher values attempt more, and produce more wrong results. |
+| Drift tolerated | 10 | How different the screen may look before a step is refused, from `0` (an identical screen) to `64` (any screen at all). Higher values attempt more, and produce more wrong results. |
 | Pixels compared | 100 | The size of the square compared around each action. |
 | Replay without checking the screen | off | Skips the check entirely. Fastest, and nothing notices when your app has changed. |
 
@@ -74,7 +74,7 @@ defaults suit most projects.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| Seconds between actions | 1 | A replay does not wait for your app the way the agent does. Keep this at a second or more unless your app settles faster. |
+| Seconds between actions | 1 | A replay does not wait for your app the way the agent does. Keep this at a second or more unless your app settles faster. Up to 30. |
 
 ### Values that change each run
 
@@ -84,8 +84,8 @@ run.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| Identification | Let the model find them | The model reviews what was typed during the recording and picks out the values that must change. It is deliberately cautious and often finds none, which is normal. |
-| | Only ones I marked myself | Only `{{placeholders}}` you wrote into the test become parameters. |
+| Identification | Only ones I marked myself | Only `{{placeholders}}` you wrote into the test become parameters. |
+| | Let the model find them | Reserved for a coming release, where the model reviews what was typed during the recording and picks out the values that must change. It behaves the same as marking them yourself until then. |
 
 **Reset to defaults** restores the shipped parameters and leaves caching on.
 
