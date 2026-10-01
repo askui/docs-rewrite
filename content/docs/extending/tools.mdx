@@ -186,7 +186,9 @@ login protected by two-factor authentication can go through unattended.
 
 - **Use it when:** the application asks for a code after the password. Enrol one
   authenticator per account your tests sign in as; a test names the one it wants.
-- **Parameters:** **Authenticators** — a name and the setup key, per account.
+- **Parameters:** **Authenticators** — a name and the setup key, per account. Under
+  **Advanced**, the code length and window for a site that does not use the usual
+  six digits and thirty seconds.
 
 Add it with the key the site shows at enrolment, next to the QR code — usually
 labelled *manual entry key* or *can't scan the QR code?*. Paste it exactly as
@@ -207,6 +209,21 @@ that only a person present can satisfy them, and no tool can change that.
 For a code that arrives **by e-mail**, use the **Read Email** tool instead and
 let the test read it out of the message.
 </Callout>
+
+### Getting the setup key
+
+Nearly every site shows it next to the QR code, behind a link like *can't scan the
+QR code?* or *manual entry key*. Paste it as shown — spacing and dashes do not
+matter.
+
+If only a QR code is offered, it encodes the same thing as a URI
+(`otpauth://totp/…?secret=…`); the value after `secret=` is the key. That URI also
+says when a site departs from the usual six digits and thirty seconds, with
+`digits=` and `period=` — set those under **Advanced**.
+
+You cannot read the key back out of an authenticator app afterwards; they are built
+not to show it again. If 2FA is already set up and you no longer have the key, turn
+it off and on again, and enter the new key in both your app and here.
 
 A key with the wrong letters is still a well-formed key, so it will produce codes
 that the site simply rejects. If a login fails with "invalid code", re-copy the
