@@ -19,7 +19,6 @@ possibly do. Manage it under **Extending → Tool Store**.
 | Tier | Behavior |
 | --- | --- |
 | **Device tools** | Screenshot, click, type, injected automatically for the run's device kind. Always on, not listed |
-| **Authenticator tool** | Read MFA Code, there when the project has an [authenticator](/docs/extending/secrets#authenticators) and gone when it has none. Not listed, nothing to switch |
 | **Default tools** | Enabled unless you switch them off |
 | **Optional tools** | Disabled until you enable them, typically tools with reach beyond the UI under test, like a shell or database access |
 | **[Custom tools](/docs/extending/custom-tools)** | Your own C# tools from `utils/custom_tools/`, always part of the run's toolbox once the file exists |
@@ -186,9 +185,10 @@ The current six-digit code from an authenticator you added under
 [Secrets](/docs/extending/secrets#authenticators), so a login protected by two-factor
 authentication can go through unattended.
 
-**You will not find this one in the Tool Store, and there is nothing to enable.** Add an
-authenticator under Secrets and the agent has it; remove the last one and it is gone.
-There is no state in between where a switch would mean anything.
+**Adding your first authenticator switches this tool on for you**, because an enrolment
+nobody can read is of no use. If you switch it off afterwards it stays off, and the Tool
+Store shows a note under the row, so a test that fails at the code screen does not send
+you looking in the wrong place.
 
 - **Use it when:** the application asks for a code after the password.
 - **Parameters:** none — the authenticators live under Secrets, and a test names the one
