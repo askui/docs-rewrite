@@ -66,6 +66,9 @@ nothing ran, so the pipeline never shows green for nothing.
 | `--reporter <list>` | `html,md` | Report formats, comma-separated: `html`, `md`, `junit`. See [Reports](#reports). |
 | `--device <profile>` | the plan's device, or the only profile | Device profile from `devices.json`, by id or by a name only one profile has. |
 | `--surface <kind>` | none | Ad-hoc run without a profile: `agent-os`, `web`, `android`, or `ios`. Excludes `--device`. |
+| `--cache on\|off` | the Project's setting, else off | Trajectory caching for this run. See [Caching](#caching). |
+| `--cache-dir <dir>` | `<project>/.askui_cache` | Folder of the recorded trajectories. |
+| `--cache-set <name>=<value>` | the Project's setting | One caching setting for this run. Repeatable. |
 
 ## Choosing the device
 
@@ -254,6 +257,35 @@ Two differences from the app, both so a broken runner never reads as a failed
 test: a custom tool that does not compile, and an enabled MCP server the CLI
 cannot reach, stop the run with exit code 3 before the first model call.
 
+## Caching
+
+The CLI caches as the Project says: [Extending → Caching](/docs/extending/caching)
+in the app writes `utils/caching.json`, and `askui run` reads the same file. A
+Project without that file caches nothing. Flags change the Project's setting for
+one run, and a flag you pass always wins:
+
+- `--cache on` or `--cache off` turns caching on or off.
+- `--cache-dir <dir>` moves the recordings out of `<project>/.askui_cache`.
+- `--cache-set <name>=<value>` changes one setting. Repeat it for more.
+
+`--cache-set` takes the names of `utils/caching.json`:
+
+| Name | Values |
+| --- | --- |
+| `delaySeconds` | Seconds between replayed actions, 0 to 30 |
+| `skipVisualValidation` | `true` or `false` |
+| `visualThreshold` | How much a screen may differ, 0 to 64 |
+| `visualRegionSize` | Pixels compared around each action, 1 to 1000 |
+| `visualMethod` | `phash`, `ahash`, or `none` |
+| `parameterStrategy` | `llm` or `preset` |
+
+```bash
+askui run --cache on --cache-set delaySeconds=2 --cache-set visualMethod=ahash
+```
+
+A wrong name or a value out of range is exit code 2. `--cache-set` alone does not
+turn caching on: only `--cache on` or the Project's setting do.
+
 ## Reports
 
 Each run writes its results into the output directory (see `--output`).
@@ -309,7 +341,9 @@ call, so it costs nothing. A warning never changes the exit code.
 
 <Callout title="Upgrading from an earlier CLI">
 Exit code `2` used to cover configuration errors too; those are exit code `3`
-now. Several flags were renamed or removed. An old flag is a usage error
+now. Caching used to run by default. It now follows the Project and is off
+without `utils/caching.json`, so pass `--cache on` to keep the old behavior.
+Several flags were renamed or removed. An old flag is a usage error
 (exit code 2), so an old pipeline fails loudly instead of running something
 else:
 
@@ -319,7 +353,8 @@ else:
 | `--workspace` | `--output` |
 | `--api-key`, `--endpoint-url` | `--model-api-key`, `--model-endpoint` |
 | `--controller-host`, `--controller-port`, `--display`, `--device-serial` | a [device profile](#choosing-the-device), selected with `--device` |
-| `--cache-*` | removed |
+| `--cache-strategy auto\|none` | `--cache on\|off` |
+| `--cache-delay-between-actions`, `--cache-skip-visual-validation`, `--cache-visual-validation-threshold`, `--cache-visual-validation-region-size`, `--cache-visual-verification-method`, `--cache-parameter-identification-strategy` | `--cache-set` with `delaySeconds`, `skipVisualValidation`, `visualThreshold`, `visualRegionSize`, `visualMethod`, `parameterStrategy` |
 </Callout>
 
 ## Running in CI
