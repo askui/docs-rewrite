@@ -19,6 +19,7 @@ possibly do. Manage it under **Extending → Tool Store**.
 | Tier | Behavior |
 | --- | --- |
 | **Device tools** | Screenshot, click, type, injected automatically for the run's device kind. Always on, not listed |
+| **Authenticator tool** | Read MFA Code, there when the project has an [authenticator](/docs/extending/secrets#authenticators) and gone when it has none. Not listed, nothing to switch |
 | **Default tools** | Enabled unless you switch them off |
 | **Optional tools** | Disabled until you enable them, typically tools with reach beyond the UI under test, like a shell or database access |
 | **[Custom tools](/docs/extending/custom-tools)** | Your own C# tools from `utils/custom_tools/`, always part of the run's toolbox once the file exists |
@@ -182,8 +183,12 @@ Check whether a file or directory exists on this machine.
 #### <Lucide name="shield-check" /> Read MFA Code [#read-mfa-code]
 
 The current six-digit code from an authenticator you added under
-[Secrets](/docs/extending/secrets), so a login protected by two-factor authentication can
-go through unattended.
+[Secrets](/docs/extending/secrets#authenticators), so a login protected by two-factor
+authentication can go through unattended.
+
+**You will not find this one in the Tool Store, and there is nothing to enable.** Add an
+authenticator under Secrets and the agent has it; remove the last one and it is gone.
+There is no state in between where a switch would mean anything.
 
 - **Use it when:** the application asks for a code after the password.
 - **Parameters:** none — the authenticators live under Secrets, and a test names the one
@@ -196,6 +201,13 @@ go through unattended.
 
 It cannot answer a push notification or a hardware security key, and a code that arrives
 by e-mail is the Read Email tool's job instead.
+
+<Callout type="warn" title="Not yet usable with caching">
+A test that reads an MFA code cannot be replayed from a [cached](/docs/extending/caching)
+trajectory today. The replay types the code that was recorded, which expired long before
+the replay ran. Leave caching off for projects whose tests sign in through two-factor
+authentication.
+</Callout>
 
 ### Files on the controlled machine
 
