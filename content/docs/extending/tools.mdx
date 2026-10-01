@@ -177,6 +177,26 @@ Check whether a file or directory exists on this machine.
 7. Check that the file "order_export.pdf" exists in C:/exports.
 ```
 
+### Signing in
+
+#### <Lucide name="shield-check" /> Read MFA Code [#read-mfa-code]
+
+The current six-digit code from an authenticator you added under
+[Secrets](/docs/extending/secrets), so a login protected by two-factor authentication can
+go through unattended.
+
+- **Use it when:** the application asks for a code after the password.
+- **Parameters:** none — the authenticators live under Secrets, and a test names the one
+  it wants.
+
+```md
+3. Type the password and continue.
+4. Read the MFA code for "admin" and enter it.
+```
+
+It cannot answer a push notification or a hardware security key, and a code that arrives
+by e-mail is the Read Email tool's job instead.
+
 ### Files on the controlled machine
 
 For runs where the application under test is on **another machine**
