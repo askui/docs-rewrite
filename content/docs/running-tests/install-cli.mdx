@@ -32,17 +32,12 @@ The CLI ships with [AskUI Desktop](/docs/get-started/install-desktop).
     link away again.
   </Tab>
   <Tab value="CI runner">
-    A build server needs no AskUI Desktop. Each release publishes the CLI as
-    an archive per platform, `askui-cli-<version>-<rid>.tar.gz` (`.zip` for
-    Windows), with a `.sha256` checksum file beside it, for example
-    `askui-cli-<version>-linux-x64.tar.gz`. Platforms: `win-x64`,
-    `osx-arm64`, `linux-x64`, `linux-arm64`.
+    A build server gets AskUI Desktop too, since the CLI ships inside it. See
+    [AskUI in CI](/docs/guides/askui-in-ci#1-get-the-cli-onto-the-runner) for
+    an install without clicks on a Windows or macOS runner.
 
-    The archives are published under
-    `files.askui.com/releases/AskUIDesktop/<version>/`. That download location
-    is still being set up; until it is live, ask your AskUI contact for the
-    archive. See [AskUI in CI](/docs/guides/askui-in-ci) for a pinned,
-    checksum-verified install step.
+    Linux runners are not supported yet: AskUI Desktop has no Linux version,
+    and a standalone CLI download is planned.
   </Tab>
 </Tabs>
 </Step>
@@ -78,9 +73,8 @@ VM for you.
   </Tab>
   <Tab value="Browser">
     The CLI downloads the browser it drives (Chromium via Playwright) the
-    first time it connects. On a clean Linux runner, install the browser and
-    its system libraries up front, see
-    [Runner requirements](/docs/guides/askui-in-ci#runner-requirements).
+    first time it connects, so the machine needs internet access for that
+    first run.
   </Tab>
   <Tab value="Android">
     `adb` must be on your `PATH` and the device (or emulator) already

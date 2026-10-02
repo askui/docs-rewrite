@@ -6,8 +6,7 @@ description: Ready-to-use pipeline configurations for running AskUI tests in Git
 These examples show how to run `askui run` in the most common CI environments.
 All examples assume:
 
-- The CLI is on the runner: AskUI Desktop is installed there (its installer
-  puts `askui` on `PATH`), or the CLI release archive is installed, see
+- The CLI is on the runner: AskUI Desktop is installed there, see
   [AskUI in CI](/docs/guides/askui-in-ci#1-get-the-cli-onto-the-runner).
 - `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN` are stored as CI secrets.
 - Your test project is checked into the repository, with the
@@ -133,8 +132,8 @@ test ran. All codes: [Exit codes](/docs/running-tests/cli#exit-codes).
 
 ## Connecting to a remote AgentOS
 
-If your CI runner is not the machine being automated (e.g. a Linux runner
-automating a separate Windows VM), the device profile points at the remote
+If your CI runner is not the machine being automated (e.g. a Windows runner
+automating a separate test VM), the device profile points at the remote
 AgentOS. Leave the host to the pipeline with a variable in the profile's
 **host** field:
 

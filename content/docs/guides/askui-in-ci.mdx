@@ -10,28 +10,41 @@ when a test fails.
 
 ## 1: Get the CLI onto the runner
 
-On a machine with AskUI Desktop, the CLI is already there
-([Install the CLI](/docs/running-tests/install-cli)). A clean runner installs
-a pinned version from the release archive, `askui-cli-<version>-<rid>.tar.gz`
-(`.zip` for Windows), and checks it against the `.sha256` file beside it:
+The CLI ships inside AskUI Desktop, so the runner gets AskUI Desktop. On a
+self-hosted runner, install it once like on any machine
+([Install the CLI](/docs/running-tests/install-cli)). To install it in the
+pipeline itself, take the installer of the version you want from the
+release's **Downloads** table. The versioned link pins that version.
 
-```bash
-VERSION=<version>
-ASSET=askui-cli-$VERSION-linux-x64.tar.gz
-BASE=https://files.askui.com/releases/AskUIDesktop/$VERSION
-curl -fsSLO "$BASE/$ASSET" -O "$BASE/$ASSET.sha256"
-sha256sum -c "$ASSET.sha256"
-tar -xzf "$ASSET"
-export PATH="$PWD/askui-cli-$VERSION-linux-x64:$PATH"
-askui --version
+On a **Windows** runner, the installer runs silently with `/S` and puts
+`askui` on the user's `PATH`. A runner that is already running does not see
+that change, so add the folder for the next steps yourself, here for GitHub
+Actions:
+
+```powershell
+Invoke-WebRequest "<installer URL>" -OutFile askui-setup.exe
+Start-Process .\askui-setup.exe -ArgumentList '/S' -Wait
+"$env:LOCALAPPDATA\Programs\AskUI Desktop\bin" | Out-File -Append $env:GITHUB_PATH
 ```
 
-Archives exist for `win-x64`, `osx-arm64`, `linux-x64`, and `linux-arm64`.
+On a **macOS** runner, copy the app out of the disk image and link the CLI
+into a folder on `PATH`:
+
+```bash
+curl -fsSL "<disk image URL>" -o askui.dmg
+hdiutil attach askui.dmg -nobrowse -mountpoint /Volumes/AskUI
+cp -R "/Volumes/AskUI/AskUI Desktop.app" /Applications/
+hdiutil detach /Volumes/AskUI
+mkdir -p ~/.local/bin
+ln -sf "/Applications/AskUI Desktop.app/Contents/MacOS/askui" ~/.local/bin/askui
+echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+```
+
+Then check the version in the next step: `askui --version`.
 
 <Callout type="warn">
-The download location for the CLI archives is still being set up. Until it
-is live, install AskUI Desktop on the runner, or ask your AskUI contact for
-the archive.
+Linux runners are not supported yet: AskUI Desktop has no Linux version.
+A standalone CLI download for CI runners is planned.
 </Callout>
 
 Provide credentials as environment variables from the CI secret store:
@@ -58,12 +71,12 @@ so start it in an earlier pipeline step.
 
 ### Runner requirements
 
-The archive carries the CLI and the browser driver. Each device kind needs
+AskUI Desktop carries the CLI and the browser driver. Each device kind needs
 more on the runner:
 
 | Device | The runner needs |
 | --- | --- |
-| Browser (`web`) | A browser. From the extracted folder: `.playwright/node/<platform>/node .playwright/package/cli.js install --with-deps chromium` (for example `<platform>` = `linux-x64`). `firefox` and `webkit` install the same way. |
+| Browser (`web`) | Internet access on the first web run, when the CLI downloads Chromium. |
 | Desktop (`agent-os`) | The AskUI [AgentOS](/docs/agentos) controller, running and listening at the profile's host and port. |
 | Android | `adb` on `PATH`, and the device or emulator already running. The profile's serial picks the device. |
 | iOS | A booted simulator or a connected device with the profile's udid, and `idb_companion` for a simulator. |
