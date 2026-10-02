@@ -82,12 +82,20 @@ tool** on **Extending → Custom Tools**.
 
 ToolForge writes against the exact device API this version of AskUI Desktop ships.
 If you ask for something the device can't do from a tool, it says so during Verify
-and suggests what is possible. The agent already clicks, types and logs in through
-a page by itself, so for that kind of work ToolForge asks whether you need a tool at
-all — often a test step is enough.
+and suggests what is possible.
 
-If the generated tools miss the mark, a stronger [Forge Model](#the-forge-model)
-helps most. Writing tool code is harder than writing a UI prompt.
+**UI work is the agent's job, not a tool's.** Logging in, navigating, clicking,
+filling a form and reading the screen are what the agent does itself. ToolForge
+declines such a request even though a tool could do it. A tool would hide the steps
+from the report and break without warning when the screen changes. Instead it shows
+draft steps to copy into your test, written as a
+[procedure](/docs/writing-tests/procedures) when several tests need them. A tool is
+right for work below the screen: an API call, a protocol, files or data, or a
+computed value. If your request mixes both, describe only that part and verify
+again.
+
+If the generated tools miss the mark, check the [Forge Model](#the-forge-model) —
+a stronger model helps most.
 
 <Callout type="info" title="Review before you rely on it">
 A generated tool is a starting point — read it, and validate it like any other
@@ -119,11 +127,11 @@ when it ships.
 ## The Forge Model
 
 Every Forge runs on the model you choose under **Settings → Account → Forge
-Model**. By default it is the **same model as your test runs**.
+Model**.
 
-- On the AskUI hub you can instead pick the **best available** model or any other
-  hosted model. Forge runs only occasionally, so a stronger model is usually worth
-  it.
+- On the AskUI hub the default is the **best available** model. Forge runs only
+  occasionally, so the stronger model is worth it. You can instead pick the **same
+  model as your test runs** or any other hosted model.
 - If you **bring your own model**, untick **Same as for my test runs** to
   configure a separate provider for Forge (endpoint, model, API key). See
   [Model providers](/docs/extending/model-providers).
