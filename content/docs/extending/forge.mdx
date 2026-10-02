@@ -90,9 +90,11 @@ declines such a request even though a tool could do it. A tool would hide the st
 from the report and break without warning when the screen changes. Instead it shows
 draft steps to copy into your test, written as a
 [procedure](/docs/writing-tests/procedures) when several tests need them. A tool is
-right for work below the screen: an API call, a protocol, files or data, or a
-computed value. If your request mixes both, describe only that part and verify
-again.
+right for work below the screen: an API call, a protocol, files or data, a
+computed value, or processing a screenshot (comparing it with a reference image,
+decoding a barcode). If a step needs a secret, turn on **Agent may use this
+secret** for it so the agent can type it. If your request mixes both, describe only that part in **Narrow the
+request** and verify again.
 
 If the generated tools miss the mark, check the [Forge Model](#the-forge-model) —
 a stronger model helps most.
