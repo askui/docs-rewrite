@@ -10,37 +10,18 @@ when a test fails.
 
 ## 1: Get the CLI onto the runner
 
-The CLI ships inside AskUI Desktop, so the runner gets AskUI Desktop. On a
-self-hosted runner, install it once like on any machine
-([Install the CLI](/docs/running-tests/install-cli)). To install it in the
-pipeline itself, take the installer of the version you want from the
-release's **Downloads** table. The versioned link pins that version.
+The CLI ships inside AskUI Desktop, so install AskUI Desktop on the runner
+machine once, as on any machine
+([Install the CLI](/docs/running-tests/install-cli)):
 
-On a **Windows** runner, the installer runs silently with `/S` and puts
-`askui` on the user's `PATH`. A runner that is already running does not see
-that change, so add the folder for the next steps yourself, here for GitHub
-Actions:
+- **Windows:** the installer puts `askui` on your `PATH`.
+- **macOS:** open **Settings → This machine → Command line** and click
+  **Add to PATH**.
 
-```powershell
-Invoke-WebRequest "<installer URL>" -OutFile askui-setup.exe
-Start-Process .\askui-setup.exe -ArgumentList '/S' -Wait
-"$env:LOCALAPPDATA\Programs\AskUI Desktop\bin" | Out-File -Append $env:GITHUB_PATH
-```
-
-On a **macOS** runner, copy the app out of the disk image and link the CLI
-into a folder on `PATH`:
-
-```bash
-curl -fsSL "<disk image URL>" -o askui.dmg
-hdiutil attach askui.dmg -nobrowse -mountpoint /Volumes/AskUI
-cp -R "/Volumes/AskUI/AskUI Desktop.app" /Applications/
-hdiutil detach /Volumes/AskUI
-mkdir -p ~/.local/bin
-ln -sf "/Applications/AskUI Desktop.app/Contents/MacOS/askui" ~/.local/bin/askui
-echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-```
-
-Then check the version in the next step: `askui --version`.
+A runner service that was already running needs a restart to see the new
+`PATH`. On macOS, a runner service does not read your shell profile, so if
+`askui` is still not found, add `~/.local/bin` to the runner's own `PATH`
+setting.
 
 <Callout type="warn">
 Linux runners are not supported yet: AskUI Desktop has no Linux version.
