@@ -99,6 +99,26 @@ request** and verify again.
 If the generated tools miss the mark, check the [Forge Model](#the-forge-model) —
 a stronger model helps most.
 
+### Edit a custom tool
+
+To change a tool you already have — forged or written by hand — click the **pen
+icon** next to it on **Extending → Custom Tools**. ToolForge opens on that file:
+it shows which file you are editing and already has the tool's current code, so
+you don't paste anything.
+
+- Describe only the **change**, for example "also accept base64 input" or "the
+  login field is called `user_name`".
+- Run the Verify loop above. Everything you don't ask to change stays as it is,
+  including the tool's name.
+- Click **Accept & Update Tool**. The new version replaces the same file in
+  `utils/custom_tools/`, under the same name, once it compiles and a run would
+  load it. No second file is created.
+
+The same rules apply as for a new tool: a change that turns the tool into UI work
+is declined in favour of test steps, and a change that never compiles writes
+nothing. If you also have the file open in your IDE, save your work there first —
+accepting overwrites the file.
+
 <Callout type="info" title="Review before you rely on it">
 A generated tool is a starting point — read it, and validate it like any other
 custom tool before trusting it in a run. See the

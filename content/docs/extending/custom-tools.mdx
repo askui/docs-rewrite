@@ -21,15 +21,18 @@ or the AskUI Solution Engineering team, not edited ad hoc by test authors.
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
-- **File list**: every `.cs` file in `utils/custom_tools/`. The trash icon
-  removes one: the file is deleted, the agent loses the tool on the next run.
+- **File list**: every `.cs` file in `utils/custom_tools/`. The pen icon opens
+  the tool in [ToolForge](/docs/extending/forge#edit-a-custom-tool) so you can
+  describe a change to it. The trash icon removes one: the file is deleted, the
+  agent loses the tool on the next run.
 - **Drop zone**: drop `.cs` files or click to choose. Copying files into
   the folder manually works too, the folder is watched.
 - **Open folder**: opens `utils/custom_tools/` in your file explorer.
 - **Warnings**: the same NuGet package requested at different versions
   across files is flagged; the higher version wins at run start.
 
-There is no in-app code editor, write tools in your own IDE.
+There is no in-app code editor: write tools in your own IDE, or describe a change
+to an existing tool with its pen icon.
 
 <Callout type="info" title="Or let the app draft it">
 You don't have to write the C# yourself: **Forge a tool** on the Custom Tools tab
