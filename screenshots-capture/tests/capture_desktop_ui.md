@@ -82,6 +82,16 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     Verify. If the project has no `ui.md`, skip this step and say so in the
     report.
 
+10c. Still on the **Tests** page, close every open editor tab so the editor shows
+    "No test open". Click its **Forge a test** button. Wait until the TestForge
+    page is shown (the "Experimental" badge, the "Sources" section with
+    "Choose files or a .zip" and "pick a folder", the optional "Description"
+    field and the disabled **Start forging** button), then call
+    `save_screenshot[desktop-tests-forge-test]`. Return to the Tests page
+    afterwards — do NOT add a source, pick a folder, type a description, or
+    click Start forging. If the page shows "TestForge needs an AskUI account"
+    instead, take the screenshot anyway and say so in the report.
+
 11. Right-click on an empty area of the file tree (below the last file) so the
     context menu opens with its **Create** section — "New Markdown",
     "New CSV", "New folder", and any "New setup.md"-style entries. With the

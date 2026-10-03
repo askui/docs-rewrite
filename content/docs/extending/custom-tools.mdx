@@ -21,15 +21,18 @@ or the AskUI Solution Engineering team, not edited ad hoc by test authors.
   className="mt-4 max-w-full rounded-md border border-fd-border shadow-sm"
 />
 
-- **File list**: every `.cs` file in `utils/custom_tools/`. The trash icon
-  removes one: the file is deleted, the agent loses the tool on the next run.
+- **File list**: every `.cs` file in `utils/custom_tools/`. The pen icon opens
+  the tool in [ToolForge](/docs/extending/forge#edit-a-custom-tool) so you can
+  describe a change to it. The trash icon removes one: the file is deleted, the
+  agent loses the tool on the next run.
 - **Drop zone**: drop `.cs` files or click to choose. Copying files into
   the folder manually works too, the folder is watched.
 - **Open folder**: opens `utils/custom_tools/` in your file explorer.
 - **Warnings**: the same NuGet package requested at different versions
   across files is flagged; the higher version wins at run start.
 
-There is no in-app code editor, write tools in your own IDE.
+There is no in-app code editor: write tools in your own IDE, or describe a change
+to an existing tool with its pen icon.
 
 <Callout type="info" title="Or let the app draft it">
 You don't have to write the C# yourself: **Forge a tool** on the Custom Tools tab
@@ -116,19 +119,31 @@ What the example uses, and what else a tool file can do:
   ZipFile.ExtractToDirectory("export.zip", "export");
   ```
 
-- **NuGet packages**: for everything the standard library doesn't cover,
-  declared per file at the top, `#:package Npgsql@8.0.3`, resolved
-  through your normal `NuGet.config`, so enterprise feeds work unchanged.
+- **Libraries the app ships for tools**: also available without a package —
+  the AskUI SDK, **ZXing.Net** (QR and barcodes, namespace `ZXing`) and
+  **SixLabors.ImageSharp** (images). Don't declare them: a tool always runs on
+  the app's copy, whatever version a directive names.
+- **NuGet packages**: for everything else, declared per file at the top,
+  `#:package Npgsql@8.0.3`, one package per line with an exact version,
+  resolved through your normal `NuGet.config`, so enterprise feeds work
+  unchanged. Declare a library even if the app happens to contain it (for
+  example Newtonsoft.Json); while it does, the app's copy is used. Packages
+  with a platform-specific build or a native part, such as `System.IO.Ports`
+  for serial ports or `Microsoft.Data.Sqlite`, get the build for the machine
+  the run is on.
+- **Nothing else is injected.** A constructor takes either nothing or exactly
+  one device layer; a constructor that asks for anything else (a logger, an
+  `HttpClient`, configuration) is never called. Create what you need inside the
+  tool.
 
 ## A tool using all of it
 
 A visual reference check, it pulls a screenshot through the run's device
-layer (`IAgentOs` in the constructor), compares pixels with a NuGet package
-(`#:package`), and returns an **image** the agent can look at, not just text:
+layer (`IAgentOs` in the constructor), compares pixels with ImageSharp (shipped
+with the app, so no `#:package` line), and returns an **image** the agent can
+look at, not just text:
 
 ```csharp title="utils/custom_tools/compare_with_reference.cs"
-#:package SixLabors.ImageSharp@3.1.7
-
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
