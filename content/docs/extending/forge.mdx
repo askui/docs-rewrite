@@ -1,7 +1,7 @@
 ---
 icon: Hammer
 title: Forge
-description: Let the model draft the pieces of your project you would otherwise write by hand — UI prompts from screenshots, custom tools from a description, and soon tests from recordings.
+description: Let the model draft the pieces of your project you would otherwise write by hand — UI prompts from screenshots, custom tools from a description, and tests from recordings and specs.
 ---
 
 **Forge** is the family of features that lets the model draft parts of your
@@ -11,7 +11,7 @@ asks about anything missing, and only when you **accept** does it write a file
 into your project. Nothing is written before you accept, and what it writes is a
 draft to read and refine — not a finished product.
 
-There are two Forges today and a third on the way:
+There are three Forges:
 
 - **[PromptForge](#promptforge--ui-prompts-from-screenshots)** drafts your
   [UI information](/docs/writing-tests/agents-and-prompts#ui-information) (`ui.md`)
@@ -19,8 +19,8 @@ There are two Forges today and a third on the way:
 - **[ToolForge](#toolforge--custom-tools-from-a-description)** drafts a
   [custom tool](/docs/extending/custom-tools) (a `.cs` file) from a plain-language
   description.
-- **[TestForge](#testforge--tests-from-recordings-coming-soon)** — coming soon —
-  turns a narrated screencast or a written spec into a test.
+- **[TestForge](#testforge--tests-from-recordings-and-specs)** turns a narrated
+  screencast or a written spec (PDF or CSV) into a test.
 
 All of them run on the same **Forge Model** (below).
 
@@ -159,15 +159,68 @@ page shows what went wrong on the last try. Either way your description and answ
 preserved and copyable, so you can send them to [support@askui.com](mailto:support@askui.com) without
 retyping them.
 
-## TestForge — tests from recordings (coming soon)
+## TestForge — tests from recordings and specs
 
-The third Forge turns material you already have into tests: upload a narrated
-screencast of someone walking through a flow, or a written spec as PDF or CSV, and
-TestForge drafts one askui test per file through the same Verify loop. Folders and
-zip archives turn into a batch of tests that keep their file and folder names.
+TestForge turns material you already have into tests. Record yourself walking
+through a flow and explaining it, or take a written spec as PDF or CSV. TestForge
+drafts **one test per file**. It is marked **Experimental** and needs an AskUI
+account: signed in to a workspace, the page works; with your own model it asks you
+to sign in.
 
-TestForge is in development and not yet in the app. This page will be updated
-when it ships.
+Open the **Tests** page with no test open and click **Forge a test**.
+
+1. **Add the sources.** Choose files or a `.zip`, or **pick a folder**:
+   - **Videos** (`.mp4`, up to 200 MB) with a spoken explanation. The voiceover is
+     transcribed automatically; English and German are supported.
+   - **PDF** (up to 25 MB) and **CSV** files.
+   - Up to **50 files** per batch. A zip or a folder keeps its sub-folders:
+     `login/happy.mp4` becomes `tests/login/happy.md`. Each source shows the test
+     path it will get.
+
+   Anything TestForge won't turn into a test — another file type, a file that is too
+   large, a file beyond the 50 — is listed as **skipped** before any model call,
+   with the reason. Nothing is dropped silently.
+2. Optionally add a **Description**: what the app is, what the sources cover, which
+   conventions to follow.
+3. Click **Start forging**. TestForge works through the sources one at a time, each
+   with the [Verify loop](#the-verify-loop) (the button is called **Continue**
+   here). For a video it first shows the length, how many still frames it took and
+   how much of the voiceover it transcribed, so you can tell when part of a long
+   recording is missing.
+4. Click **Accept & write test**. The test is written under `tests/`. If the name is
+   taken, TestForge appends `_1`, `_2`, … and never overwrites a test. Then **Edit**
+   the result in place, or go on with **Next test**.
+
+**Skip this source** moves past a source that the model rejected or that could not
+be read, so one bad file never blocks the rest of a batch.
+
+TestForge writes tests that fit your project. The model sees your
+[procedures](/docs/writing-tests/procedures), your enabled tools, the `ui.md` at the
+root of your tests, and the [setup steps](/docs/writing-tests/setup-teardown-rules)
+that already run before the test, so it does not repeat them.
+
+A test that reaches the model's output limit is not written, because its end would
+be missing. Split a long recording into shorter ones, or choose a stronger
+[Forge Model](#the-forge-model).
+
+### ffmpeg for videos
+
+TestForge needs [ffmpeg](https://ffmpeg.org) to split a video into still frames and
+audio. PDF and CSV sources never need it. When you add a video and ffmpeg is not
+found, the page shows a setup card:
+
+- **Windows:** a one-click install of a pinned ffmpeg build under the LGPL-3.0
+  license. The **Install** button stays disabled until you accept that license.
+  ffmpeg goes into `%LOCALAPPDATA%\AskUIDesktop\tools\ffmpeg`; to remove it, delete
+  that folder.
+- **macOS:** the command `brew install ffmpeg`. **Linux:** `sudo apt install ffmpeg`.
+  Run it, then click **Check again**. You do not need to restart the app.
+
+<Callout type="info" title="Where your recording goes">
+The video is split into frames and audio on your machine. The audio is transcribed
+on a model hosted by AskUI, and the frames and the transcript go to your Forge
+Model. The video file itself is never uploaded.
+</Callout>
 
 ## The Forge Model
 
@@ -180,6 +233,8 @@ Model**.
 - If you **bring your own model**, untick **Same as for my test runs** to
   configure a separate provider for Forge (endpoint, model, API key). See
   [Model providers](/docs/extending/model-providers).
+  TestForge is the exception: it transcribes a voiceover on a model hosted by
+  AskUI, so it needs you signed in to a workspace.
 
 Every Verify and every accepted generation shows its estimated cost and token
 count; with your own model the dollar amount is omitted unless you have entered
