@@ -75,7 +75,30 @@ tool** on **Extending → Custom Tools**.
   [**Extending → Secrets**](/docs/extending/secrets). ToolForge sees the **names**
   and descriptions of your secrets, never their values, and wires the tool to read
   them at run time.
-- Run the Verify loop above.
+- Optionally **attach files** the tool should know:
+  - **Images** of the device or app: PNG, JPEG, GIF, WebP or BMP, up to 15 MB each
+    and 20 MB across all of them.
+  - **Text files** such as a sample config, an API response or a data file: JSON,
+    YAML, YML, CSV, TXT, MD, XML, TOML, INI or LOG, up to 200 KB each and 500 KB
+    across all of them.
+  - Up to **30 files** in total.
+
+  Each attachment shows as a chip with its name and size; the × removes it, and a
+  file with the same name replaces the earlier one, so you can fix a config and
+  attach it again. The model takes formats, field names and values from them
+  instead of asking you. The files stay in memory for this page only — nothing is
+  written to your project. Anything else (a PDF, an executable) is refused with a
+  message naming the file.
+
+  <Callout type="warn">
+  What you attach goes into the prompt as it is, and what the model writes from it
+  becomes a tool that runs on your machines. Attach files you would vouch for.
+  **Accept** writes the tool at once and then shows its source: read it before
+  your next run uses the tool.
+  </Callout>
+- Run the Verify loop above. Once you have answered the model's first questions,
+  the description, the example source and the attachments are locked — they are
+  what the conversation is about. To change them, start a new ToolForge.
 - Click **Accept & Forge Tool**. The `.cs` file is written into
   `utils/custom_tools/` once it compiles and a run would load it, and it joins the
   agent's toolbox on the next run.
