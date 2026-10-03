@@ -20,6 +20,11 @@ The CLI ships with [AskUI Desktop](/docs/get-started/install-desktop).
   <Tab value="Windows">
     The AskUI Desktop installer puts `askui` on your `PATH`, and the
     uninstaller removes it again. Open a new terminal after the install.
+
+    **Settings → This machine → Command line** shows whether that worked. If
+    a locked-down PowerShell stopped the installer from changing `PATH`, the
+    card says so and shows where `askui.exe` is. Reinstall, or add its folder
+    to your user `PATH` by hand.
   </Tab>
   <Tab value="macOS">
     Dragging the app into Applications runs no installer, so you add the
@@ -29,7 +34,9 @@ The CLI ships with [AskUI Desktop](/docs/get-started/install-desktop).
     yet. Open a new terminal afterwards.
 
     If you move the app, the card offers **Repair**; **Remove** takes the
-    link away again.
+    link away again. Start the app from Applications, not from the disk
+    image: a link to the disk image breaks when you eject it, so the card asks
+    you to move the app first.
   </Tab>
   <Tab value="CI runner">
     A build server gets AskUI Desktop too, since the CLI ships inside it.
