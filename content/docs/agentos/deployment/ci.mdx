@@ -56,7 +56,9 @@ The client connects to AgentOS over the network via gRPC. The OS service on the 
 <details>
 <summary>Connecting to a remote AgentOS</summary>
 
-By default, AskUI Desktop and the CLI start a local AgentOS instance. To connect to a remote VM instead, disable autostart and point the client to the remote address.
+By default, AskUI Desktop starts a local AgentOS instance. To connect to a remote VM instead, disable autostart and point the client to the remote address.
+
+The [CLI](/docs/running-tests/cli) takes the address from the device profile instead: set the profile's host (for example `${AGENTOS_HOST}`) and port to the remote AgentOS, and the CLI attaches to it without starting a local one. See [Connecting to a remote AgentOS](/docs/agentos/deployment/ci-examples#connecting-to-a-remote-agentos).
 
 <Steps>
 
