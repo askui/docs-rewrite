@@ -5,8 +5,10 @@ description: CI/CD, model providers, virtual machines, proxy, and installation r
 
 ### Can I use AskUI in CI/CD pipelines?
 
-Not yet. CI execution runs through the AskUI CLI (`askui run`), which is not
-publicly available yet. The setup is documented so you can plan for it:
+Yes. CI execution runs through the AskUI CLI (`askui run`), which ships with
+AskUI Desktop. It fails the pipeline by its exit code, keeps a broken runner
+(exit code 3) apart from a failed test (exit code 1), and writes JUnit XML
+for your CI system's test report. See
 [AskUI in CI](/docs/guides/askui-in-ci) and
 [CI examples](/docs/agentos/deployment/ci-examples).
 
