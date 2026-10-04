@@ -207,14 +207,16 @@ be missing. Split a long recording into shorter ones, or choose a stronger
 
 TestForge needs [ffmpeg](https://ffmpeg.org) to split a video into still frames and
 audio. PDF and CSV sources never need it. When you add a video and ffmpeg is not
-found, the page shows a setup card:
+found, the page shows a setup card with the command that installs it:
 
-- **Windows:** a one-click install of a pinned ffmpeg build under the LGPL-3.0
-  license. The **Install** button stays disabled until you accept that license.
-  ffmpeg goes into `%LOCALAPPDATA%\AskUIDesktop\tools\ffmpeg`; to remove it, delete
-  that folder.
-- **macOS:** the command `brew install ffmpeg`. **Linux:** `sudo apt install ffmpeg`.
-  Run it, then click **Check again**. You do not need to restart the app.
+- **Windows:** `winget install --id Gyan.FFmpeg -e`
+- **macOS:** `brew install ffmpeg`
+- **Linux:** `sudo apt install ffmpeg`
+
+Run it in a terminal, then click **Check again**. You do not need to restart the app.
+Your package manager installs ffmpeg under its own license; AskUI downloads nothing.
+If ffmpeg lives somewhere unusual, set the `ASKUI_FFMPEG_DIR` environment variable to
+the folder that holds `ffmpeg` and `ffprobe`.
 
 <Callout type="info" title="Where your recording goes">
 The video is split into frames and audio on your machine. The audio is transcribed

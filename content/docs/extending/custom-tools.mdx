@@ -226,5 +226,7 @@ Return what the agent needs to decide the step, not everything you have:
   agent must see.
 
 Files compile when a run starts (cached; unchanged files cost nothing). A
-file that doesn't compile **aborts the run**, with the error as the first
-entry in the conversation log, a broken tool is a broken test environment.
+file that doesn't compile **aborts the run**, and the error is the run's
+outcome: a broken tool is a broken test environment. A tool that is only
+skipped (its device isn't part of the run, its constructor failed) doesn't fail
+the run; a notice in the HTML report (a `Warning:` line in the CLI) says why.
