@@ -91,20 +91,8 @@ run.
 
 ## Running the same project from the CLI
 
-`askui run` reads the project's setting too. With `utils/caching.json` present it uses
-everything in it — whether caching runs at all, the replay parameters, and the same
-`.askui_cache` folder the app records into — so a nightly pipeline and your desktop
-behave the same without the settings being written twice.
-
-Any `--cache-*` flag you pass still wins, so a pipeline can override one value without
-restating the rest:
-
-```bash
-# Uses the project's settings, but refuses a drifted screen more strictly
-askui run tests --cache-visual-validation-threshold 2
-```
-
-A project with no `utils/caching.json` is unaffected: the CLI keeps its own defaults.
+`askui run` reads the same `utils/caching.json`, so a pipeline and your desktop
+cache the same way. The CLI page describes the flags that change it for one run.
 
 ## Turning it off
 
