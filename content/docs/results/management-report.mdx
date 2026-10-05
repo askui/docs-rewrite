@@ -9,8 +9,8 @@ range: how many tests ran, how many passed, per test and in total, and on
 which racks. Use it to sign off a release without opening every run.
 
 No AI model builds it. It counts the [recorded results](/docs/results/run-report#test-result)
-and the run details, so the same runs always give the same report. It costs
-nothing to build.
+and the run details, so the same runs always give the same figures. It
+costs nothing to build.
 
 ## Create a report
 
@@ -37,7 +37,16 @@ file you save. To create it again, pick the same range, runs, and options.
 
 ## What the report shows
 
-The PDF holds:
+The PDF starts with a **cover page**:
+
+- The AskUI logo, **Management report**, the project name, and the date
+  range.
+- A grid with the software version, the racks, the number of runs, the
+  tests executed, the pass rate, and the number of appendix documents.
+- **Generated** with the date and time at the bottom.
+
+The next page is the **Overview**. It holds the facts and figures, the
+appendix list (when you bundled documents), the charts, and the tables:
 
 - **Key figures**: runs, tests executed, passed, failed and broken, and the
   pass rate.
@@ -85,9 +94,10 @@ Two options add the evidence of the included runs to the PDF:
 Both are off by default. Turn them on when you need one file that holds a
 release's full evidence, for example for an audit.
 
-A PDF with bundled documents starts with an **Appendix** list. Each entry
-has a number (A1, A2, …) and its kind, **Run summary** or
-**Execution report**. Click an entry to jump to its pages.
+With bundled documents, the Overview has an **Appendix** list. Each entry
+has a number (A1, A2, …), its kind, **Run summary** or
+**Execution report**, and on the right the page it starts on. Click an
+entry or its page number to jump there.
 
 ## PDF and JSON
 
