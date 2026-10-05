@@ -31,7 +31,7 @@ in the background, so the next test starts at once. When you
 target a nested folder tree, setups run top-down, teardowns bottom-up, and
 `rules.*` and `ui.*` accumulate per level, always starting at the tests
 root, so `tests/rules.md` and `tests/ui.md` apply to every run shape; a
-failing setup blocks the tests it guards.
+failing setup blocks the tests it guards, they show as `SKIPPED`.
 
 ### The target
 
@@ -311,7 +311,7 @@ one folder per test, the same files as a run in the app:
 | `<test_name>/<test_name>_report.md` | The execution report, if the test got one. |
 | `<test_name>/screenshot_<n>.png` | The screenshots the execution report embeds. |
 | `<test_name>/<test_name>_report.json` | The report's state, model, tokens, and cost. |
-| `<folder>_setup/<folder>_setup_result.json` | The recorded result of a folder's setup. Teardowns write `<folder>_teardown/<folder>_teardown_result.json`. |
+| `<folder>_setup_result.json` | The recorded result of a folder's setup, directly in the run folder. Teardowns write `<folder>_teardown_result.json`. |
 
 After Ctrl+C, the results cover what the run reached.
 
@@ -373,6 +373,12 @@ counted as not executed.
 
 A usage error or a configuration error ends the CLI before the first model
 call, so it costs nothing. A warning never changes the exit code.
+
+Of the [setups and teardowns](/docs/writing-tests/setup-teardown-rules#how-a-setup-or-teardown-ends),
+only a failed or broken setup counts: it fails the run, and exit code `1`
+follows. A teardown's result and a setup's warning appear in
+`summary_report.md` but never change the exit code. A failed teardown never
+stops the run, it goes on with the next folder.
 
 <Callout title="Upgrading from an earlier CLI">
 Exit code `2` used to cover configuration errors too; those are exit code `3`

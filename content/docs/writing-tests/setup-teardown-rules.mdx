@@ -12,8 +12,8 @@ keep the shape.
 ## Setup
 
 The suite's entry criteria: open the application, log in, reset data. Runs
-once, before any case in its folder, a failing setup records the suite's
-cases as broken instead of executing them against a bad state.
+once, before any case in its folder, a failing setup marks the suite's
+cases as skipped instead of executing them against a bad state.
 
 **Create it:** right-click the folder → **New setup.md**.
 
@@ -44,24 +44,29 @@ every case in its folder, even after failures.
 A setup and a teardown record a result at the end, like a test does. The
 result decides what happens next:
 
-| Result | Effect |
-| --- | --- |
-| `PASSED`, or nothing recorded | The phase passed. The run goes on. |
-| `WARNING` | The phase passed. Its reason appears in the [summary report](/docs/results/run-report#summary-report). |
-| `FAILED` or `BROKEN` | The phase failed. A failed setup blocks the tests beneath it, they are recorded as broken. A failed teardown is reported, and the run goes on. |
+| Result | Setup | Teardown |
+| --- | --- | --- |
+| `PASSED`, or nothing recorded | Passed. The tests run. | Passed. |
+| `WARNING` | Passed. Its reason appears in the [summary report](/docs/results/run-report#summary-report). | Its reason appears in the summary report. |
+| `FAILED` or `BROKEN` | Failed. The tests beneath it do not run and show as `SKIPPED`. | Its reason appears in the summary report. The run goes on, also with the next folder. |
 
-The result is saved in the run folder, in `<folder>_setup/<folder>_setup_result.json`
-or `<folder>_teardown/<folder>_teardown_result.json`. The agent picks the
-status by the project's
-[status definitions](/docs/extending/reporting#status-definitions).
+Only a failed or broken setup counts towards the run's result: the run
+fails, and the CLI's exit code shows it. A setup's warning and every
+teardown result appear in the summary but never count, so they change
+neither the pass rate nor the exit code. The
+[Management Report](/docs/results/management-report) leaves setups and
+teardowns out.
+
+The result is saved directly in the run folder, as
+`<folder>_setup_result.json` or `<folder>_teardown_result.json`. The agent
+picks the status by AskUI's [status definitions](/docs/extending/reporting#status-definitions).
 
 ## Rules
 
 Standing instructions that apply to every phase in the folder, not a test,
 context: interaction style, error handling, things never to do ("never
 change the language setting"). When a test counts as passed or failed is
-not a rule: it belongs in the project's
-[status definitions](/docs/extending/reporting#status-definitions).
+set by AskUI's [status definitions](/docs/extending/reporting#status-definitions), not by a rule.
 
 **Create it:** right-click the folder → **New rules.md**.
 

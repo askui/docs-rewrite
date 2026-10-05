@@ -8,9 +8,9 @@ Three reports export as **PDF** and as **JSON**:
 
 | Report | Where you export it |
 | --- | --- |
-| [Execution report](/docs/results/run-report#execution-report) of one test | **Runs** page: **Export** in the report's top-right corner, or right-click the test |
-| [Run summary](/docs/results/run-report#summary-report) of one run | **Runs** page: **Export** in the summary report's top-right corner |
-| [Management Report](/docs/results/management-report) of a date range | **Runs** page: **Management report**, then **Download PDF** or **Download JSON** |
+| [Execution report](/docs/results/run-report#execution-report) of one test | **Runs** page: **Export** in the header row above the report, or right-click the test |
+| [Run summary](/docs/results/run-report#summary-report) of one run | **Runs** page: **Export** on the summary report |
+| [Management Report](/docs/results/management-report) of a date range | **Runs** page: **Generate Management Report**, then **Download PDF** or **Download JSON** |
 
 PDF is for people who don't have the app: a test manager, a customer, an
 auditor. JSON is for your own toolchain: a dashboard, a quality gate, or a
@@ -19,9 +19,13 @@ test management system.
 ## Export a report
 
 1. Open the execution report or the summary report on the **Runs** page.
-2. Click **Export** in the report's top-right corner.
+2. Click **Export**. Above an execution report, it sits in the header row
+   with the test's name, which stays visible while the report scrolls.
 3. Pick **Export as PDF** or **Export as JSON**.
 4. Pick the folder and the file name in the save dialog.
+
+The save dialog opens in the project's `reports/` folder. The first export
+creates that folder. You can pick any other location.
 
 For an execution report, you can also right-click the test and pick
 **Export as PDF** or **Export as JSON**. The entries appear once the test's

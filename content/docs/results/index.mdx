@@ -89,8 +89,8 @@ Each report costs model tokens. The costs are written into the reports:
 
 ## Management Report
 
-The **Management report** button in the header of the runs sidebar creates
-a [Management Report](/docs/results/management-report): one PDF over the
+The green **Generate Management Report** button at the bottom of the runs
+list creates a [Management Report](/docs/results/management-report): one PDF over the
 runs in a date range.
 
 ## Conversation log
@@ -114,9 +114,11 @@ During a run the same view streams live, [Watch it live](/docs/running-tests#wat
 
 ## Share results
 
-To hand a result to someone without the app, export it. Click **Export**
-in the top-right corner of an execution report or the summary report, and
-pick **Export as PDF** or **Export as JSON**. The right-click menu of a test
+To hand a result to someone without the app, export it. Above an
+execution report, a slim header row shows the test's name and an
+**Export** button, and it stays visible while the report scrolls. The
+summary report has an **Export** button too. Pick **Export as PDF** or
+**Export as JSON**. The right-click menu of a test
 with a written report offers the same two entries:
 [Export](/docs/results/export).
 
@@ -134,8 +136,7 @@ Each run is one timestamped folder under `agent_workspace/`:
     ├── conversation.json          ← the conversation (the app re-renders it)
     ├── summary_report.md          ← run-level table
     ├── report.html                ← the Developer Report
-    ├── tests_setup/               ← a setup's result (teardowns alike)
-    │   └── tests_setup_result.json
+    ├── tests_setup_result.json    ← a setup's result (teardowns alike)
     └── open_notepad_windows/      ← one folder per test
         ├── open_notepad_windows_result.json   ← the recorded result
         ├── open_notepad_windows_report.md     ← the execution report

@@ -1,26 +1,24 @@
 ---
 icon: FileSliders
 title: Reporting
-description: Choose when execution reports are written and by which model, define when a test passes or fails in utils/status.md, and edit utils/format.md, the template every report follows.
+description: Choose when execution reports are written and by which model, and edit utils/format.md, the template every report follows. Plus the status definitions every test is judged by.
 ---
 
 The **Reporting** tab decides how your tests are reported. Open
-**Extending → Reporting**. It has four settings:
+**Extending → Reporting**. It has three settings:
 
 - **Create report**: which tests get an execution report.
 - **Reporting model**: which model writes the reports.
-- **Status definitions**: when a test is `PASSED`, `FAILED`, `WARNING`,
-  `BROKEN`, or `SKIPPED` (`utils/status.md`).
 - **Report format**: the template every report follows (`utils/format.md`).
 
-The first two are saved in `utils/reporting.json` in your project. All three
+The first two are saved in `utils/reporting.json` in your project. Both
 files travel with the project, so a colleague's clone and the
 [CLI](/docs/running-tests/cli) use the same settings.
 
 ## How a test is reported
 
 The agent ends each test by recording a **result**: a status and a short
-reason. It picks the status by your
+reason. It picks the status by AskUI's
 [status definitions](#status-definitions). That recorded result decides
 whether the test passed. A test that records nothing is `BROKEN`.
 
@@ -64,17 +62,13 @@ How to connect your own provider: [Model providers](/docs/extending/model-provid
 
 ## Status definitions
 
-The **Status definitions** section is collapsed below the other settings.
-Click it to open the editor for `utils/status.md`. Changes save
-automatically.
+Every project uses AskUI's status definitions. They define when a test is
+`PASSED`, `FAILED`, `WARNING`, `BROKEN`, or `SKIPPED`. The testing agent
+gets them in its instructions and picks the status it records by them.
+Setups and teardowns use them too.
 
-The file defines when a test is `PASSED`, `FAILED`, `WARNING`, `BROKEN`, or
-`SKIPPED`. The testing agent gets these definitions in its instructions and
-picks the status it records by them. Setups and teardowns use them too.
-
-If the file is missing, the project's next run creates it with the default
-definitions, so you can always open and edit it. Before the first run,
-click **Create utils/status.md** to start from the defaults:
+The first run of a project writes them to `utils/status.md`, and the agent
+reads them from there. The app does not offer the file for editing:
 
 ```markdown title="utils/status.md"
 - **PASSED** — every step ran and the expected outcome was observed.
@@ -84,14 +78,13 @@ click **Create utils/status.md** to start from the defaults:
 - **SKIPPED** — the test was intentionally not executed (e.g. its precondition was not met).
 ```
 
-Tailor the definitions to your process. For example, state when a slow
-response is a `WARNING` and when it is a `FAILED`. Keep all five statuses:
-the summary report, the Dashboard, and the CLI's exit code count them.
-Status rules belong in this file, not in `rules.md`.
+Because every project uses the same definitions, a `PASSED` means the same
+thing in every project. The summary report, the Dashboard, and the CLI's
+exit code count these five statuses.
 
 ## Report format
 
-The **Report format** section is collapsed below **Status definitions**. Click
+The **Report format** section is collapsed below the other settings. Click
 it to open the editor for `utils/format.md`. Changes save automatically, and
 the file applies to every report of the project.
 

@@ -49,8 +49,8 @@ The agent works in phases: the folder's `setup.md` first, then the tests,
 then `teardown.md`, with `rules.md` applied throughout. Each phase is one
 agent execution: read the file, drive the UI, record the result. The
 [execution report](/docs/results/run-report#execution-report) is written
-after the test, in the background. A failing setup records its tests as
-broken, the entry criteria weren't met.
+after the test, in the background. A failing setup skips its tests, the
+entry criteria weren't met.
 
 ## Watch it live
 

@@ -16,9 +16,9 @@ banner.". The recorded result decides whether the test passed. The summary
 report, the Dashboard, the [Management Report](/docs/results/management-report),
 and the [CLI](/docs/running-tests/cli)'s exit code all count it.
 
-The agent picks the status by your project's
-[status definitions](/docs/extending/reporting#status-definitions)
-(`utils/status.md`). By default, the status is one of:
+The agent picks the status by AskUI's
+[status definitions](/docs/extending/reporting#status-definitions). The
+status is one of:
 
 - `PASSED`: the actual result matches the expected one.
 - `FAILED`: the test executed, but the result didn't match.

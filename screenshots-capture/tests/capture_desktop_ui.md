@@ -120,9 +120,8 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     Verify.
 
 15c. Switch to the **Reporting** tab. Wait until the "Create report" and
-    "Reporting model" cards and the collapsed **Status definitions** and
-    **Report format** rows are shown. Click the collapsed **Report format** row
-    at the bottom so the `utils/format.md` editor (or, if the project has no
+    "Reporting model" cards and the collapsed **Report format** row are shown.
+    Click the collapsed **Report format** row at the bottom so the `utils/format.md` editor (or, if the project has no
     format file yet, its "Create utils/format.md" call-to-action) opens, then
     call `save_screenshot[desktop-utils-format]`. Do NOT change any setting,
     edit a file, or click Create.
@@ -138,8 +137,9 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     shown, then call `save_screenshot[desktop-utils-dreaming]`. Do NOT turn
     Dreaming on, click "Analyze now", or change any field.
 
-15f. Open the **Runs** page. In the header of the runs sidebar, click the
-    **Management report** button so the Management report dialog opens. Click
+15f. Open the **Runs** page. Click the green **Generate Management Report**
+    button at the bottom of the runs list so the Management report dialog
+    opens. Click
     the **90 days** preset so the range includes the demo run from step 1.
     Wait until the list of runs (each with a ticked checkbox) and the
     "Additional information" section are shown — or, if there are no runs in

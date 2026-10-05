@@ -13,7 +13,7 @@ belongs, versioned with your testware:
 | Capabilities and error discipline | Built into the app | No, it keeps runs honest |
 | Device prompt | Each device profile (`devices.json`) | Only when the machine has quirks |
 | UI information | `tests/ui.md` | Yes, the file you invest the most in |
-| Status definitions | `utils/status.md` | When your process judges a pass or a failure differently |
+| Status definitions | `utils/status.md`, written at the first run | No, every project uses AskUI's definitions |
 | Report format | `utils/format.md` (read by the report writer, not the testing agent) | When your reporting needs differ |
 | Rules | `tests/rules.md` (and per suite) | Yes, your rules override everything above |
 
@@ -116,13 +116,11 @@ Customize the sections when your organization needs different evidence:
 
 ## Status definitions
 
-`utils/status.md` defines when a test is PASSED, FAILED, WARNING, BROKEN,
-or SKIPPED. The testing agent gets the definitions in its instructions and
-picks the status it records by them. Edit them under
-**Extending → Reporting**, in the collapsible **Status definitions**
-section. If the file is missing, the next run creates it with the
-defaults. Status
-rules belong here, not in `rules.md`:
+AskUI's status definitions say when a test is PASSED, FAILED, WARNING,
+BROKEN, or SKIPPED. The testing agent gets them in its instructions and
+picks the status it records by them. The first run of a project writes them
+to `utils/status.md`. Every project uses the same definitions, and the app
+does not offer them for editing:
 [Status definitions](/docs/extending/reporting#status-definitions).
 
 ## Rules
