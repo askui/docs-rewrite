@@ -25,7 +25,9 @@ variables, and the exit codes. `askui --version` prints the CLI version.
 For every test, the agent works in **phases**: the folder's `setup.md` (if
 present) runs first, then the tests, then `teardown.md`, with any `rules.md`
 applied throughout. Each phase is one autonomous agent execution that reads
-the test file, drives the UI, and writes a report with screenshots. When you
+the test file, drives the UI, and records the test's result. After each test,
+an [execution report](/docs/results/run-report#execution-report) is written
+in the background, so the next test starts at once. When you
 target a nested folder tree, setups run top-down, teardowns bottom-up, and
 `rules.*` and `ui.*` accumulate per level, always starting at the tests
 root, so `tests/rules.md` and `tests/ui.md` apply to every run shape; a
@@ -64,6 +66,7 @@ nothing ran, so the pipeline never shows green for nothing.
 | `--project <dir>` | current directory | The AskUI Project root (`tests/`, `procedures/`, `plans/`, `utils/`, `devices.json`). |
 | `--output <dir>` | `<project>/agent_workspace/<UTC timestamp>` | Results directory for reports, screenshots, and the HTML log. |
 | `--reporter <list>` | `html,md` | Report formats, comma-separated: `html`, `md`, `junit`. See [Reports](#reports). |
+| `--execution-report <when>` | the Project's setting, else `always` | Which tests get an execution report: `always`, `failures` (failed or broken tests only), or `never`. See [Execution reports](#execution-reports). |
 | `--device <profile>` | the plan's device, or the only profile | Device profile from `devices.json`, by id or by a name only one profile has. |
 | `--surface <kind>` | none | Ad-hoc run without a profile: `agent-os`, `web`, `android`, or `ios`. Excludes `--device`. |
 | `--cache on\|off` | the Project's setting, else off | Trajectory caching for this run. See [Caching](#caching). |
@@ -298,10 +301,39 @@ Each run writes its results into the output directory (see `--output`).
 | `junit` | `junit.xml`, for the test report view of your CI system. |
 
 The default is `html,md`. For CI, add JUnit: `--reporter html,md,junit`.
-Every run also writes the per-test artifacts,
-`<test_name>/<test_name>_report.md` with the result and step-by-step details,
-plus `step_<n>.png` screenshots. After Ctrl+C, the reports cover what the run
-reached.
+
+Every run also writes `conversation.json`, the run's full conversation, and
+one folder per test, the same files as a run in the app:
+
+| File | Holds |
+| --- | --- |
+| `<test_name>/<test_name>_result.json` | The [recorded result](/docs/results/run-report#test-result): status, reason, start and end time. |
+| `<test_name>/<test_name>_report.md` | The execution report, if the test got one. |
+| `<test_name>/screenshot_<n>.png` | The screenshots the execution report embeds. |
+| `<test_name>/<test_name>_report.json` | The report's state, model, tokens, and cost. |
+
+After Ctrl+C, the results cover what the run reached.
+
+### Execution reports
+
+The CLI writes execution reports as the Project says: **Extending →
+Reporting** in the app writes `utils/reporting.json`, and `askui run` reads
+the same file. A Project without that file writes a report for every test.
+`--execution-report` changes the setting for one run:
+
+```bash
+askui run --plan nightly --execution-report failures
+```
+
+The reports are written in the background while the next tests run. When the
+last test ends, the CLI prints `Waiting for execution reports…` and exits
+once every report is written. After Ctrl+C, reports still in the queue are
+dropped. A report never changes a test's result or the exit code.
+
+The reports use the model of the run. On the AskUI hub, the CLI uses the
+reporting model set in the Project instead. Each report adds to the cost of
+the run. A test without a report can get one later: open the run in AskUI
+Desktop and [generate it](/docs/results#write-a-report-later).
 
 ### JUnit mapping
 
@@ -316,7 +348,7 @@ AskUI has more outcomes than JUnit, so the mapping is fixed:
 | Selected but not reached | `error` ("Not executed") |
 | `SKIPPED`, `DISCARDED`, `DEPRECATED` | `skipped` |
 
-`junit.xml` and `summary_report.md` count the same verdicts.
+`junit.xml` and `summary_report.md` count the same recorded results.
 
 ### The console
 

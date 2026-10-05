@@ -12,10 +12,13 @@ description: Definitions for key terms used across AskUI documentation.
 | **Companion Mode** | An AgentOS control mode where AgentOS runs on an external device (e.g. Raspberry Pi) and controls the target through hardware interfaces. No software installation on the target is required. |
 | **Credentials** | The combination of a **workspace ID** and an **access token** for the same workspace. |
 | **Element** | A graphical user interface component: a button, text field, menu item, image, etc. |
+| **Execution report** | The written record of one test, step by step with screenshots. A separate agent writes it after the test, following `utils/format.md`. See [Execution report](/docs/results/run-report#execution-report). |
 | **Host Mode** | An AgentOS control mode where AgentOS runs directly on the target machine and controls it via OS-level APIs. |
 | **Inference** | The process of sending a screenshot to the AI model to identify and locate UI elements. |
+| **Management Report** | A report over all runs in a date range: pass counts per test, test period, software versions, and racks. Built without an AI model, exported as PDF or JSON. See [Management Report](/docs/results/management-report). |
 | **Project** | A folder structure created by AskUI Desktop containing tests, context files (ui.md, rules.md), procedures, and plans. The unit of work for authoring and running tests. |
 | **Procedure** | A reusable multi-step sequence (e.g. "log in") stored in `procedures/` and invoked from test steps by name. |
-| **Run report** | The output of a test run: a Markdown file with a status and screenshot per step. Statuses are `PASSED`, `FAILED`, `WARN`, `SKIPPED`, or `BROKEN`. |
+| **Rack** | The name of the device profile a run used, as the Management Report lists it. |
+| **Test result** | The status and short reason the agent records at the end of a test. It decides whether the test passed. Statuses are `PASSED`, `FAILED`, `WARNING`, `SKIPPED`, or `BROKEN`. |
 | **Workspace** | The account-level container in the AskUI Hub that owns access tokens, usage events, and billing. Every AskUI account belongs to one or more workspaces. |
 | **Workspace ID** | The unique identifier for a workspace. Used together with an access token to authenticate with the AskUI Hub. |

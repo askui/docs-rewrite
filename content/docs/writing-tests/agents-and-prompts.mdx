@@ -13,7 +13,7 @@ belongs, versioned with your testware:
 | Capabilities and error discipline | Built into the app | No, it keeps runs honest |
 | Device prompt | Each device profile (`devices.json`) | Only when the machine has quirks |
 | UI information | `tests/ui.md` | Yes, the file you invest the most in |
-| Report format | `utils/format.md` | When your reporting needs differ |
+| Report format | `utils/format.md` (read by the report writer, not the testing agent) | When your reporting needs differ |
 | Rules | `tests/rules.md` (and per suite) | Yes, your rules override everything above |
 
 ## Capabilities
@@ -92,19 +92,26 @@ app. See [Forge](/docs/extending/forge).
 
 ## Report format
 
-`utils/format.md`, the template for every report the agent writes: title,
+`utils/format.md`, the template for every
+[execution report](/docs/results/run-report#execution-report): title,
 **Test Case ID**, date, status, and the per-step sections. Edit it under
-**Extending → Report Format**, it applies to all runs of the project. Two
-parts are load-bearing:
+**Extending → Reporting**, in the collapsible **Report format** section. It
+applies to all runs of the project.
 
-- The **`**Status:**` line is parsed by the runner** to set the run's
-  result, remove it and a passing test is recorded as BROKEN.
-- The status definitions (PASSED / FAILED / SKIPPED / WARN / BROKEN) are the
-  [status vocabulary](/docs/results/run-report#test-report) your
-  reports and Dashboard use.
+The testing agent does not get this file. It records each test's result
+(status and reason) with a tool, and that result decides the run. A
+separate agent writes the report after the test and follows this file. So
+the format shapes the report, never the result:
 
-Customize the sections when your organization needs different evidence,
-keep the `**Status:**` line.
+- The report states the status that the test recorded.
+- The status definitions (PASSED / FAILED / SKIPPED / WARN / BROKEN) are
+  the vocabulary for each step. The test's own statuses are listed under
+  [Test result](/docs/results/run-report#test-result).
+- Screenshots are embedded as `![Step 1](screenshot_3.png)`, with the file
+  names the report writer is given.
+
+Customize the sections when your organization needs different evidence:
+[Reporting](/docs/extending/reporting#report-format).
 
 ## Rules
 

@@ -5,8 +5,9 @@ description: How to shape the way the agent acts, the built-in error discipline,
 ---
 
 The system prompt is assembled at run start from the project's files: the
-device profile's prompt, `tests/ui.md`, `utils/format.md`, and each
-folder's `rules.md` and `ui.md`. It applies to every test in the project.
+device profile's prompt, `tests/ui.md`, and each folder's `rules.md` and
+`ui.md`. `utils/format.md` is not part of it: it instructs the report
+writer. It applies to every test in the project.
 When tests fail consistently, this is often the fix, which file holds what:
 [What goes where](/docs/best-practices/prompting-best-practices).
 
@@ -95,13 +96,19 @@ the test last.
 
 ## Report format: the report contract
 
-`utils/format.md` defines the report the agent writes: the Markdown
-structure and the status vocabulary (`PASSED`, `FAILED`, `SKIPPED`,
-`WARN`, `BROKEN`). Edit it under **Extending → Report Format**. Keep the
-standard vocabulary, the runner parses the report's `**Status:**` line, and
-the [Runs and Dashboard pages](/docs/results) count results from it. Tailor
-the sections if your organisation needs different evidence; the shape is
-explained in [Run report](/docs/results/run-report#test-report).
+`utils/format.md` defines the
+[execution report](/docs/results/run-report#execution-report): the
+Markdown structure and the step vocabulary (`PASSED`, `FAILED`, `SKIPPED`,
+`WARN`, `BROKEN`). A separate agent writes the report after each test and
+follows this file. Edit it under **Extending → Reporting**, in the
+**Report format** section.
+
+The report does not decide the result. The testing agent records each
+test's status and reason, the report states that status as given, and the
+[Runs and Dashboard pages](/docs/results) count the recorded results. Tailor
+the sections if your organisation needs different evidence. Keep the
+screenshot syntax, `![Step 1](screenshot_3.png)` with the file names the
+writer is given, so the images show in the report.
 
 ## Rules: targeted patches that win
 
@@ -139,7 +146,7 @@ good rule reads like a bug fix:
   you are doing it right. Only you know your UI.
 
 After a prompt change, run the affected folder and read the
-[run report](/docs/results/run-report), the **Agent Interpretation** per
+[execution report](/docs/results/run-report), the **Agent Interpretation** per
 step shows whether the new wording landed the way you meant it. The run's
 conversation log also records the exact system prompt per phase, expand
 the **System prompt** section under the act header to see precisely what

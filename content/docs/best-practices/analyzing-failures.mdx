@@ -4,7 +4,7 @@ title: Analyzing failures
 description: The run failed, now what? Find the cause in the reports, then fix it in the right place, product, test, or environment.
 ---
 
-The [test report](/docs/results/run-report) tells you **what** failed. This
+The [execution report](/docs/results/run-report) tells you **what** failed. This
 page is the loop for **why**, and where the fix belongs.
 
 ## Find the cause
@@ -15,9 +15,9 @@ page is the loop for **why**, and where the fix belongs.
      - **The test told the agent the wrong thing** → fix the test
        ([Fix it](#fix-it), below).
      - **The application misbehaved** → report it as a defect, with the
-       test report and its screenshots attached as evidence.
-   - **`BROKEN`**: infrastructure, not the application. The agent's report
-     already carries its own diagnosis hint, which kind of problem it saw
+       execution report and its screenshots attached as evidence.
+   - **`BROKEN`**: infrastructure, not the application. The recorded reason
+     and the report already carry the agent's diagnosis hint, which kind of problem it saw
      and what to check, so start there. The usual kinds:
      - **Device connection dropped**: AgentOS unreachable, emulator died,
        browser session gone →
@@ -57,14 +57,15 @@ page is the loop for **why**, and where the fix belongs.
    - **`SKIPPED`**: an entry criterion wasn't met, or an
      [optional step](/docs/writing-tests/step-constructs#optional) didn't
      apply. Check the **Preconditions** section.
-2. Open the failing case's [test report](/docs/results/run-report) and read
-   the failed step:
+2. Open the failing case's [execution report](/docs/results/run-report) and read
+   the failed step (no report yet? Right-click the case on the **Runs** page
+   and pick **Generate execution report**):
    - **Agent Interpretation**: did the agent understand the step the way
      you meant it? If not, the defect is in the test.
    - **Expected vs. Actual**: plus the step screenshot, if the expectation
      is right and the application really did something else, you've found a
      product defect.
-3. Still unclear? Switch from the test report to the
+3. Still unclear? Switch from the execution report to the
    [conversation log](/docs/results#conversation-log), it shows what the
    agent actually did, in detail: every decision, tool call, and screenshot
    on the way to the failure.

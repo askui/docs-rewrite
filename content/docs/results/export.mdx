@@ -1,0 +1,139 @@
+---
+icon: FileDown
+title: Export
+description: Export an execution report, a run summary, or a Management Report as PDF for people or as JSON for your own tools, and the fields of each JSON document.
+---
+
+Three reports export as **PDF** and as **JSON**:
+
+| Report | Where you export it |
+| --- | --- |
+| [Execution report](/docs/results/run-report#execution-report) of one test | **Runs** page, the test's report pane: **PDF** or **JSON** |
+| [Run summary](/docs/results/run-report#summary-report) of one run | **Runs** page, the summary report pane: **PDF** or **JSON** |
+| [Management Report](/docs/results/management-report) of a date range | **Reports** page: **Export PDF** or **JSON** |
+
+PDF is for people who don't have the app: a test manager, a customer, an
+auditor. JSON is for your own toolchain: a dashboard, a quality gate, or a
+test management system.
+
+## Export a report
+
+1. Click **PDF** or **JSON**.
+2. Pick the folder and the file name in the save dialog.
+3. The file opens when the export is done.
+
+If the export fails, AskUI Desktop shows the error and writes no file. A
+half-written file never replaces an existing one.
+
+### The first PDF export
+
+AskUI Desktop prints PDFs with a Chromium browser. If your machine has none
+that AskUI can use, the first PDF export downloads it once, about 170 MB.
+This export takes longer. Later exports use the same browser. If you already
+ran a test on a [web browser profile](/docs/devices/web-browser), the browser
+is already there.
+
+## The JSON documents
+
+Every JSON document starts with two fields:
+
+- `schemaVersion`: the version of the document's layout, currently `1`. A
+  new version means a field changed meaning or was removed.
+- `kind`: `execution-report`, `run-summary`, or `management-report`.
+
+Read `kind` first, then the fields of that kind. Times are ISO 8601 with a
+time zone offset. A value that is unknown is `null`.
+
+### The run
+
+The execution report and the run summary both carry a `run` object:
+
+| Field | Holds |
+| --- | --- |
+| `folder` | The run's folder name under `agent_workspace/` |
+| `startedAt`, `endedAt` | When the run started and ended |
+| `plan` | The [test plan](/docs/writing-tests/plans) the run executed |
+| `rack` | The name of the device profile the run used |
+| `softwareVersion` | The [software version under test](/docs/extending/reporting#software-version-under-test) |
+| `model` | The model that ran the tests |
+| `appVersion` | The version of AskUI Desktop or the CLI |
+| `cost` | The run's total cost in USD, reports included |
+
+### Counts
+
+The run summary and the Management Report count results in a `counts`
+object (`totals` at the top of the Management Report):
+
+| Field | Holds |
+| --- | --- |
+| `executed` | Tests that ran |
+| `passed` | Tests that passed, warnings included |
+| `failed` | Tests that failed |
+| `broken` | Tests that broke |
+| `warnings` | Tests that passed with a warning |
+| `skipped` | Tests that were skipped |
+| `passRate` | Passed out of executed, in percent, or `null` when nothing ran |
+
+### Execution report
+
+```json title="login_test.json (shortened)"
+{
+  "schemaVersion": 1,
+  "kind": "execution-report",
+  "run": { "folder": "2026-10-05_09-00-00", "rack": "Staging browser", "softwareVersion": "4.2.1", "...": "..." },
+  "test": "login_test",
+  "file": "/projects/shop/tests/login_test.md",
+  "status": "FAILED",
+  "reason": "Expected the dashboard, saw an error banner.",
+  "startedAt": "2026-10-05T09:00:00+00:00",
+  "endedAt": "2026-10-05T09:01:12+00:00",
+  "markdown": "# Test Case Report: login_test\n...",
+  "writer": {
+    "state": "ready",
+    "writtenAt": "2026-10-05T09:01:40+00:00",
+    "model": "claude-sonnet-5",
+    "inputTokens": 21500,
+    "outputTokens": 1180,
+    "cacheReadTokens": 0,
+    "cacheWriteTokens": 0,
+    "cost": 0.0822,
+    "error": null
+  }
+}
+```
+
+| Field | Holds |
+| --- | --- |
+| `run` | [The run](#the-run) |
+| `test`, `file` | The test's name and its file |
+| `status`, `reason` | The [recorded result](/docs/results/run-report#test-result) |
+| `startedAt`, `endedAt` | When the test started and ended |
+| `markdown` | The execution report as Markdown, or `null` when none was written |
+| `writer` | How the report was written: `state` (`ready` or `failed`), `writtenAt`, `model`, the tokens, `cost`, and the `error` of a failed report |
+
+### Run summary
+
+| Field | Holds |
+| --- | --- |
+| `run` | [The run](#the-run) |
+| `counts` | [Counts](#counts) over the run's tests |
+| `tests` | One entry per test: `id`, `name`, `status`, `duration` |
+
+### Management Report
+
+| Field | Holds |
+| --- | --- |
+| `project` | The project's name |
+| `from`, `to` | The date range you picked |
+| `firstRunAt`, `lastRunAt` | The test period: the first and the last counted run |
+| `plans`, `racks`, `softwareVersions` | Lists of the plans, racks, and versions of the counted runs |
+| `totals` | [Counts](#counts) over all counted runs |
+| `tests` | One entry per test: `name`, `runs`, `counts`, `lastStatus`, `lastRunAt` |
+| `runs` | One entry per run in the range: `folder`, `startedAt`, `title`, `plan`, `rack`, `softwareVersion`, `counts`, and `excluded` (`true` for a run you unticked) |
+| `days` | One entry per day: `date`, `executed`, `passed` |
+
+The same runs and the same choices give the same Management Report JSON,
+byte for byte. It has no timestamp of its own and no text from a model.
+
+AskUI Desktop writes these files and does not read them back. To keep a
+report inside the app, keep the run folders.

@@ -188,7 +188,8 @@ they are the pieces a run is assembled from:
     a `PASSED` means the step actually passed; an infrastructure error ends
     the run as `BROKEN` instead of grinding on.
   - **The run lifecycle**: setup, the tests, teardown per folder, and the
-    [report](/docs/results/run-report) written while it all happens
+    recorded [result](/docs/results/run-report#test-result) of each test,
+    with its report written after the test
     ([details](/docs/concepts/test-automation-harness)).
 
 Next: how a whole run walks setup, tests and teardown

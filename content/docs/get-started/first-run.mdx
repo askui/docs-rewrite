@@ -232,10 +232,11 @@ to what the agent is doing right now.
 ### Test report
 
 Where the conversation log is the **test execution log**, the report is the
-**test execution report**: the structured record of one test case, its
+**execution report**: the structured record of one test case, its
 result, the evidence behind it, and any deviations. It follows the shape you
-know from manual test documentation. Here's the report for the `hello_world`
-run:
+know from manual test documentation. A separate agent writes it right after
+the test, from the conversation, so it may appear a moment after the test
+ends. Here's the report for the `hello_world` run:
 
 <Tabs items={['Rendered', 'Markdown source']}>
 <Tab value="Rendered">
@@ -316,7 +317,7 @@ All steps passed; one incident was resolved during execution (see Issues).
    - **Agent Interpretation:** Typed the text and took a screenshot to verify.
    - **Expected:** The note shows "Hello World".
    - **Actual:** The note shows "Hello World".
-   - ![Step 3](step_3.png)
+   - ![Step 3](screenshot_5.png)
 
 ## Postconditions
 
@@ -347,12 +348,12 @@ Section by section:
 **Issues:** Your incident log, deviations the agent hit during execution, including ones it resolved itself, like the "What's new" popup above, an unexpected dialog, or leftover data it had to delete first. A test can be `PASSED` and still list issues, and they often point at real findings a green checkmark would hide, review this section even when everything is green.\
 **Conclusion:** The overall result and its justification.
 
-Five statuses exist, for steps and for the test overall, the test takes the
-worst status of its steps:
+Five statuses exist, for steps and for the test overall. The overall
+status is the result the agent recorded at the end of the test:
 
 **`PASSED`**: the actual result matched the expected one. The agent never bends
 a test to reach a pass.\
-**`WARN`**: passed, but with a caveat worth your attention (slow response, minor
+**`WARN`** (`WARNING` for the whole test): passed, but with a caveat worth your attention (slow response, minor
 visual deviation).\
 **`FAILED`**: the step executed, but the actual result didn't match the
 expected one.\

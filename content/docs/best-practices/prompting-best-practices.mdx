@@ -7,7 +7,7 @@ description: Which file owns which content, system prompt, test files, setup/tea
 AskUI Desktop separates three concerns that are easy to mix up:
 
 - **Who the agent is**: the system prompt: built-in capabilities, the
-  device prompt, app knowledge, report format, your rules.
+  device prompt, app knowledge, your rules.
 - **What to do on this run**: test files (`tests/`): the steps for each
   scenario.
 - **Shared lifecycle**: `setup.md`, `teardown.md`, `rules.md`: what runs
@@ -21,7 +21,7 @@ misbehaves, you know which file to open.
 | Agent identity and error discipline | Built into the app, not editable |
 | Facts about the test machine the screen doesn't show | The device profile's **Prompt** field (`devices.json`) |
 | App knowledge: navigation, state indicators, quirks | `tests/ui.md` |
-| Report structure and status vocabulary | `utils/format.md` (**Extending → Report Format**) |
+| Execution report structure | `utils/format.md` (**Extending → Reporting**), read by the report writer after each test |
 | Standing corrections that override everything | `tests/rules.md` |
 | Behaviour for one suite only | `<folder>/rules.md` (and `<folder>/ui.md` for suite-specific app knowledge) |
 | Shared preconditions | `<folder>/setup.md` |
@@ -40,8 +40,11 @@ others:
 - **Device prompt**: changes per machine; lives on the device profile, so
   picking a different profile retargets the run.
 - **`tests/ui.md`**: grows as you learn the app; your biggest lever.
-- **`utils/format.md`**: typically shared org-wide.
 - **`tests/rules.md`**: appended last, takes precedence on conflicts.
+
+`utils/format.md` is not part of the system prompt. It shapes the
+execution reports, which a separate agent writes after each test, and is
+typically shared org-wide.
 
 What to write in each: [Agent behavior](/docs/best-practices/agent-behavior).
 
