@@ -81,9 +81,9 @@ they cannot generate a report.
 
 Each report costs model tokens. The costs are written into the reports:
 
-- An execution report ends with **Cost of this test:**, the test's
-  execution plus this report, followed by the model and the tokens of the
-  report.
+- An execution report shows **Cost of this test:** right behind its
+  status: the execution cost, and in parentheses the total with the
+  report, for example `$0.3800 ($0.4123 with reporting)`.
 - The summary report in the app ends with **Cost of this run:**, the test
   execution and all execution reports.
 
@@ -145,7 +145,8 @@ Each run is one timestamped folder under `agent_workspace/`:
 ```
 
 Every executed test has its folder and its `_result.json`. The report files
-exist only once a report was written.
+exist only once a report was written. Setups and teardowns keep their
+result on disk too, but the Runs page does not list them as tests.
 
 Run folders are independent of each other, archive or delete old ones as
 your evidence-retention policy requires; the Runs list and
