@@ -20,7 +20,8 @@ nothing to build.
 3. Pick the date range: **7 days**, **30 days**, or **90 days**, or set the
    two dates.
 4. Check the list of runs in the range. All runs are included. Untick a run
-   to leave it out.
+   to leave it out, or use **Select all** and **Unselect all**
+   ([several runs at once](#leave-out-a-run)).
 5. Optional: under **Additional information**, enter the
    **Software version** the report covers, for example `4.2.1`.
 6. Optional: tick **Bundle the run summaries** or
@@ -45,8 +46,9 @@ The PDF holds:
   empty. It belongs to the report, not to the runs.
 - **Racks**: the [device profiles](/docs/devices) the runs used. A
   **rack** is the name of a device profile.
-- **Charts**: tests executed per day, the outcome mix, and the pass rate
-  per test.
+- **Charts**: tests executed per day (passed against failed or broken),
+  the outcome mix as a donut with the pass rate, and the pass rate per
+  test.
 - **Tests**: one row per test, with its runs, passed, failed, broken, pass
   rate, and the status of its last run.
 - **Runs**: every run in the range, with its start time, rack, and passed
@@ -62,6 +64,17 @@ Untick it in the dialog's run list, and the figures, charts, and tables no
 longer count it. The report still lists the run, marked as excluded, so it
 shows what was left out.
 
+To change several runs at once, mark them first:
+
+- **Cmd-click** (macOS) or **Ctrl-click** (Windows) marks one more run.
+- **Shift-click** marks every run between the last marked one and this one.
+- A plain click on a row flips that run only.
+
+With runs marked, ticking or unticking the checkbox of one marked run
+applies to all of them. A bar shows **N marked** and offers **Include**,
+**Exclude**, and **Clear**. **Select all** and **Unselect all** include or
+exclude every run in the list.
+
 ## Bundle evidence into the PDF
 
 Two options add the evidence of the included runs to the PDF:
@@ -71,6 +84,10 @@ Two options add the evidence of the included runs to the PDF:
 
 Both are off by default. Turn them on when you need one file that holds a
 release's full evidence, for example for an audit.
+
+A PDF with bundled documents starts with an **Appendix** list. Each entry
+has a number (A1, A2, …) and its kind, **Run summary** or
+**Execution report**. Click an entry to jump to its pages.
 
 ## PDF and JSON
 

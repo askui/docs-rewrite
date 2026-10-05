@@ -368,7 +368,7 @@ counted as not executed.
 | `1` | The run completed, and at least one test failed, broke, or was never reached. | the product team |
 | `2` | Usage error: an unknown option, a missing or bad value, or two options that exclude each other. | the pipeline author |
 | `3` | Environment or configuration error: missing credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; an MCP server or device that cannot be reached; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load. | the pipeline author |
-| `4` | No tests ran: the selection was empty, or no verdict was produced. | the pipeline author |
+| `4` | No tests ran: the selection was empty, or no test result was produced. | the pipeline author |
 | `130` | Canceled (Ctrl+C). The results written so far are kept. | whoever pressed Ctrl+C |
 
 A usage error or a configuration error ends the CLI before the first model
