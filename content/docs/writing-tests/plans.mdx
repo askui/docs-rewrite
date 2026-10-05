@@ -34,6 +34,18 @@ plan automatically, with nothing to re-check. The **Test Plans** page lists
 each plan with its test count and device, and the pencil on a row reopens it
 for editing.
 
+## Rename a plan
+
+1. On the **Test Plans** page, hover the plan and click its pencil.
+2. In the editor header, click the pencil next to the plan's name.
+3. Type the new name and press **Enter**.
+4. Click **Save**.
+
+The plan file moves to `plans/<new name>.yaml`. Schedules and email triggers
+on the plan move with it and keep firing. To discard a typed name, press
+**Esc** before you save. A name that another plan already uses is refused, and
+both plans stay unchanged.
+
 ## Order the tests
 
 Tests run top to bottom in the order shown in the plan's tree, and you can
