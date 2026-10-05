@@ -39,6 +39,22 @@ every case in its folder, even after failures.
 2. Clear any temporary files created during testing.
 ```
 
+## How a setup or teardown ends
+
+A setup and a teardown record a result at the end, like a test does. The
+result decides what happens next:
+
+| Result | Effect |
+| --- | --- |
+| `PASSED`, or nothing recorded | The phase passed. The run goes on. |
+| `WARNING` | The phase passed. Its reason appears in the [summary report](/docs/results/run-report#summary-report). |
+| `FAILED` or `BROKEN` | The phase failed. A failed setup blocks the tests beneath it, they are recorded as broken. A failed teardown is reported, and the run goes on. |
+
+The result is saved in the run folder, in `<folder>_setup/<folder>_setup_result.json`
+or `<folder>_teardown/<folder>_teardown_result.json`. The agent picks the
+status by the project's
+[status definitions](/docs/extending/reporting#status-definitions).
+
 ## Rules
 
 Standing instructions that apply to every phase in the folder, not a test,

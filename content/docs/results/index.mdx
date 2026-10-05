@@ -16,11 +16,13 @@ open them.
 3. Choose what to look at:
    - **Conversation log**: the full execution record (below).
    - **Summary report**: the run-level table, one row per test.
+   - **Developer Report**: the run's `report.html`, with every step and
+     screenshot, opened in your browser. It is meant for debugging.
    - **The per-test entries**: each test's
      [execution report](/docs/results/run-report) with its status badge.
 
-**Open in Explorer** on a test jumps to its files on disk, the run's folder
-is one level up.
+**Open in file manager** in the right-click menu of a test jumps to its
+files on disk, the run's folder is one level up.
 
 ## Results and execution reports
 
@@ -36,7 +38,9 @@ Each test has two things:
 
 Whether a test gets a report depends on the **Create report** setting under
 [Extending → Reporting](/docs/extending/reporting#create-report): always,
-only for failed or broken tests, or never.
+only for failed or broken tests, or never. A
+[test plan](/docs/writing-tests/plans#build-a-plan) can override it for its
+runs.
 
 ### Report states
 
@@ -66,8 +70,8 @@ A test without a report can get one at any time after the run:
   pick **Generate missing execution reports**. A report that failed counts
   as missing.
 
-When a test already has a report, the menu entry reads
-**Regenerate execution report**. A new report replaces the old one.
+A written report is never generated again: the menu entry appears only
+for tests without a report, or with a report that failed.
 
 The report writer reads the run's saved conversation. Runs from before this
 version of AskUI Desktop have no saved conversation in the right form, so
@@ -75,21 +79,19 @@ they cannot generate a report.
 
 ### What a report costs
 
-Each report costs model tokens. The last line of a report names the model
-that wrote it, the tokens, and the price of that report alone.
+Each report costs model tokens. The costs are written into the reports:
 
-The header of the report pane shows a total:
-
-- On a test's execution report: what the test cost, its execution plus its
-  execution report.
-- On the summary report: what the whole run cost, its execution reports
-  included.
+- An execution report ends with **Cost of this test:**, the test's
+  execution plus this report, followed by the model and the tokens of the
+  report.
+- The summary report in the app ends with **Cost of this run:**, the test
+  execution and all execution reports.
 
 ## Management Report
 
-The report icon in the header of the runs sidebar, next to **Refresh**,
-opens the [Management Report](/docs/results/management-report): one report
-over every run in a date range.
+The **Management report** button in the header of the runs sidebar creates
+a [Management Report](/docs/results/management-report): one PDF over the
+runs in a date range.
 
 ## Conversation log
 
@@ -112,13 +114,14 @@ During a run the same view streams live, [Watch it live](/docs/running-tests#wat
 
 ## Share results
 
-To hand a result to someone without the app, export it. The report pane of
-a test has **PDF** and **JSON** buttons for its execution report, and the
-summary report pane has the same buttons for the whole run:
+To hand a result to someone without the app, export it. Click **Export**
+in the top-right corner of an execution report or the summary report, and
+pick **Export as PDF** or **Export as JSON**. The right-click menu of a test
+with a written report offers the same two entries:
 [Export](/docs/results/export).
 
-To hand over everything, zip the run's timestamped folder (**Open in
-Explorer** on a test, one level up). The reports are plain Markdown with the
+To hand over everything, zip the run's timestamped folder (**Open in file
+manager** on a test, one level up). The reports are plain Markdown with the
 screenshots next to them, readable anywhere.
 
 ## On disk
@@ -130,6 +133,9 @@ Each run is one timestamped folder under `agent_workspace/`:
 └── 2026-07-23_21-56-55/          ← one folder per run
     ├── conversation.json          ← the conversation (the app re-renders it)
     ├── summary_report.md          ← run-level table
+    ├── report.html                ← the Developer Report
+    ├── tests_setup/               ← a setup's result (teardowns alike)
+    │   └── tests_setup_result.json
     └── open_notepad_windows/      ← one folder per test
         ├── open_notepad_windows_result.json   ← the recorded result
         ├── open_notepad_windows_report.md     ← the execution report

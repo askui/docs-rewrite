@@ -38,6 +38,10 @@ What a report contains: [Execution report](/docs/results/run-report).
 | **Only for failed or broken tests** | Passed tests get no report. This is the cheapest way to keep the reports you read. |
 | **Never** | No report is written during runs. |
 
+A [test plan](/docs/writing-tests/plans#build-a-plan) can override this
+setting for its own runs, and the CLI's `--execution-report` flag overrides
+both. The order is: the CLI flag, then the plan, then the project.
+
 Every report costs model tokens. With **Only for failed or broken tests** or
 **Never**, you can still write a report later. Right-click the test on the
 **Runs** page and pick **Generate execution report**:
@@ -66,8 +70,11 @@ automatically.
 
 The file defines when a test is `PASSED`, `FAILED`, `WARNING`, `BROKEN`, or
 `SKIPPED`. The testing agent gets these definitions in its instructions and
-picks the status it records by them. A project without the file uses the defaults. Click
-**Create utils/status.md** to start from them:
+picks the status it records by them. Setups and teardowns use them too.
+
+If the file is missing, the project's next run creates it with the default
+definitions, so you can always open and edit it. Before the first run,
+click **Create utils/status.md** to start from the defaults:
 
 ```markdown title="utils/status.md"
 - **PASSED** — every step ran and the expected outcome was observed.

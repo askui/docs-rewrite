@@ -84,7 +84,8 @@ can get one later from the **Runs** page:
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Conclusion</p>
   <p className="mt-2">The login flow works, with one caveat: sign-in is unusually slow. Functionally PASSED behaviour, reported as WARNING because of the response time.</p>
   <hr className="my-4" />
-  <p className="italic text-fd-muted-foreground">Report written by claude-sonnet-5 · 21,500 input and 1,180 output tokens · $0.0822</p>
+  <p><b>Cost of this test:</b> $0.4137 — test execution $0.3315, this report $0.0822</p>
+  <p className="mt-2 italic text-fd-muted-foreground">Report written by claude-sonnet-5 · 21,500 input and 1,180 output tokens</p>
 </div>
 </Tab>
 <Tab value="Markdown source">
@@ -138,7 +139,9 @@ time.
 
 ---
 
-*Report written by claude-sonnet-5 · 21,500 input and 1,180 output tokens · $0.0822*
+**Cost of this test:** $0.4137 — test execution $0.3315, this report $0.0822
+
+*Report written by claude-sonnet-5 · 21,500 input and 1,180 output tokens*
 ```
 
 </Tab>
@@ -170,11 +173,13 @@ Section by section:
 - **Issues**: anything worth a look that isn't a failure, the incident
   notes. In the example above: the 15-second sign-in.
 - **Conclusion**: the closing assessment of the whole case.
-- **Cost line**: the last line names the model that wrote the report, its
-  input and output tokens, and the price. Without a known price for the
-  model, the line shows the tokens only. The report's cost adds to the
-  test's cost and the run's total cost, which the report pane's header on
-  the **Runs** page shows.
+- **Cost**: the report ends with **Cost of this test:**, the test's
+  execution plus this report, each also on its own. When the execution cost
+  is unknown, the line reads **Cost of this report:** instead. Without a
+  known price for the model, there is no cost line. The last line names the
+  model that wrote the report and its input and output tokens. The cost
+  also adds to the run's total, which the summary report in the app shows
+  as **Cost of this run:**.
 
 The report's shape is defined by your project's
 [report format](/docs/extending/reporting#report-format). To share a report

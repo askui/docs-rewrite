@@ -138,16 +138,15 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     shown, then call `save_screenshot[desktop-utils-dreaming]`. Do NOT turn
     Dreaming on, click "Analyze now", or change any field.
 
-15f. Open the **Runs** page. In the header of the runs sidebar, next to
-    **Refresh**, click the report icon (tooltip "Create a management report
-    over a date range") so the Management Report dialog opens. Click
+15f. Open the **Runs** page. In the header of the runs sidebar, click the
+    **Management report** button so the Management report dialog opens. Click
     the **90 days** preset so the range includes the demo run from step 1.
-    Wait until the key figures, the charts and the **Tests** and **Runs**
-    tables are shown — or, if there are no runs in the range, the "No runs in
-    this range." message. Then call
-    `save_screenshot[desktop-management-report]`. Do NOT type a software
-    version, untick a run, tick a filter, or click **Export PDF** or **JSON**.
-    Close the dialog afterwards.
+    Wait until the list of runs (each with a ticked checkbox) and the
+    "Additional information" section are shown — or, if there are no runs in
+    the range, the "No runs in this range." message. Then call
+    `save_screenshot[desktop-management-report]`. Do NOT untick a run, type a
+    software version, tick a bundle option, or click **Generate**. Close the
+    dialog with **Cancel** afterwards.
 
 16. With the demo project open, click the git branch chip in the top bar so
     the source-control flyout opens (changes list, commit field, sync row).

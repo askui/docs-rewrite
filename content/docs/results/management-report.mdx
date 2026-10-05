@@ -1,10 +1,10 @@
 ---
 icon: FileChartColumn
 title: Management Report
-description: One report over every run in a date range, pass counts per test, test period, racks, and the software version you name, built without an AI model and exported as PDF or JSON.
+description: One report over every run in a date range, pass counts per test, test period, racks, and the software version you name, built without an AI model and delivered as PDF or JSON.
 ---
 
-The **Management Report** summarizes every run of the project in a date
+The **Management Report** summarizes the runs of the project in a date
 range: how many tests ran, how many passed, per test and in total, and on
 which racks. Use it to sign off a release without opening every run.
 
@@ -12,35 +12,39 @@ No AI model builds it. It counts the [recorded results](/docs/results/run-report
 and the run details, so the same runs always give the same report. It costs
 nothing to build.
 
-## Build a report
+## Create a report
 
 1. Open the **Runs** page.
-2. In the header of the runs sidebar, next to **Refresh**, click the report
-   icon (**Create a management report over a date range**). The Management
-   Report opens as a dialog.
-3. Pick the date range: **7 days**, **30 days**, or **90 days**, or set
-   **From** and **To**.
-4. Optional: enter the **Software version** the report covers, for example
-   `4.2.1`.
-5. Optional: tick plans under **Plans** or racks under **Racks** to narrow
-   the report. With nothing ticked, all runs count.
-6. Optional: untick runs in the **Runs** list that should not count.
-7. Click **Export PDF** or **JSON**.
+2. In the header of the runs sidebar, click **Management report**. A dialog
+   opens.
+3. Pick the date range: **7 days**, **30 days**, or **90 days**, or set the
+   two dates.
+4. Check the list of runs in the range. All runs are included. Untick a run
+   to leave it out.
+5. Optional: under **Additional information**, enter the
+   **Software version** the report covers, for example `4.2.1`.
+6. Optional: tick **Bundle the run summaries** or
+   **Bundle the execution reports**.
+7. Click **Generate**. After a few seconds, the dialog shows
+   **The report is ready.**
+8. Click **Download PDF** or **Download JSON** to save the report. On the
+   desktop, **Open** shows the PDF in your default PDF viewer.
 
-The report updates with every change. Nothing is saved in the project: the
-report exists only as the file you export. To build it again, open the
-dialog and pick the same range, version, and filters.
-
-A **rack** is the name of the [device profile](/docs/devices) a run used.
+**Change selection** goes back to the range and the runs. **Done** closes
+the dialog. Nothing is saved in the project: the report exists only as the
+file you save. To create it again, pick the same range, runs, and options.
 
 ## What the report shows
+
+The PDF holds:
 
 - **Key figures**: runs, tests executed, passed, failed and broken, and the
   pass rate.
 - **Test period**: the first and the last run in the range.
-- **Software version**: the version you entered in the dialog, or `—`
-  when the field is empty. It belongs to the report, not to the runs.
-- **Racks**: the device profiles the runs used.
+- **Software version**: the version you entered, or `—` when the field is
+  empty. It belongs to the report, not to the runs.
+- **Racks**: the [device profiles](/docs/devices) the runs used. A
+  **rack** is the name of a device profile.
 - **Charts**: tests executed per day, the outcome mix, and the pass rate
   per test.
 - **Tests**: one row per test, with its runs, passed, failed, broken, pass
@@ -51,26 +55,25 @@ A **rack** is the name of the [device profile](/docs/devices) a run used.
 The counting rules are the same as in the
 [summary report](/docs/results/run-report#summary-report).
 
-## Exclude a run
+## Leave out a run
 
 A run on a broken rack or a misconfigured device can distort the numbers.
-Untick it in the **Runs** list, and the figures, charts, and tables no
-longer count it. The run stays in the list, struck through, so the report
-shows what was left out. Tick it again to count it.
+Untick it in the dialog's run list, and the figures, charts, and tables no
+longer count it. The report still lists the run, marked as excluded, so it
+shows what was left out.
 
 ## Bundle evidence into the PDF
 
-Under **Bundle into the PDF**, two options add the evidence of the counted
-runs to the exported PDF:
+Two options add the evidence of the included runs to the PDF:
 
-- **Run summaries**: the summary report of each run.
-- **Execution reports**: every execution report of those runs.
+- **Bundle the run summaries**: the summary report of each run.
+- **Bundle the execution reports**: every execution report of those runs.
 
 Both are off by default. Turn them on when you need one file that holds a
 release's full evidence, for example for an audit.
 
-## Export
+## PDF and JSON
 
-**Export PDF** writes a document for people. **JSON** writes the same data
-for your own tools and dashboards. How export works, and the JSON fields:
-[Export](/docs/results/export).
+The PDF is a document for people. The JSON holds the same data for your own
+tools and dashboards. The JSON fields:
+[Export](/docs/results/export#management-report).

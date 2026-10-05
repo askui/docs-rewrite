@@ -64,9 +64,9 @@ nothing ran, so the pipeline never shows green for nothing.
 | `<target>` | `tests` | Test folder or single test file, relative to `--project`. |
 | `--plan <name>` | none | [Test plan](/docs/writing-tests/plans) from `<project>/plans/<name>.yaml` (name without extension). |
 | `--project <dir>` | current directory | The AskUI Project root (`tests/`, `procedures/`, `plans/`, `utils/`, `devices.json`). |
-| `--output <dir>` | `<project>/agent_workspace/<UTC timestamp>` | Results directory for reports, screenshots, and the HTML log. |
+| `--output <dir>` | `<project>/agent_workspace/<UTC timestamp>` | Results directory for reports, screenshots, and the Developer Report. |
 | `--reporter <list>` | `html,md` | Report formats, comma-separated: `html`, `md`, `junit`. See [Reports](#reports). |
-| `--execution-report <when>` | the Project's setting, else `always` | Which tests get an execution report: `always`, `failures` (failed or broken tests only), or `never`. See [Execution reports](#execution-reports). |
+| `--execution-report <when>` | the plan's setting, else the Project's, else `always` | Which tests get an execution report: `always`, `failures` (failed or broken tests only), or `never`. See [Execution reports](#execution-reports). |
 | `--device <profile>` | the plan's device, or the only profile | Device profile from `devices.json`, by id or by a name only one profile has. |
 | `--surface <kind>` | none | Ad-hoc run without a profile: `agent-os`, `web`, `android`, or `ios`. Excludes `--device`. |
 | `--cache on\|off` | the Project's setting, else off | Trajectory caching for this run. See [Caching](#caching). |
@@ -296,8 +296,8 @@ Each run writes its results into the output directory (see `--output`).
 
 | Format | Writes |
 | --- | --- |
-| `html` | The HTML log of the run, with every step and screenshot. |
-| `md` | `summary_report.md`: the run at a glance, totals with per-status counts and run duration, one table over all tests with status and duration each, and detail sections quoting every warned, failed, or broken test's issues. |
+| `html` | `report.html`, the Developer Report: the run with every step and screenshot. AskUI Desktop opens the same file from **Developer Report** on the Runs page. |
+| `md` | `summary_report.md`: the run at a glance, totals with per-status counts and run duration, one table over all tests with status and duration each, and detail sections quoting the recorded reason of every warned, failed, or broken test. |
 | `junit` | `junit.xml`, for the test report view of your CI system. |
 
 The default is `html,md`. For CI, add JUnit: `--reporter html,md,junit`.
@@ -311,6 +311,7 @@ one folder per test, the same files as a run in the app:
 | `<test_name>/<test_name>_report.md` | The execution report, if the test got one. |
 | `<test_name>/screenshot_<n>.png` | The screenshots the execution report embeds. |
 | `<test_name>/<test_name>_report.json` | The report's state, model, tokens, and cost. |
+| `<folder>_setup/<folder>_setup_result.json` | The recorded result of a folder's setup. Teardowns write `<folder>_teardown/<folder>_teardown_result.json`. |
 
 After Ctrl+C, the results cover what the run reached.
 
@@ -319,7 +320,9 @@ After Ctrl+C, the results cover what the run reached.
 The CLI writes execution reports as the Project says: **Extending →
 Reporting** in the app writes `utils/reporting.json`, and `askui run` reads
 the same file. A Project without that file writes a report for every test.
-`--execution-report` changes the setting for one run:
+A [test plan](/docs/writing-tests/plans) can set its own `createReport`, and
+`--execution-report` wins over both for one run. The order is: the flag,
+then the plan, then the Project.
 
 ```bash
 askui run --plan nightly --execution-report failures

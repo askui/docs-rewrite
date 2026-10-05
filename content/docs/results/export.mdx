@@ -8,9 +8,9 @@ Three reports export as **PDF** and as **JSON**:
 
 | Report | Where you export it |
 | --- | --- |
-| [Execution report](/docs/results/run-report#execution-report) of one test | **Runs** page, the test's report pane: **PDF** or **JSON** |
-| [Run summary](/docs/results/run-report#summary-report) of one run | **Runs** page, the summary report pane: **PDF** or **JSON** |
-| [Management Report](/docs/results/management-report) of a date range | **Runs** page, the Management Report dialog: **Export PDF** or **JSON** |
+| [Execution report](/docs/results/run-report#execution-report) of one test | **Runs** page: **Export** in the report's top-right corner, or right-click the test |
+| [Run summary](/docs/results/run-report#summary-report) of one run | **Runs** page: **Export** in the summary report's top-right corner |
+| [Management Report](/docs/results/management-report) of a date range | **Runs** page: **Management report**, then **Download PDF** or **Download JSON** |
 
 PDF is for people who don't have the app: a test manager, a customer, an
 auditor. JSON is for your own toolchain: a dashboard, a quality gate, or a
@@ -18,9 +18,15 @@ test management system.
 
 ## Export a report
 
-1. Click **PDF** or **JSON**.
-2. Pick the folder and the file name in the save dialog.
-3. The file opens when the export is done.
+1. Open the execution report or the summary report on the **Runs** page.
+2. Click **Export** in the report's top-right corner.
+3. Pick **Export as PDF** or **Export as JSON**.
+4. Pick the folder and the file name in the save dialog.
+
+For an execution report, you can also right-click the test and pick
+**Export as PDF** or **Export as JSON**. The entries appear once the test's
+report is written. The Management Report has its own steps:
+[Create a report](/docs/results/management-report#create-a-report).
 
 If the export fails, AskUI Desktop shows the error and writes no file. A
 half-written file never replaces an existing one.
