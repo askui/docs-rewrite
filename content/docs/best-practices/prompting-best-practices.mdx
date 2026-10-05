@@ -21,6 +21,7 @@ misbehaves, you know which file to open.
 | Agent identity and error discipline | Built into the app, not editable |
 | Facts about the test machine the screen doesn't show | The device profile's **Prompt** field (`devices.json`) |
 | App knowledge: navigation, state indicators, quirks | `tests/ui.md` |
+| When a test is PASSED, FAILED, WARNING, BROKEN, or SKIPPED | `utils/status.md` (**Extending → Reporting**) |
 | Execution report structure | `utils/format.md` (**Extending → Reporting**), read by the report writer after each test |
 | Standing corrections that override everything | `tests/rules.md` |
 | Behaviour for one suite only | `<folder>/rules.md` (and `<folder>/ui.md` for suite-specific app knowledge) |
@@ -40,6 +41,8 @@ others:
 - **Device prompt**: changes per machine; lives on the device profile, so
   picking a different profile retargets the run.
 - **`tests/ui.md`**: grows as you learn the app; your biggest lever.
+- **`utils/status.md`**: the status definitions; typically shared
+  org-wide.
 - **`tests/rules.md`**: appended last, takes precedence on conflicts.
 
 `utils/format.md` is not part of the system prompt. It shapes the

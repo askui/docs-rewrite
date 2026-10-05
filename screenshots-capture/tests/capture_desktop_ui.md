@@ -119,13 +119,13 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     Tools** afterwards — do NOT type a description, pick a folder, or click
     Verify.
 
-15c. Switch to the **Reporting** tab. Wait until the "Create report",
-    "Reporting model" and "Software version under test" cards are shown. Click
-    the collapsed **Report format** row at the bottom so the `utils/format.md`
-    editor (or, if the project has no format file yet, its
-    "Create utils/format.md" call-to-action) opens, then call
-    `save_screenshot[desktop-utils-format]`. Do NOT change any setting, type a
-    version, edit the file, or click Create.
+15c. Switch to the **Reporting** tab. Wait until the "Create report" and
+    "Reporting model" cards and the collapsed **Status definitions** and
+    **Report format** rows are shown. Click the collapsed **Report format** row
+    at the bottom so the `utils/format.md` editor (or, if the project has no
+    format file yet, its "Create utils/format.md" call-to-action) opens, then
+    call `save_screenshot[desktop-utils-format]`. Do NOT change any setting,
+    edit a file, or click Create.
 
 15d. Switch to the **In-Flight Guidance** tab. Wait until the "In-Flight
     Guidance" card is shown (the "Enable In-Flight Guidance for this project"
@@ -138,13 +138,16 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     shown, then call `save_screenshot[desktop-utils-dreaming]`. Do NOT turn
     Dreaming on, click "Analyze now", or change any field.
 
-15f. Open the **Reports** page from the sidebar (the Management Report). Click
+15f. Open the **Runs** page. In the header of the runs sidebar, next to
+    **Refresh**, click the report icon (tooltip "Create a management report
+    over a date range") so the Management Report dialog opens. Click
     the **90 days** preset so the range includes the demo run from step 1.
     Wait until the key figures, the charts and the **Tests** and **Runs**
     tables are shown — or, if there are no runs in the range, the "No runs in
     this range." message. Then call
-    `save_screenshot[desktop-management-report]`. Do NOT untick a run, tick a
-    filter, or click **Export PDF** or **JSON**.
+    `save_screenshot[desktop-management-report]`. Do NOT type a software
+    version, untick a run, tick a filter, or click **Export PDF** or **JSON**.
+    Close the dialog afterwards.
 
 16. With the demo project open, click the git branch chip in the top bar so
     the source-control flyout opens (changes list, commit field, sync row).

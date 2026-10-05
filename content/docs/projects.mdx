@@ -32,6 +32,7 @@ definitions, the tooling the agent may use: every artifact is a plain file.
     </Folder>
     <Folder name="utils" defaultOpen>
       <File name="format.md" />
+      <File name="status.md" />
       <File name="reporting.json" />
       <File name="tools.json" />
       <File name="mcp.json" />
@@ -50,7 +51,7 @@ definitions, the tooling the agent may use: every artifact is a plain file.
 | `tests/` | Test suites and test cases. A file is a case (steps, expected results); a sub-folder is a suite with its own `setup.md` / `teardown.md` (entry criteria and cleanup); `rules.md` = standing test instructions; [`ui.md`](/docs/writing-tests/agents-and-prompts#ui-information) = how the application under test works | `checkout/pay_with_card.md` |
 | `plans/` | Test plans: which cases make up the smoke set, the regression pack, and on which device they run | [`smoke.yaml`](/docs/writing-tests/plans) |
 | `procedures/` | Keywords, as in keyword-driven testing: write a sequence once, call it from any case with parameters | [`login_to_ui.md`](/docs/writing-tests/procedures) |
-| `utils/` | The permitted tooling and output conventions: [built-in tools](/docs/extending/tools), [MCP servers](/docs/extending/mcp), [custom C# tools](/docs/extending/custom-tools), the [report format and reporting settings](/docs/extending/reporting) | `format.md`, `reporting.json`, `custom_tools/query_admin_api.cs` |
+| `utils/` | The permitted tooling and output conventions: [built-in tools](/docs/extending/tools), [MCP servers](/docs/extending/mcp), [custom C# tools](/docs/extending/custom-tools), the [status definitions, report format, and reporting settings](/docs/extending/reporting) | `format.md`, `status.md`, `reporting.json`, `custom_tools/query_admin_api.cs` |
 | `devices.json` | The test environments, each with its own [prompt text](/docs/writing-tests/agents-and-prompts#device-prompt), see [Devices](/docs/devices) |, |
 | `schedules.json` | The execution schedule, [recurring runs](/docs/running-tests/scheduling) |, |
 | `agent_workspace/` | Test evidence: [execution logs, results, reports, screenshots](/docs/results). Generated per run, not versioned |, |

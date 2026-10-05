@@ -13,6 +13,7 @@ belongs, versioned with your testware:
 | Capabilities and error discipline | Built into the app | No, it keeps runs honest |
 | Device prompt | Each device profile (`devices.json`) | Only when the machine has quirks |
 | UI information | `tests/ui.md` | Yes, the file you invest the most in |
+| Status definitions | `utils/status.md` | When your process judges a pass or a failure differently |
 | Report format | `utils/format.md` (read by the report writer, not the testing agent) | When your reporting needs differ |
 | Rules | `tests/rules.md` (and per suite) | Yes, your rules override everything above |
 
@@ -104,14 +105,24 @@ separate agent writes the report after the test and follows this file. So
 the format shapes the report, never the result:
 
 - The report states the status that the test recorded.
-- The status definitions (PASSED / FAILED / SKIPPED / WARN / BROKEN) are
-  the vocabulary for each step. The test's own statuses are listed under
-  [Test result](/docs/results/run-report#test-result).
+- The step statuses (PASSED / FAILED / SKIPPED / WARN / BROKEN) are the
+  vocabulary for each step. When the test itself passes or fails is set by
+  the status definitions (below).
 - Screenshots are embedded as `![Step 1](screenshot_3.png)`, with the file
   names the report writer is given.
 
 Customize the sections when your organization needs different evidence:
 [Reporting](/docs/extending/reporting#report-format).
+
+## Status definitions
+
+`utils/status.md` defines when a test is PASSED, FAILED, WARNING, BROKEN,
+or SKIPPED. The testing agent gets the definitions in its instructions and
+picks the status it records by them. Edit them under
+**Extending → Reporting**, in the collapsible **Status definitions**
+section. A project without the file uses the built-in defaults. Status
+rules belong here, not in `rules.md`:
+[Status definitions](/docs/extending/reporting#status-definitions).
 
 ## Rules
 

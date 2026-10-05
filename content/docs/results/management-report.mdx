@@ -1,13 +1,12 @@
 ---
 icon: FileChartColumn
 title: Management Report
-description: One report over every run in a date range, pass counts per test, test period, software versions, and racks, built without an AI model and exported as PDF or JSON.
+description: One report over every run in a date range, pass counts per test, test period, racks, and the software version you name, built without an AI model and exported as PDF or JSON.
 ---
 
 The **Management Report** summarizes every run of the project in a date
-range: how many tests ran, how many passed, per test and in total, on which
-racks, and against which software versions. Use it to sign off a release
-without opening every run.
+range: how many tests ran, how many passed, per test and in total, and on
+which racks. Use it to sign off a release without opening every run.
 
 No AI model builds it. It counts the [recorded results](/docs/results/run-report#test-result)
 and the run details, so the same runs always give the same report. It costs
@@ -15,17 +14,22 @@ nothing to build.
 
 ## Build a report
 
-1. Open **Reports** in the sidebar.
-2. Pick the date range: **7 days**, **30 days**, or **90 days**, or set
+1. Open the **Runs** page.
+2. In the header of the runs sidebar, next to **Refresh**, click the report
+   icon (**Create a management report over a date range**). The Management
+   Report opens as a dialog.
+3. Pick the date range: **7 days**, **30 days**, or **90 days**, or set
    **From** and **To**.
-3. Optional: tick plans under **Plans** or racks under **Racks** to narrow
+4. Optional: enter the **Software version** the report covers, for example
+   `4.2.1`.
+5. Optional: tick plans under **Plans** or racks under **Racks** to narrow
    the report. With nothing ticked, all runs count.
-4. Optional: untick runs in the **Runs** list that should not count.
-5. Click **Export PDF** or **JSON**.
+6. Optional: untick runs in the **Runs** list that should not count.
+7. Click **Export PDF** or **JSON**.
 
 The report updates with every change. Nothing is saved in the project: the
-report exists only as the file you export. To build it again, pick the same
-range and filters.
+report exists only as the file you export. To build it again, open the
+dialog and pick the same range, version, and filters.
 
 A **rack** is the name of the [device profile](/docs/devices) a run used.
 
@@ -34,16 +38,15 @@ A **rack** is the name of the [device profile](/docs/devices) a run used.
 - **Key figures**: runs, tests executed, passed, failed and broken, and the
   pass rate.
 - **Test period**: the first and the last run in the range.
-- **Software versions**: the versions the runs tested. A run records the
-  version set under
-  [Extending → Reporting](/docs/extending/reporting#software-version-under-test).
+- **Software version**: the version you entered in the dialog, or `—`
+  when the field is empty. It belongs to the report, not to the runs.
 - **Racks**: the device profiles the runs used.
 - **Charts**: tests executed per day, the outcome mix, and the pass rate
   per test.
 - **Tests**: one row per test, with its runs, passed, failed, broken, pass
   rate, and the status of its last run.
-- **Runs**: every run in the range, with its start time, rack, software
-  version, and passed out of executed tests.
+- **Runs**: every run in the range, with its start time, rack, and passed
+  out of executed tests.
 
 The counting rules are the same as in the
 [summary report](/docs/results/run-report#summary-report).
@@ -54,10 +57,6 @@ A run on a broken rack or a misconfigured device can distort the numbers.
 Untick it in the **Runs** list, and the figures, charts, and tables no
 longer count it. The run stays in the list, struck through, so the report
 shows what was left out. Tick it again to count it.
-
-A run with a wrong software version need not be excluded. Correct its
-version on the **Runs** page instead: right-click the run and pick
-**Set software version…**.
 
 ## Bundle evidence into the PDF
 

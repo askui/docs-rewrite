@@ -16,7 +16,9 @@ banner.". The recorded result decides whether the test passed. The summary
 report, the Dashboard, the [Management Report](/docs/results/management-report),
 and the [CLI](/docs/running-tests/cli)'s exit code all count it.
 
-The status is one of:
+The agent picks the status by your project's
+[status definitions](/docs/extending/reporting#status-definitions)
+(`utils/status.md`). By default, the status is one of:
 
 - `PASSED`: the actual result matches the expected one.
 - `FAILED`: the test executed, but the result didn't match.
@@ -170,8 +172,9 @@ Section by section:
 - **Conclusion**: the closing assessment of the whole case.
 - **Cost line**: the last line names the model that wrote the report, its
   input and output tokens, and the price. Without a known price for the
-  model, the line shows the tokens only. The same cost shows in the report
-  pane's header on the **Runs** page and adds to the run's total cost.
+  model, the line shows the tokens only. The report's cost adds to the
+  test's cost and the run's total cost, which the report pane's header on
+  the **Runs** page shows.
 
 The report's shape is defined by your project's
 [report format](/docs/extending/reporting#report-format). To share a report

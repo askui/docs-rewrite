@@ -43,7 +43,9 @@ every case in its folder, even after failures.
 
 Standing instructions that apply to every phase in the folder, not a test,
 context: interaction style, error handling, things never to do ("never
-change the language setting", "treat error dialogs as failures").
+change the language setting"). When a test counts as passed or failed is
+not a rule: it belongs in the project's
+[status definitions](/docs/extending/reporting#status-definitions).
 
 **Create it:** right-click the folder → **New rules.md**.
 
@@ -54,7 +56,7 @@ change the language setting", "treat error dialogs as failures").
 - Use the desktop computer to execute these tests.
 
 ## Error handling
-- On an infrastructure error (connection lost, session expired): mark the
-  testcase BROKEN, abort.
-- On an application error: mark the testcase FAILED and abort.
+- On an infrastructure error (connection lost, session expired): record
+  the result BROKEN and abort.
+- On an application error: record the result FAILED and abort.
 ```

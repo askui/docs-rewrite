@@ -1,7 +1,7 @@
 ---
 icon: FileSliders
 title: Reporting
-description: Choose when execution reports are written and by which model, record the software version under test, and edit utils/format.md, the template every report follows.
+description: Choose when execution reports are written and by which model, define when a test passes or fails in utils/status.md, and edit utils/format.md, the template every report follows.
 ---
 
 The **Reporting** tab decides how your tests are reported. Open
@@ -9,18 +9,20 @@ The **Reporting** tab decides how your tests are reported. Open
 
 - **Create report**: which tests get an execution report.
 - **Reporting model**: which model writes the reports.
-- **Software version under test**: the build your runs test.
+- **Status definitions**: when a test is `PASSED`, `FAILED`, `WARNING`,
+  `BROKEN`, or `SKIPPED` (`utils/status.md`).
 - **Report format**: the template every report follows (`utils/format.md`).
 
-The settings are saved in `utils/reporting.json` in your project. They travel
-with the project, so a colleague's clone and the [CLI](/docs/running-tests/cli)
-use the same settings.
+The first two are saved in `utils/reporting.json` in your project. All three
+files travel with the project, so a colleague's clone and the
+[CLI](/docs/running-tests/cli) use the same settings.
 
 ## How a test is reported
 
 The agent ends each test by recording a **result**: a status and a short
-reason. That recorded result decides whether the test passed. A test that
-records nothing is `BROKEN`.
+reason. It picks the status by your
+[status definitions](#status-definitions). That recorded result decides
+whether the test passed. A test that records nothing is `BROKEN`.
 
 The **execution report** is written after the test, by a separate agent. It
 reads the test's conversation and screenshots and writes the report in the
@@ -56,24 +58,33 @@ The model that writes the reports.
 
 How to connect your own provider: [Model providers](/docs/extending/model-providers).
 
-## Software version under test
+## Status definitions
 
-Enter the version of the software you test, for example `4.2.1`. Every run
-you start while it is set records this version. The
-[Management Report](/docs/results/management-report) shows it, and the
-exports carry it.
+The **Status definitions** section is collapsed below the other settings.
+Click it to open the editor for `utils/status.md`. Changes save
+automatically.
 
-- Change it when you start to test a new build.
-- Leave it empty when you do not know the version.
-- A change does not rewrite runs that already started.
+The file defines when a test is `PASSED`, `FAILED`, `WARNING`, `BROKEN`, or
+`SKIPPED`. The testing agent gets these definitions in its instructions and
+picks the status it records by them. A project without the file uses the defaults. Click
+**Create utils/status.md** to start from them:
 
-To correct the version of a finished run, right-click the run on the
-**Runs** page and pick **Set software version…**. Clear the field to remove
-the version.
+```markdown title="utils/status.md"
+- **PASSED** — every step ran and the expected outcome was observed.
+- **FAILED** — the system did not behave as the test expects: an expected outcome was not observed, or a step is not applicable to what the screen shows.
+- **WARNING** — the expected outcome was observed, but something noteworthy went wrong on the way (e.g. a slow response, a minor visual deviation).
+- **BROKEN** — the test could not be executed because of an error that is not the system under test (crash, infrastructure or tool failure, exception).
+- **SKIPPED** — the test was intentionally not executed (e.g. its precondition was not met).
+```
+
+Tailor the definitions to your process. For example, state when a slow
+response is a `WARNING` and when it is a `FAILED`. Keep all five statuses:
+the summary report, the Dashboard, and the CLI's exit code count them.
+Status rules belong in this file, not in `rules.md`.
 
 ## Report format
 
-The **Report format** section is collapsed below the other settings. Click
+The **Report format** section is collapsed below **Status definitions**. Click
 it to open the editor for `utils/format.md`. Changes save automatically, and
 the file applies to every report of the project.
 
@@ -83,8 +94,9 @@ It starts from the default format.
 The format instructs the report writer, not the testing agent. Keep these
 parts:
 
-- **The status definitions** (`PASSED`, `FAILED`, `SKIPPED`, `WARN`,
-  `BROKEN`): the vocabulary for each step.
+- **The step statuses** (`PASSED`, `FAILED`, `SKIPPED`, `WARN`, `BROKEN`):
+  the default format asks the writer to judge each step like the
+  [status definitions](#status-definitions).
 - **The overall status**: the report states the status that the test
   recorded. The format cannot change the result of a test.
 - **The screenshot syntax**: the writer gets the test's screenshots with
@@ -96,14 +108,13 @@ The sections, the wording, and the level of evidence are yours to tailor:
 
 ## The settings file
 
-`utils/reporting.json` holds the first three settings:
+`utils/reporting.json` holds the first two settings:
 
 ```json title="utils/reporting.json"
 {
   "createReport": "failures",
   "modelId": "same-as-runs",
-  "byomSameAsRuns": true,
-  "softwareVersion": "4.2.1"
+  "byomSameAsRuns": true
 }
 ```
 
@@ -112,7 +123,6 @@ The sections, the wording, and the level of evidence are yours to tailor:
 | `createReport` | `always`, `failures`, or `never` |
 | `modelId` | `same-as-runs`, `best`, or the id of a hosted model |
 | `byomSameAsRuns` | `true` to use your own provider's run model for reports |
-| `softwareVersion` | Free text, or absent |
 
 A project without this file uses **Always** and the model of your runs. A
 separate provider for reports is stored in the app on your machine, not in

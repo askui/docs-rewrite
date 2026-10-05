@@ -10,7 +10,7 @@ Three reports export as **PDF** and as **JSON**:
 | --- | --- |
 | [Execution report](/docs/results/run-report#execution-report) of one test | **Runs** page, the test's report pane: **PDF** or **JSON** |
 | [Run summary](/docs/results/run-report#summary-report) of one run | **Runs** page, the summary report pane: **PDF** or **JSON** |
-| [Management Report](/docs/results/management-report) of a date range | **Reports** page: **Export PDF** or **JSON** |
+| [Management Report](/docs/results/management-report) of a date range | **Runs** page, the Management Report dialog: **Export PDF** or **JSON** |
 
 PDF is for people who don't have the app: a test manager, a customer, an
 auditor. JSON is for your own toolchain: a dashboard, a quality gate, or a
@@ -54,7 +54,6 @@ The execution report and the run summary both carry a `run` object:
 | `startedAt`, `endedAt` | When the run started and ended |
 | `plan` | The [test plan](/docs/writing-tests/plans) the run executed |
 | `rack` | The name of the device profile the run used |
-| `softwareVersion` | The [software version under test](/docs/extending/reporting#software-version-under-test) |
 | `model` | The model that ran the tests |
 | `appVersion` | The version of AskUI Desktop or the CLI |
 | `cost` | The run's total cost in USD, reports included |
@@ -80,7 +79,7 @@ object (`totals` at the top of the Management Report):
 {
   "schemaVersion": 1,
   "kind": "execution-report",
-  "run": { "folder": "2026-10-05_09-00-00", "rack": "Staging browser", "softwareVersion": "4.2.1", "...": "..." },
+  "run": { "folder": "2026-10-05_09-00-00", "rack": "Staging browser", "...": "..." },
   "test": "login_test",
   "file": "/projects/shop/tests/login_test.md",
   "status": "FAILED",
@@ -98,7 +97,8 @@ object (`totals` at the top of the Management Report):
     "cacheWriteTokens": 0,
     "cost": 0.0822,
     "error": null
-  }
+  },
+  "testCost": 0.4137
 }
 ```
 
@@ -110,6 +110,7 @@ object (`totals` at the top of the Management Report):
 | `startedAt`, `endedAt` | When the test started and ended |
 | `markdown` | The execution report as Markdown, or `null` when none was written |
 | `writer` | How the report was written: `state` (`ready` or `failed`), `writtenAt`, `model`, the tokens, `cost`, and the `error` of a failed report |
+| `testCost` | What the test cost in USD, its execution plus its execution report, or `null` when unknown |
 
 ### Run summary
 
@@ -126,10 +127,11 @@ object (`totals` at the top of the Management Report):
 | `project` | The project's name |
 | `from`, `to` | The date range you picked |
 | `firstRunAt`, `lastRunAt` | The test period: the first and the last counted run |
-| `plans`, `racks`, `softwareVersions` | Lists of the plans, racks, and versions of the counted runs |
+| `softwareVersion` | The software version you entered in the dialog, or `null` |
+| `plans`, `racks` | Lists of the plans and racks of the counted runs |
 | `totals` | [Counts](#counts) over all counted runs |
 | `tests` | One entry per test: `name`, `runs`, `counts`, `lastStatus`, `lastRunAt` |
-| `runs` | One entry per run in the range: `folder`, `startedAt`, `title`, `plan`, `rack`, `softwareVersion`, `counts`, and `excluded` (`true` for a run you unticked) |
+| `runs` | One entry per run in the range: `folder`, `startedAt`, `title`, `plan`, `rack`, `counts`, and `excluded` (`true` for a run you unticked) |
 | `days` | One entry per day: `date`, `executed`, `passed` |
 
 The same runs and the same choices give the same Management Report JSON,

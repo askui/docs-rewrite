@@ -75,18 +75,21 @@ they cannot generate a report.
 
 ### What a report costs
 
-Each report costs model tokens. The report pane shows the cost of the report
-in its header, and the last line of the report names the model, the tokens,
-and the price. The cost of all reports adds to the run's total cost.
+Each report costs model tokens. The last line of a report names the model
+that wrote it, the tokens, and the price of that report alone.
 
-## Software version
+The header of the report pane shows a total:
 
-A run records the software version that was set under
-[Extending → Reporting](/docs/extending/reporting#software-version-under-test)
-when it started. To correct or clear it, right-click the run and pick
-**Set software version…**. The
-[Management Report](/docs/results/management-report) groups runs by this
-version.
+- On a test's execution report: what the test cost, its execution plus its
+  execution report.
+- On the summary report: what the whole run cost, its execution reports
+  included.
+
+## Management Report
+
+The report icon in the header of the runs sidebar, next to **Refresh**,
+opens the [Management Report](/docs/results/management-report): one report
+over every run in a date range.
 
 ## Conversation log
 

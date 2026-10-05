@@ -5,9 +5,9 @@ description: How to shape the way the agent acts, the built-in error discipline,
 ---
 
 The system prompt is assembled at run start from the project's files: the
-device profile's prompt, `tests/ui.md`, and each folder's `rules.md` and
-`ui.md`. `utils/format.md` is not part of it: it instructs the report
-writer. It applies to every test in the project.
+device profile's prompt, `tests/ui.md`, the status definitions in
+`utils/status.md`, and each folder's `rules.md` and `ui.md`.
+`utils/format.md` is not part of it: it instructs the report writer. It applies to every test in the project.
 When tests fail consistently, this is often the fix, which file holds what:
 [What goes where](/docs/best-practices/prompting-best-practices).
 
@@ -93,6 +93,15 @@ What belongs here:
 A suite that exercises a different part of the system can add its own
 `ui.md` in its folder, it accumulates after the top-level file, closest to
 the test last.
+
+## Status definitions: what passed means
+
+`utils/status.md` defines when a test is `PASSED`, `FAILED`, `WARNING`,
+`BROKEN`, or `SKIPPED`. The agent picks the result it records by these
+definitions. Edit them under **Extending → Reporting**, in the
+**Status definitions** section, when your process judges differently, for
+example when a slow response is a failure and not a warning. Put such
+judgements here, not in `rules.md`: [Status definitions](/docs/extending/reporting#status-definitions).
 
 ## Report format: the report contract
 
