@@ -15,7 +15,9 @@ The **Runs** page is where you open them.
    tests (`login_test +2 more`); a run that failed during setup still
    carries the names of the tests it was started for. A run in progress
    sits under **Running**, and moves into the history the moment it
-   completes.
+   completes. The icon before the name says what the run executed: the
+   **Test Plans** icon for a test plan, the **Tests** icon for a test or a
+   folder, the same icons as in the left navigation.
 3. Choose what to look at:
    - **Conversation log**: the full execution record (below).
    - **Summary report**: the run-level table, one row per test.
@@ -63,6 +65,49 @@ open, whose report stays in the right pane until you pick another.
 
 Your search stays as you left it when you go to another page and come back.
 Each project keeps its own, and it is forgotten when you quit the app.
+
+## Run it again
+
+Right-click a run in the sidebar:
+
+- **Rerun all** runs that run again: the same tests, in the same order, on
+  the device it used. A test plan run does not re-read the plan, so tests
+  you added to it since are not picked up and tests you removed still run —
+  it repeats the run, not the plan. It appears in the history as
+  `<plan> (Rerun)`.
+- **Rerun only failed** runs only the tests of that run whose result was
+  FAILED or BROKEN, as a single run on the device it used. For a test plan
+  it appears as `<plan> (Rerun Failed)`. It is greyed out, with the reason,
+  when nothing failed or when none of the failed tests' files can be found.
+
+To run a test plan as it stands today, on the devices it names today, use
+its Run button on the **Test Plans** page.
+
+If a test the rerun would repeat has been renamed or deleted, the rerun is
+refused and says which one. It never runs part of a run.
+
+Right-click a test under the selected run for **Rerun this test**: only that
+test, on the device the run used, whether the run was a test plan or not.
+
+A rerun starts exactly like a first run: if the device is busy you are asked
+whether to queue it, see [Running tests](/docs/running-tests). A rerun is one
+run however many tests it repeats, so the question is asked once.
+
+When the app cannot tell which device the run used, because the run is from
+before the app recorded it or that device has since been deleted, a picker
+asks you to choose one. A rerun never picks a device for you. Runs from
+before the app recorded their target can be rerun as a whole only when they
+ran a single test whose file still exists; otherwise **Rerun all** is greyed
+out and says why.
+
+## Open the test in the editor
+
+Each test under a run has a pencil at the right of its row, and **Open in
+editor** in its right-click menu. Either opens that test's file on the
+**Tests** page, so a failed test is one click from its fix. Both are
+disabled when no file is known for the row: a setup or teardown entry, a
+test file that was renamed or removed since the run, or an older run whose
+test name matches two files.
 
 ## Conversation log
 
