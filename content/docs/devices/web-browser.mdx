@@ -56,3 +56,30 @@ directly. You can watch this step in the
 - **Not covered:** pages that use the browser's newer folder and file access
   picker (`showOpenFilePicker`) instead of a file field. Most upload forms
   use a file field.
+
+## Confirmations and browser dialogs
+
+When a page asks with a browser dialog (an `alert`, a "Really delete?"
+confirmation, or a prompt for text), the agent reads the dialog's text and
+answers it. Write the answer you expect into the step:
+
+```text
+Delete the customer "Müller" and confirm the deletion.
+Check that "Müller" is no longer in the list.
+```
+
+- **OK or Cancel.** "Confirm" or "accept" presses OK. "Cancel" or "keep"
+  presses Cancel, so the path where the user changes their mind can be
+  tested too.
+- **Text prompts.** Name the text, e.g. "enter *Invoices* as the folder
+  name".
+- **Checking a message.** The agent can check what an alert says, e.g.
+  "check that the alert says *Saved*".
+- **In the run report** each dialog appears with its text and the answer
+  given.
+
+The page waits while a dialog is open. Screenshots in the report show the
+page from just before the dialog opened, without the dialog drawn on it. This
+applies to the browser's own dialogs. Dialogs that a web app draws itself
+(modals) are part of the page, and the agent sees and clicks them like any
+other element.
