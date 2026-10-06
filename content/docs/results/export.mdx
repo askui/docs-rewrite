@@ -35,9 +35,20 @@ report is written. The Management Report has its own steps:
 If the export fails, AskUI Desktop shows the error and writes no file. A
 half-written file never replaces an existing one.
 
-Every PDF has the AskUI design. At the top, it shows the AskUI mark, the
-wordmark, and the kind of document. The footer shows the page numbers.
-Statuses appear as labelled markers, for example **PASSED**.
+Every PDF has the AskUI design. Statuses appear as labelled markers, for
+example **PASSED**.
+
+- **Execution report and run summary**: no cover and no end page. The PDF
+  opens with a dark header band: the AskUI logo, **Execution report** or
+  **Run summary**, the test or plan name, and the facts (status, duration,
+  cost, run, rack, model).
+- **Management Report**: a dark cover page, numbered sections, and a dark
+  end page: [What the report shows](/docs/results/management-report#what-the-report-shows).
+
+Every page except a cover and an end page has a running header (the AskUI
+mark, the project and the kind of document) and a footer
+(**Generated with AskUI Desktop** with the date and time, and
+**Page n / m**).
 
 ### The first PDF export
 

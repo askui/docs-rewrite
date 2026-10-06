@@ -37,16 +37,31 @@ file you save. To create it again, pick the same range, runs, and options.
 
 ## What the report shows
 
-The PDF starts with a **cover page**:
+The PDF starts with a dark navy **cover page**. It shows the AskUI logo,
+**Management Report · <period>**, the project name with
+**Management Report** below it, and a row of headline facts: the test
+period, the software version, the runs, the pass rate, the racks, the
+plans, the tests executed, and the size of the appendix.
 
-- The AskUI logo, **Management report**, the project name, and the date
-  range.
-- A grid with the software version, the racks, the number of runs, the
-  tests executed, the pass rate, and the number of appendix documents.
-- **Generated** with the date and time at the bottom.
+Numbered sections follow:
 
-The next page is the **Overview**. It holds the facts and figures, the
-appendix list (when you bundled documents), the charts, and the tables:
+1. **Overview**: a table of facts and five key-figure cards.
+2. **Results Over Time**: the three charts.
+3. **Tests**: the table of tests.
+4. **Runs**: the table of runs, with **Important notes** on how the
+   figures are counted.
+5. **Appendix**: the contents of the bundled documents, with page numbers.
+   Each bundled document starts on its own page.
+
+A dark **End of Report** page closes the PDF. Every page between the cover
+and the end page has a header and a footer:
+
+- **Header**: the AskUI mark, **AskUI — <project> · Management Report**,
+  and the period on the right.
+- **Footer**: **Generated with AskUI Desktop** with the date and time, and
+  **Page n / m**.
+
+What the sections hold:
 
 - **Key figures**: runs, tests executed, passed, failed and broken, and the
   pass rate.
@@ -94,10 +109,11 @@ Two options add the evidence of the included runs to the PDF:
 Both are off by default. Turn them on when you need one file that holds a
 release's full evidence, for example for an audit.
 
-With bundled documents, the Overview has an **Appendix** list. Each entry
+With bundled documents, the **Appendix** section lists them. Each entry
 has a number (A1, A2, …), its kind, **Run summary** or
 **Execution report**, and on the right the page it starts on. Click an
-entry or its page number to jump there.
+entry or its page number to jump there. Each bundled document starts on
+its own page.
 
 ## PDF and JSON
 
