@@ -160,12 +160,12 @@ counts object has the same fields:
 | `project` | The project's name |
 | `from`, `to` | The date range you picked |
 | `firstRunAt`, `lastRunAt` | The test period: the first and the last counted run |
-| `softwareVersion` | The software version you entered in the dialog, or `null` |
+| `details` | The [additional information](/docs/results/management-report#additional-information) from the dialog: `softwareVersion`, `author`, `preparedFor`, `reference`, `classification`, `remarks`. Each is `null` when empty |
 | `plans`, `racks` | Lists of the plans and racks of the counted runs |
 | `totals` | [Counts](#counts) over all counted runs |
 | `tests` | One entry per test: `name`, `runs`, `counts`, `lastStatus`, `lastRunAt` |
 | `runs` | One entry per run in the range: `folder`, `startedAt`, `title`, `plan`, `rack`, `counts`, and `excluded` (`true` for a run you unticked) |
-| `executions` | One entry per test execution of the counted runs: `runFolder`, `startedAt`, `run`, `test`, `status`, `duration` |
+| `executions` | One entry per test execution of the counted runs: `runFolder`, `startedAt`, `run`, `test`, `status`, `duration`, and `hasReport` (`true` when the execution has an execution report) |
 | `days` | One entry per day: `date`, `executed`, `passed` |
 
 The same runs and the same choices give the same Management Report JSON,
