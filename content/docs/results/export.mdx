@@ -161,6 +161,7 @@ counts object has the same fields:
 | `from`, `to` | The date range you picked |
 | `firstRunAt`, `lastRunAt` | The test period: the first and the last counted run |
 | `details` | The [additional information](/docs/results/management-report#additional-information) from the dialog: `softwareVersion`, `author`, `preparedFor`, `reference`, `remarks`. Each is `null` when empty |
+| `runNameFilter` | The [run name](/docs/results/management-report#create-a-report) text the report was narrowed by, or `null` when no filter was set |
 | `plans`, `racks` | Lists of the plans and racks of the counted runs |
 | `totals` | [Counts](#counts) over all counted runs |
 | `tests` | One entry per test: `name`, `runs`, `counts`, `lastStatus`, `lastRunAt` |
