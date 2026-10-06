@@ -74,18 +74,26 @@ The execution report and the run summary both carry a `run` object:
 
 ### Counts
 
-The run summary and the Management Report count results in a `counts`
-object (`totals` at the top of the Management Report):
+The run summary and the Management Report count results in a counts
+object: `counts` in the run summary and in each test and run entry of the
+Management Report, and `totals` at the top of the Management Report. Every
+counts object has the same fields:
+
+```json
+{ "passed": 11, "failed": 1, "broken": 0, "warnings": 2, "notCounted": 3,
+  "executed": 12, "passRate": 92, "allGreen": false }
+```
 
 | Field | Holds |
 | --- | --- |
-| `executed` | Tests that ran |
 | `passed` | Tests that passed, warnings included |
 | `failed` | Tests that failed |
 | `broken` | Tests that broke |
 | `warnings` | Tests that passed with a warning |
-| `skipped` | Tests that were skipped |
+| `notCounted` | Rows that do not count: skipped tests, discarded and deprecated tests, and setup or teardown rows |
+| `executed` | Tests that count: passed, failed, and broken |
 | `passRate` | Passed out of executed, in percent, or `null` when nothing ran |
+| `allGreen` | `true` when something executed and nothing failed or broke |
 
 ### Execution report
 
@@ -112,7 +120,7 @@ object (`totals` at the top of the Management Report):
     "cost": 0.0822,
     "error": null
   },
-  "testCost": 0.4137
+  "cost": { "execution": 0.3315, "report": 0.0822, "total": 0.4137 }
 }
 ```
 
@@ -124,7 +132,7 @@ object (`totals` at the top of the Management Report):
 | `startedAt`, `endedAt` | When the test started and ended |
 | `markdown` | The execution report as Markdown, or `null` when none was written |
 | `writer` | How the report was written: `state` (`ready` or `failed`), `writtenAt`, `model`, the tokens, `cost`, and the `error` of a failed report |
-| `testCost` | What the test cost in USD, its execution plus its execution report, or `null` when unknown |
+| `cost` | What the test cost in USD: `execution`, its `report`, and the `total`. Each part is `null` when unknown, `total` only when both are |
 
 ### Run summary
 
@@ -132,7 +140,7 @@ object (`totals` at the top of the Management Report):
 | --- | --- |
 | `run` | [The run](#the-run) |
 | `counts` | [Counts](#counts) over the run's tests |
-| `tests` | One entry per test: `id`, `name`, `status`, `duration` |
+| `tests` | One entry per row of the summary: `id`, `name`, `status`, `duration`. It lists every test, the setup and teardown rows that recorded something to report, and the tests that never started as `SKIPPED` |
 
 ### Management Report
 
