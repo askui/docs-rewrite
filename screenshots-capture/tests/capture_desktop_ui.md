@@ -56,7 +56,7 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
    **Name** to `Chrome Browser`, then call
    `save_screenshot[desktop-profile-web-browser]`.
 
-7. Select the **Android emulator** kind (Device type, System image, Lifecycle),
+7. Select the **An Android emulator** kind (Device type, System image, Lifecycle),
    wait until its dropdowns have loaded. Set **Name** to `Pixel 9`, then call
    `save_screenshot[desktop-profile-android-emulator]`.
 
