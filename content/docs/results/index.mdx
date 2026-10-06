@@ -25,6 +25,45 @@ The **Runs** page is where you open them.
 **Open in Explorer** on a test jumps to its files on disk, the run's folder
 is one level up.
 
+## Find a past run
+
+The sidebar shows the newest eight runs; **Show all** expands the list.
+Once history grows past a screen, search it instead:
+
+- **Search box**: type part of a plan name or a test name. The list keeps
+  only the runs that ran it, still grouped by day, and a line reads
+  **N of M runs**. Matching ignores case.
+- **Filter** (the funnel button): narrow by a date-time window and by ticking
+  boxes.
+  - **From** / **To**, your local time, both edges included. **To 10:30**
+    runs through the end of that minute.
+
+    For the usual windows there are buttons: **Today**, **Last 7 days** and
+    **This month** under the start field, and **Now** beside the end field.
+    Each lands on a midnight. Last 7 days counts today as one of them, and
+    This month starts on the 1st.
+  - **Kind**: plan run, test run.
+  - **Trigger**: only the triggers your history actually holds are offered.
+    A project that has never had a scheduled run gets no Scheduled box.
+  - **Outcome**: passed, failures, broken, warnings. These are not
+    alternatives, a run is found by every box that is true of it: one that
+    passed *with* warnings answers to Passed and Warnings, and one holding
+    both a failed and a broken test answers to Failures and Broken.
+    Failures and Broken are apart because they are different problems: a
+    failed test made its check and lost, a broken one never got that far.
+
+  Ticking several boxes in one group widens it, "any of these". Different
+  groups narrow each other, and so does the search text.
+
+While a search or filter is active the eight-run cap is lifted, so every
+match is listed, and only matches are listed — including the run you have
+open, whose report stays in the right pane until you pick another.
+**Clear** next to the count drops the text and every filter;
+**Reset filters** inside the popover drops the filters alone.
+
+Your search stays as you left it when you go to another page and come back.
+Each project keeps its own, and it is forgotten when you quit the app.
+
 ## Conversation log
 
 Beside the written reports, every run keeps its full conversation, each
