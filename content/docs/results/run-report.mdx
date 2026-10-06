@@ -25,13 +25,33 @@ status is one of:
 - `WARNING`: the expected outcome was observed, but something noteworthy
   went wrong on the way (slow response, minor visual deviation). Step lines
   in a report write it as `WARN`.
-- `SKIPPED`: intentionally not executed (e.g. a precondition was not met).
-- `BROKEN`: could not execute: a crash or an infrastructure failure.
+- `SKIPPED`: not executed: the agent skipped it on purpose (e.g. a
+  precondition was not met), or the test never started (see
+  [Tests that never started](#tests-that-never-started)).
+- `BROKEN`: the test ran and could not finish: a crash or an
+  infrastructure failure.
 
 The reason names what was expected and what was observed. A test that ends
 without a recorded result is `BROKEN`, with the reason "No result recorded".
 A test that stops on an error is `BROKEN`, with the error as the reason. If
-the agent records more than once, the last result counts. The result is saved next to the test as `<test_name>_result.json`.
+the agent records more than once, the last result counts. The result is
+saved next to the test as `<test_name>_result.json`.
+
+### Tests that never started
+
+A test that never started is `SKIPPED`, never `BROKEN`. Its note in the
+summary report names the reason:
+
+| Note | When |
+| --- | --- |
+| Not run: a setup it depends on failed. | A [setup](/docs/writing-tests/setup-teardown-rules#how-a-setup-or-teardown-ends) of its folder failed or broke. |
+| Not run: `<test>` broke the run before this test. | An earlier test broke, and the run ended there. |
+| Not run: the run ended before this test. | The run was stopped, or the runner failed. |
+
+A skipped test counts as nothing, so it changes neither the pass rate nor
+the totals. The run still fails, because of the test or setup that broke
+or failed. For runs from older versions, the app shows a test that the
+summary listed as broken without a duration as `SKIPPED`.
 
 ## Execution report
 
@@ -197,7 +217,9 @@ Each test has its own folder in the run folder:
 `summary_report.md` in the run folder summarizes the whole run: a totals head
 (test-case count, per-status counts, run duration), one Markdown table across
 all tests with status and execution time per test, and detail sections that
-quote the recorded reason of each warned, failed, or broken test.
+quote the recorded reason of each warned, failed, broken, or skipped test.
+Broken tests are listed under **💥 Broken**, tests that never started
+under **⏭️ Skipped**.
 
 ```markdown
 # Summary Report
@@ -224,18 +246,16 @@ The pay button never appeared after entering the voucher code.
 The summary comes from the recorded results, not from the execution
 reports, so it is complete even for tests without a report. A test that ran
 but recorded no result reads "No result recorded". Tests that a
-[test plan](/docs/writing-tests/plans) selected but the run never reached are
-listed as `💥 Broken` with a duration of `—`, so nothing goes missing
-silently. The Dashboard and Runs pages in AskUI Desktop derive their pass/fail
-counters from this table. The summary report pane exports the run as PDF or
+[test plan](/docs/writing-tests/plans) selected but the run never started
+are listed under **⏭️ Skipped** with their
+[reason](#tests-that-never-started), so nothing goes missing silently. The summary report pane exports the run as PDF or
 JSON: [Export](/docs/results/export).
 
 <Callout title="Counting rules">
 `WARNING` counts as passed (tracked separately in the warning total).
-`SKIPPED` tests never executed and are excluded from the total. `BROKEN`
-tests without an execution time in the summary (tests that never started)
-are also excluded from the total, they show in the table but don't affect
-the pass rate.
+`SKIPPED` tests are excluded from the total, they show in the table but
+don't affect the pass rate. The Runs page, the Dashboard, the CLI, and the
+Management Report count with this one rule, so their figures always agree.
 </Callout>
 
 In CI, upload the whole workspace folder as a build artifact so the reports

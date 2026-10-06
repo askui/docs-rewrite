@@ -56,7 +56,9 @@ page is the loop for **why**, and where the fix belongs.
        as evidence.
    - **`SKIPPED`**: an entry criterion wasn't met, or an
      [optional step](/docs/writing-tests/step-constructs#optional) didn't
-     apply. Check the **Preconditions** section.
+     apply. Check the **Preconditions** section. A test whose note starts
+     with "Not run:" never started: look at the setup or the test it
+     [names](/docs/results/run-report#tests-that-never-started).
 2. Open the failing case's [execution report](/docs/results/run-report) and read
    the failed step (no report yet? Right-click the case on the **Runs** page
    and pick **Generate execution report**):

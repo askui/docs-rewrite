@@ -348,8 +348,9 @@ AskUI has more outcomes than JUnit, so the mapping is fixed:
 | `WARNING` | passed, with the warning in `system-out` |
 | `FAILED` | `failure` |
 | `BROKEN` | `error`, with the reason |
-| Selected but not reached | `error` ("Not executed") |
 | `SKIPPED`, `DISCARDED`, `DEPRECATED` | `skipped` |
+
+A test that never started is `SKIPPED`, so it appears as `skipped`.
 
 `junit.xml` and `summary_report.md` count the same recorded results.
 
@@ -357,15 +358,15 @@ AskUI has more outcomes than JUnit, so the mapping is fixed:
 
 The console shows each phase as it starts and finishes
 (`[test] tests/login.md -> PASSED`) and ends with one summary line that counts
-the passed, failed, broken, and warned tests. A test the run never reached is
-counted as not executed.
+the passed, failed, broken, and warned tests. A test the run never started
+is `SKIPPED` and is not counted.
 
 ## Exit codes
 
 | Code | Meaning | Who acts |
 | --- | --- | --- |
 | `0` | All tests passed. Warnings are allowed. | nobody |
-| `1` | The run completed, and at least one test failed, broke, or was never reached. | the product team |
+| `1` | At least one test failed or broke, or a setup failed. Tests that never started because of it are `SKIPPED` and do not change the code. | the product team |
 | `2` | Usage error: an unknown option, a missing or bad value, or two options that exclude each other. | the pipeline author |
 | `3` | Environment or configuration error: missing credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; an MCP server or device that cannot be reached; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load. | the pipeline author |
 | `4` | No tests ran: the selection was empty, or no test result was produced. | the pipeline author |

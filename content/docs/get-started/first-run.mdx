@@ -358,8 +358,9 @@ visual deviation).\
 **`FAILED`**: the step executed, but the actual result didn't match the
 expected one.\
 **`SKIPPED`**: intentionally not executed, e.g. a precondition wasn't met.\
-**`BROKEN`**: couldn't execute at all: a crash or an infrastructure problem,
-not a functional result.
+**`BROKEN`**: the test ran but couldn't finish: a crash or an
+infrastructure problem, not a functional result. A test that never started
+is `SKIPPED`, not `BROKEN`.
 
 For details and the cross-run summary report, see
 [Reading a run report](/docs/results/run-report).
