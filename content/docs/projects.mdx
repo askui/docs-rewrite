@@ -88,10 +88,26 @@ The app has Git built in, no terminal needed for the daily loop:
 
 1. Click the branch chip in the top bar, a dot marks uncommitted changes,
    `↓`/`↑` how far you are behind/ahead of the remote.
-2. Review the changed files, type a commit message, and commit.
+2. Review the changed files, type a commit message, and commit. Or click the
+   sparkle in the message field: the app suggests a message from your changes
+   (the file list and what changed in them), marked **AI suggestion · please
+   review before committing**. Edit it as you like, click the sparkle again
+   for another one, or **Clear** to start over. Nothing is committed until you
+   click **Commit all**. Files under `secrets/` and `.env` files are named to
+   the model, never their content. Your message stays in the box when you
+   close and reopen the flyout, until you restart the app.
 3. **Sync** pulls the remote's changes and pushes yours. Conflicts block the
    sync until you resolve them in the flyout, keep yours, take theirs, or
    mark resolved after editing.
+
+**Choose the commit message format**
+
+Suggestions follow the format set in **Settings → Account → Commit messages**:
+**Conventional Commits** (the default), **Angular Commit**, **Ticket-Driven**
+(takes the ticket key from the branch name), **Git Standard Rules**, or
+**Emoji-Based Format**. Pick **Custom** to write your team's own rules in plain
+text. The editor starts with the rules of the format you had selected. The
+setting belongs to you on this computer, not to the project.
 
 **Get an existing project**
 
