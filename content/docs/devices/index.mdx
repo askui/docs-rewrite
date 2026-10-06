@@ -32,7 +32,10 @@ defaults stay deleted.
 2. Pick the kind.
 3. Enter a name and the kind's fields. The optional **Prompt** field holds
    what the agent gets told about this device on every run, quirks the
-   screen doesn't show ("always execute on display 1").
+   screen doesn't show ("always execute on display 1"). A
+   [Multi computer](/docs/devices/multi-computer) or
+   [Cross-platform](/docs/devices/cross-platform) profile passes on each
+   member's prompt as well, under the member's name.
 4. Click **Add device**, then **Connect** the new card.
 
 <img
@@ -78,6 +81,7 @@ keep working.
 
 ## Where profiles live
 
-`devices.json` in the project, including each profile's **Prompt** text.
+`devices.json` in the project, including each profile's **Prompt** text
+(and, for a Multi computer or Cross-platform profile, each member's).
 Colleagues get the same device list and only connect. See
 [How a Project is organized](/docs/projects).

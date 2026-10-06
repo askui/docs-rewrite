@@ -60,10 +60,12 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
    wait until its dropdowns have loaded. Set **Name** to `Pixel 9`, then call
    `save_screenshot[desktop-profile-android-emulator]`.
 
-8. Select the **Multi computer** kind (rows of Name/Host/Port/Display). Set the
-   profile **Name** to `Build Farm`, and give the per-computer rows names that
-   read as machines (e.g. `builder-01`, `builder-02`) — not a phone or browser
-   name. Then call `save_screenshot[desktop-profile-multi-computer]`.
+8. Select the **Multi computer** kind (rows of Name/Host/Port/Display/Prompt).
+   Set the profile **Name** to `Build Farm`, and give the per-computer rows names
+   that read as machines (e.g. `builder-01`, `builder-02`) — not a phone or
+   browser name. Fill the first row's **Prompt** with a short machine note (e.g.
+   `Windows 11; the build runs here.`) so the per-row field is visible in the
+   shot. Then call `save_screenshot[desktop-profile-multi-computer]`.
 
 9. Close the dialog with **Cancel** — do NOT save any profile.
 
