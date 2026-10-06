@@ -8,6 +8,7 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 import { RunEmbed } from '@/components/run-embed';
 import { Mermaid } from '@/components/mermaid';
 import { Lucide } from '@/components/lucide';
+import { DownloadLink } from '@/components/download-link';
 import { basePath } from '@/lib/shared';
 import type { MDXComponents } from 'mdx/types';
 import type { ComponentProps, ElementType } from 'react';
@@ -52,6 +53,7 @@ export function getMDXComponents(components?: MDXComponents) {
     RunEmbed,
     Mermaid,
     Lucide,
+    DownloadLink,
     img: Img,
     ...components,
   } satisfies MDXComponents;
