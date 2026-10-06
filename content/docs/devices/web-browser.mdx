@@ -31,3 +31,28 @@ Desktop launches and controls itself. No AgentOS, no separate install.
 Headless keeps your screen free; use a visible window when you want to
 watch. One profile per environment works well: `Staging web app`,
 `Prod smoke`, same tests, different start URL.
+
+## Upload files
+
+A test can upload files through a page's upload button or file field. Name
+the file by its full path in the step:
+
+```text
+Click "Attach invoice" and upload C:\testdata\invoice.pdf.
+Check that "invoice.pdf" appears in the attachment list.
+```
+
+No file dialog opens, in a visible window or headless. The agent learns from
+its own click that the page is waiting for a file, and hands the file over
+directly. You can watch this step in the
+[run report](/docs/results/run-report) as "File chooser answered with …".
+
+- **Any path works.** The agent can upload any file the user running AskUI
+  Desktop can read. On a CI runner, make sure the file exists at that path.
+- **Several files** work when the field accepts several. A field that takes
+  one file refuses more.
+- **Nothing selected.** To test what the form does without a file, write
+  "close the file picker without choosing a file".
+- **Not covered:** pages that use the browser's newer folder and file access
+  picker (`showOpenFilePicker`) instead of a file field. Most upload forms
+  use a file field.
