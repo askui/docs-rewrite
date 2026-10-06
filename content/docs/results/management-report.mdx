@@ -19,17 +19,21 @@ costs nothing to build.
    the runs list. A dialog opens.
 3. Pick the date range: **7 days**, **30 days**, or **90 days**, or set the
    two dates.
-4. Check the list of runs in the range. All runs are included. Untick a run
+4. Optional: type part of a run's name under **Run name**, for example
+   `Nightly`. As you type, only runs whose name contains the text count for
+   the report, regardless of case. Other runs are not listed and not
+   counted.
+5. Check the list of runs. All listed runs are included. Untick a run
    to leave it out, or use **Select all** and **Unselect all**
    ([several runs at once](#leave-out-a-run)).
-5. Optional: fill in the fields under **Additional information**
+6. Optional: fill in the fields under **Additional information**
    ([below](#additional-information)).
-6. Optional: tick **Bundle the execution reports**. To include the tests
+7. Optional: tick **Bundle the execution reports**. To include the tests
    that have no report yet, also tick
    **Generate missing execution reports first**.
-7. Click **Generate**. After a few seconds, the dialog shows
+8. Click **Generate**. After a few seconds, the dialog shows
    **The report is ready.**
-8. Click **Download PDF** or **Download JSON** to save the report. On the
+9. Click **Download PDF** or **Download JSON** to save the report. On the
    desktop, **Open** shows the PDF in your default PDF viewer.
 
 **Change selection** goes back to the range and the runs. **Done** closes
@@ -46,7 +50,6 @@ Every field is optional, and the report is complete without them:
 | **Author** | Your name | The cover and the overview |
 | **Prepared for** | A customer or a team | The cover and the overview |
 | **Reference** | `QA-2026-041` | The cover, the overview, and the right of every page header, in place of the period |
-| **Classification** | **Public**, **Internal**, **Confidential**, **Strictly confidential**, or your own text | The cover, the overview, and the start of every page footer, for example `Confidential · Generated with AskUI Desktop · …` |
 | **Remarks** | Free text | A **Remarks** box in the overview |
 
 Fields you leave empty do not appear.
@@ -64,7 +67,8 @@ them.
 Numbered sections follow:
 
 1. **Overview**: a table of facts, including your additional
-   information, five key-figure cards, and your **Remarks**.
+   information, five key-figure cards, and your **Remarks**. With a
+   **Run name** filter, the table has a row `Runs named — containing “<text>”`.
 2. **Results**: the two charts.
 3. **Tests**: the table of tests.
 4. **Runs**: the table of runs, with **Important notes** on how the
@@ -81,9 +85,8 @@ and the end page has a header and a footer:
 
 - **Header**: the AskUI mark, `AskUI — <project> · Management Report`,
   and on the right the period, or the **Reference** when you entered one.
-- **Footer**: the **Classification** when you entered one, then
-  **Generated with AskUI Desktop** with the date and time, and
-  **Page n / m**.
+- **Footer**: **Generated with AskUI Desktop** with the date and time,
+  and **Page n / m**.
 
 What the sections hold:
 
