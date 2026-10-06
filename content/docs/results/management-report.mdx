@@ -24,8 +24,7 @@ costs nothing to build.
    ([several runs at once](#leave-out-a-run)).
 5. Optional: under **Additional information**, enter the
    **Software version** the report covers, for example `4.2.1`.
-6. Optional: tick **Bundle the run summaries** or
-   **Bundle the execution reports**.
+6. Optional: tick **Bundle the execution reports**.
 7. Click **Generate**. After a few seconds, the dialog shows
    **The report is ready.**
 8. Click **Download PDF** or **Download JSON** to save the report. On the
@@ -50,8 +49,11 @@ Numbered sections follow:
 3. **Tests**: the table of tests.
 4. **Runs**: the table of runs, with **Important notes** on how the
    figures are counted.
-5. **Appendix**: the contents of the bundled documents, with page numbers.
-   Each bundled document starts on its own page.
+5. **Test Execution Reports**: every test execution of the counted runs
+   ([details](#bundle-execution-reports-into-the-pdf)).
+
+With bundled execution reports, an appendix follows. Each report starts on
+its own page.
 
 A dark **End of Report** page closes the PDF. Every page between the cover
 and the end page has a header and a footer:
@@ -105,21 +107,27 @@ applies to all of them. A bar shows **N marked** and offers **Include**,
 **Exclude**, and **Clear**. **Select all** and **Unselect all** include or
 exclude every run in the list.
 
-## Bundle evidence into the PDF
+## Bundle execution reports into the PDF
 
-Two options add the evidence of the included runs to the PDF:
+**Bundle the execution reports** adds the execution report of every test
+execution in the counted runs to the PDF, as an appendix. It is off by
+default. Turn it on when you need one file that holds a release's full
+evidence, for example for an audit.
 
-- **Bundle the run summaries**: the summary report of each run.
-- **Bundle the execution reports**: every execution report of those runs.
+Section 5, **Test Execution Reports**, lists every test execution of the
+counted runs, with the columns **#**, **Test**, **Run**, **Date**,
+**Duration**, **Status**, and **Page**:
 
-Both are off by default. Turn them on when you need one file that holds a
-release's full evidence, for example for an audit.
+- For an execution whose report is bundled, **#** shows its appendix
+  number (A1, A2, …) and **Page** the page the report starts on. The
+  number, the page, and the test name link to the report. The links work
+  in every PDF viewer.
+- An execution without a bundled report shows `—` in both columns.
+- Without bundled reports, the table still lists every execution, with a
+  note that no reports are bundled.
 
-With bundled documents, the **Appendix** section lists them. Each entry
-has a number (A1, A2, …), its kind, **Run summary** or
-**Execution report**, and on the right the page it starts on. Click an
-entry or its page number to jump there. Each bundled document starts on
-its own page.
+The appendix holds execution reports only. To share the summary of one
+run, export it from the **Runs** page: [Export](/docs/results/export).
 
 ## PDF and JSON
 

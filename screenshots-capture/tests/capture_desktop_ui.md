@@ -145,7 +145,7 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     "Additional information" section are shown — or, if there are no runs in
     the range, the "No runs in this range." message. Then call
     `save_screenshot[desktop-management-report]`. Do NOT untick a run, type a
-    software version, tick a bundle option, or click **Generate**. Close the
+    software version, tick **Bundle the execution reports**, or click **Generate**. Close the
     dialog with **Cancel** afterwards.
 
 16. With the demo project open, click the git branch chip in the top bar so
