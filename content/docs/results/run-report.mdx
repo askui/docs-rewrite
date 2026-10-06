@@ -71,7 +71,7 @@ can get one later from the **Runs** page:
 <Tab value="Rendered">
 <div className="rounded-lg border bg-fd-card px-6 py-5 text-sm leading-relaxed">
   <p className="text-xl font-semibold">Test Case Report: login_test</p>
-  <p className="mt-3"><b>Test Case ID:</b> login_test<br /><b>Date:</b> 2025-11-12<br /><b>Status:</b> <span className="font-semibold text-amber-600">WARNING</span> · <b>Cost of this test:</b> $0.3315 ($0.4137 with reporting)</p>
+  <p className="mt-3"><b>Test Case ID:</b> login_test<br /><b>Date:</b> 2025-11-12<br /><b>Status:</b> <span className="font-semibold text-amber-600">WARNING</span> · <b>Cost of this test:</b> $0.33 ($0.41 with reporting)</p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Summary</p>
   <p className="mt-2">The agent successfully logged in using the QA credentials and verified the dashboard was shown.</p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Preconditions</p>
@@ -112,7 +112,7 @@ can get one later from the **Runs** page:
 
 **Test Case ID:** login_test
 **Date:** 2025-11-12
-**Status:** WARNING · **Cost of this test:** $0.3315 ($0.4137 with reporting)
+**Status:** WARNING · **Cost of this test:** $0.33 ($0.41 with reporting)
 
 ## Summary
 
@@ -168,8 +168,8 @@ Section by section:
     states it as given and cannot change it.
   - **Cost of this test**: right behind the status. The test's execution
     cost comes first, and the total including this report follows in
-    parentheses, for example `$0.3315 ($0.4137 with reporting)`. When only
-    the report's cost is known, it reads `$0.0822 for the report`. Without
+    parentheses, for example `$0.33 ($0.41 with reporting)`, in whole cents. When only
+    the report's cost is known, it reads `$0.08 for the report`. Without
     a known price, the cost is left out. The cost also adds to the run's
     total, which the summary report in the app shows as
     **Cost of this run:**.
@@ -184,9 +184,12 @@ Section by section:
     observed.
   - **Status**: the step's own status: `PASSED`, `FAILED`, `SKIPPED`,
     `WARN`, or `BROKEN`.
-  - **Screenshot**: the step's evidence. The writer picks it from the
-    screenshots the agent took during the test, so the numbers in the file
-    names (`screenshot_<n>.png`) need not run in order.
+  - **Screenshot**: the step's evidence, exactly one per step: the
+    screenshot that shows the step's outcome. A second one appears only as
+    a rare exception, for example to compare before and after. This holds
+    whatever your report format says. The writer picks the screenshot from
+    those the agent took during the test, so the numbers in the file names
+    (`screenshot_<n>.png`) need not run in order.
 - **Postconditions**: whether the overall pass criterion held at the end.
 - **Issues**: anything worth a look that isn't a failure, the incident
   notes. In the example above: the 15-second sign-in.
