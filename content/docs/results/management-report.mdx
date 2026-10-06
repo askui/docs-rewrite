@@ -46,7 +46,7 @@ plans, the tests executed, and the size of the appendix.
 Numbered sections follow:
 
 1. **Overview**: a table of facts and five key-figure cards.
-2. **Results Over Time**: the three charts.
+2. **Results**: the two charts.
 3. **Tests**: the table of tests.
 4. **Runs**: the table of runs, with **Important notes** on how the
    figures are counted.
@@ -70,9 +70,15 @@ What the sections hold:
   empty. It belongs to the report, not to the runs.
 - **Racks**: the [device profiles](/docs/devices) the runs used. A
   **rack** is the name of a device profile.
-- **Charts**: tests executed per day (passed against failed or broken),
-  the outcome mix as a donut with the pass rate, and the pass rate per
-  test.
+- **Charts**: two, in this order.
+  - **Pass rate per test**, the main chart: one stacked bar per test
+    (passed, failed, broken), with its pass rate and passed out of executed
+    beside it. The test with the lowest pass rate comes first.
+  - **Tests executed per day**: stacked lines, passed below and failed or
+    broken on top, so the upper line is everything that ran.
+
+  Green means passed, navy failed, and pale lavender broken. The `FAILED`
+  marker in the tables is navy too.
 - **Tests**: one row per test, with its runs, passed, failed, broken, pass
   rate, and the status of its last run.
 - **Runs**: every run in the range, with its start time, rack, and passed
