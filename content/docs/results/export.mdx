@@ -1,0 +1,212 @@
+---
+icon: FileDown
+title: Export
+description: Export an execution report, a run summary, or a Management Report as PDF for people, as JSON for your own tools, or as JUnit XML for your CI system, and what each format holds.
+---
+
+Three reports export as **PDF**, **JSON**, and **JUnit XML**:
+
+| Report | Where you export it |
+| --- | --- |
+| [Execution report](/docs/results/run-report#execution-report) of one test | **Runs** page: **Export** in the header row above the report, or right-click the test |
+| [Run summary](/docs/results/run-report#summary-report) of one run | **Runs** page: **Export** on the summary report |
+| [Management Report](/docs/results/management-report) of a date range | **Runs** page: **Generate Management Report**, then **Download PDF**, **Download JSON**, or **Download JUnit XML** |
+
+PDF is for people who don't have the app: a test manager, a customer, an
+auditor. JSON is for your own toolchain: a dashboard, a quality gate, or a
+test management system. JUnit XML is for the test report view of your CI
+system, such as Jenkins or GitLab.
+
+## Export a report
+
+1. Open the execution report or the summary report on the **Runs** page.
+2. Click **Export**. Above an execution report, it sits in the header row
+   with the test's name, which stays visible while the report scrolls.
+3. Pick **Export as PDF**, **Export as JSON**, or **Export as JUnit XML**.
+4. Pick the folder and the file name in the save dialog.
+
+The save dialog opens in the project's `reports/` folder. The first export
+creates that folder. You can pick any other location.
+
+For an execution report, you can also right-click the test and pick
+**Export as PDF**, **Export as JSON**, or **Export as JUnit XML**. The entries appear once the test's
+report is written. The Management Report has its own steps:
+[Create a report](/docs/results/management-report#create-a-report).
+
+If the export fails, AskUI Desktop shows the error and writes no file. A
+half-written file never replaces an existing one.
+
+Every PDF has the AskUI design. Statuses appear as labelled markers, for
+example **PASSED**.
+
+- **Execution report and run summary**: no cover and no end page. The PDF
+  opens with a dark header band: the AskUI logo, **Execution report** or
+  **Run summary**, the test or plan name, and the facts (status, duration,
+  cost, run, rack, model).
+- **Management Report**: a dark cover page, numbered sections, and a dark
+  end page: [What the report shows](/docs/results/management-report#what-the-report-shows).
+
+Every page except a cover and an end page has a running header (the AskUI
+mark, the project and the kind of document) and a footer
+(**Generated with AskUI Desktop** with the date and time, and
+**Page n / m**).
+
+### The first PDF export
+
+AskUI Desktop prints PDFs with a Chromium browser. If it is missing, the
+first PDF export downloads it once, about 170 MB. This export takes longer.
+The download and its cache are the same as for runs on a
+[web browser profile](/docs/devices/web-browser), so a machine that already
+ran a web test downloads nothing.
+
+## The JSON documents
+
+Every JSON document starts with two fields:
+
+- `schemaVersion`: the version of the document's layout, currently `1`. A
+  new version means a field changed meaning or was removed.
+- `kind`: `execution-report`, `run-summary`, or `management-report`.
+
+Read `kind` first, then the fields of that kind. Times are ISO 8601 with a
+time zone offset. A value that is unknown is `null`.
+
+### The run
+
+The execution report and the run summary both carry a `run` object:
+
+| Field | Holds |
+| --- | --- |
+| `folder` | The run's folder name under `agent_workspace/` |
+| `startedAt`, `endedAt` | When the run started and ended |
+| `plan` | The [test plan](/docs/writing-tests/plans) the run executed |
+| `rack` | The name of the device profile the run used |
+| `model` | The model that ran the tests |
+| `appVersion` | The version of AskUI Desktop or the CLI |
+| `cost` | The run's total cost in USD, reports included |
+
+### Counts
+
+The run summary and the Management Report count results in a counts
+object: `counts` in the run summary and in each test and run entry of the
+Management Report, and `totals` at the top of the Management Report. Every
+counts object has the same fields:
+
+```json
+{ "passed": 11, "failed": 1, "broken": 0, "warnings": 2, "notCounted": 3,
+  "executed": 12, "passRate": 92, "allGreen": false }
+```
+
+| Field | Holds |
+| --- | --- |
+| `passed` | Tests that passed, warnings included |
+| `failed` | Tests that failed |
+| `broken` | Tests that broke |
+| `warnings` | Tests that passed with a warning |
+| `notCounted` | Rows that do not count: skipped tests, discarded and deprecated tests, and setup or teardown rows |
+| `executed` | Tests that count: passed, failed, and broken |
+| `passRate` | Passed out of executed, in percent, or `null` when nothing ran |
+| `allGreen` | `true` when something executed and nothing failed or broke |
+
+### Execution report
+
+```json title="login_test.json (shortened)"
+{
+  "schemaVersion": 1,
+  "kind": "execution-report",
+  "run": { "folder": "2026-10-05_09-00-00", "rack": "Staging browser", "...": "..." },
+  "test": "login_test",
+  "file": "/projects/shop/tests/login_test.md",
+  "status": "FAILED",
+  "reason": "Expected the dashboard, saw an error banner.",
+  "startedAt": "2026-10-05T09:00:00+00:00",
+  "endedAt": "2026-10-05T09:01:12+00:00",
+  "markdown": "# Test Case Report: login_test\n...",
+  "writer": {
+    "state": "ready",
+    "writtenAt": "2026-10-05T09:01:40+00:00",
+    "model": "claude-sonnet-5",
+    "inputTokens": 21500,
+    "outputTokens": 1180,
+    "cacheReadTokens": 0,
+    "cacheWriteTokens": 0,
+    "cost": 0.0822,
+    "error": null
+  },
+  "cost": { "execution": 0.3315, "report": 0.0822, "total": 0.4137 }
+}
+```
+
+| Field | Holds |
+| --- | --- |
+| `run` | [The run](#the-run) |
+| `test`, `file` | The test's name and its file |
+| `status`, `reason` | The [recorded result](/docs/results/run-report#test-result) |
+| `startedAt`, `endedAt` | When the test started and ended |
+| `markdown` | The execution report as Markdown, or `null` when none was written |
+| `writer` | How the report was written: `state` (`ready` or `failed`), `writtenAt`, `model`, the tokens, `cost`, and the `error` of a failed report |
+| `cost` | What the test cost in USD: `execution`, its `report`, and the `total`. Each part is `null` when unknown, `total` only when both are |
+
+### Run summary
+
+| Field | Holds |
+| --- | --- |
+| `run` | [The run](#the-run) |
+| `counts` | [Counts](#counts) over the run's tests |
+| `tests` | One entry per row of the summary: `id`, `name`, `status`, `duration`. It lists every test, the setup and teardown rows that recorded something to report, and the tests that never started as `SKIPPED` |
+
+### Management Report
+
+| Field | Holds |
+| --- | --- |
+| `project` | The project's name |
+| `from`, `to` | The date range you picked |
+| `firstRunAt`, `lastRunAt` | The test period: the first and the last counted run |
+| `details` | The [additional information](/docs/results/management-report#additional-information) from the dialog: `softwareVersion`, `author`, `preparedFor`, `reference`, `remarks`. Each is `null` when empty |
+| `runNameFilter` | The [run name](/docs/results/management-report#create-a-report) text the report was narrowed by, or `null` when no filter was set |
+| `plans`, `racks` | Lists of the plans and racks of the counted runs |
+| `totals` | [Counts](#counts) over all counted runs |
+| `tests` | One entry per test: `name`, `runs`, `counts`, `lastStatus`, `lastRunAt` |
+| `runs` | One entry per run in the range: `folder`, `startedAt`, `title`, `plan`, `rack`, `counts`, and `excluded` (`true` for a run you unticked) |
+| `executions` | One entry per test execution of the counted runs: `runFolder`, `startedAt`, `run`, `test`, `status`, `duration`, and `hasReport` (`true` when the execution has an execution report) |
+| `days` | One entry per day: `date`, `executed`, `passed` |
+
+The same runs and the same choices give the same Management Report JSON,
+byte for byte. It has no timestamp of its own and no text from a model.
+
+## JUnit XML
+
+The root of every JUnit XML file is `<testsuites>`. Inside it:
+
+| Report | Holds |
+| --- | --- |
+| Run summary | One `<testsuite>` for the run |
+| Management Report | One `<testsuite>` per counted run |
+| Execution report | One `<testcase>`, with the report's Markdown and its screenshots in `<system-out>` |
+
+In an execution report, each screenshot is one line of this form, after
+the Markdown:
+
+```text
+[[ATTACHMENT|<absolute path>]]
+```
+
+Jenkins, with the JUnit Attachments plugin, and GitLab read these lines and
+show the screenshots next to the test.
+
+The statuses map to JUnit like this:
+
+| AskUI status | In JUnit XML |
+| --- | --- |
+| `PASSED`, `WARNING` | passed |
+| `FAILED` | `<failure>` |
+| `BROKEN` | `<error>` |
+| `SKIPPED`, `DISCARDED`, `DEPRECATED`, and tests that never ran | `<skipped>`, with the reason |
+
+Each `<testcase>` has the test file as its `classname`. Each `<testsuite>`
+carries the plan, the rack, the model, and the app version as properties.
+
+The [CLI](/docs/running-tests/cli#reports) writes `junit.xml` for a whole
+run with `--reporter junit`.
+
+AskUI Desktop writes these files and does not read them back. To keep a
+report inside the app, keep the run folders.

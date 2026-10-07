@@ -12,8 +12,8 @@ keep the shape.
 ## Setup
 
 The suite's entry criteria: open the application, log in, reset data. Runs
-once, before any case in its folder, a failing setup records the suite's
-cases as broken instead of executing them against a bad state.
+once, before any case in its folder, a failing setup marks the suite's
+cases as skipped instead of executing them against a bad state.
 
 **Create it:** right-click the folder → **New setup.md**.
 
@@ -39,11 +39,34 @@ every case in its folder, even after failures.
 2. Clear any temporary files created during testing.
 ```
 
+## How a setup or teardown ends
+
+A setup and a teardown record a result at the end, like a test does. The
+result decides what happens next:
+
+| Result | Setup | Teardown |
+| --- | --- | --- |
+| `PASSED`, or nothing recorded | Passed. The tests run. | Passed. |
+| `WARNING` | Passed. Its reason appears in the [summary report](/docs/results/run-report#summary-report). | Its reason appears in the summary report. |
+| `FAILED` or `BROKEN` | Failed. The tests beneath it do not run and show as `SKIPPED`. | Its reason appears in the summary report. The run goes on, also with the next folder. |
+
+Only a failed or broken setup counts towards the run's result: the run
+fails, and the CLI's exit code shows it. A setup's warning and every
+teardown result appear in the summary but never count, so they change
+neither the pass rate nor the exit code. The
+[Management Report](/docs/results/management-report) leaves setups and
+teardowns out.
+
+The result is saved directly in the run folder, as
+`<folder>_setup_result.json` or `<folder>_teardown_result.json`. The agent
+picks the status by AskUI's [status definitions](/docs/extending/reporting#status-definitions).
+
 ## Rules
 
 Standing instructions that apply to every phase in the folder, not a test,
 context: interaction style, error handling, things never to do ("never
-change the language setting", "treat error dialogs as failures").
+change the language setting"). When a test counts as passed or failed is
+set by AskUI's [status definitions](/docs/extending/reporting#status-definitions), not by a rule.
 
 **Create it:** right-click the folder → **New rules.md**.
 
@@ -54,7 +77,7 @@ change the language setting", "treat error dialogs as failures").
 - Use the desktop computer to execute these tests.
 
 ## Error handling
-- On an infrastructure error (connection lost, session expired): mark the
-  testcase BROKEN, write the report, abort.
-- On an application error: mark the testcase FAILED and abort.
+- On an infrastructure error (connection lost, session expired): record
+  the result BROKEN and abort.
+- On an application error: record the result FAILED and abort.
 ```

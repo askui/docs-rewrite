@@ -54,7 +54,6 @@ step demonstrating a validation message) — then it is the subject, not an erro
 
 ## Error handling
 - If an infrastructure or tool exception occurs (e.g. gRPC error, connection
-  lost), mark the capture BROKEN, write the report, and call `exception_tool`
-  to abort.
+  lost), record the capture as BROKEN and call `exception_tool` to abort.
 - If a screen cannot be reached, mark that one capture FAILED and continue with
   the remaining captures.

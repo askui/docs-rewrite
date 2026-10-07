@@ -1,25 +1,77 @@
 ---
 icon: FileText
-title: Run report
-description: The written reports a run produces, the per-test test report and the run-level summary, and how to read each one.
+title: Execution report
+description: What a run records per test, the recorded result, the execution report written after the test, and the run-level summary, and how to read each one.
 ---
 
-Two written reports per run, the test report per case and the run-level
-summary. Where they live and how to open them:
-[Runs](/docs/results).
+A run records three things: the **result** of each test, an **execution
+report** per test, and the run-level **summary report**. Where they live and
+how to open them: [Runs](/docs/results).
 
-## Test report
+## Test result
 
-Each test gets its own `<test_name>_report.md` (with a `step_<n>.png`
-screenshot for every step), the agent writes it while it executes. It is
-the primary record of what the agent did, what it expected, and what it
-actually observed.
+The agent ends each test by recording its result: one status and a short
+reason, for example `FAILED`, "Expected the dashboard, saw an error
+banner.". The recorded result decides whether the test passed. The summary
+report, the Dashboard, the [Management Report](/docs/results/management-report),
+and the [CLI](/docs/running-tests/cli)'s exit code all count it.
+
+The agent picks the status by AskUI's
+[status definitions](/docs/extending/reporting#status-definitions). The
+status is one of:
+
+- `PASSED`: the actual result matches the expected one.
+- `FAILED`: the test executed, but the result didn't match.
+- `WARNING`: the expected outcome was observed, but something noteworthy
+  went wrong on the way (slow response, minor visual deviation). Step lines
+  in a report write it as `WARN`.
+- `SKIPPED`: not executed: the agent skipped it on purpose (e.g. a
+  precondition was not met), or the test never started (see
+  [Tests that never started](#tests-that-never-started)).
+- `BROKEN`: the test ran and could not finish: a crash or an
+  infrastructure failure.
+
+The reason names what was expected and what was observed. A test that ends
+without a recorded result is `BROKEN`, with the reason "No result recorded".
+A test that stops on an error is `BROKEN`, with the error as the reason. If
+the agent records more than once, the last result counts. The result is
+saved next to the test as `<test_name>_result.json`.
+
+### Tests that never started
+
+A test that never started is `SKIPPED`, never `BROKEN`. Its note in the
+summary report names the reason:
+
+| Note | When |
+| --- | --- |
+| Not run: a setup it depends on failed. | A [setup](/docs/writing-tests/setup-teardown-rules#how-a-setup-or-teardown-ends) of its folder failed or broke. |
+| Not run: `<test>` broke the run before this test. | An earlier test broke, and the run ended there. |
+| Not run: the run ended before this test. | The run was stopped, or the runner failed. |
+
+A skipped test counts as nothing, so it changes neither the pass rate nor
+the totals. The run still fails, because of the test or setup that broke
+or failed. For runs from older versions, the app shows a test that the
+summary listed as broken without a duration as `SKIPPED`.
+
+## Execution report
+
+The execution report is the written record of one test: what the agent did,
+what it expected, and what it observed, with screenshots. The agent that ran
+the test does not write it. A separate agent writes it after the test ends:
+it reads the test's conversation and screenshots and follows your project's
+[report format](/docs/extending/reporting#report-format). The next test
+starts at once, so a report never slows a run down.
+
+Whether a test gets a report, and which model writes it, you set under
+[Extending → Reporting](/docs/extending/reporting). A test without a report
+can get one later from the **Runs** page:
+[Write a report later](/docs/results#write-a-report-later).
 
 <Tabs items={['Rendered', 'Markdown source']}>
 <Tab value="Rendered">
 <div className="rounded-lg border bg-fd-card px-6 py-5 text-sm leading-relaxed">
   <p className="text-xl font-semibold">Test Case Report: login_test</p>
-  <p className="mt-3"><b>Test Case ID:</b> login_test<br /><b>Date:</b> 2025-11-12<br /><b>Status:</b> <span className="font-semibold text-amber-600">WARN</span></p>
+  <p className="mt-3"><b>Test Case ID:</b> login_test<br /><b>Date:</b> 2025-11-12<br /><b>Status:</b> <span className="font-semibold text-amber-600">WARNING</span> · <b>Cost of this test:</b> $0.33 ($0.41 with reporting)</p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Summary</p>
   <p className="mt-2">The agent successfully logged in using the QA credentials and verified the dashboard was shown.</p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Preconditions</p>
@@ -33,7 +85,7 @@ actually observed.
         <li><b>Expected:</b> Login form visible.</li>
         <li><b>Actual:</b> Login form visible with username and password fields.</li>
       </ul>
-      <div className="mt-2 flex h-24 w-44 items-center justify-center rounded border bg-fd-muted text-xs text-fd-muted-foreground">step_1.png</div>
+      <div className="mt-2 flex h-24 w-44 items-center justify-center rounded border bg-fd-muted text-xs text-fd-muted-foreground">screenshot_2.png</div>
     </div>
     <div>
       <p><b>2. Enter QA credentials and submit</b>, Status: <span className="font-semibold text-amber-600">WARN</span></p>
@@ -42,7 +94,7 @@ actually observed.
         <li><b>Expected:</b> Dashboard page shown after successful sign-in.</li>
         <li><b>Actual:</b> Dashboard loaded with the welcome banner, but only after roughly 15 seconds.</li>
       </ul>
-      <div className="mt-2 flex h-24 w-44 items-center justify-center rounded border bg-fd-muted text-xs text-fd-muted-foreground">step_2.png</div>
+      <div className="mt-2 flex h-24 w-44 items-center justify-center rounded border bg-fd-muted text-xs text-fd-muted-foreground">screenshot_6.png</div>
     </div>
   </div>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Postconditions</p>
@@ -50,7 +102,7 @@ actually observed.
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Issues</p>
   <p className="mt-2">Sign-in took about 15 seconds, well above the usual 2–3 seconds. The dashboard did load completely, so step 2 is WARN rather than FAILED, but this is worth watching before it becomes a timeout.</p>
   <p className="mt-4 border-b pb-1 text-lg font-semibold">Conclusion</p>
-  <p className="mt-2">The login flow works, with one caveat: sign-in is unusually slow. Functionally PASSED behaviour, reported as WARN because of the response time.</p>
+  <p className="mt-2">The login flow works, with one caveat: sign-in is unusually slow. Functionally PASSED behaviour, reported as WARNING because of the response time.</p>
 </div>
 </Tab>
 <Tab value="Markdown source">
@@ -60,7 +112,7 @@ actually observed.
 
 **Test Case ID:** login_test
 **Date:** 2025-11-12
-**Status:** WARN
+**Status:** WARNING · **Cost of this test:** $0.33 ($0.41 with reporting)
 
 ## Summary
 
@@ -77,14 +129,14 @@ shown — but sign-in was unusually slow (about 15 seconds).
    - **Agent Interpretation:** Opened browser and navigated to the login URL.
    - **Expected:** Login form visible.
    - **Actual:** Login form visible with username and password fields.
-   - ![Step 1](step_1.png)
+   - ![Step 1](screenshot_2.png)
 
 2. **Enter QA credentials and submit** — Status: **WARN**
    - **Agent Interpretation:** Filled the form using the QA credential secrets.
    - **Expected:** Dashboard page shown after successful sign-in.
    - **Actual:** Dashboard loaded with the welcome banner — but only after
      roughly 15 seconds.
-   - ![Step 2](step_2.png)
+   - ![Step 2](screenshot_6.png)
 
 ## Postconditions
 
@@ -99,7 +151,7 @@ this is worth watching before it becomes a timeout.
 ## Conclusion
 
 The login flow works, with one caveat: sign-in is unusually slow.
-Functionally PASSED behaviour, reported as WARN because of the response
+Functionally PASSED behaviour, reported as WARNING because of the response
 time.
 ```
 
@@ -112,19 +164,15 @@ Section by section:
   - **Test Case ID**: ties the report to the
     [test case](/docs/writing-tests), its title ID or file name.
   - **Date**: when the test executed.
-  - **Status**: the overall result, the `**Status:**` line is what the
-    [runner parses](/docs/writing-tests/agents-and-prompts#report-format) as
-    the run's result. One of:
-    - `PASSED`, actual result matches expected.
-    - `FAILED`, the step executed but the result didn't match.
-    - `SKIPPED`, intentionally not executed (e.g. precondition not met).
-    - `WARN`, passed, but with a caveat (slow response, minor visual
-      deviation).
-    - `BROKEN`, could not execute: crash or infrastructure failure.
-
-    The overall status is the worst of the steps: `BROKEN` if any step
-    broke, else `FAILED` if any failed, else `WARN`, else `SKIPPED` if all
-    skipped, otherwise `PASSED`.
+  - **Status**: the [result the test recorded](#test-result). The report
+    states it as given and cannot change it.
+  - **Cost of this test**: right behind the status. The test's execution
+    cost comes first, and the total including this report follows in
+    parentheses, for example `$0.33 ($0.41 with reporting)`, in whole cents. When only
+    the report's cost is known, it reads `$0.08 for the report`. Without
+    a known price, the cost is left out. The cost also adds to the run's
+    total, which the summary report in the app shows as
+    **Cost of this run:**.
 - **Summary**: the outcome in two sentences, read this first.
 - **Preconditions**: whether the assumed starting state was actually met,
   a test that began from the wrong state fails here, not misleadingly in a
@@ -134,17 +182,36 @@ Section by section:
     check this when a step surprises you.
   - **Expected** / **Actual**: the step's contract and what was actually
     observed.
-  - **Status**: the step's own status, same vocabulary as above.
-  - **Screenshot**: the step's evidence (`step_<n>.png`).
+  - **Status**: the step's own status: `PASSED`, `FAILED`, `SKIPPED`,
+    `WARN`, or `BROKEN`.
+  - **Screenshot**: the step's evidence, exactly one per step: the
+    screenshot that shows the step's outcome. A second one appears only as
+    a rare exception, for example to compare before and after. This holds
+    whatever your report format says. The writer picks the screenshot from
+    those the agent took during the test, so the numbers in the file names
+    (`screenshot_<n>.png`) need not run in order.
 - **Postconditions**: whether the overall pass criterion held at the end.
 - **Issues**: anything worth a look that isn't a failure, the incident
   notes. In the example above: the 15-second sign-in.
-- **Conclusion**: the agent's closing assessment of the whole case.
+- **Conclusion**: the closing assessment of the whole case.
 
 The report's shape is defined by your project's
-[report format](/docs/writing-tests/agents-and-prompts#report-format). What
-to do with a failing report, triage, root cause, where the fix belongs:
+[report format](/docs/extending/reporting#report-format). To share a report
+with someone without the app, export it as PDF, JSON, or JUnit XML:
+[Export](/docs/results/export). What to do with a failing report, triage,
+root cause, where the fix belongs:
 [Analyzing failures](/docs/best-practices/analyzing-failures).
+
+### Files of a test
+
+Each test has its own folder in the run folder:
+
+| File | Holds |
+| --- | --- |
+| `<test_name>_result.json` | The recorded result: status, reason, start and end time. |
+| `<test_name>_report.md` | The execution report. |
+| `screenshot_<n>.png` | The screenshots the report embeds. |
+| `<test_name>_report.json` | The report's state (`ready` or `failed`, with the error), the model, the tokens, and the cost. |
 
 ---
 
@@ -153,7 +220,9 @@ to do with a failing report, triage, root cause, where the fix belongs:
 `summary_report.md` in the run folder summarizes the whole run: a totals head
 (test-case count, per-status counts, run duration), one Markdown table across
 all tests with status and execution time per test, and detail sections that
-quote each warned, failed, or broken test's issues from its own report.
+quote the recorded reason of each warned, failed, broken, or skipped test.
+Broken tests are listed under **💥 Broken**, tests that never started
+under **⏭️ Skipped**.
 
 ```markdown
 # Summary Report
@@ -177,19 +246,20 @@ quote each warned, failed, or broken test's issues from its own report.
 The pay button never appeared after entering the voucher code.
 ```
 
-The detail sections carry each test's `## Issues` (else `## Conclusion`)
-section, so a red run can be triaged from this one document; a test that ran
-but produced no report reads "No report written". Tests that a
-[test plan](/docs/writing-tests/plans) selected but the run never reached are
-listed as `💥 Broken` with a duration of `—`, so nothing goes missing
-silently. The Dashboard and Runs pages in AskUI Desktop derive their pass/fail
-counters from this table.
+The summary comes from the recorded results, not from the execution
+reports, so it is complete even for tests without a report. A test that ran
+but recorded no result reads "No result recorded". Tests that a
+[test plan](/docs/writing-tests/plans) selected but the run never started
+are listed under **⏭️ Skipped** with their
+[reason](#tests-that-never-started), so nothing goes missing silently. The
+summary report pane exports the run as PDF, JSON, or JUnit XML:
+[Export](/docs/results/export).
 
 <Callout title="Counting rules">
-`WARN` counts as passed (tracked separately in the warning total). `SKIPPED`
-tests never executed and are excluded from the total. `BROKEN` tests without
-an execution time in the summary (tests that never started) are also excluded
-from the total, they show in the table but don't affect the pass rate.
+`WARNING` counts as passed (tracked separately in the warning total).
+`SKIPPED` tests are excluded from the total, they show in the table but
+don't affect the pass rate. The Runs page, the Dashboard, the CLI, and the
+Management Report count with this one rule, so their figures always agree.
 </Callout>
 
 In CI, upload the whole workspace folder as a build artifact so the reports

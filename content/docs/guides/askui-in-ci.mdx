@@ -81,7 +81,7 @@ Gate the pipeline on the exit code:
 | Code | Meaning |
 | --- | --- |
 | `0` | All tests passed. |
-| `1` | A test failed, broke, or was never reached: the product team acts. |
+| `1` | A test failed or broke, or a setup failed: the product team acts. |
 | `2` | The command line is wrong. |
 | `3` | The runner or the project is wrong: credentials, device, MCP server, an unset `${VAR}`. Nothing was sent to the model. |
 | `4` | No test ran, for example an empty plan. |
@@ -93,8 +93,8 @@ included; the [CLI reference](/docs/running-tests/cli) has every option.
 ## 4: Publish the test report
 
 With `--reporter` including `junit`, the run writes `<output>/junit.xml`, and
-your CI system shows pass and fail per test. `FAILED` is a failure, `BROKEN`
-and a test the run never reached are errors, and a `WARNING` passes with its
+your CI system shows pass and fail per test. `FAILED` is a failure, `BROKEN` is an error,
+a test that never started is `SKIPPED`, and a `WARNING` passes with its
 notes in the test output ([JUnit mapping](/docs/running-tests/cli#junit-mapping)).
 
 <Tabs items={['GitHub Actions', 'GitLab CI']}>
