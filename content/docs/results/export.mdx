@@ -1,34 +1,35 @@
 ---
 icon: FileDown
 title: Export
-description: Export an execution report, a run summary, or a Management Report as PDF for people or as JSON for your own tools, and the fields of each JSON document.
+description: Export an execution report, a run summary, or a Management Report as PDF for people, as JSON for your own tools, or as JUnit XML for your CI system, and what each format holds.
 ---
 
-Three reports export as **PDF** and as **JSON**:
+Three reports export as **PDF**, **JSON**, and **JUnit XML**:
 
 | Report | Where you export it |
 | --- | --- |
 | [Execution report](/docs/results/run-report#execution-report) of one test | **Runs** page: **Export** in the header row above the report, or right-click the test |
 | [Run summary](/docs/results/run-report#summary-report) of one run | **Runs** page: **Export** on the summary report |
-| [Management Report](/docs/results/management-report) of a date range | **Runs** page: **Generate Management Report**, then **Download PDF** or **Download JSON** |
+| [Management Report](/docs/results/management-report) of a date range | **Runs** page: **Generate Management Report**, then **Download PDF**, **Download JSON**, or **Download JUnit XML** |
 
 PDF is for people who don't have the app: a test manager, a customer, an
 auditor. JSON is for your own toolchain: a dashboard, a quality gate, or a
-test management system.
+test management system. JUnit XML is for the test report view of your CI
+system, such as Jenkins or GitLab.
 
 ## Export a report
 
 1. Open the execution report or the summary report on the **Runs** page.
 2. Click **Export**. Above an execution report, it sits in the header row
    with the test's name, which stays visible while the report scrolls.
-3. Pick **Export as PDF** or **Export as JSON**.
+3. Pick **Export as PDF**, **Export as JSON**, or **Export as JUnit XML**.
 4. Pick the folder and the file name in the save dialog.
 
 The save dialog opens in the project's `reports/` folder. The first export
 creates that folder. You can pick any other location.
 
 For an execution report, you can also right-click the test and pick
-**Export as PDF** or **Export as JSON**. The entries appear once the test's
+**Export as PDF**, **Export as JSON**, or **Export as JUnit XML**. The entries appear once the test's
 report is written. The Management Report has its own steps:
 [Create a report](/docs/results/management-report#create-a-report).
 
@@ -52,11 +53,11 @@ mark, the project and the kind of document) and a footer
 
 ### The first PDF export
 
-AskUI Desktop prints PDFs with a Chromium browser. If your machine has none
-that AskUI can use, the first PDF export downloads it once, about 170 MB.
-This export takes longer. Later exports use the same browser. If you already
-ran a test on a [web browser profile](/docs/devices/web-browser), the browser
-is already there.
+AskUI Desktop prints PDFs with a Chromium browser. If it is missing, the
+first PDF export downloads it once, about 170 MB. This export takes longer.
+The download and its cache are the same as for runs on a
+[web browser profile](/docs/devices/web-browser), so a machine that already
+ran a web test downloads nothing.
 
 ## The JSON documents
 
@@ -171,6 +172,41 @@ counts object has the same fields:
 
 The same runs and the same choices give the same Management Report JSON,
 byte for byte. It has no timestamp of its own and no text from a model.
+
+## JUnit XML
+
+The root of every JUnit XML file is `<testsuites>`. Inside it:
+
+| Report | Holds |
+| --- | --- |
+| Run summary | One `<testsuite>` for the run |
+| Management Report | One `<testsuite>` per counted run |
+| Execution report | One `<testcase>`, with the report's Markdown and its screenshots in `<system-out>` |
+
+In an execution report, each screenshot is one line of this form, after
+the Markdown:
+
+```text
+[[ATTACHMENT|<absolute path>]]
+```
+
+Jenkins, with the JUnit Attachments plugin, and GitLab read these lines and
+show the screenshots next to the test.
+
+The statuses map to JUnit like this:
+
+| AskUI status | In JUnit XML |
+| --- | --- |
+| `PASSED`, `WARNING` | passed |
+| `FAILED` | `<failure>` |
+| `BROKEN` | `<error>` |
+| `SKIPPED`, `DISCARDED`, `DEPRECATED`, and tests that never ran | `<skipped>`, with the reason |
+
+Each `<testcase>` has the test file as its `classname`. Each `<testsuite>`
+carries the plan, the rack, the model, and the app version as properties.
+
+The [CLI](/docs/running-tests/cli#reports) writes `junit.xml` for a whole
+run with `--reporter junit`.
 
 AskUI Desktop writes these files and does not read them back. To keep a
 report inside the app, keep the run folders.

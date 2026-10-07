@@ -197,7 +197,7 @@ Section by section:
 
 The report's shape is defined by your project's
 [report format](/docs/extending/reporting#report-format). To share a report
-with someone without the app, export it as PDF or JSON:
+with someone without the app, export it as PDF, JSON, or JUnit XML:
 [Export](/docs/results/export). What to do with a failing report, triage,
 root cause, where the fix belongs:
 [Analyzing failures](/docs/best-practices/analyzing-failures).
@@ -251,8 +251,9 @@ reports, so it is complete even for tests without a report. A test that ran
 but recorded no result reads "No result recorded". Tests that a
 [test plan](/docs/writing-tests/plans) selected but the run never started
 are listed under **⏭️ Skipped** with their
-[reason](#tests-that-never-started), so nothing goes missing silently. The summary report pane exports the run as PDF or
-JSON: [Export](/docs/results/export).
+[reason](#tests-that-never-started), so nothing goes missing silently. The
+summary report pane exports the run as PDF, JSON, or JUnit XML:
+[Export](/docs/results/export).
 
 <Callout title="Counting rules">
 `WARNING` counts as passed (tracked separately in the warning total).

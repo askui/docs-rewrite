@@ -1,7 +1,7 @@
 ---
 icon: FileChartColumn
 title: Management Report
-description: One report over every run in a date range, pass counts per test, test period, racks, and the software version you name, built without an AI model and delivered as PDF or JSON.
+description: One report over every run in a date range, pass counts per test, test period, racks, and the software version you name, built without an AI model and delivered as PDF, JSON, or JUnit XML.
 ---
 
 The **Management Report** summarizes the runs of the project in a date
@@ -33,8 +33,9 @@ costs nothing to build.
    **Generate missing execution reports first**.
 8. Click **Generate**. After a few seconds, the dialog shows
    **The report is ready.**
-9. Click **Download PDF** or **Download JSON** to save the report. On the
-   desktop, **Open** shows the PDF in your default PDF viewer.
+9. Click **Download PDF**, **Download JSON**, or **Download JUnit XML**
+   to save the report. On the desktop, **Open** shows the PDF in your
+   default PDF viewer.
 
 **Change selection** goes back to the range and the runs. **Done** closes
 the dialog. Nothing is saved in the project: the report exists only as the
@@ -163,8 +164,9 @@ counted runs that have an execution report, with the columns **#**,
 The appendix holds execution reports only. To share the summary of one
 run, export it from the **Runs** page: [Export](/docs/results/export).
 
-## PDF and JSON
+## PDF, JSON, and JUnit XML
 
 The PDF is a document for people. The JSON holds the same data for your own
-tools and dashboards. The JSON fields:
-[Export](/docs/results/export#management-report).
+tools and dashboards: [the JSON fields](/docs/results/export#management-report).
+The JUnit XML holds one test suite per counted run, for your CI system:
+[JUnit XML](/docs/results/export#junit-xml).
