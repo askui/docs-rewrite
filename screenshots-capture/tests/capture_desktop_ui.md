@@ -56,14 +56,16 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
    **Name** to `Chrome Browser`, then call
    `save_screenshot[desktop-profile-web-browser]`.
 
-7. Select the **Android emulator** kind (Device type, System image, Lifecycle),
+7. Select the **An Android emulator** kind (Device type, System image, Lifecycle),
    wait until its dropdowns have loaded. Set **Name** to `Pixel 9`, then call
    `save_screenshot[desktop-profile-android-emulator]`.
 
-8. Select the **Multi computer** kind (rows of Name/Host/Port/Display). Set the
-   profile **Name** to `Build Farm`, and give the per-computer rows names that
-   read as machines (e.g. `builder-01`, `builder-02`) — not a phone or browser
-   name. Then call `save_screenshot[desktop-profile-multi-computer]`.
+8. Select the **Multi computer** kind (rows of Name/Host/Port/Display/Prompt).
+   Set the profile **Name** to `Build Farm`, and give the per-computer rows names
+   that read as machines (e.g. `builder-01`, `builder-02`) — not a phone or
+   browser name. Fill the first row's **Prompt** with a short machine note (e.g.
+   `Windows 11; the build runs here.`) so the per-row field is visible in the
+   shot. Then call `save_screenshot[desktop-profile-multi-computer]`.
 
 9. Close the dialog with **Cancel** — do NOT save any profile.
 
@@ -81,6 +83,16 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     page afterwards — do NOT upload a screenshot, type a description, or click
     Verify. If the project has no `ui.md`, skip this step and say so in the
     reason of the result you record.
+
+10c. Still on the **Tests** page, close every open editor tab so the editor shows
+    "No test open". Click its **Forge a test** button. Wait until the TestForge
+    page is shown (the "Experimental" badge, the "Sources" section with
+    "Choose files or a .zip" and "pick a folder", the optional "Description"
+    field and the disabled **Start forging** button), then call
+    `save_screenshot[desktop-tests-forge-test]`. Return to the Tests page
+    afterwards — do NOT add a source, pick a folder, type a description, or
+    click Start forging. If the page shows "TestForge needs an AskUI account"
+    instead, take the screenshot anyway and say so in the report.
 
 11. Right-click on an empty area of the file tree (below the last file) so the
     context menu opens with its **Create** section — "New Markdown",

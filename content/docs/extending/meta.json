@@ -1,1 +1,1 @@
-{ "title": "Extending", "icon": "Puzzle", "pages": ["tools", "custom-tools", "forge", "mcp", "secrets", "integrations", "reporting", "in-flight-guidance", "dreaming", "model-providers"] }
+{ "title": "Extending", "icon": "Puzzle", "pages": ["tools", "custom-tools", "forge", "mcp", "secrets", "integrations", "reporting", "in-flight-guidance", "dreaming", "model-providers", "caching"] }

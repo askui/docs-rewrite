@@ -62,14 +62,25 @@ the report exists.
 2. Pick the run in the runs sidebar on the left, it lists every run of the
    project, and **several runs can be active at once**; each streams its own
    conversation.
-3. Follow along, the controls at the top of the conversation:
-   - **Autofollow**: keeps the view pinned to the newest entry while the
-     run streams; scroll up to inspect something and it pauses, click it to
-     snap back.
-   - **Quiet**: just the story: the agent's narration, minimal noise.
-   - **Detailed**: the default: narration plus every tool call with its
-     result, tokens, and latency.
-   - **Raw**: the underlying messages as JSON, for debugging.
+3. Read the bar at the top of the conversation. It is the run's header, and
+   it states, from left to right: a dot that pulses while the run goes, the
+   icon for a test run or a plan run, the run's name, what started it, how
+   many tests the run is for (setups and teardowns are not counted), and how
+   long it has been running. A run still waiting for its device says
+   **Waiting…** there instead: the queue is not time the run spent working.
+4. Follow along with **Autofollow**, at the right of the same bar: it keeps
+   the view pinned to the newest entry; scroll up to inspect something and
+   it pauses, click it to snap back. It is offered only while the run is
+   live, since nothing more arrives once a run has finished.
+5. Cut a run short with **Stop**, beside Autofollow. It reads *Canceling…*
+   until the run unwinds. A run that has not started yet still shows the
+   bar, so you can stop it before it does.
+6. When the run finishes, the view becomes the finished run's log, with the
+   outcome counts and the cost. It is the same view you get by picking the
+   run in the list, see [results](/docs/results#conversation-log).
+
+There is one view of the conversation, and it holds everything: the agent's
+narration and every tool call with its result, output, and screenshots.
 
 <img
   src="/docs-rewrite/screenshots/desktop-runs-live.png"
