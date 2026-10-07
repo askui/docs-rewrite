@@ -12,8 +12,8 @@ The **Reporting** tab decides how your tests are reported. Open
 - **Report format**: the template every report follows (`utils/format.md`).
 
 The first two are saved in `utils/reporting.json` in your project. Both
-files travel with the project, so a colleague's clone and the
-[CLI](/docs/running-tests/cli) use the same settings.
+files travel with the project, so a colleague's clone uses the same
+settings.
 
 ## How a test is reported
 
@@ -37,8 +37,8 @@ What a report contains: [Execution report](/docs/results/run-report).
 | **Never** | No report is written during runs. |
 
 A [test plan](/docs/writing-tests/plans#build-a-plan) can override this
-setting for its own runs, and the CLI's `--execution-report` flag overrides
-both. The order is: the CLI flag, then the plan, then the project.
+setting for its own runs. The order is: the plan's setting, else the
+project's, else **Always**.
 
 Every report costs model tokens. With **Only for failed or broken tests** or
 **Never**, you can still write a report later. Right-click the test on the
