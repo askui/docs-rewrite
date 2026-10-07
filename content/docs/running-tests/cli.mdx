@@ -64,6 +64,7 @@ nothing ran, so the pipeline never shows green for nothing.
 | `--project <dir>` | current directory | The AskUI Project root (`tests/`, `procedures/`, `plans/`, `utils/`, `devices.json`). |
 | `--output <dir>` | `<project>/agent_workspace/<UTC timestamp>` | Results directory for reports, screenshots, and the HTML log. |
 | `--reporter <list>` | `html,md` | Report formats, comma-separated: `html`, `md`, `junit`. See [Reports](#reports). |
+| `--execution-report <when>` | the plan's setting, else the Project's (**Extending → Reporting**), else `always` | Which tests get an execution report: `always`, `failures` (failed or broken tests only), or `never`. See [Execution reports](#execution-reports). |
 | `--device <profile>` | the plan's device, or the only profile | Device profile from `devices.json`, by id or by a name only one profile has. |
 | `--surface <kind>` | none | Ad-hoc run without a profile: `agent-os`, `web`, `android`, or `ios`. Excludes `--device`. |
 | `--cache on\|off` | the Project's setting, else off | Trajectory caching for this run. See [Caching](#caching). |
@@ -302,6 +303,28 @@ Every run also writes the per-test artifacts,
 `<test_name>/<test_name>_report.md` with the result and step-by-step details,
 plus `step_<n>.png` screenshots. After Ctrl+C, the reports cover what the run
 reached.
+
+### Execution reports
+
+An [execution report](/docs/results/run-report#execution-report) is the
+written record of one test, step by step with screenshots. The CLI writes
+one per test as `--execution-report` says, else as the test plan or the
+Project says:
+
+```bash
+askui run --plan nightly --execution-report failures
+```
+
+- The reports are written in the background while the next test runs.
+- When the last test ends, the CLI waits for the reports still being
+  written and prints `Waiting for execution reports…`. Then it exits.
+- Ctrl+C during that wait stops the reports, and the CLI exits with `130`.
+- The run's `conversation.json` stays in the output directory, also after
+  Ctrl+C. AskUI Desktop can generate a missing report from it later.
+- With the AskUI model provider, the Project's hosted reporting model
+  writes the reports. With your own provider, the run's model writes them.
+
+A report never changes a test's result or the exit code.
 
 ### JUnit mapping
 
