@@ -219,17 +219,23 @@ Your package manager installs ffmpeg under its own license; AskUI downloads noth
 If ffmpeg lives somewhere unusual, set the `ASKUI_FFMPEG_DIR` environment variable to
 the folder that holds `ffmpeg` and `ffprobe`.
 
-TestForge also checks that the ffmpeg it finds runs. If it does not, for example after
-an upgrade removed a library it needs, the setup card shows the error and the command
-that reinstalls it:
+TestForge also checks that the ffmpeg it finds runs, and uses the first copy that
+does. If no copy runs, for example after an upgrade removed a library ffmpeg needs, the
+setup card shows the error and the command that fixes it. For a copy your package
+manager installed, that is the reinstall command:
 
-- **Windows:** `winget install --id Gyan.FFmpeg -e --force`
+- **Windows (PowerShell):** `winget uninstall --id Gyan.FFmpeg -e; winget install --id Gyan.FFmpeg -e`
 - **macOS:** `brew reinstall ffmpeg`
 - **Linux:** `sudo apt install --reinstall ffmpeg`
 
-If ffmpeg hangs on a video, TestForge stops it after 2 minutes plus twice the length
-of the video and shows an error. Run `ffmpeg -version` in a terminal to check that
-ffmpeg works, then try again.
+For a copy from somewhere else, such as `ASKUI_FFMPEG_DIR` or a manual download, the
+card shows the install command instead. TestForge then uses the new copy, even if the
+broken one stays where it is.
+
+If ffmpeg writes nothing for 3 minutes while it processes a video, TestForge stops it
+and shows an error. A slow but working ffmpeg keeps going, up to 10 minutes plus five
+times the length of the video. Run `ffmpeg -version` in a terminal to check that ffmpeg
+works, then try again.
 
 <Callout type="info" title="Where your recording goes">
 The video is split into frames and audio on your machine. The audio is transcribed
