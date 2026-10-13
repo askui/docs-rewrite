@@ -162,7 +162,7 @@ the run with exit code 3 before the first model call.
 | Option | Default | Description |
 | --- | --- | --- |
 | `--model-provider <p>` | `askui` | `askui`, `anthropic`, `openai`, or `openai-compatible`. |
-| `--model-id <id>` | provider default | The model to use. With `askui`, selects the hosted model, e.g. `gemini-3.5-flash`; default is the workspace's Claude model. |
+| `--model-id <id>` | provider default | The model to use. With `askui`, selects the hosted model: `claude-sonnet-5-5`, `claude-opus-5-5`, `claude-haiku-5-5` or `gemini-3.8-flash`; default is the workspace's Claude model. |
 | `--model-endpoint <url>` | none | Endpoint URL. Required for `openai-compatible`; a URL ending in `/chat/completions` is used as-is, a base URL gets the path appended. |
 | `--model-api-key <key>` | none | API key, sent as `x-api-key` or `Authorization`, per provider. |
 | `--model-token <token>` | none | Bearer token, e.g. an OAuth access token (Entra, gateways). |
@@ -175,7 +175,7 @@ work with your own provider only (`anthropic`, `openai`, or
 ```bash
 # Hosted models on the AskUI hub
 askui run                                   # workspace default (Claude)
-askui run --model-id gemini-3.5-flash       # hosted Gemini
+askui run --model-id gemini-3.8-flash       # hosted Gemini
 
 # Bring your own model
 askui run --model-provider anthropic --model-api-key "$ANTHROPIC_API_KEY"
