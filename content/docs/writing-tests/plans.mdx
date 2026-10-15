@@ -22,8 +22,8 @@ hand: you check tests, pick a device, and the plan is saved for you.
 2. Name the plan, for example `smoke`.
 3. Check the tests to include. Check individual files, check a folder to
    include everything inside it, or check **All tests** for the whole
-   project. A file covered by a checked folder shows as included; uncheck the
-   folder to pick files one by one.
+   project. A file covered by a checked folder shows as included. To pick
+   many at once, see [Pick many tests at once](#pick-many-tests-at-once).
 4. Pick the device the plan runs on. Every profile from the
    [Devices page](/docs/devices) is offered, connected or not: a device only
    has to be reachable when the plan runs, not while you build it.
@@ -33,6 +33,53 @@ A checked folder stays live: a test added to that folder later is part of the
 plan automatically, with nothing to re-check. The **Test Plans** page lists
 each plan with its test count and device, and the pencil on a row reopens it
 for editing.
+
+## Pick many tests at once
+
+The tree works like a file manager as well as a checkbox list:
+
+- **Shift-click** a row to select every row from the last row you clicked down
+  (or up) to it. A folder inside the range is checked as a whole folder.
+  Shift-click a row that is already selected and the same range is unselected
+  instead.
+- **Cmd-click** (macOS) or **Ctrl-click** (Windows) toggles just that row, the
+  way it does in a file manager.
+
+## A folder has three states
+
+Clicking a folder walks it through all three, in this order:
+
+| Checkbox | Meaning |
+| --- | --- |
+| Empty | Not in the plan. |
+| Ticked | The whole folder. A test you add to it later runs too. |
+| Dashed | The tests it has right now, listed one by one. A test you add later does **not** run. |
+
+The same legend sits under the box in the editor. The difference between the
+last two is the one that matters when the folder keeps growing: pick the whole
+folder for a suite that should stay complete, pick the listed tests when the
+plan is meant to be exactly what you chose today.
+
+Cmd-click and Shift-click keep their meaning: they select and unselect rows
+rather than walking the cycle.
+
+## Leave a test out of a checked folder
+
+Uncheck a test inside a checked folder and the folder stops being "the whole
+folder": the plan now lists the folder's remaining tests one by one, and the
+folder row says so, for example **3 of 4 selected**. A test added to that
+folder later is *not* part of the plan any more, because the plan names its
+tests explicitly. Sibling folders you did not touch are unaffected and keep
+following the project.
+
+Check the missing test again and the folder goes back to being the whole
+folder, so the plan file ends up exactly as it was. Only that one folder: a
+list of tests somewhere else stays a list, even when your click happens to
+complete the project.
+
+Check the missing test again and the folder goes back to being one live folder
+entry, so a test added later is included again. Unchecking and re-checking a
+test leaves the plan file exactly as it was.
 
 ## Order the tests
 
@@ -113,6 +160,9 @@ devices:
   keeps up with tests added to it later). When you order tests inside a checked
   folder, those files are listed explicitly *before* the folder entry: they run
   in that order first, then the folder contributes anything not already listed.
+  When you [leave a test out of a checked folder](#leave-a-test-out-of-a-checked-folder),
+  the folder entry is replaced by the remaining files (and by the untouched
+  subfolders, still as folder entries).
 - **`devices`**: the device the plan runs on, by profile id from
   `devices.json`. The file holds a list for forward compatibility; the app
   sets exactly one.

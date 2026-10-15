@@ -177,6 +177,38 @@ Check whether a file or directory exists on this machine.
 7. Check that the file "order_export.pdf" exists in C:/exports.
 ```
 
+### Signing in
+
+#### <Lucide name="shield-check" /> Read MFA Code [#read-mfa-code]
+
+The current six-digit code from an authenticator you added under
+[Secrets](/docs/extending/secrets#authenticators), so a login protected by two-factor
+authentication can go through unattended.
+
+**Adding your first authenticator switches this tool on for you**, because an enrolment
+nobody can read is of no use. If you switch it off afterwards it stays off, and the Tool
+Store shows a note under the row, so a test that fails at the code screen does not send
+you looking in the wrong place.
+
+- **Use it when:** the application asks for a code after the password.
+- **Parameters:** none — the authenticators live under Secrets, and a test names the one
+  it wants.
+
+```md
+3. Type the password and continue.
+4. Read the MFA code for "admin" and enter it.
+```
+
+It cannot answer a push notification or a hardware security key, and a code that arrives
+by e-mail is the Read Email tool's job instead.
+
+<Callout type="warn" title="Not yet usable with caching">
+A test that reads an MFA code cannot be replayed from a [cached](/docs/extending/caching)
+trajectory today. The replay types the code that was recorded, which expired long before
+the replay ran. Leave caching off for projects whose tests sign in through two-factor
+authentication.
+</Callout>
+
 ### Files on the controlled machine
 
 For runs where the application under test is on **another machine**

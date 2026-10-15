@@ -12,11 +12,16 @@ and starts when the device is free.
 <Callout type="warn" title="A closed app means missed runs">
 Schedules fire only while AskUI Desktop is running, it is not a background
 service. Close the app, or let the machine sleep or shut down, and the
-scheduled run silently does not happen: no firing, no report, and no catch-up
-when the app comes back. For runs that must never be missed, the nightly
-regression, use the [CLI](/docs/running-tests/cli) on a build server with
-your CI scheduler.
+scheduled run does not happen at its time. If the app is back later the same
+day, the missed daily run starts then; a day that passed entirely while the
+app was closed is skipped, no firing, no report. For runs that must never be
+missed, the nightly regression, use the [CLI](/docs/running-tests/cli) on a
+build server with your CI scheduler.
 </Callout>
+
+A daily schedule you save, edit or switch back on after its time has passed
+today waits for the next selected day. Saving "weekdays at 05:00" at 16:00 on
+a Tuesday starts nothing until Wednesday 05:00.
 
 ## Manage all schedules in one place
 

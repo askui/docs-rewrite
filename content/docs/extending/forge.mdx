@@ -1,7 +1,7 @@
 ---
 icon: Hammer
 title: Forge
-description: Let the model draft the pieces of your project you would otherwise write by hand — UI prompts from screenshots, custom tools from a description, and soon tests from recordings.
+description: Let the model draft the pieces of your project you would otherwise write by hand — UI prompts from screenshots, custom tools from a description, and tests from recordings and specs.
 ---
 
 **Forge** is the family of features that lets the model draft parts of your
@@ -11,7 +11,7 @@ asks about anything missing, and only when you **accept** does it write a file
 into your project. Nothing is written before you accept, and what it writes is a
 draft to read and refine — not a finished product.
 
-There are two Forges today and a third on the way:
+There are three Forges:
 
 - **[PromptForge](#promptforge--ui-prompts-from-screenshots)** drafts your
   [UI information](/docs/writing-tests/agents-and-prompts#ui-information) (`ui.md`)
@@ -19,23 +19,25 @@ There are two Forges today and a third on the way:
 - **[ToolForge](#toolforge--custom-tools-from-a-description)** drafts a
   [custom tool](/docs/extending/custom-tools) (a `.cs` file) from a plain-language
   description.
-- **[TestForge](#testforge--tests-from-recordings-coming-soon)** — coming soon —
-  turns a narrated screencast or a written spec into a test.
+- **[TestForge](#testforge--tests-from-recordings-and-specs)** turns a narrated
+  screencast or a written spec (PDF or CSV) into a test.
 
-All of them run on the same **Forge Model** (below).
+All of them run on the same **Forge Model** (below), and all three are marked
+**Experimental**: they work, and how they work may still change.
 
 ## The Verify loop
 
 Each Forge page works the same way:
 
 1. Fill in the inputs and click **Verify**. The model checks them and echoes back
-   **its understanding**, together with the
-   [inference cost](/docs/troubleshooting/performance-cost) of that check.
+   **its understanding**. One **Cost so far** line above the buttons keeps the
+   [inference cost](/docs/troubleshooting/performance-cost) of the whole page:
+   every Verify and every generation adds to it.
 2. If something is missing, it lists its questions under **Please add**. Answer
    them in the reply box and click **Verify again**. Each round continues the same
    conversation, so your original inputs stay exactly as you entered them.
 3. Once the model reports it is ready, an **Accept** button appears. Accepting
-   writes the file and shows the cost of generating it.
+   writes the file; the cost of generating it joins the total.
 
 Leaving a Forge page mid-way asks for confirmation, since an unaccepted draft is
 not saved anywhere.
@@ -71,10 +73,76 @@ tool** on **Extending → Custom Tools**.
 - Optionally point it at an **Example source** folder — working code that already
   does what the tool should do. ToolForge reads those files and then asks only about
   the tool's contract and configuration, not about logic the code already shows.
-- Run the Verify loop above.
+- If the tool needs credentials, add them first under
+  [**Extending → Secrets**](/docs/extending/secrets). ToolForge sees the **names**
+  and descriptions of your secrets, never their values, and wires the tool to read
+  them at run time.
+- Optionally **attach files** the tool should know:
+  - **Images** of the device or app: PNG, JPEG, GIF, WebP or BMP, up to 15 MB each
+    and 20 MB across all of them.
+  - **Text files** such as a sample config, an API response or a data file: JSON,
+    YAML, YML, CSV, TXT, MD, XML, TOML, INI or LOG, up to 200 KB each and 500 KB
+    across all of them.
+  - Up to **30 files** in total.
+
+  Each attachment shows as a chip with its name and size; the × removes it, and a
+  file with the same name replaces the earlier one, so you can fix a config and
+  attach it again. The model takes formats, field names and values from them
+  instead of asking you. The files stay in memory for this page only — nothing is
+  written to your project. Anything else (a PDF, an executable) is refused with a
+  message naming the file.
+
+  <Callout type="warn">
+  What you attach goes into the prompt as it is, and what the model writes from it
+  becomes a tool that runs on your machines. Attach files you would vouch for.
+  **Accept** writes the tool at once and then shows its source: read it before
+  your next run uses the tool.
+  </Callout>
+- Run the Verify loop above. Once you have answered the model's first questions,
+  the description, the example source and the attachments are locked — they are
+  what the conversation is about. To change them, start a new ToolForge.
 - Click **Accept & Forge Tool**. The `.cs` file is written into
-  `utils/custom_tools/` once it compiles, and it joins the agent's toolbox on the
-  next run.
+  `utils/custom_tools/` once it compiles and a run would load it, and it joins the
+  agent's toolbox on the next run.
+
+ToolForge writes against the exact device API this version of AskUI Desktop ships.
+If you ask for something the device can't do from a tool, it says so during Verify
+and suggests what is possible.
+
+**UI work is the agent's job, not a tool's.** Logging in, navigating, clicking,
+filling a form and reading the screen are what the agent does itself. ToolForge
+declines such a request even though a tool could do it. A tool would hide the steps
+from the report and break without warning when the screen changes. Instead it shows
+draft steps to copy into your test, written as a
+[procedure](/docs/writing-tests/procedures) when several tests need them. A tool is
+right for work below the screen: an API call, a protocol, files or data, a
+computed value, or processing a screenshot (comparing it with a reference image,
+decoding a barcode). If a step needs a secret, turn on **Agent may use this
+secret** for it so the agent can type it. If your request mixes both, describe only that part in **Narrow the
+request** and verify again.
+
+If the generated tools miss the mark, check the [Forge Model](#the-forge-model) —
+a stronger model helps most.
+
+### Edit a custom tool
+
+To change a tool you already have — forged or written by hand — click the **pen
+icon** next to it on **Extending → Custom Tools**. ToolForge opens on that file:
+it shows which file you are editing and already has the tool's current code, so
+you don't paste anything.
+
+- Describe only the **change**, for example "also accept base64 input" or "the
+  login field is called `user_name`".
+- Run the Verify loop above. Everything you don't ask to change stays as it is,
+  including the tool's name.
+- Click **Accept & Update Tool**. The new version replaces the same file in
+  `utils/custom_tools/`, under the same name, once it compiles and a run would
+  load it. No second file is created.
+
+The same rules apply as for a new tool: a change that turns the tool into UI work
+is declined in favour of test steps, and a change that never compiles writes
+nothing. If you also have the file open in your IDE, save your work there first —
+accepting overwrites the file.
 
 <Callout type="info" title="Review before you rely on it">
 A generated tool is a starting point — read it, and validate it like any other
@@ -88,32 +156,90 @@ duplicate a built-in tool from the [Tool Store](/docs/extending/tools). If your
 request falls outside those boundaries, generation is **rejected** and you're
 pointed to an AskUI solution engineer (if a built-in tool already covers it, you're
 told which one). The same happens if the generated code doesn't compile after a
-few attempts — nothing is written. Either way your description and answers are
+few attempts, or the model returns no code at all. Nothing is written, and the
+page shows what went wrong on the last try. Either way your description and answers are
 preserved and copyable, so you can send them to [support@askui.com](mailto:support@askui.com) without
 retyping them.
 
-## TestForge — tests from recordings (coming soon)
+## TestForge — tests from recordings and specs
 
-The third Forge turns material you already have into tests: upload a narrated
-screencast of someone walking through a flow, or a written spec as PDF or CSV, and
-TestForge drafts one askui test per file through the same Verify loop. Folders and
-zip archives turn into a batch of tests that keep their file and folder names.
+TestForge turns material you already have into tests. Record yourself walking
+through a flow and explaining it, or take a written spec as PDF or CSV. TestForge
+drafts **one test per file**. It needs an AskUI account: signed in to a workspace,
+the page works; with your own model it asks you to sign in.
 
-TestForge is in development and not yet in the app. This page will be updated
-when it ships.
+Open the **Tests** page with no test open and click **Forge a test**.
+
+1. **Add the sources.** Choose files or a `.zip`, or **pick a folder**:
+   - **Videos** (`.mp4`, up to 200 MB) with a spoken explanation. The voiceover is
+     transcribed automatically; English and German are supported.
+   - **PDF** (up to 25 MB) and **CSV** files.
+   - Up to **50 files** per batch. A zip or a folder keeps its sub-folders:
+     `login/happy.mp4` becomes `tests/login/happy.md`. Each source shows the test
+     path it will get.
+
+   Anything TestForge won't turn into a test — another file type, a file that is too
+   large, a file beyond the 50 — is listed as **skipped** before any model call,
+   with the reason. Nothing is dropped silently.
+2. Optionally add a **Description**: what the app is, what the sources cover, which
+   conventions to follow.
+3. Click **Start forging**. TestForge works through the sources one at a time, each
+   with the [Verify loop](#the-verify-loop) (the button is called **Continue**
+   here). For a video it first shows the length, how many still frames it took and
+   how much of the voiceover it transcribed, so you can tell when part of a long
+   recording is missing.
+4. Click **Accept & write test**. The test is written under `tests/`. If the name is
+   taken, TestForge appends `_1`, `_2`, … and never overwrites a test. Then **Edit**
+   the result in place, or go on with **Next test**.
+
+**Skip this source** moves past a source that the model rejected or that could not
+be read, so one bad file never blocks the rest of a batch.
+
+TestForge writes tests that fit your project. The model sees your
+[procedures](/docs/writing-tests/procedures), your enabled tools, the `ui.md` at the
+root of your tests, and the [setup steps](/docs/writing-tests/setup-teardown-rules)
+that already run before the test, so it does not repeat them.
+
+A test that reaches the model's output limit is not written, because its end would
+be missing. Split a long recording into shorter ones, or choose a stronger
+[Forge Model](#the-forge-model).
+
+### ffmpeg for videos
+
+TestForge needs [ffmpeg](https://ffmpeg.org) to split a video into still frames and
+audio. PDF and CSV sources never need it. When you add a video and ffmpeg is not
+found, the page shows a setup card with the command that installs it:
+
+- **Windows:** `winget install --id Gyan.FFmpeg -e`
+- **macOS:** `brew install ffmpeg`
+- **Linux:** `sudo apt install ffmpeg`
+
+Run it in a terminal, then click **Check again**. You do not need to restart the app.
+Your package manager installs ffmpeg under its own license; AskUI downloads nothing.
+If ffmpeg lives somewhere unusual, set the `ASKUI_FFMPEG_DIR` environment variable to
+the folder that holds `ffmpeg` and `ffprobe`.
+
+<Callout type="info" title="Where your recording goes">
+The video is split into frames and audio on your machine. The audio is transcribed
+on a model hosted by AskUI, and the frames and the transcript go to your Forge
+Model. The video file itself is never uploaded.
+</Callout>
 
 ## The Forge Model
 
 Every Forge runs on the model you choose under **Settings → Account → Forge
-Model**. By default it is the **same model as your test runs**.
+Model**.
 
-- On the AskUI hub you can instead pick the **best available** model or any other
-  hosted model. Forge runs only occasionally, so a stronger model is usually worth
-  it.
+- On the AskUI hub the default is the **best available** model. Forge runs only
+  occasionally, so the stronger model is worth it. You can instead pick the **same
+  model as your test runs** or any other hosted model.
 - If you **bring your own model**, untick **Same as for my test runs** to
   configure a separate provider for Forge (endpoint, model, API key). See
   [Model providers](/docs/extending/model-providers).
+  TestForge is the exception: it transcribes a voiceover on a model hosted by
+  AskUI, so it needs you signed in to a workspace.
 
-Every Verify and every accepted generation shows its estimated cost and token
-count; with your own model the dollar amount is omitted unless you have entered
-its rates.
+The **Cost so far** line adds up every Verify and every generation on the page
+as an estimated cost and token count; with your own model the token cost is
+omitted unless you have entered its rates (with a dot as decimal separator,
+e.g. `1.25`).

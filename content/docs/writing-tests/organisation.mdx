@@ -34,7 +34,7 @@ suite**, and suites nest, so the tree mirrors your test structure plan:
 | `user_matrix.csv` | Also test cases, one per row; every [format](/docs/writing-tests#anatomy--formats) sits side by side in the same tree |
 | `checkout/` | A suite: its cases run together, framed by the suite's own `setup.md` and under its own `rules.md` **in addition to** the outer one. Nest deeper for sub-suites |
 | `user-management/` | A sibling suite, no steering files of its own, so only the root ones apply. Suites are independent: a failing `checkout/setup.md` never touches it |
-| `rules.md`, `setup.md`, `teardown.md` | [Steering files](/docs/writing-tests/setup-teardown-rules), allowed at **every** level, each scopes to its folder and everything below |
+| `rules.md`, `setup.md`, `teardown.md` | [Steering files](/docs/writing-tests/setup-teardown-rules), allowed at **every** level, one of each per folder, each scopes to its folder and everything below. They are found by name, so [copy and paste](/docs/writing-tests#copy--paste) never renames one — where a folder has one already, the pasted one is skipped |
 
 ## Scope
 

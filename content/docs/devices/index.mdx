@@ -21,6 +21,7 @@ describes how to reach one. Connected profiles appear in every test's
 | **Pixel 9** | An Android emulator, created and booted by the app |
 | **Connect / Start** | Opens the session. Green dot = ready. Tests only run on connected devices |
 | **Probe** | Checks reachability without connecting |
+| **Force Restart** (next to Retry, Local profile only) | After a failed Connect: stops the standalone AgentOS controller on this PC and starts a fresh one, see [Remote computer](/docs/devices/remote-computer#restart-the-controller-on-this-pc) |
 
 A new project starts with a **Local** profile (this machine) and, where the
 machine supports it, a ready-made **Android Emulator** profile. Deleted
@@ -32,7 +33,10 @@ defaults stay deleted.
 2. Pick the kind.
 3. Enter a name and the kind's fields. The optional **Prompt** field holds
    what the agent gets told about this device on every run, quirks the
-   screen doesn't show ("always execute on display 1").
+   screen doesn't show ("always execute on display 1"). A
+   [Multi computer](/docs/devices/multi-computer) or
+   [Cross-platform](/docs/devices/cross-platform) profile passes on each
+   member's prompt as well, under the member's name.
 4. Click **Add device**, then **Connect** the new card.
 
 <img
@@ -45,15 +49,17 @@ defaults stay deleted.
 | --- | --- | --- |
 | [**Remote computer**](/docs/devices/remote-computer) | Any machine running [AgentOS](/docs/agentos), host, port, display | Test on a dedicated machine instead of your own |
 | [**Web browser**](/docs/devices/web-browser) | Local browser session, Chromium, Firefox, or WebKit | Optional start URL, headless |
-| [**Android emulator**](/docs/devices/android-emulator) | Virtual device on this machine | Device type + Android version; created on first Start |
+| [**Android emulator**](/docs/devices/android-emulator) | Virtual device on this machine | **An Android emulator** in the dialog; device type + Android version, created on first Start |
 | [**iOS simulator**](/docs/devices/ios-simulator) | Apple simulator | macOS only, greyed out on Windows |
 | [**Multi computer**](/docs/devices/multi-computer) | Several desktops, one agent | The test names the machine per step ("on the server …, on the client …") |
 | [**Cross-platform**](/docs/devices/cross-platform) | Desktop + Android + web in one profile | Connect/status only, runs not supported yet |
-| [**Android phone**](/docs/devices/android-phone) | A physical device via USB or wireless | Not in this dialog, added from the **Android devices** list below |
+| [**Android phone**](/docs/devices/android-phone) | A physical device via USB or wireless | **An Android device** in the dialog lists the phones `adb` sees, **Add as device** adds one; also from the **Android devices** list below |
 
 Each kind has its own page with the exact fields and setup. Missing tooling
-(e.g. no Android SDK) shows up on the profile card as a one-click setup or as
-manual steps with exact commands.
+(no Android SDK for an emulator, no `adb` for a phone) shows up while you add
+the device and on its profile card as **Android tools are not installed on this
+computer**, with an **Install** button: one click installs everything missing,
+or follow the manual steps with exact commands.
 
 ## Android devices (discovery)
 
@@ -61,7 +67,9 @@ The **Android devices** section lists what `adb` sees: USB-connected phones
 (USB debugging enabled) and already-running emulators. **Add as profile**
 turns a discovered device into a regular profile, see
 [Android phone](/docs/devices/android-phone). For a wireless device, enter
-its `ip:port` and click **Connect wireless**.
+its `ip:port` and click **Connect wireless**. Without `adb` the list stays
+empty; the Add-device dialog's **An Android device** entry says so and offers
+**Install**.
 
 ## How a test picks its device
 
@@ -78,6 +86,7 @@ keep working.
 
 ## Where profiles live
 
-`devices.json` in the project, including each profile's **Prompt** text.
+`devices.json` in the project, including each profile's **Prompt** text
+(and, for a Multi computer or Cross-platform profile, each member's).
 Colleagues get the same device list and only connect. See
 [How a Project is organized](/docs/projects).

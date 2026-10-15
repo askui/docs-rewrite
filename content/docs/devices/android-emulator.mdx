@@ -10,13 +10,22 @@ machine. The app creates it, boots it, and connects it, you never touch
 
 ## Create it
 
-1. **Add device** → **Android emulator**.
+1. **Add device** → **An Android emulator**. (A phone plugged into this
+   computer is the other entry, **An Android device**, see
+   [Android phone](/docs/devices/android-phone).)
 2. Fill in the fields:
    - **Device type**: hardware profile: screen size, resolution *(select, default `Pixel 9`)*
    - **System image**: the Android version the device runs *(select, default `Android 34 · Google APIs`)*
    - **Lifecycle**: what Start and Stop do, see below *(select, default `Persistent`)*
    - **Headless**: boot without an emulator window *(toggle, default off)*
 3. **Add device**.
+
+No Android SDK on this machine yet? The editor says **Android tools are not
+installed on this computer**, names what **Install** will fetch, and the button
+runs the setup right there: accept the licences, watch the download, stop it if
+you must. When it finishes, the device-type and system-image lists reload from
+the freshly installed SDK. You can also add the device first and set the SDK
+up from its card.
 
 <img
   src="/docs-rewrite/screenshots/desktop-profile-android-emulator.png"
@@ -52,6 +61,13 @@ The card shows each state while Start works:
 
 A Start that hangs in **Booting…** past ~8 minutes times out with an error,
 the emulator may still come up; Start again reconnects to it.
+
+**The card reads Set up instead of Start** — the Android SDK is not installed
+(or no longer complete). The card shows the same **Android tools are not
+installed on this computer** notice as the editor, with **Install**; that button
+and **Set up** open the same setup dialog, where one click installs everything
+missing, or the manual steps tell you what to run yourself. Nothing downloads
+before you confirm.
 
 **Set up fails with "Install did not complete"** — open **Settings → Machine →
 Android SDK**. The **Dependencies** list shows every piece the emulator needs,

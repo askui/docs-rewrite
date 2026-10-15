@@ -39,6 +39,20 @@ This writes `utils/mcp.json` in the project, the whole team and the
 lands in the file.
 
 Servers connect when a run starts. An unreachable server is retried once,
-then the run continues **without** it, with a warning in the log, an
-unavailable helper doesn't fail the suite, and the warning explains any
-missing tool.
+then the run continues **without** it. An unavailable helper doesn't fail the
+suite: a notice in the run's HTML report (a `Warning:` line in the CLI) explains
+any missing tool.
+
+## Edit a server
+
+Click the pencil next to a registered server to change its **Name**, **URL**
+or **Headers**. The dialog opens with the current values; **Edit server**
+saves them and checks the connection again, **Cancel** leaves the server as
+it was. Editing keeps the server's on/off state.
+
+## Remove a server
+
+Click the trash icon next to a registered server. A confirmation opens,
+because removing a server can't be undone: **Delete** removes it from
+`utils/mcp.json`, **Cancel** (or **Escape**) keeps it. The rest of the app
+stays unavailable until you choose.
