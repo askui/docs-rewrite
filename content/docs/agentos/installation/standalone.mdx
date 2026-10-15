@@ -15,7 +15,8 @@ commercial deployments a license is required, see
 
 ## Prerequisites
 
-- **Windows** (x64 or ARM64) or **macOS** on Apple silicon, see
+- **Windows** (x64 or ARM64), **macOS** on Apple silicon, or **Linux** (x64 or
+  ARM64) with an **X11** session, Wayland is not supported, see
   [System Requirements](/docs/agentos/reference/system-requirements) for supported
   versions.
 - **macOS only:** grant **Accessibility** and **Screen Recording** permissions
@@ -27,9 +28,11 @@ AgentOS ships as a ZIP archive per platform. Download the one that matches your
 machine:
 
 <Cards>
-  <Card title="Windows AMD64 (x86_64)" href="https://askui-public.s3.eu-central-1.amazonaws.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Windows-x64.zip" description="Standard 64-bit Windows systems." />
-  <Card title="Windows ARM64" href="https://askui-public.s3.eu-central-1.amazonaws.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Windows-ARM64.zip" description="ARM-based Windows devices." />
-  <Card title="macOS ARM64" href="https://askui-public.s3.eu-central-1.amazonaws.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-MacOS-ARM64.zip" description="Macs with Apple silicon (M1 or newer)." />
+  <Card title="Windows AMD64 (x86_64)" href="https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Windows-x64.zip" description="Standard 64-bit Windows systems." />
+  <Card title="Windows ARM64" href="https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Windows-ARM64.zip" description="ARM-based Windows devices." />
+  <Card title="macOS ARM64" href="https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-MacOS-ARM64.zip" description="Macs with Apple silicon (M1 or newer)." />
+  <Card title="Linux AMD64 (x86_64)" href="https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Linux-x64.zip" description="64-bit Linux with an X11 session (no Wayland)." />
+  <Card title="Linux ARM64" href="https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Linux-ARM64.zip" description="ARM-based Linux with an X11 session (no Wayland)." />
 </Cards>
 
 ## Install
@@ -47,9 +50,10 @@ first, for example:
 |---|---|
 | Windows | `C:\Users\<you>\AskUI\AgentOS` |
 | macOS | `/Users/<you>/AskUI/AgentOS` |
+| Linux | `/home/<you>/AskUI/AgentOS` |
 
-Keep the folder's contents together: the controller loads the `Configs`,
-`Schemas` and `Shaders` folders next to it.
+Keep the folder's contents together: the controller loads the folders next to
+it, such as `Configs`.
 </Step>
 <Step>
 **Copy the path to the controller.** Inside that folder, find the
@@ -78,6 +82,13 @@ Use the full path, `~` is not expanded. The change applies on the next device
 connect, no restart needed.
 </Step>
 </Steps>
+
+<Callout title="Linux">
+AskUI Desktop runs on Windows and macOS. On a Linux machine, start
+`AskuiRemoteDeviceController` from the unpacked folder in an **X11** session
+(Wayland is not supported) and drive it from AskUI Desktop as a
+[Remote computer](/docs/devices/remote-computer).
+</Callout>
 
 ## What's next?
 
