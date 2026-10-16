@@ -60,6 +60,24 @@ incorrectly. Model IDs are case-sensitive and must match exactly.
    - Anthropic: [docs.anthropic.com/models](https://docs.anthropic.com/en/docs/about-claude/models/overview)
    - OpenAI: [platform.openai.com/docs/models](https://platform.openai.com/docs/models)
 
+### Vertex AI: model not enabled or not served in this location
+
+**What it means:** Vertex AI answered 404 for the model. Either the model is not
+enabled for your Google Cloud project, or the location you picked does not
+serve it.
+
+**What to do:**
+1. In the Google Cloud console, open the Vertex AI **Model Garden** and enable
+   the model for your project.
+2. Check the location in **Settings → Account → AskUI ModelBridge → Vertex AI**:
+   newer Claude models run on `eu`, `us` or `global`; Gemini on `global` or a
+   single region such as `europe-west4`, not on `eu`/`us`.
+3. Check the model id: Gemini ids carry their publisher, `google/gemini-2.5-flash`.
+
+A **429** on Vertex AI means your project has no quota for the model in that
+location yet; request it in the console under IAM & Admin → Quotas. A **403**
+means the service account (or your login) lacks the **Vertex AI User** role.
+
 ### Connection refused / Could not connect to server
 
 **What it means:** AskUI Desktop tried to reach your model's endpoint but got

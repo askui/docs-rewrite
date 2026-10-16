@@ -24,7 +24,7 @@ model ([Forge](/docs/extending/forge), [Dreaming](/docs/extending/dreaming),
 
 ## Choose where your model runs
 
-<Tabs items={['AskUI AirGap', 'Azure AI Foundry', 'Other']}>
+<Tabs items={['AskUI AirGap', 'Azure AI Foundry', 'Vertex AI', 'Other']}>
   <Tab value="AskUI AirGap">
 
 A model on your **AskUI AirGap Hosting**, inside your own network:
@@ -46,6 +46,25 @@ Claude and OpenAI-compatible models alike.
 | --- | --- | --- |
 | **Endpoint** | Required | Your resource's full endpoint: ending in `/anthropic` for Claude models, in `/openai/v1` for the others. |
 | **API key** | Required | The key of your Foundry resource. |
+
+  </Tab>
+  <Tab value="Vertex AI">
+
+Claude, Gemini and other models served by
+[Vertex AI](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/partner-models/claude)
+from **your own Google Cloud project**: Google bills the project, and requests
+are processed in the location you choose.
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| **Service account key** | Optional | The JSON key of a service account with the **Vertex AI User** role (`roles/aiplatform.user`), from IAM & Admin → Service accounts → Keys. If your organisation forbids keys, choose the file `gcloud auth application-default login` writes instead. Without a file, this computer's Google login is used. |
+| **Google Cloud project ID** | Required | Filled in from the key file. |
+| **Location** | Required | `eu` or `us` (multi-region: data stays in that geography), `global` (wherever Google has capacity), or a single region such as `europe-west4`. Newer Claude models run on `eu`, `us` or `global`; Gemini on `global` or a single region. |
+
+Enable each model for your project in the Vertex AI **Model Garden** first, and
+request quota for it in the location you pick. Model ids are Vertex's own:
+`claude-sonnet-5-5` (older Claude models carry a date, `claude-opus-4-5@20251101`),
+and Gemini with its publisher, `google/gemini-2.5-flash`.
 
   </Tab>
   <Tab value="Other">
@@ -75,10 +94,10 @@ are minted and refreshed automatically.
   </Tab>
 </Tabs>
 
-**AWS Bedrock** and **Vertex AI** show as **Coming soon**: they authenticate
-differently (SigV4, Google service accounts) and are not wired up yet. Until
-then, put a gateway in front that re-exposes them Anthropic- or
-OpenAI-compatibly and use **Other**, or [talk to us](/docs/support/get-help).
+**AWS Bedrock** shows as **Coming soon**: it authenticates differently (SigV4)
+and is not wired up yet. Until then, put a gateway in front that re-exposes it
+Anthropic- or OpenAI-compatibly and use **Other**, or
+[talk to us](/docs/support/get-help).
 
 ## Name the model
 
@@ -94,7 +113,9 @@ The **protocol** is picked for you, and the form shows which one and why:
 - every other model uses the **OpenAI-compatible** Chat Completions API,
 - on **Azure AI Foundry** the endpoint decides, whatever your deployment is
   called: one ending in `/anthropic` is the Anthropic API, anything else
-  OpenAI-compatible.
+  OpenAI-compatible,
+- on **Vertex AI** a Claude model uses Vertex's Anthropic API and every other
+  model (Gemini) its OpenAI-compatible endpoint; there is nothing to change.
 
 If the form can't tell, e.g. a Claude model behind a gateway whose URL doesn't
 end in `/v1`, select **Change** under the model and pick the protocol yourself.
@@ -130,7 +151,8 @@ run reports), **Image handling** and, for the test-run model, **Truncation**.
   OpenRouter. They see screenshots and call tools, so they drive a UI,
   they're just not the path AskUI tests against.
 - **Gemini vision models**: `gemini-2.5-pro`, `gemini-3-pro-preview` and
-  the Flash variants work the same way, as long as your gateway exposes them
+  the Flash variants work the same way: on the **Vertex AI** tab
+  (`google/gemini-2.5-flash`), or through any gateway that exposes them
   OpenAI-compatibly (OpenRouter, or your own proxy).
 - **Self-hosted VLMs**: a screen-capable model such as `Qwen/Qwen3-VL-…` on
   AskUI AirGap Hosting, which keeps screenshots inside your own network.
