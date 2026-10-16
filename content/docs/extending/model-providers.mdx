@@ -23,24 +23,29 @@ same form appears in the License setup wizard and wherever a feature has its own
 model ([Forge](/docs/extending/forge), [Dreaming](/docs/extending/dreaming),
 [In-Flight Guidance](/docs/extending/in-flight-guidance)).
 
-### Signed in to AskUI
-
-Signed in to an AskUI workspace, the choice starts with **AskUI Inference** —
-AskUI's hosted models, billed to your workspace, nothing to set up:
-
-- **Test runs** (Settings → Account → AskUI Model), **Forge** and **Dreaming**:
-  AskUI Inference or **AskUI AirGap**.
-- The **In-Flight Guidance** reviewer: AskUI Inference, AskUI AirGap or the
-  **AskUI ModelBridge**.
-
-An AirGap or ModelBridge model takes effect once you **save** it; picking **AskUI
-Inference** switches back at once and keeps your settings for next time.
-
 ## Choose where your model runs
 
-First pick **AskUI AirGap** or **AskUI ModelBridge**. The ModelBridge's providers —
-Azure AI Foundry, Vertex AI, Other (AWS Bedrock coming soon) — show in a second
-row once you pick it.
+The form looks the same everywhere. First pick where the model runs:
+
+- **AskUI Inference**: AskUI's hosted models, billed to your workspace, nothing
+  to set up. Requires signing in to an AskUI workspace.
+- **AskUI AirGap**: a model on your AskUI AirGap Hosting, inside your own
+  network.
+- **AskUI ModelBridge**: your own model from a cloud account or any compatible
+  API. Its providers (Azure AI Foundry, Vertex AI, Other; AWS Bedrock coming
+  soon) show in a second row, **Model Provider**, once you pick it.
+
+What your mode cannot use is shown as **Not available**, with the reason:
+
+| | AskUI Inference | AskUI AirGap | AskUI ModelBridge |
+|---|---|---|---|
+| License mode | Not available (sign in to AskUI) | ✓ | ✓ |
+| Signed in to AskUI | ✓ | ✓ | Not available (License only), except for the [In-Flight Guidance](/docs/extending/in-flight-guidance) reviewer |
+
+Signed in, an AirGap or ModelBridge model takes effect once you **save** it;
+picking **AskUI Inference** switches back at once and keeps your settings for
+next time. A ModelBridge setup you saved in License mode is not used while you
+are signed in; your runs use AskUI Inference instead.
 
 <Tabs items={['AskUI AirGap', 'Azure AI Foundry', 'Vertex AI', 'Other']}>
   <Tab value="AskUI AirGap">
