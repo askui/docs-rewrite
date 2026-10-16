@@ -161,8 +161,8 @@ the run with exit code 3 before the first model call.
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `--model-provider <p>` | `askui` | `askui`, `anthropic`, `openai`, or `openai-compatible`. |
-| `--model-id <id>` | provider default | The model to use. With `askui`, selects the hosted model, e.g. `gemini-3.5-flash`; default is the workspace's Claude model. |
+| `--model-provider <p>` | `askui` | `askui`, `anthropic`, `openai`, `openai-compatible`, or `vertex`. |
+| `--model-id <id>` | provider default | The model to use. With `askui`, selects the hosted model, e.g. `gemini-3.5-flash`; default is the workspace's Claude model. With `vertex`, the Vertex model ID; default `claude-haiku-5-5`. |
 | `--model-endpoint <url>` | none | Endpoint URL. Required for `openai-compatible`; a URL ending in `/chat/completions` is used as-is, a base URL gets the path appended. |
 | `--model-api-key <key>` | none | API key, sent as `x-api-key` or `Authorization`, per provider. |
 | `--model-token <token>` | none | Bearer token, e.g. an OAuth access token (Entra, gateways). |
@@ -194,6 +194,37 @@ a pipeline file.
 The agent drives the UI from **screenshots**, so BYOM models must be
 **vision-capable**: a text-only model will connect but can't see the screen.
 </Callout>
+
+### Claude on Google Vertex AI
+
+`--model-provider vertex` runs Claude from your own Google Cloud project. It
+takes these options instead of an endpoint and a key:
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `--vertex-project <id>` | none | The Google Cloud project with Claude enabled. Required. |
+| `--vertex-location <loc>` | none | Where Vertex AI serves the model and processes requests: `us` or `eu` (multi-region), `global`, or a region such as `us-east5`. Required. |
+| `--vertex-credentials <file>` | Application Default Credentials | A service account key file (JSON). |
+
+A missing `--vertex-project` or `--vertex-location` is a usage error (exit
+code 2), and so is a `--vertex-*` option with another provider, or
+`--model-endpoint`, `--model-api-key`, `--model-token`, or `--model-headers`
+with `vertex`. An unreadable or invalid key file stops the run before the
+first model call.
+
+Without `--vertex-credentials`, the CLI uses Google's
+[Application Default Credentials](https://cloud.google.com/docs/authentication/application-default-credentials):
+the key file named by `GOOGLE_APPLICATION_CREDENTIALS`, then the login from
+`gcloud auth application-default login`, then the service account of a runner
+that itself runs on Google Cloud. A CI runner set up with workload identity
+federation then needs no service account key at all. Google Cloud setup:
+[Set up Google Cloud for Vertex AI](/docs/extending/model-providers#set-up-google-cloud-for-vertex-ai).
+
+```bash
+askui run --model-provider vertex \
+  --vertex-project my-project --vertex-location us \
+  --vertex-credentials "$VERTEX_KEY_FILE"
+```
 
 ## Output and modes
 

@@ -21,7 +21,10 @@ AskUI Desktop and the [CLI](/docs/running-tests/cli) need HTTPS (443) to:
 
 With your own provider, that endpoint replaces `inference.askui.com`, your
 Anthropic account, your Azure AI Foundry resource, or a host inside your own
-network. With **on-premise inference** no external model domain is needed at
+network. For [Claude on Google Vertex AI](/docs/extending/model-providers) it
+is `aiplatform.us.rep.googleapis.com` or `aiplatform.eu.rep.googleapis.com`,
+matching the location you chose, plus `oauth2.googleapis.com` for the access
+token. With **on-premise inference** no external model domain is needed at
 all.
 
 <Callout title="The sign-in callback never leaves the machine">
