@@ -33,7 +33,7 @@ screenshots and prompts never leave it.
 | Field | Required | Notes |
 | --- | --- | --- |
 | **Base URL** | Required | The base URL of your AskUI AirGap Hosting, e.g. `http://airgap.internal:8000/v1`. |
-| **API key** | Optional | Only if your hosting requires one (always required for a Claude model). |
+| **API key** | Optional | Only if your hosting requires one (always required for the Anthropic API). |
 
   </Tab>
   <Tab value="Azure AI Foundry">
@@ -56,7 +56,7 @@ Any **Anthropic‑ or OpenAI‑compatible API**: Anthropic or OpenAI directly,
 | Field | Required | Notes |
 | --- | --- | --- |
 | **Base URL** | Required, except for Anthropic | Leave **blank** with a Claude model for Anthropic's own API. An OpenAI-compatible URL ends in `/v1`, e.g. `https://openrouter.ai/api/v1`. |
-| **API key** | Required for Claude | Generate an Anthropic key in the [Anthropic console](https://console.anthropic.com/settings/keys). Optional for an OpenAI-compatible server that doesn't require one. |
+| **API key** | Required for the Anthropic API | Generate an Anthropic key in the [Anthropic console](https://console.anthropic.com/settings/keys). Optional for an OpenAI-compatible server that doesn't require one. |
 
 **Authentication** has a second mode for a gateway fronted by
 **Microsoft Entra ID**: e.g. an internal LLM gateway of your company.
@@ -85,13 +85,19 @@ OpenAI-compatibly and use **Other**, or [talk to us](/docs/support/get-help).
 Enter the provider's **Model** id, e.g. `claude-sonnet-5-5` or
 `Qwen/Qwen3-VL-235B-A22B-Instruct`. It is required.
 
-The **protocol** follows the model id, and the form shows which one it picked:
+The **protocol** is picked for you, and the form shows which one and why:
 
 - a model id containing `claude` uses the **Anthropic Messages API**,
-- every other model the **OpenAI-compatible** Chat Completions API.
+- unless the base URL ends in `/v1`: that is an OpenAI-compatible gateway, so a
+  Claude model on OpenRouter (`https://openrouter.ai/api/v1`) uses the
+  **OpenAI-compatible** API,
+- every other model uses the **OpenAI-compatible** Chat Completions API,
+- on **Azure AI Foundry** the endpoint decides, whatever your deployment is
+  called: one ending in `/anthropic` is the Anthropic API, anything else
+  OpenAI-compatible.
 
-For a Claude model behind an OpenAI-compatible gateway, select **Change** under
-the model and pick the protocol yourself.
+If the form can't tell, e.g. a Claude model behind a gateway whose URL doesn't
+end in `/v1`, select **Change** under the model and pick the protocol yourself.
 
 <Callout type="warn" title="OpenAI-compatible models: experimental, no support provided">
 Models on the OpenAI-compatible protocol are experimental. They may work with
@@ -210,6 +216,9 @@ rules, your project owns them.
   report or logs**.
 - Editing other fields won't wipe a saved key, leave the key field blank to
   keep the existing one.
+- A saved key belongs to the place it was saved for. Switch to another tab and
+  the key field is empty; save there without a new key and the old key is
+  removed, so it is never sent to a different host.
 
 ## Switching back to the AskUI hub
 
