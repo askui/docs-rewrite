@@ -1,13 +1,14 @@
 ---
 icon: BrainCircuit
-title: AskUI ModelBridge (BYOM)
-description: Point AskUI Desktop at your own model, on AskUI AirGap Hosting, in Azure AI Foundry, or behind any Anthropic- or OpenAI-compatible API, instead of the AskUI hub.
+title: Your own model — AskUI AirGap and ModelBridge
+description: Point AskUI Desktop at your own model, on AskUI AirGap Hosting or through the AskUI ModelBridge (Azure AI Foundry, Vertex AI, any Anthropic- or OpenAI-compatible API), instead of the AskUI hub.
 ---
 
 By default, AskUI Desktop runs inference through the **AskUI hub**, billed to
 your workspace, nothing to configure. **Bring your own model (BYOM)** points the
-agent at a model you control instead. The **AskUI ModelBridge** is where you
-connect it: pick where the model runs, connect to it, then name the model.
+agent at a model you control instead: on your **AskUI AirGap** Hosting, or through
+the **AskUI ModelBridge** — your model from Azure AI Foundry, Vertex AI or any
+compatible API. Pick where the model runs, connect to it, then name the model.
 
 <Callout title="Note">
 BYOM changes only **where inference runs**, the agent, prompts, tools, and run
@@ -24,19 +25,22 @@ model ([Forge](/docs/extending/forge), [Dreaming](/docs/extending/dreaming),
 
 ### Signed in to AskUI
 
-Signed in to an AskUI workspace, the ModelBridge starts with an **AskUI
-Inference** tab — AskUI's hosted models, billed to your workspace, nothing to set
-up — next to **AskUI AirGap**:
+Signed in to an AskUI workspace, the choice starts with **AskUI Inference** —
+AskUI's hosted models, billed to your workspace, nothing to set up:
 
-- **Test runs** (Settings → Account → AskUI ModelBridge), **Forge** and
-  **Dreaming** offer AskUI Inference and AskUI AirGap.
-- The **In-Flight Guidance** reviewer offers AskUI Inference and every ModelBridge
-  tab (AskUI AirGap, Azure AI Foundry, Vertex AI, Other).
+- **Test runs** (Settings → Account → AskUI Model), **Forge** and **Dreaming**:
+  AskUI Inference or **AskUI AirGap**.
+- The **In-Flight Guidance** reviewer: AskUI Inference, AskUI AirGap or the
+  **AskUI ModelBridge**.
 
-An AirGap model takes effect once you **save** it; picking **AskUI Inference**
-switches back at once and keeps your AirGap settings for next time.
+An AirGap or ModelBridge model takes effect once you **save** it; picking **AskUI
+Inference** switches back at once and keeps your settings for next time.
 
 ## Choose where your model runs
+
+First pick **AskUI AirGap** or **AskUI ModelBridge**. The ModelBridge's providers —
+Azure AI Foundry, Vertex AI, Other (AWS Bedrock coming soon) — show in a second
+row once you pick it.
 
 <Tabs items={['AskUI AirGap', 'Azure AI Foundry', 'Vertex AI', 'Other']}>
   <Tab value="AskUI AirGap">
