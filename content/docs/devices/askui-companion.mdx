@@ -1,0 +1,104 @@
+---
+icon: Smartphone
+title: iPhone via AskUI Companion
+description: Test a physical iPhone through the AskUI Companion, a pre-configured box that sees the iPhone's screen and acts as its mouse and keyboard.
+---
+
+The **AskUI Companion** lets you test a physical iPhone. It receives the
+iPhone's screen image and sends taps and keystrokes to the iPhone over USB.
+AskUI Desktop connects to the AskUI Companion over your network. Nothing has
+to be installed on the iPhone, and no Xcode or developer mode is needed.
+
+The AskUI Companion is delivered pre-configured by AskUI. You connect three
+cables and add it as a device.
+
+**What you need:**
+
+- the AskUI Companion, its power supply and Ethernet cable;
+- the iPhone you want to test, with **AssistiveTouch** enabled;
+- a computer with AskUI Desktop that can reach the AskUI Companion over the
+  network;
+- the AskUI Companion's IP address, provided by AskUI.
+
+## Quick start
+
+1. **Enable AssistiveTouch on the iPhone.** Settings → Accessibility →
+   Touch → AssistiveTouch → on. A round floating button appears on the
+   screen. The agent controls the iPhone through this pointer.
+2. **Connect the cables.** Connect the Ethernet cable to your network and the
+   USB-C cable of the AskUI Companion to the iPhone. If the iPhone asks
+   whether to allow the accessory, tap **Allow**. Plug in the power supply
+   (**48V AUX IN**) **last**; the AskUI Companion then starts by itself. All
+   other cables are pre-wired, leave them as they are.
+3. **Add the device.** In AskUI Desktop, open **Devices** → **Add device**,
+   expand **Advanced setups** and pick **A device via Remote Companion
+   Controller**.
+4. **Fill in the form**, see the table below, and click **Add device**.
+   Leave **Capture settings** unchanged.
+5. **Probe and connect.** On the Devices page, the new card is named
+   `<name> (via RCC)`. Click **Probe** to check that AskUI Desktop reaches the
+   AskUI Companion, then **Connect**.
+
+The iPhone now appears in every test's **Run on** picker.
+
+| Field | What to enter |
+| --- | --- |
+| **Name** | A name you recognise, e.g. `iPhone 16` |
+| **Description**, **Prompt** | Optional, as for every [device](/docs/devices#create-a-profile) |
+| **Device** | The model of the connected iPhone. **Viewport width** and **Viewport height** fill in by themselves. Pick **Other iPhone** for a model the list lacks and enter its screen size in points |
+| **AskUI Companion address** | The IP address provided by AskUI |
+| **AskUI Companion port** | `27000`, do not change it |
+| **Capture settings** | Pre-configured, do not change them. Changed values make taps land in the wrong place or cut off the screen image |
+
+## Run it
+
+1. **Connect** the device card.
+2. Pick it in the test's **Run on** picker and press **Run**.
+
+Keep the iPhone unlocked with its screen on during a run. The agent acts on
+the real screen, as a person with a mouse and keyboard would.
+
+Runs on the AskUI Companion start from AskUI Desktop. The
+[CLI](/docs/running-tests/cli) does not drive it yet.
+
+## What the agent can do
+
+- **Tap and type.** A tap goes to a point on the screen; text is typed on the
+  keyboard.
+- **Swipe and scroll, slowly.** A swipe starts about a second after the press
+  and moves in steps. It scrolls lists and drags, and closes apps in the App
+  Switcher, but it cannot flick. Write steps that need a fast gesture
+  differently, or expect them to fail.
+- **Home and App Switcher** go through the AssistiveTouch menu, so keep
+  AssistiveTouch enabled.
+- **No multi-touch:** no pinch-to-zoom, no two-finger gestures, no rotation.
+- **No shortcuts into the app:** no launching by bundle ID, no deep links, no
+  view hierarchy. The agent opens apps from the Home Screen or the search,
+  like a person.
+- **No biometrics:** Face ID cannot be passed. Use a passcode or a test
+  account without Face ID.
+- The screen image lags slightly behind the iPhone. Every tap, swipe and
+  keystroke waits a moment for the screen to settle.
+
+## One device at a time on this computer
+
+The AskUI Companion uses the same AgentOS controller on this computer as the
+**Local** device. While one of them is connected, connecting the other is
+refused with a message; disconnect the first. On Windows with the AskUI
+AgentOS service installed, the Local device runs on the service and can stay
+connected.
+
+When **Connect** fails, the card offers **Force Restart**, which stops the
+controller on this computer and starts a fresh one.
+
+## Troubleshooting
+
+| Symptom | What to check |
+| --- | --- |
+| **Probe** fails, or **Connect** fails | The AskUI Companion has power (48V AUX IN). The Ethernet cable is plugged in at both ends. Your computer is in the same network. Address and port `27000` are entered correctly |
+| No screen image, or a black image | The USB-C cable is plugged into the iPhone. The iPhone's screen is on and unlocked |
+| Taps or the pointer have no effect | AssistiveTouch is enabled. The USB-C cable is plugged into the iPhone, and the iPhone allowed the accessory |
+| Taps land in the wrong place | The right iPhone model is selected under **Device**. **Capture settings** are unchanged |
+
+If the problem persists, contact [support@askui.com](mailto:support@askui.com)
+with the device name and a short description of what you see.
