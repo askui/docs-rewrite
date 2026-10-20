@@ -87,7 +87,7 @@ nothing ran, so the pipeline never shows green for nothing.
 | `<target>` | `tests` | Test folder or single test file, relative to `--project`. |
 | `--plan <name>` | none | [Test plan](/docs/writing-tests/plans) from `<project>/plans/<name>.yaml` (name without extension). |
 | `--project <dir>` | current directory | The AskUI Project root (`tests/`, `procedures/`, `plans/`, `utils/`, `devices.json`). |
-| `--output <dir>` | `<project>/agent_workspace/<UTC timestamp>` | Results directory for reports, screenshots, and the HTML log. |
+| `--output <dir>` | `<project>/agent_workspace/<timestamp>` | Results directory for the run report, the summary, and screenshots. Named in local time, as AskUI Desktop names its runs. |
 | `--reporter <list>` | `html,md` | Report formats, comma-separated: `html`, `md`, `junit`. See [Reports](#reports). |
 | `--device <profile>` | the plan's device, or the only profile | Device profile from `devices.json`, by id or by a name only one profile has. |
 | `--surface <kind>` | none | Ad-hoc run without a profile: `agent-os`, `web`, `android`, or `ios`. Excludes `--device`. |
@@ -334,11 +334,16 @@ Each run writes its results into the output directory (see `--output`).
 
 | Format | Writes |
 | --- | --- |
-| `html` | The HTML log of the run, with every step and screenshot. |
+| `html` | `report.html`: the run report as AskUI Desktop shows it, with every test, step, screenshot, and cost. |
 | `md` | `summary_report.md`: the run at a glance, totals with per-status counts and run duration, one table over all tests with status and duration each, and detail sections quoting every warned, failed, or broken test's issues. |
 | `junit` | `junit.xml`, for the test report view of your CI system. |
 
 The default is `html,md`. For CI, add JUnit: `--reporter html,md,junit`.
+
+Every run also writes `conversation.json` and `run_meta.json`, whatever
+`--reporter` says. With them, a run in the Project's `agent_workspace/` shows
+up in AskUI Desktop's run history and dashboard like a run started in the
+app, marked as a CLI run.
 Every run also writes the per-test artifacts,
 `<test_name>/<test_name>_report.md` with the result and step-by-step details,
 plus `step_<n>.png` screenshots. Files a web test downloads land in
