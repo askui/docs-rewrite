@@ -27,7 +27,13 @@ hand: you check tests, pick a device, and the plan is saved for you.
 4. Pick the device the plan runs on. Every profile from the
    [Devices page](/docs/devices) is offered, connected or not: a device only
    has to be reachable when the plan runs, not while you build it.
-5. Click **Create plan**.
+5. Optional: under **Execution reports**, pick which tests of this plan get
+   an [execution report](/docs/results/run-report#execution-report):
+   **Always**, **Only for failed or broken tests**, or **Never**. The
+   default, **Project default**, follows the
+   [project's setting](/docs/extending/reporting#create-report) and names
+   it, for example **Project default (Always)**.
+6. Click **Create plan**.
 
 A checked folder stays live: a test added to that folder later is part of the
 plan automatically, with nothing to re-check. The **Test Plans** page lists
@@ -111,9 +117,9 @@ device is busy or two runs are already in flight, a dialog offers to
 
 A plan run accounts for every test it selected:
 
-- **Selected but not reached**: a test the run never got to is reported as
-  `BROKEN` in the [run report](/docs/results/run-report), so nothing is
-  dropped silently.
+- **Selected but not started**: a test the run never got to is reported as
+  `SKIPPED` in the [summary report](/docs/results/run-report#tests-that-never-started),
+  with the reason, so nothing is dropped silently.
 - **Renamed or deleted**: a plan entry whose file is gone is skipped with a
   notice in the conversation log, and the rest of the run continues.
 
@@ -153,6 +159,7 @@ tests:
   - tests/checkout/happy_path.md
 devices:
   - id: a1b2c3
+createReport: failures
 ```
 
 - **`tests`**: your selection, in run order. An entry ending in `/` is a
@@ -166,6 +173,9 @@ devices:
 - **`devices`**: the device the plan runs on, by profile id from
   `devices.json`. The file holds a list for forward compatibility; the app
   sets exactly one.
+- **`createReport`**: which tests get an execution report when this plan
+  runs: `always`, `failures`, or `never`. Absent means the project's
+  setting.
 
 The `plans/` folder is created with your first plan.
 

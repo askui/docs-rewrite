@@ -1,0 +1,172 @@
+---
+icon: FileChartColumn
+title: Management Report
+description: One report over every run in a date range, pass counts per test, test period, racks, and the software version you name, built without an AI model and delivered as PDF, JSON, or JUnit XML.
+---
+
+The **Management Report** summarizes the runs of the project in a date
+range: how many tests ran, how many passed, per test and in total, and on
+which racks. Use it to sign off a release without opening every run.
+
+No AI model builds it. It counts the [recorded results](/docs/results/run-report#test-result)
+and the run details, so the same runs always give the same figures. It
+costs nothing to build.
+
+## Create a report
+
+1. Open the **Runs** page.
+2. Click the green **Generate Management Report** button at the bottom of
+   the runs list. A dialog opens.
+3. Pick the date range: **7 days**, **30 days**, or **90 days**, or set the
+   two dates.
+4. Optional: type part of a run's name under **Run name**, for example
+   `Nightly`. As you type, only runs whose name contains the text count for
+   the report, regardless of case. Other runs are not listed and not
+   counted.
+5. Check the list of runs. All listed runs are included. Untick a run
+   to leave it out, or use **Select all** and **Unselect all**
+   ([several runs at once](#leave-out-a-run)).
+6. Optional: fill in the fields under **Additional information**
+   ([below](#additional-information)).
+7. Optional: tick **Bundle the execution reports**. To include the tests
+   that have no report yet, also tick
+   **Generate missing execution reports first**.
+8. Click **Generate**. After a few seconds, the dialog shows
+   **The report is ready.**
+9. Click **Download PDF**, **Download JSON**, or **Download JUnit XML**
+   to save the report. On the desktop, **Open** shows the PDF in your
+   default PDF viewer.
+
+**Change selection** goes back to the range and the runs. **Done** closes
+the dialog. Nothing is saved in the project: the report exists only as the
+file you save. To create it again, pick the same range, runs, and options.
+
+## Additional information
+
+Every field is optional, and the report is complete without them:
+
+| Field | Example | Where it appears |
+| --- | --- | --- |
+| **Software version** | `4.2.1` | The cover and the overview |
+| **Author** | Your name | The cover and the overview |
+| **Prepared for** | A customer or a team | The cover and the overview |
+| **Reference** | `QA-2026-041` | The cover, the overview, and the right of every page header, in place of the period |
+| **Remarks** | Free text | A **Remarks** box in the overview |
+
+Fields you leave empty do not appear.
+
+## What the report shows
+
+The PDF starts with a dark navy **cover page**. It shows the AskUI logo,
+`Management Report · <period>`, the project name with
+**Management Report** below it, and a row of headline facts: the test
+period, the software version, the runs, the pass rate, the racks, the
+plans, the tests executed, and the size of the appendix. The other
+[additional information](#additional-information) you entered joins
+them.
+
+Numbered sections follow:
+
+1. **Overview**: a table of facts, including your additional
+   information, five key-figure cards, and your **Remarks**. With a
+   **Run name** filter, the table has a row `Runs named — containing “<text>”`.
+2. **Results**: the two charts.
+3. **Tests**: the table of tests.
+4. **Runs**: the table of runs, with **Important notes** on how the
+   figures are counted.
+5. **Test Execution Reports**: the test executions of the counted runs
+   that have an execution report
+   ([details](#bundle-execution-reports-into-the-pdf)).
+
+With bundled execution reports, an appendix follows. Each report starts on
+its own page.
+
+A dark **End of Report** page closes the PDF. Every page between the cover
+and the end page has a header and a footer:
+
+- **Header**: the AskUI mark, `AskUI — <project> · Management Report`,
+  and on the right the period, or the **Reference** when you entered one.
+- **Footer**: **Generated with AskUI Desktop** with the date and time,
+  and **Page n / m**.
+
+What the sections hold:
+
+- **Key figures**: runs, tests executed, passed, failed and broken, and the
+  pass rate.
+- **Test period**: the first and the last run in the range.
+- **Software version**: the version you entered, or `—` when the field is
+  empty. It belongs to the report, not to the runs.
+- **Racks**: the [device profiles](/docs/devices) the runs used. A
+  **rack** is the name of a device profile.
+- **Charts**: two, in this order.
+  - **Pass rate per test**, the main chart: one stacked bar per test
+    (passed, failed, broken), with its pass rate and passed out of executed
+    beside it. The test with the lowest pass rate comes first.
+  - **Tests executed per day**: stacked lines, passed below and failed or
+    broken on top, so the upper line is everything that ran.
+
+  Green means passed, navy failed, and pale lavender broken. The `FAILED`
+  marker in the tables is navy too.
+- **Tests**: one row per test, with its runs, passed, failed, broken, pass
+  rate, and the status of its last run.
+- **Runs**: every run in the range, with its start time, rack, and passed
+  out of executed tests.
+
+The counting rules are the same as in the
+[summary report](/docs/results/run-report#summary-report).
+
+## Leave out a run
+
+A run on a broken rack or a misconfigured device can distort the numbers.
+Untick it in the dialog's run list, and the figures, charts, and tables no
+longer count it. The report still lists the run, marked as excluded, so it
+shows what was left out.
+
+To change several runs at once, mark them first:
+
+- **Cmd-click** (macOS) or **Ctrl-click** (Windows) marks one more run.
+- **Shift-click** marks every run between the last marked one and this one.
+- A plain click on a row flips that run only.
+
+With runs marked, ticking or unticking the checkbox of one marked run
+applies to all of them. A bar shows **N marked** and offers **Include**,
+**Exclude**, and **Clear**. **Select all** and **Unselect all** include or
+exclude every run in the list.
+
+## Bundle execution reports into the PDF
+
+**Bundle the execution reports** adds the execution report of every test
+execution in the counted runs to the PDF, as an appendix. It is off by
+default. Turn it on when you need one file that holds a release's full
+evidence, for example for an audit.
+
+Not every test execution has a report, for example when
+[Create report](/docs/extending/reporting#create-report) is set to failed
+or broken tests only. Tick **Generate missing execution reports first** to
+write them before the PDF is built. The option is available only when you
+bundle, and it shows how many reports are missing. While it works, the
+dialog shows **Writing the missing execution reports — n of m…**. Each
+report costs model tokens.
+
+Section 5, **Test Execution Reports**, lists the test executions of the
+counted runs that have an execution report, with the columns **#**,
+**Test**, **Run**, **Date**, **Duration**, **Status**, and **Page**:
+
+- For an execution whose report is bundled, **#** shows its appendix
+  number (A1, A2, …) and **Page** the page the report starts on. The
+  number, the page, and the test name link to the report. The links work
+  in every PDF viewer.
+- Without bundled reports, both columns show `—`.
+- A note below the table says how many executions have no report, for
+  example: "Only the 6 test executions with an execution report are
+  listed; 9 more have none yet."
+
+The appendix holds execution reports only. To share the summary of one
+run, export it from the **Runs** page: [Export](/docs/results/export).
+
+## PDF, JSON, and JUnit XML
+
+The PDF is a document for people. The JSON holds the same data for your own
+tools and dashboards: [the JSON fields](/docs/results/export#management-report).
+The JUnit XML holds one test suite per counted run, for your CI system:
+[JUnit XML](/docs/results/export#junit-xml).

@@ -1,11 +1,12 @@
 ---
 icon: History
 title: Runs
-description: Every run keeps its full results, open them in the app, read the conversation log, or grab the files on disk.
+description: Every run keeps its full results, open them in the app, read the conversation log, write missing execution reports, export, or grab the files on disk.
 ---
 
-Every run is kept: its reports, screenshots, and the complete conversation.
-The **Runs** page is where you open them.
+Every run is kept: the result of each test, its execution report, the
+screenshots, and the complete conversation. The **Runs** page is where you
+open them.
 
 ## Open a run's results
 
@@ -21,11 +22,82 @@ The **Runs** page is where you open them.
 3. Choose what to look at:
    - **Conversation log**: the full execution record (below).
    - **Summary report**: the run-level table, one row per test.
+   - **Developer Report**: the run's `report.html`, with every step and
+     screenshot, opened in your browser. It is meant for debugging.
    - **The per-test entries**: each test's
-     [test report](/docs/results/run-report) with its status badge.
+     [execution report](/docs/results/run-report) with its status badge.
 
-**Open in Explorer** on a test jumps to its files on disk, the run's folder
-is one level up.
+**Open in file manager** in the right-click menu of a test jumps to its
+files on disk, the run's folder is one level up.
+
+## Results and execution reports
+
+Each test has two things:
+
+- **The result**: the status and the short reason that the agent recorded
+  at the end of the test. The result decides whether the test passed, and
+  the summary report, the Dashboard, and the
+  [Management Report](/docs/results/management-report) count it.
+- **The execution report**: the written record of the test, step by step,
+  with screenshots. A separate agent writes it after the test, from the
+  test's conversation. It explains the result and never changes it.
+
+Whether a test gets a report depends on the **Create report** setting under
+[Extending → Reporting](/docs/extending/reporting#create-report): always,
+only for failed or broken tests, or never. A
+[test plan](/docs/writing-tests/plans#build-a-plan) can override it for its
+runs.
+
+### Report states
+
+The icon of each test row shows where its report stands:
+
+| Icon | State |
+| --- | --- |
+| Empty file | No report. Right-click to generate one. |
+| Spinner | The report is queued or being written. |
+| File with text lines | The report is ready. Click the test to read it. |
+| Amber file with a cross | The report could not be written. The report pane shows the error. Right-click to try again. |
+
+Hover over the icon to read the state.
+
+The run does not wait for its reports. The next test starts while the
+previous report is still being written, and the icons update as reports
+finish.
+
+### Write a report later
+
+A test without a report can get one at any time after the run:
+
+- Right-click the test and pick **Generate execution report**.
+- Or select the test and click **Generate execution report** in its empty
+  report pane.
+- To write every missing report of a run at once, right-click the run and
+  pick **Generate missing execution reports**. A report that failed counts
+  as missing.
+
+A written report is never generated again: the menu entry appears only
+for tests without a report, or with a report that failed.
+
+The report writer reads the run's saved conversation. Runs from before this
+version of AskUI Desktop have no saved conversation in the right form, so
+they cannot generate a report.
+
+### What a report costs
+
+Each report costs model tokens. The costs are written into the reports:
+
+- An execution report shows **Cost of this test:** right behind its
+  status: the execution cost, and in parentheses the total with the
+  report, for example `$0.38 ($0.41 with reporting)`.
+- The summary report in the app ends with **Cost of this run:**, the test
+  execution and all execution reports.
+
+## Management Report
+
+The green **Generate Management Report** button at the bottom of the runs
+list creates a [Management Report](/docs/results/management-report): one PDF over the
+runs in a date range.
 
 ## Find a past run
 
@@ -105,9 +177,9 @@ out and says why.
 Each test under a run has a pencil at the right of its row, and **Open in
 editor** in its right-click menu. Either opens that test's file on the
 **Tests** page, so a failed test is one click from its fix. Both are
-disabled when no file is known for the row: a setup or teardown entry, a
-test file that was renamed or removed since the run, or an older run whose
-test name matches two files.
+disabled when no file is known for the row: a test file that was renamed
+or removed since the run, or an older run whose test name matches two
+files.
 
 ## Conversation log
 
@@ -141,10 +213,17 @@ During a run the same view streams live, [Watch it live](/docs/running-tests#wat
 
 ## Share results
 
-To hand a result to a developer or attach it to a ticket, zip the run's
-timestamped folder (**Open in Explorer** on a test, one level up), the
-reports are plain Markdown with the step screenshots next to them, readable
-anywhere.
+To hand a result to someone without the app, export it. Above an
+execution report, a slim header row shows the test's name and an
+**Export** button, and it stays visible while the report scrolls. The
+summary report has an **Export** button too. Pick **Export as PDF**,
+**Export as JSON**, or **Export as JUnit XML**. The right-click menu of a
+test with a written report offers the same entries:
+[Export](/docs/results/export).
+
+To hand over everything, zip the run's timestamped folder (**Open in file
+manager** on a test, one level up). The reports are plain Markdown with the
+screenshots next to them, readable anywhere.
 
 ## On disk
 
@@ -155,11 +234,19 @@ Each run is one timestamped folder under `agent_workspace/`:
 └── 2026-07-23_21-56-55/          ← one folder per run
     ├── conversation.json          ← the conversation (the app re-renders it)
     ├── summary_report.md          ← run-level table
+    ├── report.html                ← the Developer Report
+    ├── tests_setup_result.json    ← a setup's result (teardowns alike)
     └── open_notepad_windows/      ← one folder per test
-        ├── open_notepad_windows_report.md   ← the test report
-        ├── step_1.png
-        └── step_2.png
+        ├── open_notepad_windows_result.json   ← the recorded result
+        ├── open_notepad_windows_report.md     ← the execution report
+        ├── open_notepad_windows_report.json   ← report state, model, tokens, cost
+        ├── screenshot_3.png                   ← screenshots the report embeds
+        └── screenshot_7.png
 ```
+
+Every executed test has its folder and its `_result.json`. The report files
+exist only once a report was written. Setups and teardowns keep their
+result on disk too, but the Runs page does not list them as tests.
 
 Run folders are independent of each other, archive or delete old ones as
 your evidence-retention policy requires; the Runs list and
