@@ -337,7 +337,7 @@ is `SKIPPED` and is not counted.
 | Code | Meaning | Who acts |
 | --- | --- | --- |
 | `0` | All tests passed. Warnings are allowed. | nobody |
-| `1` | At least one test failed or broke, or a setup failed. Tests that never started because of it are `SKIPPED` and do not change the code. | the product team |
+| `1` | At least one test failed or broke, or the run did not reach every test it was started for, for example after a failed setup. Errors the agent recovered from do not count. | the product team |
 | `2` | Usage error: an unknown option, a missing or bad value, or two options that exclude each other. | the pipeline author |
 | `3` | Environment or configuration error: missing credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; an MCP server or device that cannot be reached; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load. | the pipeline author |
 | `4` | No tests ran: the selection was empty, or no test result was produced. | the pipeline author |

@@ -42,6 +42,16 @@ Each test has two things:
   with screenshots. A separate agent writes it after the test, from the
   test's conversation. It explains the result and never changes it.
 
+The recorded results also decide whether the whole run passed. A run
+passes when every counted test passed (`PASSED` or `WARNING`) and the run
+reached every test it was started for. A test the run never reached fails
+the run, and its result line ends with `· N not executed`. An error in the
+conversation does not fail the run by itself, because the agent may have
+recovered from it, for example by retrying a model request. The result line
+then ends with `· error logged:` and the error's first line. A run without
+any recorded result fails, with the error's text or with
+`No tests ran — …`.
+
 Whether a test gets a report depends on the **Create report** setting under
 [Extending → Reporting](/docs/extending/reporting#create-report): always,
 only for failed or broken tests, or never. A

@@ -49,8 +49,8 @@ summary report names the reason:
 | Not run: the run ended before this test. | The run was stopped, or the runner failed. |
 
 A skipped test counts as nothing, so it changes neither the pass rate nor
-the totals. The run still fails, because of the test or setup that broke
-or failed. For runs from older versions, the app shows a test that the
+the totals. The run still fails, because it did not reach every test it
+was started for ([when a run passes](/docs/results#results-and-execution-reports)). For runs from older versions, the app shows a test that the
 summary listed as broken without a duration as `SKIPPED`.
 
 ## Execution report
