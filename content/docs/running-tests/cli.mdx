@@ -32,11 +32,16 @@ machine, for your user, without changing them:
 | In-Flight Guidance reviewer | The reviewer model you chose in the app | — |
 | Secrets | The Project's [secrets](/docs/extending/secrets), including the ones the agent may type | An environment variable of the same name |
 | Network proxy | The app's proxy | — |
+| AgentOS controller | The controller path under **Settings → Agent OS** | — |
 
 The credentials come from `askui login` or the environment, never from the
 app's sign-in (see [Install the CLI](/docs/running-tests/install-cli)).
 
-To run as on a CI runner, without any of this, pass `--no-app-settings`, or set
+What the Project's device profile says, its display, user session and proxy
+setting, always applies, on every machine: a desktop connects the way the app
+connects it.
+
+To run as on a CI runner, without the app's settings, pass `--no-app-settings`, or set
 `ASKUI_NO_APP_SETTINGS=1` for a whole pipeline. The credentials then come from
 the environment alone. `askui status` prints what a run would use.
 
