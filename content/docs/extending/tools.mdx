@@ -94,6 +94,27 @@ Android).
 6. Scan the QR code on the invoice — it encodes the order number from step 2.
 ```
 
+### Evidence
+
+#### <Lucide name="camera" /> Save screenshot [#save-screenshot]
+
+Save the current screen as a PNG file in the run's folder (computer, web,
+Android, iOS).
+
+- **Use it when:** a step needs a screenshot as a file of its own, for
+  example as evidence for an audit or to attach to a ticket.
+- **Where the file goes:** the agent picks a path relative to the run's
+  folder, without the extension. `login/after_submit` becomes
+  `agent_workspace/<run>/login/after_submit.png`, and missing folders are
+  created. A path outside the run's folder is refused.
+- **Not needed for reports:** the
+  [execution report](/docs/results/run-report#execution-report) picks its
+  screenshots from the conversation, with or without this tool.
+
+```md
+5. Save a screenshot of the confirmation page as login/after_submit.
+```
+
 ### Test data
 
 #### <Lucide name="calendar-clock" /> Date & time [#date-time]

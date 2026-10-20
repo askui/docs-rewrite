@@ -7,13 +7,13 @@ description: What the harness does on every run, phases, lifecycle files, attemp
 The model decides; the **AskUI harness** runs the test. It is what a test
 framework would otherwise be, built for an agent: it walks your selection in
 **phases**, assembles what the agent is told for each one, holds the limits
-that stop a run from grinding, and writes the reports
+that stop a run from grinding, records the results, and writes the reports
 ([where it sits](/docs/concepts/computer-use-agent#what-a-cua-agent-is-made-of)).
 
 A **phase** is one of `setup.md`, a test case, or `teardown.md`, and one
 autonomous agent execution: read the file, drive the UI through the
-[loop](/docs/concepts/computer-use-agent#the-loop), write the report as it
-goes. Nothing is shared between phases except what you deliberately hand
+[loop](/docs/concepts/computer-use-agent#the-loop), record the result at
+the end. Nothing is shared between phases except what you deliberately hand
 across, which is what keeps one test from poisoning the next.
 
 ## Where the tester's time goes
@@ -42,8 +42,9 @@ model left to itself is not. The three things the harness is built for:
   rather than dumping a table).
 - **Reliability**: the same instructions assembled the same way for every
   phase, a hard attempt limit instead of endless retrying, one documented
-  status vocabulary, and a clean transcript per test so yesterday's failure
-  can't influence today's. A `PASSED` means the same thing in every project.
+  set of [status definitions](/docs/extending/reporting#status-definitions)
+  for every project, and a clean transcript per test so yesterday's failure
+  can't influence today's. A `PASSED` means the same thing in every test.
 - **Speed**: the agent chains several actions into one model request where
   it can, needs no waits because it reads the screen, and pays the
   compilation cost of your [custom tools](/docs/extending/custom-tools) only
@@ -120,9 +121,12 @@ What it hands each phase, what it enforces, and what it leaves behind:
   order number, a later test reads it.
 - **The reporting**: the evidence. Every phase streams into the
   [live conversation log](/docs/running-tests#watch-it-live) while it runs.
-  The agent writes its [test report](/docs/results/run-report) as it works, so each step
-  carries its interpretation, expected vs. actual and a screenshot; the
-  harness adds the run's
+  The agent records each test's [result](/docs/results/run-report#test-result),
+  a status and a reason. After the test, a separate agent writes the
+  [execution report](/docs/results/run-report#execution-report) from the
+  conversation, so each step carries its interpretation, expected vs.
+  actual and a screenshot, without slowing the run down; the harness adds
+  the run's
   [summary table](/docs/results/run-report#summary-report) that the
   [Dashboard](/docs/results/dashboard) counts, and keeps the
   [conversation log](/docs/results#conversation-log) as the audit trail. All
