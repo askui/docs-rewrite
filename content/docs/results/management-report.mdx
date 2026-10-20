@@ -157,9 +157,17 @@ counted runs that have an execution report, with the columns **#**,
   number, the page, and the test name link to the report. The links work
   in every PDF viewer.
 - Without bundled reports, both columns show `—`.
-- A note below the table says how many executions have no report, for
-  example: "Only the 6 test executions with an execution report are
-  listed; 9 more have none yet."
+- A note below the table counts the executions without a report, in two
+  groups:
+  - Executions that can still get one. **Generate missing execution
+    reports first** writes these. For example: "Only the 4 test executions
+    with an execution report are listed. 2 more have none yet."
+  - Executions that can never have one, because they recorded no test
+    result (runs from before results were recorded) or their run kept no
+    conversation. For example: "Only the 4 test executions with an
+    execution report are listed. 6 cannot have one: they recorded no test
+    result, or their run kept no conversation."
+  - When both apply, the note names both counts.
 
 The appendix holds execution reports only. To share the summary of one
 run, export it from the **Runs** page: [Export](/docs/results/export).

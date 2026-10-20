@@ -167,7 +167,7 @@ counts object has the same fields:
 | `totals` | [Counts](#counts) over all counted runs |
 | `tests` | One entry per test: `name`, `runs`, `counts`, `lastStatus`, `lastRunAt` |
 | `runs` | One entry per run in the range: `folder`, `startedAt`, `title`, `plan`, `rack`, `counts`, and `excluded` (`true` for a run you unticked) |
-| `executions` | One entry per test execution of the counted runs: `runFolder`, `startedAt`, `run`, `test`, `status`, `duration`, and `hasReport` (`true` when the execution has an execution report) |
+| `executions` | One entry per test execution of the counted runs: `runFolder`, `startedAt`, `run`, `test`, `status`, `duration`, `hasReport` (`true` when the execution has an execution report), and `canHaveReport` (`true` when a report can be written for it: it recorded a test result and its run kept its conversation) |
 | `days` | One entry per day: `date`, `executed`, `passed` |
 
 The same runs and the same choices give the same Management Report JSON,
