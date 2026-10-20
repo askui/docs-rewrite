@@ -20,6 +20,26 @@ Run from your Project root, or pass `--project <dir>`. Without arguments,
 `askui --help` and `askui run --help` print every option, the environment
 variables, and the exit codes. `askui --version` prints the CLI version.
 
+## On a machine with AskUI Desktop
+
+On a machine where AskUI Desktop is installed, `askui run` runs a Project the
+way a run started in the app does. It reads the app's settings on this
+machine, for your user, without changing them:
+
+| Setting | From AskUI Desktop | What overrides it |
+| --- | --- | --- |
+| Model | The model you chose in the app: AskUI Inference with its hosted model, or your own model (AskUI ModelBridge, AskUI AirGap, Vertex AI), with its truncation settings | `--model-provider`, `--model-id` |
+| In-Flight Guidance reviewer | The reviewer model you chose in the app | — |
+| Secrets | The Project's [secrets](/docs/extending/secrets), including the ones the agent may type | An environment variable of the same name |
+| Network proxy | The app's proxy | — |
+
+The credentials come from `askui login` or the environment, never from the
+app's sign-in (see [Install the CLI](/docs/running-tests/install-cli)).
+
+To run as on a CI runner, without any of this, pass `--no-app-settings`, or set
+`ASKUI_NO_APP_SETTINGS=1` for a whole pipeline. The credentials then come from
+the environment alone. `askui status` prints what a run would use.
+
 ## What a run does
 
 For every test, the agent works in **phases**: the folder's `setup.md` (if
@@ -154,23 +174,30 @@ does not load stops the run with exit code 3, and the message names the URL.
 
 ## Model options
 
-By default, inference runs through the **AskUI hub**, billed to your
-workspace and authenticated with `ASKUI_WORKSPACE_ID`/`ASKUI_TOKEN`, nothing
-to configure. The hub serves more than one model. Missing credentials stop
-the run with exit code 3 before the first model call.
+On a machine with AskUI Desktop, the run uses the model you chose in the app
+(see [above](#on-a-machine-with-askui-desktop)). Otherwise, inference runs
+through **AskUI Inference**, billed to your workspace and authenticated with
+`askui login` or `ASKUI_WORKSPACE_ID`/`ASKUI_TOKEN`. AskUI Inference serves
+more than one model. Missing credentials stop the run with exit code 3 before
+the first model call.
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `--model-provider <p>` | `askui` | `askui`, `anthropic`, `openai`, or `openai-compatible`. |
+| `--model-provider <p>` | `askui` | `askui`, `anthropic`, `openai`, `openai-compatible`, or `vertex`. |
 | `--model-id <id>` | provider default | The model to use. With `askui`, selects the hosted model, e.g. `gemini-3.5-flash`; default is the workspace's Claude model. |
 | `--model-endpoint <url>` | none | Endpoint URL. Required for `openai-compatible`; a URL ending in `/chat/completions` is used as-is, a base URL gets the path appended. |
 | `--model-api-key <key>` | none | API key, sent as `x-api-key` or `Authorization`, per provider. |
 | `--model-token <token>` | none | Bearer token, e.g. an OAuth access token (Entra, gateways). |
 | `--model-headers <k=v,..>` | none | Authentication headers, comma-separated `name=value` pairs, sent instead of `--model-api-key` and `--model-token`. |
+| `--vertex-project <id>` | none | Vertex AI: the Google Cloud project with the model enabled. Required for `vertex`. |
+| `--vertex-location <loc>` | none | Vertex AI: the location, such as `global`, `us`, or `eu`. It decides where requests are processed. Required for `vertex`. |
+| `--vertex-credentials <file>` | Application Default Credentials | Vertex AI: a service-account key or user login (JSON). Without it, `GOOGLE_APPLICATION_CREDENTIALS`, then `gcloud auth application-default login`. |
 
 `--model-endpoint`, `--model-api-key`, `--model-token`, and `--model-headers`
 work with your own provider only (`anthropic`, `openai`, or
 `openai-compatible`); with `askui` they are a usage error (exit code 2).
+`vertex` takes the `--vertex-*` options instead, and the `--vertex-*` options
+work with `vertex` only.
 
 ```bash
 # Hosted models on the AskUI hub
@@ -185,6 +212,11 @@ askui run --model-provider openai-compatible \
 askui run --model-provider openai-compatible \
   --model-endpoint https://gateway.example.com/v1 \
   --model-token "$GATEWAY_TOKEN"
+
+# Claude on Vertex AI, in your own Google Cloud project
+askui run --model-provider vertex --model-id claude-sonnet-5-5 \
+  --vertex-project my-project --vertex-location eu \
+  --vertex-credentials service-account.json
 ```
 
 Pass keys and tokens from the environment, as above, so they never land in
@@ -233,17 +265,21 @@ instead of committing a `.env` file. See
 [Workspaces & access tokens](/docs/account-billing/workspaces).
 </Callout>
 
-### Secrets in a headless run
+### Secrets
 
-A headless run has no secret store, the environment takes its place. A
-[secret](/docs/extending/secrets) the Project references as `${NAME}` (in a
-tool config or an MCP header) or as `os-keychain://NAME` resolves from the
-environment variable `NAME`. Set `QA_PASSWORD` in the pipeline's secret
-store, and a tool config that references `${QA_PASSWORD}` gets its value.
+On a machine with AskUI Desktop, the run takes the Project's
+[secrets](/docs/extending/secrets) from the app, as a run in the app does: a
+secret marked **Agent may use this secret** is one the agent can type by name,
+and every secret resolves `${NAME}` (in a tool config or an MCP header) and
+`os-keychain://NAME`. An environment variable of the same name wins over the
+app's value.
 
-The CLI does not yet give the agent secrets to type. A test that tells the
-agent to enter a secret (**Agent may use this secret** in the app) runs in
-AskUI Desktop only for now.
+On a CI runner the environment takes the secret store's place: `${NAME}` and
+`os-keychain://NAME` resolve from the environment variable `NAME`. Set
+`QA_PASSWORD` in the pipeline's secret store, and a tool config that
+references `${QA_PASSWORD}` gets its value. On a runner without AskUI Desktop
+the agent gets no secrets to type: a test that tells the agent to enter one
+runs where AskUI Desktop is installed.
 
 ## Custom tools and MCP servers
 

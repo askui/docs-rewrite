@@ -99,8 +99,20 @@ VM for you.
 <Step>
 **Authenticate**
 
-With the default model provider (the AskUI hub), the CLI reads two environment
-variables:
+On a machine with AskUI Desktop, sign the CLI in once:
+
+```bash
+askui login
+```
+
+The browser opens, you sign in as in the app, and pick the workspace. The CLI
+then creates an access token for itself, named after the machine, and keeps it
+in the Keychain (macOS) or encrypted for your Windows user. It never uses or
+renews the app's own sign-in, so it never signs the app out. `askui logout`
+forgets the token; delete it in the workspace's access tokens to revoke it.
+
+On a CI runner, or without AskUI Desktop, set two environment variables
+instead:
 
 ```bash
 export ASKUI_WORKSPACE_ID="<your workspace id>"
@@ -108,11 +120,14 @@ export ASKUI_TOKEN="<your access token>"
 ```
 
 Create the access token in the [AskUI Hub](https://hub.askui.com), see
-[Workspaces & access tokens](/docs/account-billing/workspaces). The CLI does
-not use your AskUI Desktop sign-in. Instead of exporting, you can also put
-both lines in a `.env` file in your Project root; the CLI loads it on every
-run (variables already set in the environment win). A new Project's
-`.gitignore` already keeps `.env` out of git.
+[Workspaces & access tokens](/docs/account-billing/workspaces). The variables
+win over `askui login`. Instead of exporting, you can also put both lines in a
+`.env` file in your Project root; the CLI loads it on every run (variables
+already set in the environment win). A new Project's `.gitignore` already
+keeps `.env` out of git.
+
+`askui status` shows what a run on this machine uses: the credentials, the
+AskUI Desktop settings, and the model.
 </Step>
 
 <Step>
