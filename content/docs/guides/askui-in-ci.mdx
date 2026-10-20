@@ -81,7 +81,7 @@ Gate the pipeline on the exit code:
 | Code | Meaning |
 | --- | --- |
 | `0` | All tests passed. |
-| `1` | A test failed or broke, or the run did not reach every test: the product team acts. |
+| `1` | A test failed or broke, or a setup failed: the product team acts. |
 | `2` | The command line is wrong. |
 | `3` | The runner or the project is wrong: credentials, device, MCP server, an unset `${VAR}`. Nothing was sent to the model. |
 | `4` | No test ran, for example an empty plan. |
