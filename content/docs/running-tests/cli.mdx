@@ -289,9 +289,9 @@ The CLI extends the agent exactly as the app does: the Project's
 [MCP servers](/docs/extending/mcp) in `utils/mcp.json`. Custom tools compile
 at run start, so the runner needs NuGet access for their `#:package` lines.
 
-Two differences from the app, both so a broken runner never reads as a failed
-test: a custom tool that does not compile, and an enabled MCP server the CLI
-cannot reach, stop the run with exit code 3 before the first model call.
+As in the app, a custom tool that does not compile stops the run before the
+first model call (exit code 3), and an enabled MCP server that cannot be
+reached is a warning: the run goes on without its tools.
 
 ## Caching
 
@@ -336,8 +336,9 @@ Each run writes its results into the output directory (see `--output`).
 The default is `html,md`. For CI, add JUnit: `--reporter html,md,junit`.
 Every run also writes the per-test artifacts,
 `<test_name>/<test_name>_report.md` with the result and step-by-step details,
-plus `step_<n>.png` screenshots. After Ctrl+C, the reports cover what the run
-reached.
+plus `step_<n>.png` screenshots. Files a web test downloads land in
+`<output>/downloads`, as in the app, unless the profile names another folder.
+After Ctrl+C, the reports cover what the run reached.
 
 ### JUnit mapping
 
@@ -368,7 +369,7 @@ counted as not executed.
 | `0` | All tests passed. Warnings are allowed. | nobody |
 | `1` | The run completed, and at least one test failed, broke, or was never reached. | the product team |
 | `2` | Usage error: an unknown option, a missing or bad value, or two options that exclude each other. | the pipeline author |
-| `3` | Environment or configuration error: missing credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; an MCP server or device that cannot be reached; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load. | the pipeline author |
+| `3` | Environment or configuration error: missing credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; a device that cannot be reached; a test that declares several platforms; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load. | the pipeline author |
 | `4` | No tests ran: the selection was empty, or no verdict was produced. | the pipeline author |
 | `130` | Canceled (Ctrl+C). The results written so far are kept. | whoever pressed Ctrl+C |
 
