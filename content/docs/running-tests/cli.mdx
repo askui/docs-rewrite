@@ -162,16 +162,30 @@ own host or serial. A `${VAR}` that nothing sets stops the run with exit
 code 3, it never falls back to an empty value. A remote host is attached to;
 the CLI starts AgentOS only on `localhost`.
 
+### Devices the CLI starts
+
+The CLI connects a profile the way AskUI Desktop does. A profile that
+**provisions** an [Android emulator](/docs/devices/android-emulator) or an
+iOS simulator gets it started for the run, and the CLI prints each phase
+(booting, waiting for the device) as it goes. After the run, the profile's
+setting decides whether the device stops or keeps running. A device that is
+already running is reused when the profile says so.
+
+[Multi computer](/docs/devices/multi-computer) profiles and phones driven
+through the AskUI Remote Companion run as in the app.
+
+A provisioned device that AskUI Desktop holds right now stops the run with
+exit code 3. Disconnect it in the app first, so the two do not share the
+device.
+
 ### Profiles the CLI does not run
 
-The CLI connects to a device, it does not start one. These profiles stop the
-run with exit code 3 and a message that names the reason:
+These profiles stop the run with exit code 3 and a message that names the
+reason:
 
-- A profile that AskUI Desktop **provisions**: an emulator, a simulator, or a
-  VM the app starts for the run. Start the device first, then use a profile
-  that points at it, or `--surface`.
-- A **combined** profile of several devices. The CLI runs on one device per
-  run.
+- A profile that provisions a **remote VM**. Connect it in AskUI Desktop,
+  then run on a profile that points at its host.
+- A **multi-surface** profile that combines several kinds of device.
 - A **managed iOS simulator without a udid**.
 
 A web profile's start URL opens once the browser connects. A start URL that

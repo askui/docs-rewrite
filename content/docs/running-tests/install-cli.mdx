@@ -68,8 +68,8 @@ exit codes.
 The CLI runs on the Project's [device profiles](/docs/devices) in
 `devices.json`, the same ones the app uses (see
 [Choosing the device](/docs/running-tests/cli#choosing-the-device)). The
-CLI connects to a device; it does not start an emulator, a simulator, or a
-VM for you.
+CLI starts an emulator or a simulator that a profile provisions, as the
+app does.
 
 <Tabs items={['Desktop (AgentOS)', 'Browser', 'Android', 'iOS']}>
   <Tab value="Desktop (AgentOS)">
@@ -85,8 +85,9 @@ VM for you.
     first run.
   </Tab>
   <Tab value="Android">
-    `adb` must be on your `PATH` and the device (or emulator) already
-    running and visible to `adb devices`. See the
+    `adb` must be on your `PATH`. A physical device must be connected and
+    visible to `adb devices`. An emulator profile starts the emulator with
+    the Android SDK that AskUI Desktop set up. See the
     [ADB setup guide](/docs/agentos/deployment/local#android-setting-up-adb).
   </Tab>
   <Tab value="iOS">
