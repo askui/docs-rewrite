@@ -40,12 +40,11 @@ What your mode cannot use is shown as **Not available**, with the reason:
 | | AskUI Inference | AskUI AirGap | AskUI ModelBridge |
 |---|---|---|---|
 | License mode | Not available (sign in to AskUI) | ✓ | ✓ |
-| Signed in to AskUI | ✓ | ✓ | Not available (License only) |
+| Signed in to AskUI | ✓ | Not available (License only) | Not available (License only) |
 
-Signed in, an AirGap or ModelBridge model takes effect once you **save** it;
-picking **AskUI Inference** switches back at once and keeps your settings for
-next time. A ModelBridge setup you saved in License mode is not used while you
-are signed in; your runs use AskUI Inference instead.
+To run on your own model, use a [license key](/docs/get-started/licensing).
+An AirGap or ModelBridge setup you saved in License mode is kept, but not used
+while you are signed in; your runs use AskUI Inference instead.
 
 <Tabs items={['AskUI AirGap', 'Azure AI Foundry', 'Vertex AI', 'Other']}>
   <Tab value="AskUI AirGap">
