@@ -68,8 +68,8 @@ exit codes.
 The CLI runs on the Project's [device profiles](/docs/devices) in
 `devices.json`, the same ones the app uses (see
 [Choosing the device](/docs/running-tests/cli#choosing-the-device)). The
-CLI connects to a device; it does not start an emulator, a simulator, or a
-VM for you.
+CLI starts an emulator or a simulator that a profile provisions, as the
+app does.
 
 <Tabs items={['Desktop (AgentOS)', 'Browser', 'Android', 'iOS']}>
   <Tab value="Desktop (AgentOS)">
@@ -85,8 +85,9 @@ VM for you.
     first run.
   </Tab>
   <Tab value="Android">
-    `adb` must be on your `PATH` and the device (or emulator) already
-    running and visible to `adb devices`. See the
+    `adb` must be on your `PATH`. A physical device must be connected and
+    visible to `adb devices`. An emulator profile starts the emulator with
+    the Android SDK that AskUI Desktop set up. See the
     [ADB setup guide](/docs/agentos/deployment/local#android-setting-up-adb).
   </Tab>
   <Tab value="iOS">
@@ -99,8 +100,30 @@ VM for you.
 <Step>
 **Authenticate**
 
-With the default model provider (the AskUI hub), the CLI reads two environment
-variables:
+On a machine with AskUI Desktop, sign the CLI in once:
+
+```bash
+askui login
+```
+
+The browser opens, you sign in as in the app, and pick the workspace. The CLI
+then creates an access token for itself, named after the machine and the day,
+and keeps it in the Keychain (macOS) or encrypted for your Windows user. It
+never uses or renews the app's own sign-in, so it never signs the app out.
+
+The token is valid for 90 days. In the last two weeks every run reminds you,
+and `askui status` shows the date; run `askui login` again to renew it. A new
+login replaces the machine's previous token, so each machine keeps one.
+`askui logout` opens the browser briefly and deletes the token in the
+workspace. Without a browser, for example over SSH, it forgets the token on
+the machine; delete it then under the workspace's access tokens in the AskUI
+Hub.
+
+For scheduled or unattended runs, use `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`
+(below) with a token whose lifetime you choose in the Hub.
+
+On a CI runner, or without AskUI Desktop, set two environment variables
+instead:
 
 ```bash
 export ASKUI_WORKSPACE_ID="<your workspace id>"
@@ -108,11 +131,14 @@ export ASKUI_TOKEN="<your access token>"
 ```
 
 Create the access token in the [AskUI Hub](https://hub.askui.com), see
-[Workspaces & access tokens](/docs/account-billing/workspaces). The CLI does
-not use your AskUI Desktop sign-in. Instead of exporting, you can also put
-both lines in a `.env` file in your Project root; the CLI loads it on every
-run (variables already set in the environment win). A new Project's
-`.gitignore` already keeps `.env` out of git.
+[Workspaces & access tokens](/docs/account-billing/workspaces). The variables
+win over `askui login`. Instead of exporting, you can also put both lines in a
+`.env` file in your Project root; the CLI loads it on every run (variables
+already set in the environment win). A new Project's `.gitignore` already
+keeps `.env` out of git.
+
+`askui status` shows what a run on this machine uses: the credentials, the
+AskUI Desktop settings, and the model.
 </Step>
 
 <Step>
