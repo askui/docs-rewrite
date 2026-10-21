@@ -28,7 +28,7 @@ machine, for your user, without changing them:
 
 | Setting | From AskUI Desktop | What overrides it |
 | --- | --- | --- |
-| Model | The model you chose in the app: AskUI Inference with its hosted model, or your own model (AskUI ModelBridge, AskUI AirGap, Vertex AI), with its truncation settings | `--model-provider`, `--model-id` |
+| Model | The model you chose in the app: AskUI Inference with its hosted model, or, with a license, your own model (AskUI AirGap, AskUI ModelBridge), with its truncation settings | `--model-provider`, `--model-id` |
 | In-Flight Guidance reviewer | The reviewer model you chose in the app | — |
 | Secrets | The Project's [secrets](/docs/extending/secrets), including the ones the agent may type | An environment variable of the same name |
 | Network proxy | The app's proxy | — |
@@ -188,7 +188,7 @@ the first model call.
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `--model-provider <p>` | `askui` | `askui`, `anthropic`, `openai`, `openai-compatible`, or `vertex`. |
+| `--model-provider <p>` | `askui` | `askui` (AskUI Inference), `airgap` (AskUI AirGap), or your own `anthropic`, `openai`, `openai-compatible`, or `vertex`. |
 | `--model-id <id>` | provider default | The model to use. With `askui`, selects the hosted model: `claude-sonnet-5-5`, `claude-opus-5-5`, `claude-haiku-5-5` or `gemini-3.8-flash`; default is the model chosen in AskUI Desktop, else `claude-sonnet-5-5`. |
 | `--model-endpoint <url>` | none | Endpoint URL. Required for `openai-compatible`; a URL ending in `/chat/completions` is used as-is, a base URL gets the path appended. |
 | `--model-api-key <key>` | none | API key, sent as `x-api-key` or `Authorization`, per provider. |
@@ -199,8 +199,12 @@ the first model call.
 | `--vertex-credentials <file>` | Application Default Credentials | Vertex AI: a service-account key or user login (JSON). Without it, `GOOGLE_APPLICATION_CREDENTIALS`, then `gcloud auth application-default login`. |
 
 `--model-endpoint`, `--model-api-key`, `--model-token`, and `--model-headers`
-work with your own provider only (`anthropic`, `openai`, or
+work with `airgap` and your own provider only (`anthropic`, `openai`, or
 `openai-compatible`); with `askui` they are a usage error (exit code 2).
+`airgap` needs `--model-endpoint` (your AskUI AirGap Hosting) and `--model-id`;
+the key is optional. As in the app, a Claude model at an endpoint that does not
+end in `/v1` speaks the Anthropic API, every other model the OpenAI-compatible
+one.
 `vertex` takes the `--vertex-*` options instead, and the `--vertex-*` options
 work with `vertex` only.
 
@@ -217,6 +221,11 @@ askui run --model-provider openai-compatible \
 askui run --model-provider openai-compatible \
   --model-endpoint https://gateway.example.com/v1 \
   --model-token "$GATEWAY_TOKEN"
+
+# A model on your AskUI AirGap Hosting
+askui run --model-provider airgap \
+  --model-endpoint http://airgap.internal:8000/v1 \
+  --model-id Qwen/Qwen3-VL-235B-A22B-Instruct
 
 # Claude on Vertex AI, in your own Google Cloud project
 askui run --model-provider vertex --model-id claude-sonnet-5-5 \
