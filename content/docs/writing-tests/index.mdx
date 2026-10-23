@@ -113,18 +113,18 @@ belongs in [setup](/docs/writing-tests/setup-teardown-rules), not here.
 
 **Steps**: numbered actions, each paired with what to expect. The agent
 executes them one at a time: perform the action, compare what it observes
-against the step's expected result, record both with a screenshot. Each step
+against the step's expected result, take a screenshot. Each step
 becomes an expected-vs-actual entry in the
-[run report](/docs/results/run-report), so a step without an expected
+[execution report](/docs/results/run-report), so a step without an expected
 result is a step the report can't judge. Everything a step can express,
 conditions, waits, checks, procedure calls, is on
 [Step constructs](/docs/writing-tests/step-constructs).
 
 **Postconditions**: the overall pass criterion, phrased as a checkable end
 state: "Test passes if …". The agent judges it after the last step,
-independent of which path it took to get there. The case's reported status
-is the worst of its steps
-([how it is derived](/docs/results/run-report#test-report)).
+independent of which path it took to get there, and records the case's
+result: a status and a short reason
+([the statuses](/docs/results/run-report#test-result)).
 
 These templates are starting points, not schemas, the agent reads a test
 the way a tester would, so you're free to choose your own structure. `.md`
