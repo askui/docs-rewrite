@@ -21,7 +21,7 @@ describes how to reach one. Connected profiles appear in every test's
 | **Pixel 9** | An Android emulator, created and booted by the app |
 | **Connect / Start** | Opens the session. Green dot = ready. Tests only run on connected devices |
 | **Probe** | Checks reachability without connecting |
-| **Force Restart** (next to Retry, Local profile only) | After a failed Connect: stops the standalone AgentOS controller on this PC and starts a fresh one, see [Remote computer](/docs/devices/remote-computer#restart-the-controller-on-this-pc) |
+| **Force Restart** (next to Retry, Local and AskUI Companion profiles only) | After a failed Connect: stops the standalone AgentOS controller on this PC and starts a fresh one, see [Remote computer](/docs/devices/remote-computer#restart-the-controller-on-this-pc) |
 
 A new project starts with a **Local** profile (this machine) and, where the
 machine supports it, a ready-made **Android Emulator** profile. Deleted
@@ -54,6 +54,7 @@ defaults stay deleted.
 | [**Multi computer**](/docs/devices/multi-computer) | Several desktops, one agent | The test names the machine per step ("on the server …, on the client …") |
 | [**Cross-platform**](/docs/devices/cross-platform) | Desktop + Android + web in one profile | Connect/status only, runs not supported yet |
 | [**Android phone**](/docs/devices/android-phone) | A physical device via USB or wireless | **An Android device** in the dialog lists the phones `adb` sees, **Add as device** adds one; also from the **Android devices** list below |
+| [**iPhone via AskUI Companion**](/docs/devices/askui-companion) | A physical iPhone behind an AskUI Companion | **Advanced setups** → **A device via Remote Companion Controller**; needs the AskUI Companion from AskUI and AssistiveTouch on the iPhone |
 
 Each kind has its own page with the exact fields and setup. Missing tooling
 (no Android SDK for an emulator, no `adb` for a phone) shows up while you add
