@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import {
   CONSENT_KEY,
   denyTrackingConsent,
+  googleTagInPage,
   loadTrackingScripts,
-  sendGooglePageview,
+  OPEN_COOKIE_SETTINGS,
   storedConsent,
 } from '@/lib/tracking';
 
@@ -13,7 +14,8 @@ import {
 // The choice is stored per origin, so docs.askui.com asks once on its own,
 // even when the visitor already answered on www.askui.com. The values are set
 // literally (not from the docs theme) so the banner looks the same on both
-// sites, in light and dark mode.
+// sites, in light and dark mode. "Cookie settings" in the sidebar shows it
+// again, so a choice can be changed or withdrawn as easily as it was given.
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -26,6 +28,10 @@ export function CookieConsent() {
       setShowBanner(true);
     }
     // "necessary": load nothing, show nothing.
+
+    const reopen = () => setShowBanner(true);
+    window.addEventListener(OPEN_COOKIE_SETTINGS, reopen);
+    return () => window.removeEventListener(OPEN_COOKIE_SETTINGS, reopen);
   }, []);
 
   const handleAcceptAll = () => {
@@ -35,8 +41,6 @@ export function CookieConsent() {
       // Storage blocked: consent holds for this page view only.
     }
     loadTrackingScripts();
-    // The page the visitor accepted on was viewed before GA4 was loaded.
-    sendGooglePageview();
     setShowBanner(false);
   };
 
@@ -46,8 +50,11 @@ export function CookieConsent() {
     } catch {
       // Storage blocked: the banner asks again on the next visit.
     }
+    const withdrawn = googleTagInPage();
     denyTrackingConsent();
     setShowBanner(false);
+    // A withdrawn "Accept all": reload so the Google tag is gone for good.
+    if (withdrawn) window.location.reload();
   };
 
   if (!showBanner) return null;
