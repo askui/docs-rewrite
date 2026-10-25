@@ -62,7 +62,8 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
   if (!page) notFound();
 
   return {
-    title: page.data.title,
+    // Rendered through the root layout's title template ("<title> | AskUI Docs").
+    title: page.data.metaTitle ?? page.data.title,
     description: page.data.description,
     openGraph: {
       images: getPageImage(page).url,
