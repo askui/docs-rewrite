@@ -198,7 +198,9 @@ On a machine with AskUI Desktop, the run uses the model you chose in the app
 through **AskUI Inference**, billed to your workspace and authenticated with
 `askui login` or `ASKUI_WORKSPACE_ID`/`ASKUI_TOKEN`. AskUI Inference serves
 more than one model. Missing credentials stop the run with exit code 3 before
-the first model call.
+the first model call. Credentials the provider rejects, such as an expired
+token or a wrong API key, also stop the run with exit code 3. The message names
+the provider and says where to fix them.
 
 | Option | Default | Description |
 | --- | --- | --- |
@@ -407,7 +409,7 @@ how many as `not executed`, and the run does not pass.
 | `0` | All tests passed. Warnings are allowed. | nobody |
 | `1` | At least one test failed or broke, a setup failed, or the run stopped before all its tests started. Tests a failed setup kept from starting are `SKIPPED` and add nothing beyond the setup's failure. | the product team |
 | `2` | Usage error: an unknown option, a missing or bad value, or two options that exclude each other. | the pipeline author |
-| `3` | Environment or configuration error: missing credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; a device that cannot be reached; a test that declares several platforms; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load. | the pipeline author |
+| `3` | Environment or configuration error: missing or rejected credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; a device that cannot be reached; a test that declares several platforms; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load. | the pipeline author |
 | `4` | No tests ran: the selection was empty, or no test result was produced. | the pipeline author |
 | `130` | Canceled (Ctrl+C). The results written so far are kept. | whoever pressed Ctrl+C |
 
