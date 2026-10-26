@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   // `absolute` opts out of the root layout's "| AskUI Docs" title template.
   title: { absolute: 'AskUI Documentation' },
   robots: { index: false, follow: true },
+  alternates: { canonical: '/' },
 };
 
 export default function RootPage() {
