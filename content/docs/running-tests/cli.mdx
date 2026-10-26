@@ -43,7 +43,9 @@ connects it.
 
 To run as on a CI runner, without the app's settings, pass `--no-app-settings`, or set
 `ASKUI_NO_APP_SETTINGS=1` for a whole pipeline. The credentials then come from
-the environment alone. `askui status` prints what a run would use.
+the environment alone. `askui status` prints what a run would use: the
+credentials, the workspace, and the model. Every run names its model and
+workspace in its first line.
 
 ## What a run does
 
@@ -88,7 +90,7 @@ nothing ran, so the pipeline never shows green for nothing.
 | `--plan <name>` | none | [Test plan](/docs/writing-tests/plans) from `<project>/plans/<name>.yaml` (name without extension). |
 | `--project <dir>` | current directory | The AskUI Project root (`tests/`, `procedures/`, `plans/`, `utils/`, `devices.json`). |
 | `--output <dir>` | `<project>/agent_workspace/<timestamp>` | Results directory for the Developer Report, the summary, the recorded results, and screenshots. Named in local time, as AskUI Desktop names its runs. |
-| `--reporter <list>` | `html,md` | Report formats, comma-separated: `html`, `md`, `junit`. See [Reports](#reports). |
+| `--reporter <list>` | `html,md` | Reports the console names, comma-separated: `html`, `md`, `junit`. `junit` also writes `junit.xml`. See [Reports](#reports). |
 | `--device <profile>` | the plan's device, or the only profile | Device profile from `devices.json`, by id or by a name only one profile has. |
 | `--surface <kind>` | none | Ad-hoc run without a profile: `agent-os`, `web`, `android`, or `ios`. Excludes `--device`. |
 | `--cache on\|off` | the Project's setting, else off | Trajectory caching for this run. See [Caching](#caching). |
@@ -302,7 +304,8 @@ On a machine with AskUI Desktop, the run takes the Project's
 secret marked **Agent may use this secret** is one the agent can type by name,
 and every secret resolves `${NAME}` (in a tool config or an MCP header) and
 `os-keychain://NAME`. An environment variable of the same name wins over the
-app's value.
+app's value. The run then warns, on the console and in the report, because it
+types another value than a run started in the app.
 
 On a CI runner the environment takes the secret store's place: `${NAME}` and
 `os-keychain://NAME` resolve from the environment variable `NAME`. Set
@@ -354,19 +357,25 @@ turn caching on: only `--cache on` or the Project's setting do.
 
 ## Reports
 
-Each run writes its results into the output directory (see `--output`).
-`--reporter` picks the formats, comma-separated, in any order:
+Each run writes its results into the output directory (see `--output`), the
+same files as a run in the app. `--reporter` decides which of them the console
+names at the end, and adds JUnit:
 
-| Format | Writes |
+| Format | File |
 | --- | --- |
-| `html` | `report.html`, the Developer Report: the run with every step and screenshot. AskUI Desktop opens the same file from **Developer Report** on the Runs page. |
-| `md` | `summary_report.md`: the run at a glance, totals with per-status counts and run duration, one table over all tests with status and duration each, and detail sections quoting the recorded reason of every warned, failed, or broken test. |
-| `junit` | `junit.xml`, for the test report view of your CI system. |
+| `html` | `report.html`, the Developer Report: the run with every step and screenshot. AskUI Desktop opens the same file from **Developer Report** on the Runs page. Always written. |
+| `md` | `summary_report.md`: the run at a glance, totals with per-status counts and run duration, one table over all tests with status and duration each, and detail sections quoting the recorded reason of every warned, failed, or broken test. Always written. |
+| `junit` | `junit.xml`, for the test report view of your CI system. Written only with `junit`. |
 
 The default is `html,md`. For CI, add JUnit: `--reporter html,md,junit`.
 
-Every run also writes the recorded results and the run's history, the same
-files as a run in the app, whatever `--reporter` says:
+Each test also gets its [execution report](/docs/results#results-and-execution-reports),
+as in the app: the Project's **Create report** setting on the **Reporting** tab
+decides for which tests. The CLI writes the reports while the next test runs
+and waits for the last ones before it ends. Each report is one more model call,
+so set **Create report** to failures only or off to save it in a pipeline.
+
+Every run also writes the recorded results and the run's history:
 
 | File | Holds |
 | --- | --- |
