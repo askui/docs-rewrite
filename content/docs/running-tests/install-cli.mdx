@@ -30,8 +30,10 @@ The CLI ships with [AskUI Desktop](/docs/get-started/install-desktop).
     Dragging the app into Applications runs no installer, so you add the
     command once: open **Settings → This machine → Command line** and click
     **Add to PATH**. AskUI Desktop links `~/.local/bin/askui` to the CLI inside
-    the app and adds `~/.local/bin` to your `PATH` if no shell profile has it
-    yet. Open a new terminal afterwards.
+    the app. It adds `~/.local/bin` to your `PATH` in `~/.zprofile` and
+    `~/.zshrc` (for bash, `~/.bash_profile` and `~/.bashrc`), where it is not
+    there yet. Both matter: the terminal of an editor such as VS Code reads only
+    `~/.zshrc`. Open a new terminal afterwards.
 
     If you move the app, the card offers **Repair**; **Remove** takes the
     link away again. Start the app from Applications, not from the disk
