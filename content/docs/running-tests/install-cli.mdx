@@ -102,7 +102,11 @@ app does.
 <Step>
 **Authenticate**
 
-On a machine with AskUI Desktop, sign the CLI in once:
+If AskUI Desktop runs with a **local license** on the machine, skip this step.
+The CLI then uses the license and the model you set up in the app, as the app
+does, and `askui status` shows that model. `askui login` only says so.
+
+Otherwise, on a machine with AskUI Desktop, sign the CLI in once:
 
 ```bash
 askui login
@@ -116,10 +120,10 @@ never uses or renews the app's own sign-in, so it never signs the app out.
 The token is valid for 90 days. In the last two weeks every run reminds you,
 and `askui status` shows the date; run `askui login` again to renew it. A new
 login replaces the machine's previous token, so each machine keeps one.
-`askui logout` opens the browser briefly and deletes the token in the
-workspace. Without a browser, for example over SSH, it forgets the token on
-the machine; delete it then under the workspace's access tokens in the AskUI
-Hub.
+`askui logout` deletes the token in the workspace and on the machine. It
+needs no browser, so it also works over SSH. If the AskUI Hub cannot be
+reached, the CLI forgets the token on the machine only. Delete it then under
+the workspace's access tokens in the AskUI Hub.
 
 For scheduled or unattended runs, use `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`
 (below) with a token whose lifetime you choose in the Hub.
