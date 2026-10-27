@@ -45,11 +45,19 @@ now** to open the proposals.
 <Step>
 ### Accept or reject
 Each proposal is shown as a diff — the exact line it would add to a `rules.md` or
-change in a test — with a short reason and how many of the analyzed runs back it.
-Accept the ones you like (individually or **Accept all**), reject the rest, then
-click **Finish**. Accepted changes are written to your project files; rejected ones
-leave your files untouched. **Cancel** discards your decisions and keeps every
-proposal pending for later.
+change in a test — with a short reason, how many of the analyzed runs back it and
+which tests it came from. Proposals are grouped by folder, in the same order as
+your test files.
+
+Accept the ones you like and reject the rest, one by one or with **Accept all** or
+**Reject all** above the list. **Reset** clears your choices for all proposals.
+Then click **Finish**. Accepted changes are written to your project files; rejected
+ones leave your files untouched. Proposals you have not decided on stay for later.
+
+You don't have to decide everything at once. Click **Close** to leave the review:
+your choices so far are kept, also when you restart the app. When you open the
+review again, they are still marked. Nothing changes in your files until you click
+**Finish**.
 </Step>
 </Steps>
 
@@ -70,8 +78,15 @@ Dreaming won't start another pass, so review them before you analyze again.
 - **Test definitions** — occasionally, a proposed tweak to a test's own steps.
 
 Dreaming only ever **appends** a line or **refines** an existing one — it never
-rewrites your files wholesale, and it never bakes in brittle pixel coordinates. Per
-test and file it proposes at most **one** edit, combining everything it learned. It
+rewrites your files wholesale, and it never bakes in brittle pixel coordinates. It
+proposes at most **one** edit per file, combining everything it learned.
+
+Tests in the same folder share a `rules.md`, so several tests often learn the same
+lesson. Before you see the review, Dreaming merges their proposals: each
+recommendation appears once, and a merged proposal names every test it came from.
+Proposals that contradict each other, or contradict what your file already says,
+are not shown side by side. Dreaming keeps the recommendation that more runs back,
+or replaces the outdated line of your file. It
 does **not** change your device information — that lives with your
 [device profiles](/docs/devices), not in a prose file.
 
@@ -82,10 +97,11 @@ Sometimes the trouble isn't your test at all. A tool (including your own
 around the run can be at fault — and no change to your rules or tests would fix
 that. When Dreaming spots something like that, it doesn't invent a change. Instead
 it adds a short **advisory** to your review: a plain-language description of what
-looked wrong, and a prominent pointer to email an AskUI solution engineer at
-**support@askui.com**.
+looked wrong. Above the advisories, a single highlighted note asks you to email an
+AskUI solution engineer at **support@askui.com**. If several tests ran into the same
+problem, you see it as one advisory.
 
-You **acknowledge** or **dismiss** an advisory — nothing is edited either way.
+You **acknowledge** an advisory — nothing is edited.
 It's simply Dreaming telling you "this one needs a human, not a test change."
 
 ## It's experimental — turn it on deliberately
