@@ -65,7 +65,14 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
     // Rendered through the root layout's title template ("<title> | AskUI Docs").
     title: page.data.metaTitle ?? page.data.title,
     description: page.data.description,
+    // Self-referencing canonical. page.url is "/docs/..." with no trailing
+    // slash, which is how GitHub Pages serves these pages ("/docs/faq/" 404s);
+    // metadataBase in app/layout.tsx makes it absolute.
+    alternates: {
+      canonical: page.url,
+    },
     openGraph: {
+      url: page.url,
       images: getPageImage(page).url,
     },
   };
