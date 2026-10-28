@@ -1,16 +1,25 @@
 'use client';
 import { useEffect, useState } from 'react';
 import {
-  CONSENT_KEY,
-  denyTrackingConsent,
-  googleTagInPage,
-  loadTrackingScripts,
+  applyConsent,
+  type ConsentChoice,
   OPEN_COOKIE_SETTINGS,
+  saveConsent,
   storedConsent,
 } from '@/lib/tracking';
 
-// The cookie banner of www.askui.com (askui/askui-website,
-// src/components/CookieConsent.tsx): same card, same copy, same choices.
+const NONE: ConsentChoice = { analytics: false, marketing: false };
+const ALL: ConsentChoice = { analytics: true, marketing: true };
+
+// The cookie banner, in the card of www.askui.com (askui/askui-website,
+// src/components/CookieConsent.tsx). What it asks follows the regulators'
+// cookie-banner guidance (EDPB Cookie Banner Taskforce, DSK Orientierungshilfe
+// Digitale Dienste):
+//  - "Accept all", "Reject all" and "Customize" on the first layer, so
+//    declining takes one click, like accepting. "Accept all" is the primary
+//    button, as on www.askui.com.
+//  - Analytics and marketing are separate choices, both off by default.
+//  - The first layer names the providers.
 // The choice is stored per origin, so docs.askui.com asks once on its own,
 // even when the visitor already answered on www.askui.com. The values are set
 // literally (not from the docs theme) so the banner looks the same on both
@@ -18,43 +27,34 @@ import {
 // again, so a choice can be changed or withdrawn as easily as it was given.
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const [customize, setCustomize] = useState(false);
+  const [choice, setChoice] = useState<ConsentChoice>(NONE);
 
   useEffect(() => {
     const saved = storedConsent();
-    if (saved === 'all') {
-      loadTrackingScripts();
-    } else if (saved === null) {
+    if (saved) {
+      applyConsent(saved);
+      setChoice({ analytics: saved.analytics, marketing: saved.marketing });
+    } else {
       setShowBanner(true);
     }
-    // "necessary": load nothing, show nothing.
 
-    const reopen = () => setShowBanner(true);
+    const reopen = () => {
+      const current = storedConsent();
+      setChoice(current ? { analytics: current.analytics, marketing: current.marketing } : NONE);
+      setCustomize(true);
+      setShowBanner(true);
+    };
     window.addEventListener(OPEN_COOKIE_SETTINGS, reopen);
     return () => window.removeEventListener(OPEN_COOKIE_SETTINGS, reopen);
   }, []);
 
-  const handleAcceptAll = () => {
-    try {
-      localStorage.setItem(CONSENT_KEY, 'all');
-    } catch {
-      // Storage blocked: consent holds for this page view only.
-    }
-    loadTrackingScripts();
+  const decide = (c: ConsentChoice) => {
+    saveConsent(c);
+    setChoice(c);
     setShowBanner(false);
-  };
-
-  const handleNecessaryOnly = () => {
-    try {
-      localStorage.setItem(CONSENT_KEY, 'necessary');
-    } catch {
-      // Storage blocked: the banner asks again on the next visit.
-    }
-    const withdrawn = googleTagInPage();
-    denyTrackingConsent();
-    setShowBanner(false);
-    // A withdrawn "Accept all": reload so the Google tag is gone for good.
-    if (withdrawn) window.location.reload();
+    setCustomize(false);
+    applyConsent(c);
   };
 
   if (!showBanner) return null;
@@ -65,41 +65,75 @@ export function CookieConsent() {
     <div className="ck" role="dialog" aria-label="Cookie consent">
       <span className="ck-eyebrow">Privacy</span>
       <p className="ck-text">
-        We use cookies for analytics and marketing. Necessary cookies keep the
-        site working. <a href="https://www.askui.com/privacy-policy">Privacy policy</a>
+        With your consent we use Google Analytics and PostHog to see how the docs
+        are used, and Google Ads to measure our campaigns. They set cookies and
+        run only if you allow them. You can change your choice any time under
+        Cookie settings. <a href="https://www.askui.com/privacy-policy">Privacy policy</a>
       </p>
 
-      {showDetails && (
+      {customize && (
         <div className="ck-details">
-          <div className="ck-row">
-            <span className="ck-k">Necessary</span>
-            <span className="ck-v">Required for the site to function. Always on.</span>
-          </div>
-          <div className="ck-row">
-            <span className="ck-k">Analytics &amp; marketing</span>
-            <span className="ck-v">
-              Google Analytics and Google Ads, loaded only after consent. PostHog (EU)
-              counts visits without cookies and uses a cookie only after consent.
+          <label className="ck-row">
+            <input type="checkbox" checked disabled />
+            <span>
+              <span className="ck-k">Necessary</span>
+              <span className="ck-v">
+                Keeps the site working and remembers this choice for 12 months, in
+                your browser&apos;s local storage. Always on.
+              </span>
             </span>
-          </div>
+          </label>
+          <label className="ck-row">
+            <input
+              type="checkbox"
+              checked={choice.analytics}
+              onChange={(e) => setChoice({ ...choice, analytics: e.target.checked })}
+            />
+            <span>
+              <span className="ck-k">Analytics</span>
+              <span className="ck-v">
+                Google Analytics (Google, may process data in the USA) and PostHog
+                (data hosted in the EU) record the pages you open, the page you came
+                from and the links and buttons you click, under a random ID, to show
+                us how the docs are used. Cookies: Google Analytics up to 2 years,
+                PostHog up to 1 year.
+              </span>
+            </span>
+          </label>
+          <label className="ck-row">
+            <input
+              type="checkbox"
+              checked={choice.marketing}
+              onChange={(e) => setChoice({ ...choice, marketing: e.target.checked })}
+            />
+            <span>
+              <span className="ck-k">Marketing</span>
+              <span className="ck-v">
+                Google Ads (Google, may process data in the USA) measures which ad
+                campaigns bring visitors to us, and Google may use your visit to show
+                you AskUI ads on other websites. Cookies: up to 90 days.
+              </span>
+            </span>
+          </label>
         </div>
       )}
 
       <div className="ck-actions">
-        <button type="button" className="ck-primary" onClick={handleAcceptAll}>
+        <button type="button" className="ck-primary" onClick={() => decide(ALL)}>
           Accept all
         </button>
-        <button type="button" className="ck-ghost" onClick={handleNecessaryOnly}>
-          Necessary only
+        <button type="button" className="ck-ghost" onClick={() => decide(NONE)}>
+          Reject all
         </button>
-        <button
-          type="button"
-          className="ck-more"
-          aria-expanded={showDetails}
-          onClick={() => setShowDetails(!showDetails)}
-        >
-          {showDetails ? 'Hide details' : 'Details'}
-        </button>
+        {customize ? (
+          <button type="button" className="ck-more" onClick={() => decide(choice)}>
+            Save choices
+          </button>
+        ) : (
+          <button type="button" className="ck-more" onClick={() => setCustomize(true)}>
+            Customize
+          </button>
+        )}
       </div>
 
       <style>{`
@@ -150,23 +184,40 @@ export function CookieConsent() {
         .ck-details {
           border-top: 1px solid rgba(16, 24, 32, 0.06);
           display: grid;
-          gap: 10px;
+          gap: 12px;
           margin: 0 0 16px;
           padding-top: 14px;
         }
 
-        .ck-row { display: grid; gap: 2px; }
+        .ck-row {
+          align-items: start;
+          cursor: pointer;
+          display: grid;
+          gap: 10px;
+          grid-template-columns: auto 1fr;
+        }
+
+        .ck-row input {
+          accent-color: #14181d;
+          height: 16px;
+          margin: 1px 0 0;
+          width: 16px;
+        }
+
+        .ck-row input:disabled { cursor: default; }
 
         .ck-k {
           color: #69727d;
+          display: block;
           font-family: 'JetBrains Mono', ui-monospace, monospace;
           font-size: 10px;
           font-weight: 500;
           letter-spacing: 0.1em;
+          margin-bottom: 2px;
           text-transform: uppercase;
         }
 
-        .ck-v { color: #4a525c; font-size: 12.5px; line-height: 1.5; }
+        .ck-v { color: #4a525c; display: block; font-size: 12.5px; line-height: 1.5; }
 
         .ck-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 10px; }
 

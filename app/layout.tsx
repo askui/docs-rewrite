@@ -37,8 +37,8 @@ export default function Layout({ children }: LayoutProps<'/'>) {
       </head>
       <body className="flex flex-col min-h-screen">
         <Provider>{children}</Provider>
-        {/* Analytics before CookieConsent: PostHog must be started before a
-            stored "Accept all" switches it to cookie persistence. */}
+        {/* Both run only what the stored or given consent allows
+            (lib/tracking.ts). */}
         <Analytics />
         <CookieConsent />
       </body>
