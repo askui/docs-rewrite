@@ -3,13 +3,13 @@
 // sending to the same PostHog project. Filter on `$host` (docs.askui.com) to
 // see the docs alone.
 //
-// Consent model, cookieless until consent:
-//  - Before consent, and after "Necessary only", PostHog keeps its anonymous
-//    ID in memory only. Nothing is written to cookies or storage, and every
-//    full page load is a new anonymous visitor. Client-side navigation between
-//    docs pages stays one visit.
-//  - After "Accept all", PostHog switches to cookie + localStorage, so a
-//    returning visitor keeps one ID across visits.
+// Consent model, nothing before consent:
+//  - Before a choice, and after "Necessary only", PostHog is not started. The
+//    page sends no request to PostHog and stores nothing.
+//  - After "Accept all" (now, or stored from an earlier visit), PostHog starts
+//    with cookie + localStorage, so a returning visitor keeps one ID.
+//  - Withdrawing "Accept all" opts PostHog out; the banner then reloads the
+//    page, which starts without it (lib/tracking.ts).
 //  - No session recording and no person profiles for anonymous visitors.
 //    The client sends no IP (`ip: false`).
 //
@@ -17,8 +17,8 @@
 // askui.com domain, so ad blockers that block posthog.com do not drop them.
 //
 // Off unless NEXT_PUBLIC_POSTHOG_KEY is set at build time (the deploy workflow
-// sets it from the POSTHOG_KEY repo variable), and never in an automated
-// browser, so local builds and the screenshot runs send nothing.
+// sets it from the POSTHOG_KEY repo variable). lib/tracking.ts also keeps it
+// off on localhost and in automated browsers.
 
 import posthog from 'posthog-js';
 
@@ -27,45 +27,39 @@ const HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://ingest.askui.com';
 
 let started = false;
 
-const isAutomated = (): boolean =>
-  typeof navigator !== 'undefined' &&
-  (navigator.webdriver || /HeadlessChrome/.test(navigator.userAgent));
-
 /**
- * Start PostHog. Call once, as early as possible. `consented` is the stored
- * cookie choice ("all" → cookies, anything else → memory only).
+ * Start PostHog after "Accept all" and count the current page. Safe to call
+ * more than once. Later page views come from <Analytics /> on route changes.
  */
-export const initAnalytics = (consented: boolean): void => {
-  if (started || !KEY || typeof window === 'undefined' || isAutomated()) return;
+export const startAnalytics = (): void => {
+  if (started || !KEY || typeof window === 'undefined') return;
   started = true;
   posthog.init(KEY, {
     api_host: HOST,
     ui_host: 'https://eu.posthog.com',
-    persistence: consented ? 'localStorage+cookie' : 'memory',
+    persistence: 'localStorage+cookie',
     person_profiles: 'identified_only',
-    // Page views come from <Analytics /> on every route change, so the first
-    // view and client-side navigations are counted the same way.
     capture_pageview: false,
     capture_pageleave: true,
     autocapture: true,
     disable_session_recording: true,
     ip: false,
   });
+  posthog.capture('$pageview');
 };
 
-/** Visitor accepted all cookies: keep the anonymous ID across visits. */
-export const analyticsConsentGranted = (): void => {
+/**
+ * Visitor withdrew "Accept all": stop sending at once, and stop writing to
+ * cookies and storage, so the cleanup in lib/tracking.ts is not undone before
+ * the reload.
+ */
+export const stopAnalytics = (): void => {
   if (!started) return;
-  posthog.set_config({ persistence: 'localStorage+cookie' });
+  posthog.opt_out_capturing();
+  posthog.set_config({ disable_persistence: true });
 };
 
-/** Visitor chose "Necessary only": stay in memory, store nothing. */
-export const analyticsConsentDenied = (): void => {
-  if (!started) return;
-  posthog.set_config({ persistence: 'memory' });
-};
-
-/** Count a page view. Called on every route change. */
+/** Count a page view. Called on every route change; no-op before consent. */
 export const capturePageview = (): void => {
   if (!started) return;
   posthog.capture('$pageview');

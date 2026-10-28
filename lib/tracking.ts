@@ -9,7 +9,7 @@
 // measurement sends one on every client-side route change (history events),
 // so the docs send none by hand; doing both counts every page twice.
 
-import { analyticsConsentDenied, analyticsConsentGranted } from '@/lib/analytics';
+import { startAnalytics, stopAnalytics } from '@/lib/analytics';
 
 declare global {
   interface Window {
@@ -24,7 +24,14 @@ const GOOGLE_ADS_ID = 'AW-10843353502';
 export const CONSENT_KEY = 'askui-cookie-consent';
 export type ConsentType = 'all' | 'necessary' | null;
 
-let googleTagLoaded = false;
+let trackingLoaded = false;
+
+// Local dev servers and automated browsers (screenshot runs, tests) send
+// nothing, so they never land in the production GA4, Ads or PostHog data.
+const isLocalOrAutomated = (): boolean =>
+  /^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname) ||
+  navigator.webdriver ||
+  /HeadlessChrome/.test(navigator.userAgent);
 
 /** Fired by "Cookie settings" to show the banner again. */
 export const OPEN_COOKIE_SETTINGS = 'askui:open-cookie-settings';
@@ -42,20 +49,19 @@ export const storedConsent = (): ConsentType => {
   }
 };
 
-export const hasTrackingConsent = (): boolean => storedConsent() === 'all';
-
-/** True once the Google tag runs in this page. */
-export const googleTagInPage = (): boolean => googleTagLoaded;
+/** True once the consent-gated tags were loaded in this page. */
+export const trackingInPage = (): boolean => trackingLoaded;
 
 /** Load the consent-gated tags. Safe to call more than once. */
 export const loadTrackingScripts = (): void => {
-  if (googleTagLoaded) return;
-  googleTagLoaded = true;
+  if (trackingLoaded) return;
+  trackingLoaded = true;
+  if (isLocalOrAutomated()) return;
 
   loadGoogleTag();
 
-  // PostHog: from memory-only to cookie persistence (lib/analytics.ts)
-  analyticsConsentGranted();
+  // PostHog starts only now, never before consent (lib/analytics.ts)
+  startAnalytics();
 };
 
 const loadGoogleTag = (): void => {
@@ -91,14 +97,14 @@ const loadGoogleTag = (): void => {
 
 /**
  * The visitor declined, or withdrew an earlier "Accept all": Consent Mode v2
- * denied, PostHog back to memory only, and every cookie and storage entry the
- * tags wrote removed. A Google tag already running in the page cannot be
- * unloaded (it keeps sending cookieless pings, also to destinations set up
- * in the Google tag UI), so the caller reloads the page when
- * googleTagInPage() was true; the reload then starts without it.
+ * denied, PostHog opted out, and every cookie and storage entry the tags wrote
+ * removed. A Google tag already running in the page cannot be unloaded (it
+ * keeps sending cookieless pings, also to destinations set up in the Google
+ * tag UI), so the caller reloads the page when trackingInPage() was true; the
+ * reload then starts without the tags.
  */
 export const denyTrackingConsent = (): void => {
-  analyticsConsentDenied();
+  stopAnalytics();
   if (window.gtag) {
     window.gtag('consent', 'update', {
       ad_storage: 'denied',
@@ -110,8 +116,9 @@ export const denyTrackingConsent = (): void => {
   clearTrackingStorage();
 };
 
-// Google Analytics (_ga, _ga_<id>, _gid), Google Ads (_gcl_*) and PostHog (ph_*).
-const TRACKING_NAME = /^(_ga|_gid|_gcl|ph_)/;
+// Google Analytics (_ga, _ga_<id>, _gid), Google Ads (_gcl_*) and PostHog
+// (ph_*, and the __ph_opt_in_out_* marker opt-out writes).
+const TRACKING_NAME = /^(_ga|_gid|_gcl|ph_|__ph_)/;
 
 const clearTrackingStorage = (): void => {
   // Google sets its cookies on the registrable domain (.askui.com), PostHog on

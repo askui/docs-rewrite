@@ -8,7 +8,7 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
     <DocsLayout
       tree={source.getPageTree()}
       {...baseOptions()}
-      sidebar={{ footer: <CookieSettingsLink /> }}
+      sidebar={{ footer: <CookieSettingsLink key="cookie-settings" /> }}
     >
       {children}
     </DocsLayout>

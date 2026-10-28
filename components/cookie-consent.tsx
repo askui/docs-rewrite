@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import {
   CONSENT_KEY,
   denyTrackingConsent,
-  googleTagInPage,
   loadTrackingScripts,
   OPEN_COOKIE_SETTINGS,
   storedConsent,
+  trackingInPage,
 } from '@/lib/tracking';
 
 // The cookie banner of www.askui.com (askui/askui-website,
@@ -50,10 +50,10 @@ export function CookieConsent() {
     } catch {
       // Storage blocked: the banner asks again on the next visit.
     }
-    const withdrawn = googleTagInPage();
+    const withdrawn = trackingInPage();
     denyTrackingConsent();
     setShowBanner(false);
-    // A withdrawn "Accept all": reload so the Google tag is gone for good.
+    // A withdrawn "Accept all": reload so the tags are gone for good.
     if (withdrawn) window.location.reload();
   };
 
@@ -78,8 +78,8 @@ export function CookieConsent() {
           <div className="ck-row">
             <span className="ck-k">Analytics &amp; marketing</span>
             <span className="ck-v">
-              Google Analytics and Google Ads, loaded only after consent. PostHog (EU)
-              counts visits without cookies and uses a cookie only after consent.
+              Google Analytics, Google Ads and PostHog (EU), loaded only after
+              consent.
             </span>
           </div>
         </div>
