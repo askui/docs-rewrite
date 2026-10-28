@@ -32,6 +32,7 @@ machine, for your user, without changing them:
 | In-Flight Guidance reviewer | The reviewer model you chose in the app | — |
 | Secrets | The Project's [secrets](/docs/extending/secrets), including the ones the agent may type | An environment variable of the same name |
 | Network proxy | The app's proxy | — |
+| Execution report model | With a license, the separate report model on the **Reporting** tab | — |
 | AgentOS controller | The controller path under **Settings → Agent OS** | — |
 
 The credentials come from `askui login` or the environment, never from the
@@ -311,8 +312,8 @@ On a CI runner the environment takes the secret store's place: `${NAME}` and
 `os-keychain://NAME` resolve from the environment variable `NAME`. Set
 `QA_PASSWORD` in the pipeline's secret store, and a tool config that
 references `${QA_PASSWORD}` gets its value. On a runner without AskUI Desktop
-the agent gets no secrets to type: a test that tells the agent to enter one
-runs where AskUI Desktop is installed.
+the agent gets no secrets to type, and the **Read MFA Code** tool has no
+authenticators: a test that needs either runs where AskUI Desktop is installed.
 
 ## Custom tools and MCP servers
 
@@ -406,7 +407,7 @@ A test that never started is `SKIPPED`, so it appears as `skipped`.
 ### The console
 
 The console shows each phase as it starts and finishes
-(`[test] tests/login.md -> PASSED`) and ends with one summary line that counts
+(`[test] tests/login.md -> passed`), with each test's recorded result, and ends with one summary line that counts
 the passed, failed, broken, and warned tests. A test the run never started
 is `SKIPPED`; when the run stopped before all its tests started, the line adds
 how many as `not executed`, and the run does not pass.
@@ -418,12 +419,13 @@ how many as `not executed`, and the run does not pass.
 | `0` | All tests passed. Warnings are allowed. | nobody |
 | `1` | At least one test failed or broke, a setup failed, or the run stopped before all its tests started. Tests a failed setup kept from starting are `SKIPPED` and add nothing beyond the setup's failure. | the product team |
 | `2` | Usage error: an unknown option, a missing or bad value, or two options that exclude each other. | the pipeline author |
-| `3` | Environment or configuration error: missing or rejected credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; a device that cannot be reached; a test that declares several platforms; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load. | the pipeline author |
+| `3` | Environment or configuration error: missing or rejected credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; a device that cannot be reached; a test that declares several platforms; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load; a provisioned device that AskUI Desktop holds. | the pipeline author |
 | `4` | No tests ran: the selection was empty, or no test result was produced. | the pipeline author |
 | `130` | Canceled (Ctrl+C). The results written so far are kept. | whoever pressed Ctrl+C |
 
 A usage error or a configuration error ends the CLI before the first model
-call, so it costs nothing. A warning never changes the exit code.
+call, or at it when the provider rejects the credentials, so it costs nothing.
+A warning never changes the exit code.
 
 Of the [setups and teardowns](/docs/writing-tests/setup-teardown-rules#how-a-setup-or-teardown-ends),
 only a failed or broken setup counts: it fails the run, and exit code `1`
