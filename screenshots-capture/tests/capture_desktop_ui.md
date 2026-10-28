@@ -149,9 +149,9 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     shown, then call `save_screenshot[desktop-utils-dreaming]`. Do NOT turn
     Dreaming on, click "Analyze now", or change any field.
 
-15f. Open the **Runs** page. Click the green **Generate Management Report**
-    button at the bottom of the runs list so the Management report dialog
-    opens. Click
+15f. Open the **Runs** page with no test selected. In the report pane on the
+    right, under "No test selected", click **Generate Management Report** so
+    the Management report dialog opens. Click
     the **90 days** preset so the range includes the demo run from step 1.
     Wait until the list of runs (each with a ticked checkbox) and the
     "Additional information" section are shown — or, if there are no runs in
