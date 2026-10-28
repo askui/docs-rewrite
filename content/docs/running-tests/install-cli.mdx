@@ -104,47 +104,31 @@ app does.
 
 If AskUI Desktop runs with a **local license** on the machine, skip this step.
 The CLI then uses the license and the model you set up in the app, as the app
-does, and `askui status` shows that model. `askui login` only says so.
+does, and `askui status` shows that model.
 
-Otherwise, on a machine with AskUI Desktop, sign the CLI in once:
-
-```bash
-askui login
-```
-
-The browser opens, you sign in as in the app, and pick the workspace. The CLI
-then creates an access token for itself, named after the machine and the day,
-and keeps it in the Keychain (macOS) or encrypted for your Windows user. It
-never uses or renews the app's own sign-in, so it never signs the app out.
-
-The token is valid for 90 days. In the last two weeks every run reminds you,
-and `askui status` shows the date; run `askui login` again to renew it. A new
-login replaces the machine's previous token, so each machine keeps one.
-`askui logout` deletes the token in the workspace and on the machine. It
-needs no browser, so it also works over SSH. If the AskUI Hub cannot be
-reached, the CLI forgets the token on the machine only. Delete it then under
-the workspace's access tokens in the AskUI Hub.
-
-For scheduled or unattended runs, use `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`
-(below) with a token whose lifetime you choose in the Hub.
-
-On a CI runner, or without AskUI Desktop, set two environment variables
-instead:
+Otherwise, the CLI authenticates with an access token of your workspace. Create
+one in the [AskUI Hub](https://hub.askui.com) under your workspace's **Access
+tokens** (see [Workspaces & access tokens](/docs/account-billing/workspaces)),
+and set two environment variables:
 
 ```bash
 export ASKUI_WORKSPACE_ID="<your workspace id>"
 export ASKUI_TOKEN="<your access token>"
 ```
 
-Create the access token in the [AskUI Hub](https://hub.askui.com), see
-[Workspaces & access tokens](/docs/account-billing/workspaces). The variables
-win over `askui login`. Instead of exporting, you can also put both lines in a
-`.env` file in your Project root; the CLI loads it on every run (variables
-already set in the environment win). A new Project's `.gitignore` already
-keeps `.env` out of git.
+Instead of exporting, you can also put both lines in a `.env` file in your
+Project root. The CLI loads it on every run, and variables already set in the
+environment win. A new Project's `.gitignore` already keeps `.env` out of git.
+You choose the token's lifetime in the Hub, so the same setup works for a
+scheduled job and a CI runner.
 
-`askui status` shows what a run on this machine uses: the credentials, the
-AskUI Desktop settings, and the model.
+`askui login` and `askui logout` are not available yet: they print how to set
+the two variables and stop with exit code 3. To sign the CLI out, unset the
+variables, and delete the token in the Hub when you no longer need it.
+
+`askui status` shows what a run on this machine uses: whether AskUI Desktop's
+settings count, the kind of credential, the workspace, the token by its last
+three characters, the entitlement, and the model.
 </Step>
 
 <Step>

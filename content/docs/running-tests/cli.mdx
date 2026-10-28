@@ -35,18 +35,20 @@ machine, for your user, without changing them:
 | Execution report model | With a license, the separate report model on the **Reporting** tab | — |
 | AgentOS controller | The controller path under **Settings → Agent OS** | — |
 
-The credentials come from `askui login` or the environment, never from the
-app's sign-in (see [Install the CLI](/docs/running-tests/install-cli)).
+The credentials come from the environment (`ASKUI_WORKSPACE_ID` and
+`ASKUI_TOKEN`), never from the app's sign-in (see
+[Install the CLI](/docs/running-tests/install-cli#authenticate)).
 
 What the Project's device profile says, its display, user session and proxy
 setting, always applies, on every machine: a desktop connects the way the app
 connects it.
 
-To run as on a CI runner, without the app's settings, pass `--no-app-settings`, or set
-`ASKUI_NO_APP_SETTINGS=1` for a whole pipeline. The credentials then come from
-the environment alone. `askui status` prints what a run would use: the
-credentials, the workspace, and the model. Every run names its model and
-workspace in its first line.
+To ignore what AskUI Desktop stores on the machine, as on a CI runner, pass
+`--ignore-app-settings`, or set `ASKUI_IGNORE_APP_SETTINGS=1` for a whole
+pipeline. The CLI's own settings and your credentials still apply.
+`askui status` prints what a run would use: the credentials, the workspace, the
+entitlement, and the model. Every run names its model and workspace in its
+first line.
 
 ## What a run does
 
@@ -199,7 +201,7 @@ does not load stops the run with exit code 3, and the message names the URL.
 On a machine with AskUI Desktop, the run uses the model you chose in the app
 (see [above](#on-a-machine-with-askui-desktop)). Otherwise, inference runs
 through **AskUI Inference**, billed to your workspace and authenticated with
-`askui login` or `ASKUI_WORKSPACE_ID`/`ASKUI_TOKEN`. AskUI Inference serves
+`ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`. AskUI Inference serves
 more than one model. Missing credentials stop the run with exit code 3 before
 the first model call. Credentials the provider rejects, such as an expired
 token or a wrong API key, also stop the run with exit code 3. The message names
@@ -213,9 +215,9 @@ the provider and says where to fix them.
 | `--model-api-key <key>` | none | API key, sent as `x-api-key` or `Authorization`, per provider. |
 | `--model-token <token>` | none | Bearer token, e.g. an OAuth access token (Entra, gateways). |
 | `--model-headers <k=v,..>` | none | Authentication headers, comma-separated `name=value` pairs, sent instead of `--model-api-key` and `--model-token`. |
-| `--vertex-project <id>` | none | Vertex AI: the Google Cloud project with the model enabled. Required for `vertex`. |
-| `--vertex-location <loc>` | none | Vertex AI: the location, such as `global`, `us`, or `eu`. It decides where requests are processed. Required for `vertex`. |
-| `--vertex-credentials <file>` | Application Default Credentials | Vertex AI: a service-account key or user login (JSON). Without it, `GOOGLE_APPLICATION_CREDENTIALS`, then `gcloud auth application-default login`. |
+| `--model-provider-vertex-project <id>` | none | Vertex AI: the Google Cloud project with the model enabled. Required for `vertex`. |
+| `--model-provider-vertex-location <loc>` | none | Vertex AI: the location, such as `global`, `us`, or `eu`. It decides where requests are processed. Required for `vertex`. |
+| `--model-provider-vertex-credentials <file>` | Application Default Credentials | Vertex AI: a service-account key or user login (JSON). Without it, `GOOGLE_APPLICATION_CREDENTIALS`, then `gcloud auth application-default login`. |
 
 `--model-endpoint`, `--model-api-key`, `--model-token`, and `--model-headers`
 work with `airgap` and your own provider only (`anthropic`, `openai`, or
@@ -224,8 +226,8 @@ work with `airgap` and your own provider only (`anthropic`, `openai`, or
 the key is optional. As in the app, a Claude model at an endpoint that does not
 end in `/v1` speaks the Anthropic API, every other model the OpenAI-compatible
 one.
-`vertex` takes the `--vertex-*` options instead, and the `--vertex-*` options
-work with `vertex` only.
+`vertex` takes the `--model-provider-vertex-*` options instead, and these
+options work with `vertex` only.
 
 ```bash
 # Hosted models on the AskUI hub
@@ -248,8 +250,9 @@ askui run --model-provider airgap \
 
 # Claude on Vertex AI, in your own Google Cloud project
 askui run --model-provider vertex --model-id claude-sonnet-5-5 \
-  --vertex-project my-project --vertex-location eu \
-  --vertex-credentials service-account.json
+  --model-provider-vertex-project my-project \
+  --model-provider-vertex-location eu \
+  --model-provider-vertex-credentials service-account.json
 ```
 
 Pass keys and tokens from the environment, as above, so they never land in
@@ -280,6 +283,24 @@ what it runs or which exit code it returns.
 
 These options work before or after `run`. `--ci` with `--interactive`, and
 `--verbose` with `--quiet`, are usage errors. Errors always go to stderr.
+
+## Environment variables
+
+`askui run --help` lists every environment variable a run reads:
+
+| Variable | What it does |
+| --- | --- |
+| `ASKUI_WORKSPACE_ID` | Your AskUI workspace, for AskUI Inference. |
+| `ASKUI_TOKEN` | An access token of that workspace, from the AskUI Hub. |
+| `ASKUI_IGNORE_APP_SETTINGS` | `1` or `true`: as `--ignore-app-settings`, for a whole pipeline. |
+| `ASKUI_INFERENCE_ENDPOINT` | The AskUI Inference endpoint, instead of the CLI's settings. |
+| `ASKUI_CONTROLLER_PATH` | The AgentOS controller to start for a desktop on this computer. |
+| `ASKUI_COMPONENT_REGISTRY_FILE` | The AgentOS component registry that names the installed controller. |
+| `ASKUI_INSTALLATION_DIRECTORY` | The AgentOS installation folder to find the controller in. |
+| `ASKUI_ADB_PATH` | The adb binary, instead of the one on `PATH` or in the Android SDK. |
+| `ASKUI_NUGET_TIMEOUT_SECONDS` | How long the NuGet packages of the custom tools may take to resolve. |
+| `CI` | Any value forces CI mode. |
+| `NO_COLOR` | Any value turns colors off. |
 
 ## Credentials and `.env`
 
