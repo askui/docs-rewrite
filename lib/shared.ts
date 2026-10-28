@@ -16,6 +16,20 @@ function resolveBasePath(): string {
 
 export const basePath = resolveBasePath();
 
+// Public origin of the deployed site. Next.js needs it (as `metadataBase`) to
+// turn relative metadata URLs (og:image, canonical) into absolute ones; without
+// it, Next falls back to http://localhost:3000 and link previews show no image.
+//   - custom-domain root build → https://docs.askui.com
+//   - project-page build       → https://askui.github.io (+ base path below)
+// NEXT_PUBLIC_SITE_URL overrides the origin (e.g. a preview host), no trailing slash.
+const siteOrigin =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (basePath === '' ? 'https://docs.askui.com' : 'https://askui.github.io');
+
+// Origin + base path. Next joins metadataBase's path with relative metadata
+// URLs, so "/docs/faq" resolves to `${siteUrl}/docs/faq` in both build modes.
+export const siteUrl = `${siteOrigin}${basePath}`;
+
 export const appName = 'AskUI Docs';
 export const docsRoute = '/docs';
 export const docsImageRoute = '/og/docs';

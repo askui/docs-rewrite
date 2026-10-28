@@ -44,9 +44,8 @@ extra runtimes needed.
 </Tabs>
 
 <Callout title="Always the latest">
-These links always give you the newest release. The
-[Releases page](https://github.com/askui/integrated-task-platform/releases/latest)
-lists every installer, and they're also on your
+These links always give you the newest release. The installers are also on
+the [AskUI download page](https://www.askui.com/start) and your
 [AskUI Hub](https://hub.askui.com) account page.
 </Callout>
 
@@ -125,22 +124,41 @@ You can install AgentOS in one of two ways:
     description="Install as a system service for CI/CD and headless VMs that boot to the login screen." />
 </Cards>
 
-To use a **standalone** AgentOS installation with the AskUI Desktop App, point
-the app at the installed binary:
+For a **standalone** installation, download the ZIP for your platform, unpack it
+and point the app at the controller inside it:
 
 <Steps>
 <Step>
-Open **Settings** in AskUI Desktop and go to **This machine**.
+Download AgentOS for
+[Windows AMD64](https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Windows-x64.zip),
+[Windows ARM64](https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Windows-ARM64.zip)
+or [macOS ARM64](https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-MacOS-ARM64.zip)
+(Apple silicon). For a Linux machine (X11 only, no Wayland) there are
+[Linux AMD64](https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Linux-x64.zip)
+and [Linux ARM64](https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Linux-ARM64.zip)
+builds, see [Standalone installation](/docs/agentos/installation/standalone).
 </Step>
 <Step>
-Under **AgentOS**, paste the path to the installed controller. For a `pip`
-install it looks like:
+Unpack it into a folder of its own, for example `C:\Users\<you>\AskUI\AgentOS` on Windows
+or `/Users/<you>/AskUI/AgentOS` on macOS. The archive has no top-level folder,
+so create the folder first.
+</Step>
+<Step>
+Open **Settings** in AskUI Desktop, go to **This machine**, and paste the full
+path to the controller under **Agent OS → Controller path**, for example:
 
 ```
-~/py-env/lib/python3.12/site-packages/askui_agent_os/bin/AskuiRemoteDeviceController
+C:\Users\<you>\AskUI\AgentOS\AskuiRemoteDeviceController.exe
+```
+
+```
+/Users/<you>/AskUI/AgentOS/AskuiRemoteDeviceController
 ```
 </Step>
 </Steps>
+
+See [Standalone installation](/docs/agentos/installation/standalone) for how to
+copy the path on each platform.
 
 ---
 

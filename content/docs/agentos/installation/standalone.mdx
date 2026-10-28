@@ -15,42 +15,80 @@ commercial deployments a license is required, see
 
 ## Prerequisites
 
-- **Windows**: **macOS**, or **Linux**, see
+- **Windows** (x64 or ARM64), **macOS** on Apple silicon, or **Linux** (x64 or
+  ARM64) with an **X11** session, Wayland is not supported, see
   [System Requirements](/docs/agentos/reference/system-requirements) for supported
   versions.
 - **macOS only:** grant **Accessibility** and **Screen Recording** permissions
   to the app running AgentOS, under **System Settings → Privacy & Security**.
 
+## Download
+
+AgentOS ships as a ZIP archive per platform. Download the one that matches your
+machine:
+
+<Cards>
+  <Card title="Windows AMD64 (x86_64)" href="https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Windows-x64.zip" description="Standard 64-bit Windows systems." />
+  <Card title="Windows ARM64" href="https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Windows-ARM64.zip" description="ARM-based Windows devices." />
+  <Card title="macOS ARM64" href="https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-MacOS-ARM64.zip" description="Macs with Apple silicon (M1 or newer)." />
+  <Card title="Linux AMD64 (x86_64)" href="https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Linux-x64.zip" description="64-bit Linux with an X11 session (no Wayland)." />
+  <Card title="Linux ARM64" href="https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Linux-ARM64.zip" description="ARM-based Linux with an X11 session (no Wayland)." />
+</Cards>
+
 ## Install
 
-<Callout title="More install channels coming soon">
-AgentOS will soon be available through additional channels (such as a NuGet
-package). For now, we recommend installing it via `pip`.
-</Callout>
-
-Run the following in a terminal (or PowerShell on Windows) to install AgentOS
-with `pip`:
-
-```bash
-pip install askui-agent-os
-```
-
-If you want to use AgentOS with the AskUI Desktop App, point the app at the
-installed binary:
+There is no installer to run: unpack the archive into a folder of your choice
+and point AskUI Desktop at the controller inside it.
 
 <Steps>
 <Step>
-Open **Settings** in AskUI Desktop and go to **This machine**.
+**Unpack the ZIP into its own folder.** The archive has no top-level folder,
+its files land directly where you extract it, so create a dedicated folder
+first, for example:
+
+| Platform | Folder |
+|---|---|
+| Windows | `C:\Users\<you>\AskUI\AgentOS` |
+| macOS | `/Users/<you>/AskUI/AgentOS` |
+| Linux | `/home/<you>/AskUI/AgentOS` |
+
+Keep the folder's contents together: the controller loads the folders next to
+it, such as `Configs`.
 </Step>
 <Step>
-Under **AgentOS**, paste the path to the installed controller. For a `pip`
-install it looks like:
+**Copy the path to the controller.** Inside that folder, find the
+`AskuiRemoteDeviceController` executable and copy its full path:
+
+- **Windows:** Shift + right-click `AskuiRemoteDeviceController.exe` and choose
+  **Copy as path**. Windows wraps the path in quotes, remove them when you
+  paste.
+- **macOS:** right-click `AskuiRemoteDeviceController`, hold **Option** and
+  choose **Copy "AskuiRemoteDeviceController" as Pathname**.
+
+With the example folders above, the path is:
 
 ```
-~/py-env/lib/python3.12/site-packages/askui_agent_os/bin/AskuiRemoteDeviceController
+C:\Users\<you>\AskUI\AgentOS\AskuiRemoteDeviceController.exe
+```
+
+```
+/Users/<you>/AskUI/AgentOS/AskuiRemoteDeviceController
 ```
 </Step>
+<Step>
+**Point AskUI Desktop at it.** Open **Settings** in AskUI Desktop, go to
+**This machine**, and paste the path under **Agent OS → Controller path**.
+Use the full path, `~` is not expanded. The change applies on the next device
+connect, no restart needed.
+</Step>
 </Steps>
+
+<Callout title="Linux">
+AskUI Desktop runs on Windows and macOS. On a Linux machine, start
+`AskuiRemoteDeviceController` from the unpacked folder in an **X11** session
+(Wayland is not supported) and drive it from AskUI Desktop as a
+[Remote computer](/docs/devices/remote-computer).
+</Callout>
 
 ## What's next?
 
