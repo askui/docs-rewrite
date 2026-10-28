@@ -8,8 +8,10 @@ import { basePath } from '@/lib/shared';
 const target = `${basePath}/docs`;
 
 export const metadata: Metadata = {
-  title: 'AskUI Documentation',
+  // `absolute` opts out of the root layout's "| AskUI Docs" title template.
+  title: { absolute: 'AskUI Documentation' },
   robots: { index: false, follow: true },
+  alternates: { canonical: '/' },
 };
 
 export default function RootPage() {

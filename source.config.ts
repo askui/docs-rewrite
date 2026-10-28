@@ -8,7 +8,12 @@ import { remarkBasePath } from './lib/remark-base-path';
 export const docs = defineDocs({
   dir: 'content/docs',
   docs: {
-    schema: pageSchema,
+    // `metaTitle` (optional) overrides the page title in <title> only; the
+    // visible H1 and sidebar label keep `title`. Use it when two pages share a
+    // title (e.g. several section pages called "Overview").
+    schema: pageSchema.extend({
+      metaTitle: pageSchema.shape.title.optional(),
+    }),
     postprocess: {
       includeProcessedMarkdown: true,
     },
