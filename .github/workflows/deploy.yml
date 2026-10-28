@@ -40,6 +40,9 @@ jobs:
           # on purpose — GitHub Actions expressions treat "" as unset. "ROOT" is
           # the sentinel the app maps to an empty base path.
           NEXT_PUBLIC_BASE_PATH: ${{ vars.DOCS_SERVE_AT_ROOT == 'true' && 'ROOT' || '/docs-rewrite' }}
+          # PostHog project API key (public, write-only), the same project as
+          # www.askui.com. Repo variable POSTHOG_KEY; unset = PostHog off.
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ vars.POSTHOG_KEY }}
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
