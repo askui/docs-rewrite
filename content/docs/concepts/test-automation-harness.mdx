@@ -24,7 +24,7 @@ from defect. That layer is gone here, nothing in a test encodes the UI's
 structure, so there is nothing to repair when the UI changes.
 
 The time moves to the part that actually needs a tester: reading the
-[report](/docs/results/run-report), judging whether the behavior was right,
+[execution report](/docs/results/run-report#execution-report), judging whether the behavior was right,
 and writing up the defect with the evidence attached. For an organization
 that is the real shift, automation cost stops scaling with UI churn, and
 testing capacity goes into coverage and analysis instead of maintenance.
@@ -103,7 +103,7 @@ What it hands each phase, what it enforces, and what it leaves behind:
   - **Infrastructure broke** (device connection, session, peripheral) →
     `BROKEN` with a diagnosis hint, and the run aborts instead of grinding
     on against a broken machine.
-  - **A referenced tool is missing** → `WARN` if the agent reached the goal
+  - **A referenced tool is missing** → `WARNING` if the agent reached the goal
     another way, `BROKEN` if the step depended on it, and the next test
     still runs.
   - **A custom tool doesn't compile** → the run aborts before the first

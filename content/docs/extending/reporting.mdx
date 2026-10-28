@@ -26,7 +26,7 @@ The **execution report** is written after the test, by a separate agent. It
 reads the test's conversation and screenshots and writes the report in the
 shape of `utils/format.md`. The next test starts at once, and the report is
 written in the background. A report never changes the result of a test.
-What a report contains: [Execution report](/docs/results/run-report).
+What a report contains: [Execution report](/docs/results/run-report#execution-report).
 
 ## Create report
 
@@ -94,7 +94,7 @@ It starts from the default format.
 The format instructs the report writer, not the testing agent. Keep these
 parts:
 
-- **The step statuses** (`PASSED`, `FAILED`, `SKIPPED`, `WARN`, `BROKEN`):
+- **The step statuses** (`PASSED`, `FAILED`, `SKIPPED`, `WARNING`, `BROKEN`):
   the default format asks the writer to judge each step like the
   [status definitions](#status-definitions).
 - **The overall status**: the report states the status that the test
@@ -122,12 +122,28 @@ evidence are yours to tailor:
 }
 ```
 
-| Field | Values |
-| --- | --- |
-| `createReport` | `always`, `failures`, or `never` |
-| `modelId` | `same-as-runs`, `best`, or the id of a hosted model |
-| `byomSameAsRuns` | `true` to use your own provider's run model for reports |
+**`createReport`** sets when an execution report is written. A
+[test plan](/docs/writing-tests/plans#build-a-plan) can override it.
 
-A project without this file uses **Always** and the model of your runs. A
-separate provider for reports is stored in the app on your machine, not in
-the project.
+- `always`: after every test.
+- `failures`: only for tests that ended `FAILED` or `BROKEN`.
+- `never`: none during the run. You can still write them later from the
+  **Runs** page.
+
+**`modelId`** sets which hosted AskUI model writes the reports when your
+runs use AskUI's models. It has no effect when your runs use your own model
+(ModelBridge or AirGap).
+
+- `same-as-runs`: the model the run used. This is the default.
+- `best`: the best available hosted model.
+- A hosted model id: that model.
+
+**`byomSameAsRuns`** applies only to runs on your own model.
+
+- `true`: reports use the same provider and model as the run. This is the
+  default.
+- `false`: reports use the separate provider you set up on the
+  **Reporting** tab. That provider is stored in the app on your machine,
+  not in the project, so the project file only records that it is separate.
+
+A project without this file uses **Always** and the model of your runs.

@@ -107,7 +107,7 @@ thing everywhere: [Status definitions](/docs/extending/reporting#status-definiti
 `utils/format.md` defines the
 [execution report](/docs/results/run-report#execution-report): the
 Markdown structure and the step vocabulary (`PASSED`, `FAILED`, `SKIPPED`,
-`WARN`, `BROKEN`). A separate agent writes the report after each test and
+`WARNING`, `BROKEN`). A separate agent writes the report after each test and
 follows this file. Edit it under **Extending → Reporting**, in the
 **Report format** section.
 
@@ -154,7 +154,7 @@ good rule reads like a bug fix:
   you are doing it right. Only you know your UI.
 
 After a prompt change, run the affected folder and read the
-[execution report](/docs/results/run-report), the **Agent Interpretation** per
+[execution report](/docs/results/run-report#execution-report), the **Agent Interpretation** per
 step shows whether the new wording landed the way you meant it. The run's
 conversation log also records the exact system prompt per phase, expand
 the **System prompt** section under the act header to see precisely what

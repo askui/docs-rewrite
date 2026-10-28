@@ -1,12 +1,12 @@
 ---
 icon: FileChartColumn
 title: Management Report
-description: One report over every run in a date range, pass counts per test, test period, racks, and the software version you name, built without an AI model and delivered as PDF, JSON, or JUnit XML.
+description: One report over every run in a date range, pass counts per test, test period, devices, and the software version you name, built without an AI model and delivered as PDF, JSON, or JUnit XML.
 ---
 
 The **Management Report** summarizes the runs of the project in a date
 range: how many tests ran, how many passed, per test and in total, and on
-which racks. Use it to sign off a release without opening every run.
+which devices. Use it to sign off a release without opening every run.
 
 No AI model builds it. It counts the [recorded results](/docs/results/run-report#test-result)
 and the run details, so the same runs always give the same figures. It
@@ -60,7 +60,7 @@ Fields you leave empty do not appear.
 The PDF starts with a dark navy **cover page**. It shows the AskUI logo,
 `Management Report · <period>`, the project name with
 **Management Report** below it, and a row of headline facts: the test
-period, the software version, the runs, the pass rate, the racks, the
+period, the software version, the runs, the pass rate, the devices, the
 plans, the tests executed, and the size of the appendix. The other
 [additional information](#additional-information) you entered joins
 them.
@@ -96,8 +96,8 @@ What the sections hold:
 - **Test period**: the first and the last run in the range.
 - **Software version**: the version you entered, or `—` when the field is
   empty. It belongs to the report, not to the runs.
-- **Racks**: the [device profiles](/docs/devices) the runs used. A
-  **rack** is the name of a device profile.
+- **Devices**: the [device profiles](/docs/devices) the runs used, by
+  name.
 - **Charts**: two, in this order.
   - **Pass rate per test**, the main chart: one stacked bar per test
     (passed, failed, broken), with its pass rate and passed out of executed
@@ -109,7 +109,7 @@ What the sections hold:
   marker in the tables is navy too.
 - **Tests**: one row per test, with its runs, passed, failed, broken, pass
   rate, and the status of its last run.
-- **Runs**: every run in the range, with its start time, rack, and passed
+- **Runs**: every run in the range, with its start time, device, and passed
   out of executed tests.
 
 The counting rules are the same as in the
@@ -117,7 +117,7 @@ The counting rules are the same as in the
 
 ## Leave out a run
 
-A run on a broken rack or a misconfigured device can distort the numbers.
+A run on a broken or misconfigured device can distort the numbers.
 Untick it in the dialog's run list, and the figures, charts, and tables no
 longer count it. The report still lists the run, marked as excluded, so it
 shows what was left out.

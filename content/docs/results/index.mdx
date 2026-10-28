@@ -8,6 +8,16 @@ Every run is kept: the result of each test, its execution report, the
 screenshots, and the complete conversation. The **Runs** page is where you
 open them.
 
+## Reports at a glance
+
+| Name | What it is | Written by, and when | Where you find it | For whom |
+| --- | --- | --- | --- | --- |
+| [Conversation log](#conversation-log) | Every message of the run, one after another. The raw record, not a report. | The run, live while it runs, kept afterwards | The run's **Conversation log** entry. On disk: `conversation.json` | Anyone who needs to see what the agent did |
+| [Execution report](/docs/results/run-report#execution-report) | One test, step by step, with screenshots | A separate agent, after the test, per the project's [report format](/docs/extending/reporting#report-format) | The test's entry under the run. On disk: `<test>/<test>_report.md` | Testers and anyone who reviews a test |
+| [Summary report](/docs/results/run-report#summary-report) | The result table of one run, one row per test | The run, from the recorded results | The run's **Summary report** entry. On disk: `summary_report.md` | Testers and test leads |
+| [Developer Report](#open-a-runs-results) | The self-contained HTML file of one run, formerly the HTML report, with every execution, its tokens, and its cost | The run, when it ends | The run's **Developer Report** entry, opens in your browser. On disk: `report.html` | Developers who debug a run |
+| [Management Report](/docs/results/management-report) | One report over many runs in a date range | You, on demand. Built without an AI model | **Generate Management Report** on the Runs page. Exported as PDF, JSON, or JUnit XML | Test managers and release sign-off |
+
 ## Open a run's results
 
 1. Open the **Runs** page.
@@ -25,7 +35,7 @@ open them.
    - **Developer Report**: the run's `report.html`, with every step and
      screenshot, opened in your browser. It is meant for debugging.
    - **The per-test entries**: each test's
-     [execution report](/docs/results/run-report) with its status badge.
+     [execution report](/docs/results/run-report#execution-report) with its status badge.
 
 **Open in file manager** in the right-click menu of a test jumps to its
 files on disk, the run's folder is one level up.
