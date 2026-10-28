@@ -42,7 +42,7 @@ example **PASSED**.
 - **Execution report and run summary**: no cover and no end page. The PDF
   opens with a dark header band: the AskUI logo, **Execution report** or
   **Run summary**, the test or plan name, and the facts (status, duration,
-  cost, run, rack, model).
+  cost, run, device, model).
 - **Management Report**: a dark cover page, numbered sections, and a dark
   end page: [What the report shows](/docs/results/management-report#what-the-report-shows).
 
@@ -79,7 +79,7 @@ The execution report and the run summary both carry a `run` object:
 | `folder` | The run's folder name under `agent_workspace/` |
 | `startedAt`, `endedAt` | When the run started and ended |
 | `plan` | The [test plan](/docs/writing-tests/plans) the run executed |
-| `rack` | The name of the device profile the run used |
+| `device` | The name of the device profile the run used |
 | `model` | The model that ran the tests |
 | `appVersion` | The version of AskUI Desktop or the CLI |
 | `cost` | The run's total cost in USD, reports included |
@@ -113,7 +113,7 @@ counts object has the same fields:
 {
   "schemaVersion": 1,
   "kind": "execution-report",
-  "run": { "folder": "2026-10-05_09-00-00", "rack": "Staging browser", "...": "..." },
+  "run": { "folder": "2026-10-05_09-00-00", "device": "Staging browser", "...": "..." },
   "test": "login_test",
   "file": "/projects/shop/tests/login_test.md",
   "status": "FAILED",
@@ -163,10 +163,10 @@ counts object has the same fields:
 | `firstRunAt`, `lastRunAt` | The test period: the first and the last counted run |
 | `details` | The [additional information](/docs/results/management-report#additional-information) from the dialog: `softwareVersion`, `author`, `preparedFor`, `reference`, `remarks`. Each is `null` when empty |
 | `runNameFilter` | The [run name](/docs/results/management-report#create-a-report) text the report was narrowed by, or `null` when no filter was set |
-| `plans`, `racks` | Lists of the plans and racks of the counted runs |
+| `plans`, `devices` | Lists of the plans and devices of the counted runs |
 | `totals` | [Counts](#counts) over all counted runs |
 | `tests` | One entry per test: `name`, `runs`, `counts`, `lastStatus`, `lastRunAt` |
-| `runs` | One entry per run in the range: `folder`, `startedAt`, `title`, `plan`, `rack`, `counts`, and `excluded` (`true` for a run you unticked) |
+| `runs` | One entry per run in the range: `folder`, `startedAt`, `title`, `plan`, `device`, `counts`, and `excluded` (`true` for a run you unticked) |
 | `executions` | One entry per test execution of the counted runs: `runFolder`, `startedAt`, `run`, `test`, `status`, `duration`, `hasReport` (`true` when the execution has an execution report), and `canHaveReport` (`true` when a report can be written for it: it recorded a test result and its run kept its conversation) |
 | `days` | One entry per day: `date`, `executed`, `passed` |
 
@@ -203,7 +203,7 @@ The statuses map to JUnit like this:
 | `SKIPPED`, `DISCARDED`, `DEPRECATED`, and tests that never ran | `<skipped>`, with the reason |
 
 Each `<testcase>` has the test file as its `classname`. Each `<testsuite>`
-carries the plan, the rack, the model, and the app version as properties.
+carries the plan, the device, the model, and the app version as properties.
 
 The [CLI](/docs/running-tests/cli#reports) writes `junit.xml` for a whole
 run with `--reporter junit`.

@@ -4,7 +4,7 @@ title: Analyzing failures
 description: The run failed, now what? Find the cause in the reports, then fix it in the right place, product, test, or environment.
 ---
 
-The [execution report](/docs/results/run-report) tells you **what** failed. This
+The [execution report](/docs/results/run-report#execution-report) tells you **what** failed. This
 page is the loop for **why**, and where the fix belongs.
 
 ## Find the cause
@@ -44,7 +44,7 @@ page is the loop for **why**, and where the fix belongs.
        in the run's toolbox → enable it in the
        [Tool Store](/docs/extending/tools), or check `utils/custom_tools/`
        and the [MCP configuration](/docs/extending/mcp).
-   - **`WARN`**: passed with a caveat, read the report's **Issues**
+   - **`WARNING`**: passed with a caveat, read the report's **Issues**
      section, then decide:
      - **Standard behavior of your application** (a known pop-up, a slow
        first load)? Make it expected, a
@@ -59,7 +59,7 @@ page is the loop for **why**, and where the fix belongs.
      apply. Check the **Preconditions** section. A test whose note starts
      with "Not run:" never started: look at the setup or the test it
      [names](/docs/results/run-report#tests-that-never-started).
-2. Open the failing case's [execution report](/docs/results/run-report) and read
+2. Open the failing case's [execution report](/docs/results/run-report#execution-report) and read
    the failed step (no report yet? Right-click the case on the **Runs** page
    and pick **Generate execution report**):
    - **Agent Interpretation**: did the agent understand the step the way
