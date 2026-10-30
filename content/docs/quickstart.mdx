@@ -7,7 +7,7 @@ description: Find your first bug in 10 minutes.
 Find your first bug in 10 minutes. This guide takes you from a blank machine to
 your first test run, no selectors, no code, just plain language. Four steps:
 download AskUI Desktop, sign in, walk the onboarding wizard, and run the
-template's example test on your own machine.
+demo project's test on your own machine.
 
 <Callout title="What you need">
 A Windows or macOS machine. No prior automation experience required.
@@ -57,12 +57,12 @@ Launch AskUI Desktop and sign in with your AskUI account.
 
 <Steps>
 <Step>
-**New to AskUI?** Click **Sign up** to create an account with your work email,
+**New to AskUI?** Click **Create account** to create an account with your work email,
 accept the terms, and verify your email from the link we send. Accounts and
 billing live in the [AskUI Hub](https://hub.askui.com).
 </Step>
 <Step>
-**Already have an account?** Click **Log in** and authenticate in your browser.
+**Already have an account?** Click **Sign in** and authenticate in your browser.
 The same login works across Desktop and the Hub. The CLI authenticates with
 an [access token](/docs/account-billing/workspaces) instead.
 </Step>
@@ -80,7 +80,7 @@ On first launch, AskUI Desktop opens a short setup wizard.
 
 <Steps>
 <Step>
-**Welcome.** A quick tour of what AskUI does, click **Get started**.
+**Welcome.** Click **Get set up**.
 </Step>
 <Step>
 **Grant system permissions** *(macOS only).* Allow **Screen Recording** and
@@ -88,16 +88,60 @@ On first launch, AskUI Desktop opens a short setup wizard.
 flips green automatically once granted.
 </Step>
 <Step>
-**Create your first project, Start from template.** Choose **Start from
-template** (recommended) and pick an empty folder. AskUI scaffolds the default
-template: `tests/` (with `ui.md` and `rules.md`), `procedures/`, and `utils/`, pre-filled with an
-example test and the context files (`ui.md`, `rules.md`), ready to run.
+**Where do you want to test?** Tick **Web**, **Desktop** and/or **Android**.
+Whatever this computer already has is ticked for you. Ticking a kind starts
+setting up what it needs right away, in the background, with its progress on the
+card: the Chromium browser for Web (about 170 MB), AgentOS for Desktop, and, once
+you accept Google's licenses, the Android SDK and an emulator (about 1–1.5 GB). You
+can continue while it downloads.
 </Step>
 <Step>
-**You're set.** The final screen maps out where everything lives. Click
-**Start testing** to open your new project.
+**Which model runs your tests?** Signed in with an AskUI account, pick one of the
+AskUI models. We recommend starting with **Claude Haiku**: it is fast, costs the
+least and runs the demo test well. With a license, check the model you connected
+during license setup, or connect another one. The
+[AskUI model guide](https://www.askui.com/downloads/askui-ai-models-inference-guide.pdf)
+helps you choose. Change it any time under **Settings → AI Settings → Testing Model**.
+</Step>
+<Step>
+**You're ready to test.** Watch the short quick start video, or open the tutorial
+series. Then click **Start with the demo project**: AskUI creates it in
+`Documents/AskUI demo project` (or **Choose another folder**) and opens it.
+**Skip the demo** opens the app without a project.
 </Step>
 </Steps>
+
+The demo project tests the AskUI website. Its first device is the web browser, or
+this computer when you ticked Desktop, so its test runs without any setup.
+
+## Step 4: Follow Getting started (5 min)
+
+The dashboard walks you to your first passing test:
+
+- A short **tour** shows where things are: Getting started, Tests, Devices and
+  Runs (**Next**, or **Skip tour**).
+- **Getting started** shows four steps and the next one to do: **Open the demo
+  test**, **Run the test**, **Get it to pass**, **Look at the results**. Its
+  button takes you there. On every other page the same steps sit in a small card
+  at the bottom right, which you can fold away.
+- On the test, **Run** is highlighted. While the test runs, Getting started says
+  so; when it ends, **View results** opens its report.
+- On the Runs page a short tour explains the run's reports, from the top of the
+  list: the conversation log, the summary report, the Developer Report, the
+  execution report and Export (**Next**, or **Skip tour**).
+- **Setting up your devices** on the dashboard shows the downloads still running,
+  with the time left, and **Retry** or **Resume** when one stopped. The same
+  downloads show under **Settings → This machine**.
+
+To walk the wizard and Getting started again, open **Settings → This machine →
+Setup assistant**.
+
+<Callout title="Make it yours">
+Once the demo test passes, open `tests/ui.md` on the Tests page and describe your own
+app, its main screens, how to tell you're signed in, and any quirks. It's the
+single most important file for reliable runs. See
+[Prompting best practices](/docs/best-practices/prompting-best-practices).
+</Callout>
 
 ---
 
@@ -109,10 +153,12 @@ a computer, such as your local machine, AgentOS must be installed on whichever
 computer you want to automate. This can be your own machine, a remote host, a
 headless CI runner, or a device in a fleet.
 
-<Callout title="Manual install required (current version)">
-We're currently migrating to a newer App version with a more seamless setup
-experience. The currently released version still requires the manual
-installation of AgentOS.
+<Callout title="AgentOS on this computer">
+For the computer AskUI Desktop runs on, you don't need to install it by hand: tick
+**Desktop** in the onboarding wizard, or open **Settings → This machine → AgentOS**
+and click **Download AgentOS**. The app downloads the release for your computer,
+checks that it is signed by askui GmbH and points itself at it. Install it by hand
+for any other computer you want to automate.
 </Callout>
 
 You can install AgentOS in one of two ways:
@@ -159,37 +205,6 @@ C:\Users\<you>\AskUI\AgentOS\AskuiRemoteDeviceController.exe
 
 See [Standalone installation](/docs/agentos/installation/standalone) for how to
 copy the path on each platform.
-
----
-
-## Step 4: Run your first test locally (3 min)
-
-The default template ships with a runnable example test, run it against your
-own machine to see a full pass end to end.
-
-<Steps>
-<Step>
-**Open the example test** in `tests/`. It's plain Markdown, readable steps, no
-code or selectors. Leave it as-is for this first run.
-</Step>
-<Step>
-**Run it locally.** Start the run against your local machine (this computer).
-AskUI Desktop launches the agent, which acts on the screen step by step and
-streams progress into **Live Run**.
-</Step>
-<Step>
-**Read the report.** Each step shows its status (`PASSED`, `FAILED`, `WARN`,
-`SKIPPED`, or `BROKEN`) and a screenshot. A green run means every step actually
-passed, the agent doesn't improvise its way to done.
-</Step>
-</Steps>
-
-<Callout title="Make it yours">
-Once the example passes, open `tests/ui.md` on the Tests page and describe your own
-app, its main screens, how to tell you're signed in, and any quirks. It's the
-single most important file for reliable runs. See
-[Prompting best practices](/docs/best-practices/prompting-best-practices).
-</Callout>
 
 ---
 
