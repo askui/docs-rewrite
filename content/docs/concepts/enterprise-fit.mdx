@@ -121,7 +121,7 @@ you control:
 
 | Component | Role |
 | --- | --- |
-| **AskUI Desktop** | Where you author, run, and review, [projects](/docs/projects), [devices](/docs/devices), [reports](/docs/results/run-report) |
+| **AskUI Desktop** | Where you author, run, and review, [projects](/docs/projects), [devices](/docs/devices), [reports](/docs/results#reports-at-a-glance) |
 | **AskUI CLI** | The same runs, headless, [CI and scheduled execution](/docs/running-tests/cli) |
 | **AgentOS** | Gives the agent eyes and hands on a machine: screen, keyboard, mouse, [details](/docs/agentos) |
 | **AskUI Hub** | Workspace, members, tokens, billing, [account](/docs/account-billing/workspaces) |
@@ -237,8 +237,9 @@ tool, what belongs in review:
 | Data | Location |
 | --- | --- |
 | Testware, tests, procedures, plans, rules | The [project folder](/docs/projects), plain files, yours to version |
-| Agent files, `tests/ui.md`, `tests/rules.md`, `utils/format.md`, tool and device configuration | Same folder, versioned alongside the testware |
-| Test evidence, reports, screenshots, logs | `agent_workspace/` inside the project, local |
+| Agent files, `tests/ui.md`, `tests/rules.md`, `utils/status.md`, `utils/format.md`, `utils/reporting.json`, tool and device configuration | Same folder, versioned alongside the testware |
+| Test evidence, results, reports, screenshots, logs | `agent_workspace/` inside the project, local |
+| Exported reports (PDF, JSON) | Wherever you save them, nothing is uploaded |
 | Credentials for tests | The app's [secret store](/docs/extending/secrets), encrypted with your Windows/macOS user account, never in the project |
 | Sign-in tokens | Encrypted local storage on your machine |
 
@@ -250,7 +251,9 @@ action on your side: browser bundles (first
 (consent click on [Set up](/docs/devices/android-emulator)), NuGet packages
 declared by your [custom tools](/docs/extending/custom-tools) (resolved via
 your own `NuGet.config`, so enterprise feeds and mirrors apply), and
-connections to the [MCP servers](/docs/extending/mcp) your project registers.
+connections to the [MCP servers](/docs/extending/mcp) your project registers,
+and a Chromium browser of about 170 MB on the first
+[PDF export](/docs/results/export#the-first-pdf-export) when none is there.
 
 ## Running the lab machines
 
