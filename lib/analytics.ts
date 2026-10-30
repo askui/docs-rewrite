@@ -17,7 +17,7 @@
 // askui.com domain, so ad blockers that block posthog.com do not drop them.
 //
 // Off unless NEXT_PUBLIC_POSTHOG_KEY is set at build time (the deploy workflow
-// reads it from 1Password, op://plat-tracking/posthog). lib/tracking.ts also
+// reads it from 1Password, op://plat-tracking/Posthog Production). lib/tracking.ts also
 // keeps it off on localhost and in automated browsers.
 
 import posthog from 'posthog-js';

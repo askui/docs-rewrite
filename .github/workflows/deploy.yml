@@ -40,7 +40,7 @@ jobs:
           export-env: false
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          POSTHOG_KEY: "op://plat-tracking/posthog/POSTHOG_KEY"
+          POSTHOG_KEY: "op://plat-tracking/Posthog Production/POSTHOG_KEY"
       - name: Build with Next (static export)
         run: pnpm build
         env:
