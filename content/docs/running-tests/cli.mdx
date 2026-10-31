@@ -155,8 +155,8 @@ does not load stops the run with exit code 3, and the message names the URL.
 ## Model options
 
 By default, inference runs through the **AskUI hub**, billed to your
-workspace and authenticated with `ASKUI_WORKSPACE_ID`/`ASKUI_TOKEN`, nothing
-to configure. The hub serves more than one model. Missing credentials stop
+workspace and authenticated with your `askui login` or with
+`ASKUI_WORKSPACE_ID`/`ASKUI_TOKEN`, nothing to configure. The hub serves more than one model. Missing credentials stop
 the run with exit code 3 before the first model call.
 
 | Option | Default | Description |
@@ -215,6 +215,28 @@ what it runs or which exit code it returns.
 
 These options work before or after `run`. `--ci` with `--interactive`, and
 `--verbose` with `--quiet`, are usage errors. Errors always go to stderr.
+
+## Signing in
+
+| Command | What it does |
+| --- | --- |
+| `askui login` | Signs the CLI in with your AskUI account, in the browser. Without a browser (SSH, no display) it shows a link and a code to confirm on any device. |
+| `askui login --use-device-code` | Always uses the link and the code. |
+| `askui login --workspace <name>` | Picks the workspace when your account has several. |
+| `askui status` | Shows the signed-in account, the workspace and the model a run would use. |
+| `askui logout` | Ends the sign-in at AskUI and deletes it on this machine. |
+
+The sign-in stays valid while you use it: a run of hours renews it as it goes.
+It belongs to the CLI alone; signing out of AskUI Desktop does not sign out the
+CLI, and the other way round. `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`, when set,
+win over the sign-in.
+
+`askui login` signs in existing accounts only. If it says your account is not
+finished, confirm your email address and accept the terms in the
+[AskUI Hub](https://hub.askui.com) or in AskUI Desktop, then run it again. On
+macOS the sign-in is kept in the Keychain; in an SSH session the Keychain is
+locked, so unlock it first with `security unlock-keychain`. On Linux, use
+`ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`.
 
 ## Credentials and `.env`
 
