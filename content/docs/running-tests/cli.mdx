@@ -223,10 +223,12 @@ These options work before or after `run`. `--ci` with `--interactive`, and
 | `askui login` | Signs the CLI in with your AskUI account, in the browser. Without a browser (SSH, no display) it shows a link and a code to confirm on any device. |
 | `askui login --use-device-code` | Always uses the link and the code. |
 | `askui login --workspace <name>` | Picks the workspace when your account has several. |
-| `askui status` | Shows the signed-in account, the workspace and the model a run would use. |
+| `askui status` | Shows the signed-in account and the day the sign-in ends, the workspace and the model a run would use. |
 | `askui logout` | Ends the sign-in at AskUI and deletes it on this machine. |
 
-The sign-in stays valid while you use it: a run of hours renews it as it goes.
+A run of hours keeps its sign-in valid as it goes. The sign-in itself lasts 90 days:
+`askui status` shows the day it ends, and in the last 14 days every run reminds you to
+run `askui login` again.
 It belongs to the CLI alone; signing out of AskUI Desktop does not sign out the
 CLI, and the other way round. `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`, when set,
 win over the sign-in.
