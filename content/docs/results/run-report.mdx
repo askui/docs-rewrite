@@ -13,8 +13,8 @@ how to open them: [Runs](/docs/results).
 The agent ends each test by recording its result: one status and a short
 reason, for example `FAILED`, "Expected the dashboard, saw an error
 banner.". The recorded result decides whether the test passed. The summary
-report, the Dashboard, the [Management Report](/docs/results/management-report),
-and the [CLI](/docs/running-tests/cli)'s exit code all count it.
+report, the Dashboard, and the [Management Report](/docs/results/management-report)
+all count it.
 
 The agent picks the status by AskUI's
 [status definitions](/docs/extending/reporting#status-definitions). The
@@ -257,7 +257,7 @@ summary report pane exports the run as PDF, JSON, or JUnit XML:
 <Callout title="Counting rules">
 `WARNING` counts as passed (tracked separately in the warning total).
 `SKIPPED` tests are excluded from the total, they show in the table but
-don't affect the pass rate. The Runs page, the Dashboard, the CLI, and the
+don't affect the pass rate. The Runs page, the Dashboard, and the
 Management Report count with this one rule, so their figures always agree.
 </Callout>
 

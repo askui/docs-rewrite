@@ -81,7 +81,7 @@ The execution report and the run summary both carry a `run` object:
 | `plan` | The [test plan](/docs/writing-tests/plans) the run executed |
 | `device` | The name of the device profile the run used |
 | `model` | The model that ran the tests |
-| `appVersion` | The version of AskUI Desktop or the CLI |
+| `appVersion` | The version of AskUI Desktop |
 | `cost` | The run's total cost in USD, reports included |
 
 ### Counts
@@ -204,9 +204,6 @@ The statuses map to JUnit like this:
 
 Each `<testcase>` has the test file as its `classname`. Each `<testsuite>`
 carries the plan, the device, the model, and the app version as properties.
-
-The [CLI](/docs/running-tests/cli#reports) writes `junit.xml` for a whole
-run with `--reporter junit`.
 
 AskUI Desktop writes these files and does not read them back. To keep a
 report inside the app, keep the run folders.

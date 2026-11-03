@@ -51,11 +51,11 @@ result decides what happens next:
 | `FAILED` or `BROKEN` | Failed. The tests beneath it do not run and show as `SKIPPED`. | Its reason appears in the summary report. The run goes on, also with the next folder. |
 
 Only a failed or broken setup counts towards the run's result: the run
-fails, and the CLI's exit code shows it. A setup's warning and every
-teardown result appear in the summary but never count, so they change
-neither the pass rate nor the exit code. The
-[Management Report](/docs/results/management-report) leaves setups and
-teardowns out.
+fails. A setup's warning and every teardown result appear in the summary
+but never count, so they never change the pass rate. The
+[Management Report](/docs/results/management-report) does not count
+setups and teardowns either, but it names every one that failed or broke
+([details](/docs/results/management-report#failed-setups-and-teardowns)).
 
 The result is saved directly in the run folder, as
 `<folder>_setup_result.json` or `<folder>_teardown_result.json`. The agent

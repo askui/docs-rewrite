@@ -115,6 +115,23 @@ What the sections hold:
 The counting rules are the same as in the
 [summary report](/docs/results/run-report#summary-report).
 
+### Failed setups and teardowns
+
+Setups and teardowns do not count towards the figures, but the report
+names every one that ended `FAILED` or `BROKEN`, so tests skipped because
+of a setup never go unexplained:
+
+- **Runs**: the run's row is marked with a short note, for example
+  *Setup `login` failed* **F1**. The reference leads to the **Setup and
+  teardown failures** block below the table, which holds the status, the
+  run, and the full recorded reason. For a setup, it also says how many
+  tests of the run did not run.
+- **Overview**: a warning below the key-figure cards.
+- **Important notes**: one extra note.
+
+All three appear only when a counted run had a failed or broken setup or
+teardown. A setup's `WARNING` is not a failure, because its tests ran.
+
 ## Leave out a run
 
 A run on a broken or misconfigured device can distort the numbers.
