@@ -13,7 +13,10 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
    runs" rule — start exactly this demo run and let it finish:
    1. Open the **Devices** page. If the **Pixel 9** profile is not connected,
       click **Start** and wait until it shows Ready (a cold boot can take
-      several minutes — the card shows the phases).
+      several minutes — the card shows the phases). While its button reads
+      **Checking…**, wait for it. If it reads **Set up**, click it, install
+      what the dialog lists (Android platform-tools, then the Android SDK),
+      close the dialog, then click **Start**.
       Caution: Use the **Pixel 9 (for Mac)** profile if you are operating a Mac!
    2. Open the **Tests** page and select `enable_airplane_mode_android.md`. Run it
       on the **Pixel 9** device (Run-on picker or right-click → Run on).
