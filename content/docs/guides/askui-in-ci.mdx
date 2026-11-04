@@ -35,6 +35,12 @@ project references: a `${VAR}` in a device profile, and every
 [secret](/docs/running-tests/cli#secrets-in-a-headless-run), resolve from
 the environment variable of that name.
 
+Set the runner's other settings the same way, as environment variables, such
+as `ASKUI_MODEL_ASKUI` for the hosted model or `HTTPS_PROXY` for a proxy,
+rather than with `askui config set`: they apply to the pipeline only and win
+over what the runner machine stores
+([In CI](/docs/running-tests/cli-configuration#in-ci)).
+
 ## 2: Give it a device
 
 The CLI runs on the project's [device profiles](/docs/devices), picked with

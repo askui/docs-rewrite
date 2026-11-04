@@ -19,21 +19,29 @@ Run from your Project root, or pass `--project <dir>`. Without arguments,
 
 `askui --help` and `askui run --help` print every option, the environment
 variables, and the exit codes. `askui --version` prints the CLI version.
+`askui configure` and `askui config` set up the machine the CLI runs on, see
+[Configure the CLI](/docs/running-tests/cli-configuration).
 
 ## On a machine with AskUI Desktop
 
 On a machine where AskUI Desktop is installed, `askui run` runs a Project the
-way a run started in the app does. It reads the app's settings on this
-machine, for your user, without changing them:
+way a run started in the app does. AskUI Desktop and the CLI share one
+configuration per machine and user: what you set in the app, the CLI uses, and
+what you set with [`askui config`](/docs/running-tests/cli-configuration), the
+app shows.
 
-| Setting | From AskUI Desktop | What overrides it |
+| Setting | From this machine | What overrides it |
 | --- | --- | --- |
-| Model | The model you chose in the app: AskUI Inference with its hosted model, or, with a license, your own model (AskUI AirGap, AskUI ModelBridge), with its truncation settings | `--model-provider`, `--model-id` |
-| In-Flight Guidance reviewer | The reviewer model you chose in the app | — |
-| Secrets | The Project's [secrets](/docs/extending/secrets), including the ones the agent may type | An environment variable of the same name |
-| Network proxy | The app's proxy | — |
-| Execution report model | With a license, the separate report model on the **Reporting** tab | — |
-| AgentOS controller | The controller path under **Settings → Agent OS** | — |
+| Model | The model you chose in the app or with `askui config`: AskUI Inference with its hosted model, or, with a license, your own model (AskUI AirGap, AskUI ModelBridge), with its truncation settings | `--model-provider`, `--model-id`, the `ASKUI_MODEL_*` variables |
+| In-Flight Guidance reviewer | The reviewer model you chose | the `ASKUI_REVIEWER_MODEL_*` variables |
+| Secrets | The Project's [secrets](/docs/extending/secrets) in the app, including the ones the agent may type | An environment variable of the same name |
+| Network proxy | The proxy of this machine | `HTTPS_PROXY`, `HTTP_PROXY`, `NO_PROXY` |
+| Execution report model | With a license, the separate report model on the **Reporting** tab | the `ASKUI_REPORTING_MODEL_*` variables |
+| AgentOS controller | The controller path under **Settings → Agent OS** | `ASKUI_CONTROLLER_PATH` |
+
+A flag wins over an environment variable, which wins over the Project's
+`.env`, which wins over this machine's value
+([Which value wins](/docs/running-tests/cli-configuration#which-value-wins)).
 
 The credentials come from the CLI's own `askui login` or from the environment
 (`ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`), never from the app's sign-in (see
@@ -43,12 +51,13 @@ What the Project's device profile says, its display, user session and proxy
 setting, always applies, on every machine: a desktop connects the way the app
 connects it.
 
-To ignore what AskUI Desktop stores on the machine, as on a CI runner, pass
+To ignore what is stored on the machine, as on a CI runner, pass
 `--ignore-app-settings`, or set `ASKUI_IGNORE_APP_SETTINGS=1` for a whole
-pipeline. The CLI's own settings and your credentials still apply.
-`askui status` prints what a run would use: the credentials, the workspace, the
-entitlement, and the model. Every run names its model and workspace in its
-first line.
+pipeline. The CLI's own settings, your credentials, and the environment
+variables still apply. `askui status` prints what a run would use, with where
+each value comes from: the credentials, the workspace, the entitlement, the
+model, and the proxy. Every run names its model and workspace, and their
+source, in its first line.
 
 ## What a run does
 
@@ -198,8 +207,9 @@ does not load stops the run with exit code 3, and the message names the URL.
 
 ## Model options
 
-On a machine with AskUI Desktop, the run uses the model you chose in the app
-(see [above](#on-a-machine-with-askui-desktop)). Otherwise, inference runs
+On a machine with AskUI Desktop, the run uses the model of this machine, chosen
+in the app or with `askui config` (see [above](#on-a-machine-with-askui-desktop)).
+The options below win over it for one run. Otherwise, inference runs
 through **AskUI Inference**, billed to your workspace and authenticated with
 your `askui login` or with `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`. AskUI
 Inference serves more than one model. Missing credentials stop the run with
@@ -291,6 +301,7 @@ These options work before or after `run`. `--ci` with `--interactive`, and
 | `askui login` | Signs the CLI in with your AskUI account, in the browser. Without a browser (SSH, no display) it shows a link and a code to confirm on any device. |
 | `askui login --use-device-code` | Always uses the link and the code. |
 | `askui login --workspace <name>` | Picks the workspace when your account has several. |
+| `askui config set workspace <name>` | Switches the workspace later, by name or id, without signing in again. |
 | `askui status` | Shows the signed-in account and the day the sign-in ends, the workspace and the model a run would use. |
 | `askui logout` | Ends the sign-in at AskUI and deletes it on this machine. |
 
@@ -318,13 +329,19 @@ locked, so unlock it first with `security unlock-keychain`. On Linux, use
 | `ASKUI_TOKEN` | An access token of that workspace, from the AskUI Hub. |
 | `ASKUI_IGNORE_APP_SETTINGS` | `1` or `true`: as `--ignore-app-settings`, for a whole pipeline. |
 | `ASKUI_INFERENCE_ENDPOINT` | The AskUI Inference endpoint, instead of the CLI's settings. |
-| `ASKUI_CONTROLLER_PATH` | The AgentOS controller to start for a desktop on this computer. |
+| `ASKUI_CONTROLLER_PATH` | The AgentOS controller to start for a desktop on this computer, instead of the stored path. |
 | `ASKUI_COMPONENT_REGISTRY_FILE` | The AgentOS component registry that names the installed controller. |
 | `ASKUI_INSTALLATION_DIRECTORY` | The AgentOS installation folder to find the controller in. |
 | `ASKUI_ADB_PATH` | The adb binary, instead of the one on `PATH` or in the Android SDK. |
 | `ASKUI_NUGET_TIMEOUT_SECONDS` | How long the NuGet packages of the custom tools may take to resolve. |
 | `CI` | Any value forces CI mode. |
 | `NO_COLOR` | Any value turns colors off. |
+
+Every setting of the machine that a run uses has a variable too, such as
+`ASKUI_MODEL_API_KEY` or `HTTPS_PROXY`, and wins over the stored value for the
+run. `askui run --help` lists them, and
+[Configure the CLI](/docs/running-tests/cli-configuration#settings) has the
+table.
 
 ## Credentials and `.env`
 
@@ -520,7 +537,10 @@ jobs:
 ```
 
 Pin `--output` to a fixed path so the artifact upload finds the reports,
-and upload with `if: always()` so failing runs keep their evidence. For
+and upload with `if: always()` so failing runs keep their evidence. Set
+other settings for the pipeline as environment variables too, such as
+`ASKUI_MODEL_ASKUI` or `HTTPS_PROXY`
+([In CI](/docs/running-tests/cli-configuration#in-ci)). For
 installing the CLI on a runner, publishing `junit.xml` as a test report, and
 what each device needs on the runner, see
 [AskUI in CI](/docs/guides/askui-in-ci).
