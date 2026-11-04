@@ -46,9 +46,11 @@ profile's host or serial, and set the variable in the pipeline (see
 A [browser](/docs/devices/web-browser) runs on the bare runner; use a
 profile with **Headless** on when the runner has no display.
 Desktop targets need a test machine with
-[AgentOS](/docs/agentos/deployment/ci) the runner can reach. The CLI
-connects to a device, it does not start an emulator, a simulator, or a VM,
-so start it in an earlier pipeline step.
+[AgentOS](/docs/agentos/deployment/ci) the runner can reach. A profile that
+provisions an Android emulator or an iOS simulator gets it started by the CLI,
+as in the app, so the runner needs the Android SDK or Xcode for it. A remote VM
+the app provisions is not started by the CLI: start it in an earlier pipeline
+step and run on a profile that points at its host.
 
 ### Runner requirements
 
@@ -81,9 +83,9 @@ Gate the pipeline on the exit code:
 | Code | Meaning |
 | --- | --- |
 | `0` | All tests passed. |
-| `1` | A test failed, broke, or was never reached: the product team acts. |
+| `1` | A test failed or broke, or a setup failed: the product team acts. |
 | `2` | The command line is wrong. |
-| `3` | The runner or the project is wrong: credentials, device, MCP server, an unset `${VAR}`. Nothing was sent to the model. |
+| `3` | The runner or the project is wrong: missing or rejected credentials, the device, an unset `${VAR}`, a custom tool that does not compile. No test result was produced. |
 | `4` | No test ran, for example an empty plan. |
 | `130` | Canceled. |
 
@@ -93,8 +95,8 @@ included; the [CLI reference](/docs/running-tests/cli) has every option.
 ## 4: Publish the test report
 
 With `--reporter` including `junit`, the run writes `<output>/junit.xml`, and
-your CI system shows pass and fail per test. `FAILED` is a failure, `BROKEN`
-and a test the run never reached are errors, and a `WARNING` passes with its
+your CI system shows pass and fail per test. `FAILED` is a failure, `BROKEN` is an error,
+a test that never started is `SKIPPED`, and a `WARNING` passes with its
 notes in the test output ([JUnit mapping](/docs/running-tests/cli#junit-mapping)).
 
 <Tabs items={['GitHub Actions', 'GitLab CI']}>

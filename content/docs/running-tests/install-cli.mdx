@@ -30,8 +30,10 @@ The CLI ships with [AskUI Desktop](/docs/get-started/install-desktop).
     Dragging the app into Applications runs no installer, so you add the
     command once: open **Settings → This machine → Command line** and click
     **Add to PATH**. AskUI Desktop links `~/.local/bin/askui` to the CLI inside
-    the app and adds `~/.local/bin` to your `PATH` if no shell profile has it
-    yet. Open a new terminal afterwards.
+    the app. It adds `~/.local/bin` to your `PATH` in `~/.zprofile` and
+    `~/.zshrc` (for bash, `~/.bash_profile` and `~/.bashrc`), where it is not
+    there yet. Both matter: the terminal of an editor such as VS Code reads only
+    `~/.zshrc`. Open a new terminal afterwards.
 
     If you move the app, the card offers **Repair**; **Remove** takes the
     link away again. Start the app from Applications, not from the disk
@@ -68,8 +70,8 @@ exit codes.
 The CLI runs on the Project's [device profiles](/docs/devices) in
 `devices.json`, the same ones the app uses (see
 [Choosing the device](/docs/running-tests/cli#choosing-the-device)). The
-CLI connects to a device; it does not start an emulator, a simulator, or a
-VM for you.
+CLI starts an emulator or a simulator that a profile provisions, as the
+app does.
 
 <Tabs items={['Desktop (AgentOS)', 'Browser', 'Android', 'iOS']}>
   <Tab value="Desktop (AgentOS)">
@@ -85,8 +87,9 @@ VM for you.
     first run.
   </Tab>
   <Tab value="Android">
-    `adb` must be on your `PATH` and the device (or emulator) already
-    running and visible to `adb devices`. See the
+    `adb` must be on your `PATH`. A physical device must be connected and
+    visible to `adb devices`. An emulator profile starts the emulator with
+    the Android SDK that AskUI Desktop set up. See the
     [ADB setup guide](/docs/agentos/deployment/local#android-setting-up-adb).
   </Tab>
   <Tab value="iOS">
@@ -99,20 +102,33 @@ VM for you.
 <Step>
 **Authenticate**
 
-With the default model provider (the AskUI hub), the CLI reads two environment
-variables:
+If AskUI Desktop runs with a **local license** on the machine, skip this step.
+The CLI then uses the license and the model you set up in the app, as the app
+does, and `askui status` shows that model.
+
+Otherwise, the CLI authenticates with an access token of your workspace. Create
+one in the [AskUI Hub](https://hub.askui.com) under your workspace's **Access
+tokens** (see [Workspaces & access tokens](/docs/account-billing/workspaces)),
+and set two environment variables:
 
 ```bash
 export ASKUI_WORKSPACE_ID="<your workspace id>"
 export ASKUI_TOKEN="<your access token>"
 ```
 
-Create the access token in the [AskUI Hub](https://hub.askui.com), see
-[Workspaces & access tokens](/docs/account-billing/workspaces). The CLI does
-not use your AskUI Desktop sign-in. Instead of exporting, you can also put
-both lines in a `.env` file in your Project root; the CLI loads it on every
-run (variables already set in the environment win). A new Project's
-`.gitignore` already keeps `.env` out of git.
+Instead of exporting, you can also put both lines in a `.env` file in your
+Project root. The CLI loads it on every run, and variables already set in the
+environment win. A new Project's `.gitignore` already keeps `.env` out of git.
+You choose the token's lifetime in the Hub, so the same setup works for a
+scheduled job and a CI runner.
+
+`askui login` and `askui logout` are not available yet: they print how to set
+the two variables and stop with exit code 3. To sign the CLI out, unset the
+variables, and delete the token in the Hub when you no longer need it.
+
+`askui status` shows what a run on this machine uses: whether AskUI Desktop's
+settings count, the kind of credential, the workspace, the token by its last
+three characters, the entitlement, and the model.
 </Step>
 
 <Step>
