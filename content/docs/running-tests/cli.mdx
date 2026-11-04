@@ -35,8 +35,8 @@ machine, for your user, without changing them:
 | Execution report model | With a license, the separate report model on the **Reporting** tab | — |
 | AgentOS controller | The controller path under **Settings → Agent OS** | — |
 
-The credentials come from the environment (`ASKUI_WORKSPACE_ID` and
-`ASKUI_TOKEN`), never from the app's sign-in (see
+The credentials come from the CLI's own `askui login` or from the environment
+(`ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`), never from the app's sign-in (see
 [Install the CLI](/docs/running-tests/install-cli#authenticate)).
 
 What the Project's device profile says, its display, user session and proxy
@@ -201,11 +201,11 @@ does not load stops the run with exit code 3, and the message names the URL.
 On a machine with AskUI Desktop, the run uses the model you chose in the app
 (see [above](#on-a-machine-with-askui-desktop)). Otherwise, inference runs
 through **AskUI Inference**, billed to your workspace and authenticated with
-`ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`. AskUI Inference serves
-more than one model. Missing credentials stop the run with exit code 3 before
-the first model call. Credentials the provider rejects, such as an expired
-token or a wrong API key, also stop the run with exit code 3. The message names
-the provider and says where to fix them.
+your `askui login` or with `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`. AskUI
+Inference serves more than one model. Missing credentials stop the run with
+exit code 3 before the first model call. Credentials the provider rejects, such
+as an expired token or a wrong API key, also stop the run with exit code 3. The
+message names the provider and says where to fix them.
 
 | Option | Default | Description |
 | --- | --- | --- |
@@ -283,6 +283,30 @@ what it runs or which exit code it returns.
 
 These options work before or after `run`. `--ci` with `--interactive`, and
 `--verbose` with `--quiet`, are usage errors. Errors always go to stderr.
+
+## Signing in
+
+| Command | What it does |
+| --- | --- |
+| `askui login` | Signs the CLI in with your AskUI account, in the browser. Without a browser (SSH, no display) it shows a link and a code to confirm on any device. |
+| `askui login --use-device-code` | Always uses the link and the code. |
+| `askui login --workspace <name>` | Picks the workspace when your account has several. |
+| `askui status` | Shows the signed-in account and the day the sign-in ends, the workspace and the model a run would use. |
+| `askui logout` | Ends the sign-in at AskUI and deletes it on this machine. |
+
+A run of hours keeps its sign-in valid as it goes. The sign-in itself lasts 90 days:
+`askui status` shows the day it ends, and in the last 14 days every run reminds you to
+run `askui login` again.
+It belongs to the CLI alone; signing out of AskUI Desktop does not sign out the
+CLI, and the other way round. `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`, when set,
+win over the sign-in.
+
+`askui login` signs in existing accounts only. If it says your account is not
+finished, confirm your email address and accept the terms in the
+[AskUI Hub](https://hub.askui.com) or in AskUI Desktop, then run it again. On
+macOS the sign-in is kept in the Keychain; in an SSH session the Keychain is
+locked, so unlock it first with `security unlock-keychain`. On Linux, use
+`ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`.
 
 ## Environment variables
 
