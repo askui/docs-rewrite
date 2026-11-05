@@ -147,7 +147,20 @@ const clearTrackingStorage = (): void => {
     for (const key of Object.keys(localStorage)) {
       if (TRACKING_NAME.test(key)) localStorage.removeItem(key);
     }
+    for (const key of Object.keys(sessionStorage)) {
+      if (TRACKING_NAME.test(key)) sessionStorage.removeItem(key);
+    }
   } catch {
     // Storage blocked: nothing was written there either.
   }
+};
+
+/**
+ * On a page load with "Necessary only": remove what a withdrawn "Accept all"
+ * left behind. Tags keep running until the reload and can write again after
+ * denyTrackingConsent() cleaned up, and PostHog's window markers live in
+ * sessionStorage, which survives the reload.
+ */
+export const clearLeftoverTracking = (): void => {
+  clearTrackingStorage();
 };

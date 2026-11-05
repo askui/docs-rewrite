@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import {
+  clearLeftoverTracking,
   CONSENT_KEY,
   denyTrackingConsent,
   loadTrackingScripts,
@@ -29,8 +30,11 @@ export function CookieConsent() {
       loadTrackingScripts();
     } else if (saved === null) {
       setShowBanner(true);
+    } else {
+      // "necessary": load no consent-gated tags, show nothing, and remove what
+      // an earlier, withdrawn "Accept all" left behind.
+      clearLeftoverTracking();
     }
-    // "necessary": load no consent-gated tags, show nothing.
 
     const reopen = () => setShowBanner(true);
     window.addEventListener(OPEN_COOKIE_SETTINGS, reopen);
