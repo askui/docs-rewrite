@@ -32,11 +32,11 @@ Provide credentials as environment variables from the CI secret store:
 `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN` (create the token in the
 [Hub](/docs/account-billing/workspaces)). The same goes for every value the
 project references: a `${VAR}` in a device profile, and every
-[secret](/docs/running-tests/cli#secrets-in-a-headless-run), resolve from
+[secret](/docs/running-tests/cli#secrets), resolve from
 the environment variable of that name.
 
 Set the runner's other settings the same way, as environment variables, such
-as `ASKUI_MODEL_ASKUI` for the hosted model or `HTTPS_PROXY` for a proxy,
+as `ASKUI_MODELS_RUN_ASKUI` for the hosted model or `HTTPS_PROXY` for a proxy,
 rather than with `askui config set`: they apply to the pipeline only and win
 over what the runner machine stores
 ([In CI](/docs/running-tests/cli-configuration#in-ci)).
