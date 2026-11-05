@@ -1,8 +1,13 @@
 name: Deploy to GitHub Pages
 
+# The docs are released, not merged, onto docs.askui.com: a merge to main
+# publishes nothing. Pushing a release tag (v0.11.0, set when the app version is
+# released) deploys the whole versioned site. Release candidates (v*-*) do not.
+# Run it by hand to redeploy, e.g. after a fix tag on an older version's
+# release branch, whose own commit does not carry this workflow.
 on:
   push:
-    branches: [main]
+    tags: ['v*', '!v*-*']
   workflow_dispatch:
 
 permissions:
@@ -21,6 +26,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          # Every release tag: scripts/build-versioned.mjs builds the older
+          # docs versions from them.
+          fetch-depth: 0
+      # Always build from the newest release tag, whatever triggered the run, so
+      # a fix tag on an older version (v0.9.1) never makes that version the
+      # newest one. The newest tag's commit supplies the site shell and the
+      # newest version's content.
+      - name: Check out the newest release tag
+        run: |
+          tag=$(git tag -l 'v*' --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
+          if [ -z "$tag" ]; then echo "::error::no release tag v<major>.<minor>.<patch> found"; exit 1; fi
+          git checkout --detach "$tag"
+          if [ ! -f scripts/build-versioned.mjs ]; then
+            echo "::error::$tag predates versioned docs (no scripts/build-versioned.mjs); tag a newer release first"
+            exit 1
+          fi
+          echo "Building the docs site from $tag"
       - name: Install pnpm
         uses: pnpm/action-setup@v6
       - name: Setup Node
@@ -43,8 +66,8 @@ jobs:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           POSTHOG_KEY: "op://plat-tracking/Posthog Production/POSTHOG_KEY"
           DOWNLOAD_WEBHOOK_URL: "op://plat-tracking/Zapier/Download Webhook"
-      - name: Build with Next (static export)
-        run: pnpm build
+      - name: Build the versioned site (static export)
+        run: pnpm build:versioned
         env:
           # Cutover toggle: set the repo variable DOCS_SERVE_AT_ROOT to "true"
           # (Settings → Secrets and variables → Actions → Variables) to build for
