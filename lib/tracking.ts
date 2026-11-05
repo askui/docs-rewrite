@@ -53,6 +53,22 @@ export const storedConsent = (): ConsentType => {
 export const trackingInPage = (): boolean => trackingLoaded;
 
 /**
+ * An installer download, for Google Analytics and Ads: the same events as
+ * www.askui.com's /start (`desktop_download`, label = platform key), plus
+ * `agentos_download` for the AgentOS service installer, which the website
+ * does not offer. Only once the Google tag runs after consent: before that,
+ * window.gtag is the Consent Mode stub from app/layout.tsx, which only queues,
+ * and the queue would reach Google after a later "Accept all".
+ */
+export const trackGoogleDownload = (event: 'desktop_download' | 'agentos_download', label: string): void => {
+  if (!trackingLoaded || isLocalOrAutomated() || !window.gtag) return;
+  window.gtag('event', event, {
+    event_category: 'funnel',
+    event_label: label,
+  });
+};
+
+/**
  * Start PostHog on page load: cookieless, or with cookies for a stored
  * "Accept all" (lib/analytics.ts). Never on localhost or in automated browsers.
  */
