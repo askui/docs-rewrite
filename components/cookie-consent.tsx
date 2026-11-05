@@ -5,6 +5,7 @@ import {
   denyTrackingConsent,
   loadTrackingScripts,
   OPEN_COOKIE_SETTINGS,
+  startPageAnalytics,
   storedConsent,
   trackingInPage,
 } from '@/lib/tracking';
@@ -22,12 +23,14 @@ export function CookieConsent() {
 
   useEffect(() => {
     const saved = storedConsent();
+    // PostHog counts this page either way: cookieless without consent.
+    startPageAnalytics(saved === 'all');
     if (saved === 'all') {
       loadTrackingScripts();
     } else if (saved === null) {
       setShowBanner(true);
     }
-    // "necessary": load nothing, show nothing.
+    // "necessary": load no consent-gated tags, show nothing.
 
     const reopen = () => setShowBanner(true);
     window.addEventListener(OPEN_COOKIE_SETTINGS, reopen);
@@ -80,6 +83,13 @@ export function CookieConsent() {
             <span className="ck-v">
               Google Analytics, Google Ads and PostHog (EU), loaded only after
               consent.
+            </span>
+          </div>
+          <div className="ck-row">
+            <span className="ck-k">Without consent</span>
+            <span className="ck-v">
+              PostHog (EU) counts page views and downloads anonymously, without
+              cookies or anything stored on your device.
             </span>
           </div>
         </div>

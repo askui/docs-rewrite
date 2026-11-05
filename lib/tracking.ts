@@ -9,7 +9,7 @@
 // measurement sends one on every client-side route change (history events),
 // so the docs send none by hand; doing both counts every page twice.
 
-import { startAnalytics, stopAnalytics } from '@/lib/analytics';
+import { grantAnalyticsConsent, startAnalytics, stopAnalytics } from '@/lib/analytics';
 
 declare global {
   interface Window {
@@ -52,6 +52,15 @@ export const storedConsent = (): ConsentType => {
 /** True once the consent-gated tags were loaded in this page. */
 export const trackingInPage = (): boolean => trackingLoaded;
 
+/**
+ * Start PostHog on page load: cookieless, or with cookies for a stored
+ * "Accept all" (lib/analytics.ts). Never on localhost or in automated browsers.
+ */
+export const startPageAnalytics = (withConsent: boolean): void => {
+  if (isLocalOrAutomated()) return;
+  startAnalytics(withConsent);
+};
+
 /** Load the consent-gated tags. Safe to call more than once. */
 export const loadTrackingScripts = (): void => {
   if (trackingLoaded) return;
@@ -60,8 +69,9 @@ export const loadTrackingScripts = (): void => {
 
   loadGoogleTag();
 
-  // PostHog starts only now, never before consent (lib/analytics.ts)
-  startAnalytics();
+  // PostHog ran cookieless until now; it switches to cookies and sends every
+  // event (lib/analytics.ts). After a stored consent this is a no-op.
+  grantAnalyticsConsent();
 };
 
 const loadGoogleTag = (): void => {
@@ -140,58 +150,4 @@ const clearTrackingStorage = (): void => {
   } catch {
     // Storage blocked: nothing was written there either.
   }
-};
-
-// ── Installer download headcount ───────────────────────────────────────────
-// Pings the same Zapier catch-hook (→ Slack channel / Google Sheet) as the
-// marketing site's notifyDownload (askui-website, src/lib/tracking.ts). Not
-// analytics: it fires on every download click, without the consent gate.
-// Off unless NEXT_PUBLIC_DOWNLOAD_WEBHOOK_URL is set at build time (the deploy
-// workflow reads it from 1Password, op://plat-tracking/Zapier/Download
-// Webhook). The URL still ships in the public bundle, as on the website; the
-// build-time switch keeps local and preview builds from posting to the
-// production channel and lets the hook rotate without a code change.
-const DOWNLOAD_WEBHOOK_URL = process.env.NEXT_PUBLIC_DOWNLOAD_WEBHOOK_URL;
-
-// Berlin local time (not UTC), DST-aware.
-const berlinTimestamp = (): string => {
-  const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Europe/Berlin',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  }).formatToParts(new Date());
-  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
-  return `${get('year')}-${get('month')}-${get('day')} ${get('hour')}:${get('minute')}:${get('second')}`;
-};
-
-/**
- * `utm` is whatever the caller read off the current page's URL at click
- * time; nothing is written to cookies or storage here.
- */
-export const notifyDownload = (
-  source: string,
-  label: string,
-  os: string,
-  utm: Record<string, string> = {},
-): void => {
-  if (!DOWNLOAD_WEBHOOK_URL || isLocalOrAutomated()) return;
-  const data = new FormData();
-  data.append('source', source);
-  data.append('label', label);
-  data.append('os', os);
-  data.append('timestamp', berlinTimestamp());
-
-  Object.entries(utm).forEach(([key, value]) => {
-    if (value) data.append(key, value);
-  });
-
-  // FormData, not JSON: a JSON content type triggers a CORS preflight this
-  // Zapier catch-hook won't answer. keepalive lets the POST survive the
-  // browser navigating away to start the download.
-  fetch(DOWNLOAD_WEBHOOK_URL, { method: 'POST', body: data, keepalive: true }).catch(() => {});
 };

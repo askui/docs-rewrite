@@ -4,9 +4,9 @@ import { useEffect, useRef } from 'react';
 import { capturePageview } from '@/lib/analytics';
 
 /**
- * Counts a PostHog page view on every client-side route change. PostHog starts
- * only after "Accept all" (lib/tracking.ts) and counts the page it starts on
- * itself, so the first render counts nothing. GA4 counts its own.
+ * Counts a PostHog page view on every client-side route change, cookieless
+ * before consent. PostHog counts the page it starts on itself
+ * (lib/analytics.ts), so the first render counts nothing. GA4 counts its own.
  * Renders nothing.
  */
 export function Analytics() {

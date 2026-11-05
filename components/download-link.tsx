@@ -3,9 +3,6 @@
 import type { ReactNode } from 'react';
 import { Card } from 'fumadocs-ui/components/card';
 import { captureEvent } from '@/lib/analytics';
-import { notifyDownload } from '@/lib/tracking';
-
-const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
 
 interface DownloadLinkProps {
   href: string;
@@ -19,24 +16,13 @@ interface DownloadLinkProps {
 
 /**
  * Drop-in replacement for `<Card href=... />` / a plain Markdown link on an
- * installer download. A click sends two things, then behaves exactly like a
- * normal link (it never calls preventDefault, so the download is never
- * blocked):
- *  - the download-notification webhook (lib/tracking.ts), on every click;
- *  - PostHog's `download_click`, the same event www.askui.com's /start sends,
- *    only after consent (lib/analytics.ts).
+ * installer download. A click sends PostHog's `download_click`, the same event
+ * www.askui.com's /start sends (cookieless without consent, lib/analytics.ts),
+ * then behaves exactly like a normal link: it never calls preventDefault, so
+ * the download is never blocked.
  */
 export function DownloadLink({ href, source, label, os, title, description, children }: DownloadLinkProps) {
   const handleClick = () => {
-    // Read UTM params off this page's own URL at click time — no
-    // session/local storage, no cookies, so nothing here needs consent.
-    const params = new URLSearchParams(window.location.search);
-    const utm: Record<string, string> = {};
-    for (const key of UTM_PARAMS) {
-      const value = params.get(key);
-      if (value) utm[key] = value;
-    }
-    notifyDownload(source, label, os, utm);
     captureEvent('download_click', { label: `${source}_${label}`, kind: 'installer', os, channel: 'release' });
   };
 
