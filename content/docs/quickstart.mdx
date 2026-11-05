@@ -50,9 +50,8 @@ extra runtimes needed.
 </Tabs>
 
 <Callout title="Always the latest">
-These links always give you the newest release. The
-[Releases page](https://github.com/askui/integrated-task-platform/releases/latest)
-lists every installer, and they're also on your
+These links always give you the newest release. The installers are also on
+the [AskUI download page](https://www.askui.com/start) and your
 [AskUI Hub](https://hub.askui.com) account page.
 </Callout>
 
@@ -70,7 +69,8 @@ billing live in the [AskUI Hub](https://hub.askui.com).
 </Step>
 <Step>
 **Already have an account?** Click **Log in** and authenticate in your browser.
-The same login works across Desktop, the CLI, and the Hub.
+The same login works across Desktop and the Hub. The CLI authenticates with
+an [access token](/docs/account-billing/workspaces) instead.
 </Step>
 </Steps>
 
@@ -107,6 +107,67 @@ example test and the context files (`ui.md`, `rules.md`), ready to run.
 
 ---
 
+## Optional: Install AgentOS to automate a computer
+
+Runs are powered by **AgentOS**, the runtime that actually controls a computer,
+its screen, keyboard, and mouse. Desktop does **not** bundle it. To run tests on
+a computer, such as your local machine, AgentOS must be installed on whichever
+computer you want to automate. This can be your own machine, a remote host, a
+headless CI runner, or a device in a fleet.
+
+<Callout title="Manual install required (current version)">
+We're currently migrating to a newer App version with a more seamless setup
+experience. The currently released version still requires the manual
+installation of AgentOS.
+</Callout>
+
+You can install AgentOS in one of two ways:
+
+<Cards>
+  <Card title="Standalone" href="/docs/agentos/installation/standalone"
+    description="Run AgentOS as a regular process in your user session, the fastest option for a dev machine." />
+  <Card title="OS Service (Windows)" href="/docs/agentos/installation/service"
+    description="Install as a system service for CI/CD and headless VMs that boot to the login screen." />
+</Cards>
+
+For a **standalone** installation, download the ZIP for your platform, unpack it
+and point the app at the controller inside it:
+
+<Steps>
+<Step>
+Download AgentOS for
+[Windows AMD64](https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Windows-x64.zip),
+[Windows ARM64](https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Windows-ARM64.zip)
+or [macOS ARM64](https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-MacOS-ARM64.zip)
+(Apple silicon). For a Linux machine (X11 only, no Wayland) there are
+[Linux AMD64](https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Linux-x64.zip)
+and [Linux ARM64](https://files.askui.com/releases/UIController/26.7.1/RemoteDeviceController-26.7.1-Linux-ARM64.zip)
+builds, see [Standalone installation](/docs/agentos/installation/standalone).
+</Step>
+<Step>
+Unpack it into a folder of its own, for example `C:\Users\<you>\AskUI\AgentOS` on Windows
+or `/Users/<you>/AskUI/AgentOS` on macOS. The archive has no top-level folder,
+so create the folder first.
+</Step>
+<Step>
+Open **Settings** in AskUI Desktop, go to **This machine**, and paste the full
+path to the controller under **Agent OS → Controller path**, for example:
+
+```
+C:\Users\<you>\AskUI\AgentOS\AskuiRemoteDeviceController.exe
+```
+
+```
+/Users/<you>/AskUI/AgentOS/AskuiRemoteDeviceController
+```
+</Step>
+</Steps>
+
+See [Standalone installation](/docs/agentos/installation/standalone) for how to
+copy the path on each platform.
+
+---
+
 ## Step 4: Run your first test locally (3 min)
 
 The default template ships with a runnable example test, run it against your
@@ -123,7 +184,7 @@ AskUI Desktop launches the agent, which acts on the screen step by step and
 streams progress into **Live Run**.
 </Step>
 <Step>
-**Read the report.** Each step shows its status (`PASSED`, `FAILED`, `WARN`,
+**Read the report.** Each step shows its status (`PASSED`, `FAILED`, `WARNING`,
 `SKIPPED`, or `BROKEN`) and a screenshot. A green run means every step actually
 passed, the agent doesn't improvise its way to done.
 </Step>
@@ -154,9 +215,5 @@ You have a working project. Here is where to go from here:
   <Card title="Run from the CLI" href="/docs/running-tests/install-cli">
     Once your project runs locally, move it to CI in minutes with `askui run`.
     Works with GitHub Actions, GitLab CI, and any headless environment.
-  </Card>
-  <Card title="AgentOS setup" href="/docs/agentos">
-    Running tests on a remote machine or in a multi-device fleet? Learn how to
-    install and configure AgentOS as a background service.
   </Card>
 </Cards>

@@ -56,20 +56,43 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
    **Name** to `Chrome Browser`, then call
    `save_screenshot[desktop-profile-web-browser]`.
 
-7. Select the **Android emulator** kind (Device type, System image, Lifecycle),
+7. Select the **An Android emulator** kind (Device type, System image, Lifecycle),
    wait until its dropdowns have loaded. Set **Name** to `Pixel 9`, then call
    `save_screenshot[desktop-profile-android-emulator]`.
 
-8. Select the **Multi computer** kind (rows of Name/Host/Port/Display). Set the
-   profile **Name** to `Build Farm`, and give the per-computer rows names that
-   read as machines (e.g. `builder-01`, `builder-02`) — not a phone or browser
-   name. Then call `save_screenshot[desktop-profile-multi-computer]`.
+8. Select the **Multi computer** kind (rows of Name/Host/Port/Display/Prompt).
+   Set the profile **Name** to `Build Farm`, and give the per-computer rows names
+   that read as machines (e.g. `builder-01`, `builder-02`) — not a phone or
+   browser name. Fill the first row's **Prompt** with a short machine note (e.g.
+   `Windows 11; the build runs here.`) so the per-row field is visible in the
+   shot. Then call `save_screenshot[desktop-profile-multi-computer]`.
 
 9. Close the dialog with **Cancel** — do NOT save any profile.
 
 10. Open the **Tests** page and select an existing test file so its editor and
     the Run controls (Run button, Run-on picker) are visible. Call
     `save_screenshot[desktop-tests-run]`.
+
+10b. Still on the **Tests** page, select the project's `ui.md` in the file tree
+    (the file the Tests page marks **Context only**). Below its editor a bar
+    reads "Rather not write it by hand? PromptForge drafts your UI prompt from
+    screenshots." — click its **Forge from screenshots** button. Wait until the
+    PromptForge page is shown (the "Add screenshots" drop zone, the
+    "Description (bullet points)" field and the disabled **Verify** button),
+    then call `save_screenshot[desktop-tests-forge-ui]`. Return to the Tests
+    page afterwards — do NOT upload a screenshot, type a description, or click
+    Verify. If the project has no `ui.md`, skip this step and say so in the
+    reason of the result you record.
+
+10c. Still on the **Tests** page, close every open editor tab so the editor shows
+    "No test open". Click its **Forge a test** button. Wait until the TestForge
+    page is shown (the "Experimental" badge, the "Sources" section with
+    "Choose files or a .zip" and "pick a folder", the optional "Description"
+    field and the disabled **Start forging** button), then call
+    `save_screenshot[desktop-tests-forge-test]`. Return to the Tests page
+    afterwards — do NOT add a source, pick a folder, type a description, or
+    click Start forging. If the page shows "TestForge needs an AskUI account"
+    instead, take the screenshot anyway and say so in the report.
 
 11. Right-click on an empty area of the file tree (below the last file) so the
     context menu opens with its **Create** section — "New Markdown",
@@ -101,11 +124,41 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     empty drop zone) is shown, then call `save_screenshot[desktop-utils-custom]`.
     Do NOT add or remove any file.
 
-15c. Switch to the **Report Format** tab. Wait until the `utils/format.md`
-    editor is shown (or, if the project has no format file yet, its
-    "Create utils/format.md" call-to-action), then call
-    `save_screenshot[desktop-utils-format]`. Do NOT edit the file or click
-    Create.
+15b2. Still on the **Custom Tools** tab, click **Forge a tool**. Wait until the
+    ToolForge page is shown (the "Structured description" field, the "Example
+    source" folder field and the disabled **Verify** button), then call
+    `save_screenshot[desktop-utils-forge-tool]`. Return to **Extending → Custom
+    Tools** afterwards — do NOT type a description, pick a folder, or click
+    Verify.
+
+15c. Switch to the **Reporting** tab. Wait until the "Create report" and
+    "Reporting model" cards and the collapsed **Report format** row are shown.
+    Click the collapsed **Report format** row at the bottom so the `utils/format.md` editor (or, if the project has no
+    format file yet, its "Create utils/format.md" call-to-action) opens, then
+    call `save_screenshot[desktop-utils-format]`. Do NOT change any setting,
+    edit a file, or click Create.
+
+15d. Switch to the **In-Flight Guidance** tab. Wait until the "In-Flight
+    Guidance" card is shown (the "Enable In-Flight Guidance for this project"
+    switch with its description), then call
+    `save_screenshot[desktop-utils-inflight]`. Do NOT toggle it on or change any
+    field.
+
+15e. Switch to the **Dreaming** tab. Wait until the "Dreaming" card (with its
+    "Experimental" badge and the "Enable Dreaming for this project" toggle) is
+    shown, then call `save_screenshot[desktop-utils-dreaming]`. Do NOT turn
+    Dreaming on, click "Analyze now", or change any field.
+
+15f. Open the **Runs** page with no test selected. In the report pane on the
+    right, under "No test selected", click **Generate Management Report** so
+    the Management report dialog opens. Click
+    the **90 days** preset so the range includes the demo run from step 1.
+    Wait until the list of runs (each with a ticked checkbox) and the
+    "Additional information" section are shown — or, if there are no runs in
+    the range, the "No runs in this range." message. Then call
+    `save_screenshot[desktop-management-report]`. Do NOT untick a run, type a
+    software version, tick **Bundle the execution reports**, or click **Generate**. Close the
+    dialog with **Cancel** afterwards.
 
 16. With the demo project open, click the git branch chip in the top bar so
     the source-control flyout opens (changes list, commit field, sync row).
@@ -118,5 +171,6 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     start a run this way.
 
 ## Done
-The capture is successful when each screen above was shown and saved. Report one
-line per screen per the report format.
+The capture is successful when each screen above was shown and saved. Record
+the result PASSED when every screen was saved. Otherwise record FAILED, and name
+the missing screens in the reason.

@@ -1,0 +1,41 @@
+---
+icon: Lightbulb
+title: When to use Dreaming
+description: Dreaming pays off when the same lessons keep coming up across runs — here's when to reach for it, and when to leave it off.
+---
+
+[Dreaming](/docs/extending/dreaming) turns the manual
+[analyzing-failures](/docs/best-practices/analyzing-failures) loop into reviewed
+suggestions. It's powerful, but it's not something to leave running mindlessly on
+every project. Here's when it earns its keep.
+
+## Reach for it when…
+
+- **You keep fixing the same kind of thing by hand.** If [analyzing
+  failures](/docs/best-practices/analyzing-failures) has you adding the *same* rule
+  again and again — "dismiss the cookie banner first", "wait for the spinner" —
+  that's exactly the signal Dreaming learns from. Let it propose the rule so you
+  stop re-typing it.
+- **You run a suite repeatedly.** Nightly regression and other suites you run often
+  are where the lessons compound: each run is more evidence, and a recurring problem
+  stands out from a one-off (Dreaming shows "4 of 5 runs" so you can tell the
+  difference).
+- **The app under test drifts.** When the UI changes in small ways over time,
+  Dreaming spots the new obstacles from real runs and keeps your rules current —
+  instead of you chasing each drift manually.
+
+## Leave it off when…
+
+- **You prefer to maintain your tests by hand.** Dreaming only proposes, and you
+  approve every change — but if you'd rather read each report yourself and decide
+  what to add to your rules and tests, leave it off. Nothing else about the app
+  changes.
+
+## How it fits your workflow
+
+Treat Dreaming as a **continuous improvement loop**: every round of runs feeds
+back into your rules and tests, so the suite keeps getting better the more you run
+it — it's not a replacement for reading a report. You still decide what's true:
+Dreaming only *proposes*, you approve each change, and every accepted edit is a
+normal change in your project you can review and revert. See
+[Dreaming](/docs/extending/dreaming) for how to turn it on and what it can change.

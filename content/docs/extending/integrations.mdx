@@ -1,0 +1,59 @@
+---
+icon: Plug
+title: Integrations
+description: Connect an e-mail account once per project, then let tests read and send mail with it, or start a test plan when a matching email arrives.
+---
+
+An **integration** is an external account your project uses. Today that is
+an e-mail account. You connect it once, and the project can then use it in
+two places:
+
+- **Tools**: the **Read Email** and **Send Email** [tools](/docs/extending/tools)
+  let a test read recent messages and send messages from the account.
+- **Triggers**: a test plan starts when a matching email arrives.
+
+## Connect an e-mail account
+
+1. Open **Extending → Integrations**.
+2. Click **Connect Account**.
+3. Pick your **Mail provider**: Gmail, Outlook.com / Office 365, Yahoo Mail,
+   iCloud Mail or Fastmail. The IMAP and SMTP servers are filled in for you.
+   For any other provider, pick **Custom** and enter the servers, ports and
+   username yourself.
+4. Enter the **Email address** and, optionally, a **Display name**.
+5. Enter the **Password / app-password**. Most providers require an
+   app-password here, not the password you sign in with. For Gmail, see
+   [below](#gmail-app-password).
+6. Click **Connect**.
+
+AskUI tests the connection before it saves the account. The test can take
+up to two minutes. The password is stored encrypted on this machine, never
+in the project folder, so a colleague who opens the project connects with
+their own credentials.
+
+## Gmail: use an app-password [#gmail-app-password]
+
+Gmail does not accept your normal Google password from a mail client. If you
+enter it, the connection test fails with a message from Google like:
+
+```
+Application-specific password required: https://support.google.com/accounts/answer/185833
+```
+
+Create an app-password and use it instead:
+
+1. Turn on **2-Step Verification** for the Google account, if it is not on
+   already. Google offers app-passwords only with 2-Step Verification.
+2. Open [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
+   while signed in with that account.
+3. Enter a name (e.g. `AskUI`) and click **Create**.
+4. Copy the 16-character password Google shows and paste it into
+   **Password / app-password** in AskUI. Spaces don't matter.
+
+Google shows the app-password only once. If you lose it, delete it on the
+same page and create a new one.
+
+If the page says app-passwords are not available, the account is probably
+a Google Workspace account whose administrator has turned them off, or one
+enrolled in Advanced Protection. Ask your administrator, or use a different
+account for testing.

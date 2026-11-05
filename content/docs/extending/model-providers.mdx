@@ -1,13 +1,14 @@
 ---
 icon: BrainCircuit
-title: Model providers (BYOM)
-description: Point AskUI Desktop at your own model, Anthropic, an OpenAI-compatible API, or a self-hosted server, instead of the AskUI hub.
+title: Your own model — AskUI AirGap and ModelBridge
+description: Point AskUI Desktop at your own model, on AskUI AirGap Hosting or through the AskUI ModelBridge (Azure AI Foundry, Vertex AI, any Anthropic- or OpenAI-compatible API), instead of the AskUI hub.
 ---
 
 By default, AskUI Desktop runs inference through the **AskUI hub**, billed to
 your workspace, nothing to configure. **Bring your own model (BYOM)** points the
-agent at a model provider you control instead: your own Anthropic key, any
-OpenAI‑compatible API, or a self‑hosted server on your network.
+agent at a model you control instead: on your **AskUI AirGap** Hosting, or through
+the **AskUI ModelBridge** — your model from Azure AI Foundry, Vertex AI or any
+compatible API. Pick where the model runs, connect to it, then name the model.
 
 <Callout title="Note">
 BYOM changes only **where inference runs**, the agent, prompts, tools, and run
@@ -16,42 +17,87 @@ reports are identical.
 
 ## Where to configure it
 
-Configure it under **Settings → Account → Model Provider**, switch an already‑running
-install to BYOM, or edit/remove an existing configuration.
+Configure it under **Settings → Account → AskUI Model**, switch an
+already‑running install to BYOM, or edit/remove an existing configuration. The
+same form appears in the License setup wizard and wherever a feature has its own
+model ([Forge](/docs/extending/forge), [Dreaming](/docs/extending/dreaming),
+[In-Flight Guidance](/docs/extending/in-flight-guidance)).
 
-## Choose an API type
+## Choose where your model runs
 
-<Tabs items={['Anthropic (Claude)', 'OpenAI-compatible']}>
-  <Tab value="Anthropic (Claude)">
+The form looks the same everywhere. First pick where the model runs:
 
-Run against the **Anthropic Messages API** with your own key, Anthropic
-directly, [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/), or
-any Anthropic‑compatible endpoint (including a self‑hosted server such as vLLM).
+- **AskUI Inference**: AskUI's hosted models, billed to your workspace, nothing
+  to set up. Requires signing in to an AskUI workspace.
+- **AskUI AirGap**: a model on your AskUI AirGap Hosting, inside your own
+  network.
+- **AskUI ModelBridge**: your own model from a cloud account or any compatible
+  API. Its providers (Azure AI Foundry, Vertex AI, Other; AWS Bedrock coming
+  soon) show in a second row, **Model Provider**, once you pick it.
+
+What your mode cannot use is shown as **Not available**, with the reason:
+
+| | AskUI Inference | AskUI AirGap | AskUI ModelBridge |
+|---|---|---|---|
+| License mode | Not available (sign in to AskUI) | ✓ | ✓ |
+| Signed in to AskUI | ✓ | Not available (License only) | Not available (License only) |
+
+To run on your own model, use a [license key](/docs/get-started/licensing).
+An AirGap or ModelBridge setup you saved in License mode is kept, but not used
+while you are signed in; your runs use AskUI Inference instead.
+
+<Tabs items={['AskUI AirGap', 'Azure AI Foundry', 'Vertex AI', 'Other']}>
+  <Tab value="AskUI AirGap">
+
+A model on your **AskUI AirGap Hosting**, inside your own network:
+screenshots and prompts never leave it.
 
 | Field | Required | Notes |
 | --- | --- | --- |
-| **Base URL** | Optional | Leave **blank** for Anthropic's own API. Set it for Azure AI Foundry or a self‑hosted Anthropic‑compatible endpoint. |
-| **Model** | Optional | Defaults to a current Claude model if left blank. See Anthropic's [model list](https://docs.anthropic.com/en/docs/about-claude/models/overview). |
-| **API key** | Required | Generate one in the [Anthropic console](https://console.anthropic.com/settings/keys). |
+| **Base URL** | Required | The base URL of your AskUI AirGap Hosting, e.g. `http://airgap.internal:8000/v1`. |
+| **API key** | Optional | Only if your hosting requires one (always required for the Anthropic API). |
 
   </Tab>
-  <Tab value="OpenAI-compatible">
+  <Tab value="Azure AI Foundry">
 
-<Callout type="warn" title="Experimental, no support provided">
-OpenAI-compatible providers are experimental. They may work with capable
-vision models, but we do not test against them and cannot offer support for
-issues specific to this configuration.
-</Callout>
-
-Run against any **OpenAI Chat Completions–compatible API**,
-[OpenRouter](https://openrouter.ai), OpenAI, or a self‑hosted server (vLLM,
-SGLang, llama.cpp, Ollama).
+A model deployed in your
+[Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/) resource,
+Claude and OpenAI-compatible models alike.
 
 | Field | Required | Notes |
 | --- | --- | --- |
-| **Base URL** | Required | The endpoint, ending in `/v1`, e.g. `http://localhost:8000/v1`. |
-| **Model** | Required | The provider's model id, e.g. `Qwen/Qwen3-VL-…`. |
-| **API key** | Optional | Omit for local servers that don't require one. |
+| **Endpoint** | Required | Your resource's full endpoint: ending in `/anthropic` for Claude models, in `/openai/v1` for the others. |
+| **API key** | Required | The key of your Foundry resource. |
+
+  </Tab>
+  <Tab value="Vertex AI">
+
+Claude, Gemini and other models served by
+[Vertex AI](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/partner-models/claude)
+from **your own Google Cloud project**: Google bills the project, and requests
+are processed in the location you choose.
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| **Service account key** | Optional | The JSON key of a service account with the **Vertex AI User** role (`roles/aiplatform.user`), from IAM & Admin → Service accounts → Keys. If your organisation forbids keys, choose the file `gcloud auth application-default login` writes instead. Without a file, this computer's Google login is used. |
+| **Google Cloud project ID** | Required | Filled in from the key file. |
+| **Location** | Required | `eu` or `us` (multi-region: data stays in that geography), `global` (wherever Google has capacity), or a single region such as `europe-west4`. Newer Claude models run on `eu`, `us` or `global`; Gemini on `global` or a single region. |
+
+Enable each model for your project in the Vertex AI **Model Garden** first, and
+request quota for it in the location you pick. Model ids are Vertex's own:
+`claude-sonnet-5-5` (older Claude models carry a date, `claude-opus-4-5@20251101`),
+and Gemini with its publisher, `google/gemini-2.5-flash`.
+
+  </Tab>
+  <Tab value="Other">
+
+Any **Anthropic‑ or OpenAI‑compatible API**: Anthropic or OpenAI directly,
+[OpenRouter](https://openrouter.ai), or your own gateway.
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| **Base URL** | Required, except for Anthropic | Leave **blank** with a Claude model for Anthropic's own API. An OpenAI-compatible URL ends in `/v1`, e.g. `https://openrouter.ai/api/v1`. |
+| **API key** | Required for the Anthropic API | Generate an Anthropic key in the [Anthropic console](https://console.anthropic.com/settings/keys). Optional for an OpenAI-compatible server that doesn't require one. |
 
 **Authentication** has a second mode for a gateway fronted by
 **Microsoft Entra ID**: e.g. an internal LLM gateway of your company.
@@ -70,35 +116,68 @@ are minted and refreshed automatically.
   </Tab>
 </Tabs>
 
+**AWS Bedrock** shows as **Coming soon**: it authenticates differently (SigV4)
+and is not wired up yet. Until then, put a gateway in front that re-exposes it
+Anthropic- or OpenAI-compatibly and use **Other**, or
+[talk to us](/docs/support/get-help).
+
+## Name the model
+
+Enter the provider's **Model** id, e.g. `claude-sonnet-5-5` or
+`Qwen/Qwen3-VL-235B-A22B-Instruct`. It is required.
+
+The **protocol** is picked for you, and the form shows which one and why:
+
+- a model id containing `claude` uses the **Anthropic Messages API**,
+- unless the base URL ends in `/v1`: that is an OpenAI-compatible gateway, so a
+  Claude model on OpenRouter (`https://openrouter.ai/api/v1`) uses the
+  **OpenAI-compatible** API,
+- every other model uses the **OpenAI-compatible** Chat Completions API,
+- on **Azure AI Foundry** the endpoint decides, whatever your deployment is
+  called: one ending in `/anthropic` is the Anthropic API, anything else
+  OpenAI-compatible,
+- on **Vertex AI** a Claude model uses Vertex's Anthropic API and every other
+  model (Gemini) its OpenAI-compatible endpoint; there is nothing to change.
+
+If the form can't tell, e.g. a Claude model behind a gateway whose URL doesn't
+end in `/v1`, select **Change** under the model and pick the protocol yourself.
+
+<Callout type="warn" title="OpenAI-compatible models: experimental, no support provided">
+Models on the OpenAI-compatible protocol are experimental. They may work with
+capable vision models, but we do not test against them and cannot offer support
+for issues specific to this configuration.
+</Callout>
+
 <Callout type="warn">
 The agent drives a UI from **screenshots**, so it needs a **vision‑capable**
 model. A text‑only model will connect but won't be able to see the screen.
 </Callout>
 
+Below the model: **Model rates** (your provider's prices, for the cost shown in
+run reports), **Image handling** and, for the test-run model, **Truncation**.
+
 ## Supported models
 
-- **Default**: `claude-sonnet-4-6`. Leave the **Model** field blank on the
-  Anthropic tab and this is what runs.
 - **Claude models (recommended)**: the Anthropic Messages API is the tested
   path, whether you reach it through the AskUI hub, your own Anthropic key,
-  Azure AI Foundry, or an Anthropic-compatible gateway. AWS Bedrock and GCP
-  Vertex AI authenticate differently (SigV4, Google credentials), as do some
-  internal gateways: either put something in front that re-exposes them as an
-  Anthropic- or OpenAI-compatible endpoint, or
+  Azure AI Foundry, or an Anthropic-compatible gateway. Some internal gateways
+  authenticate differently: either put something in front that re-exposes them
+  as an Anthropic- or OpenAI-compatible endpoint, or
   [talk to us](/docs/support/get-help) and we help you get your
   authentication scheme supported. Any current Claude
   model with vision works; ids come from Anthropic's
   [model list](https://docs.anthropic.com/en/docs/about-claude/models/overview).
   Newer Claude generations also use adaptive thinking automatically.
-- **GPT-5.4 models**: supported through the OpenAI-compatible tab:
+- **GPT-5.4 models**: supported through the OpenAI-compatible protocol:
   `gpt-5.4`, `gpt-5.4-mini` and `gpt-5.4-nano`, from OpenAI directly or via
   OpenRouter. They see screenshots and call tools, so they drive a UI,
   they're just not the path AskUI tests against.
 - **Gemini vision models**: `gemini-2.5-pro`, `gemini-3-pro-preview` and
-  the Flash variants work the same way, as long as your gateway exposes them
+  the Flash variants work the same way: on the **Vertex AI** tab
+  (`google/gemini-2.5-flash`), or through any gateway that exposes them
   OpenAI-compatibly (OpenRouter, or your own proxy).
-- **Self-hosted VLMs**: a screen-capable model such as `Qwen/Qwen3-VL-…`
-  behind vLLM or SGLang, which keeps screenshots inside your own tenancy.
+- **Self-hosted VLMs**: a screen-capable model such as `Qwen/Qwen3-VL-…` on
+  AskUI AirGap Hosting, which keeps screenshots inside your own network.
 - **What won't work**: text-only models, and models without tool/function
   calling. Every action the agent takes is a tool call on a screenshot;
   without both it cannot execute a step.
@@ -110,12 +189,12 @@ what to watch: [Performance & cost](/docs/troubleshooting/performance-cost).
 
 <Steps>
 <Step>
-Open **Settings → Account → Model Provider** (or reach it via license activation).
+Open **Settings → Account → AskUI Model** (or reach it via license activation).
 </Step>
 
 <Step>
-Pick the **API type**, then fill in the base URL, model, and key per the
-table above.
+Pick where your model runs, fill in the connection fields per the tables
+above, then enter the **Model**, the protocol follows from it.
 </Step>
 
 <Step>
@@ -175,15 +254,18 @@ rules, your project owns them.
 ## How your credentials are stored
 
 - The **API key** is stored **encrypted on this device** (on Windows, via DPAPI
-  scoped to your user account). The non‑secret fields, provider, model id, base
-  URL, are stored in plain local settings.
+  scoped to your user account). The non‑secret fields, where the model runs,
+  protocol, model id, base URL, are stored in plain local settings.
 - The key is passed to the run in memory and is **never written to the run
   report or logs**.
 - Editing other fields won't wipe a saved key, leave the key field blank to
   keep the existing one.
+- A saved key belongs to the place it was saved for. Switch to another tab and
+  the key field is empty; save there without a new key and the old key is
+  removed, so it is never sent to a different host.
 
 ## Switching back to the AskUI hub
 
-In **Settings → Account → Model Provider**, choose **Remove key**. This reverts to the
+In **Settings → Account → AskUI Model**, choose **Remove key**. This reverts to the
 AskUI hub default and forgets the stored key. (In License mode there is no hub
 default, so you replace the provider rather than removing it.)

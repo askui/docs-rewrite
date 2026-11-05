@@ -1,20 +1,24 @@
 ---
-title: CLI reference (Coming Soon)
-description: The askui run command reference, targets, plans, surfaces, model selection, reports, and CI usage.
+title: CLI reference
+description: The askui run command reference, targets, plans, devices, model selection, reports, exit codes, and CI usage.
 ---
 
 The CLI runs the exact Projects you build in AskUI Desktop. The same `tests/`,
-`plans/`, `procedures/`, and `utils/` drive both, author in the app, run
-anywhere with the CLI. See [Install the CLI](/docs/running-tests/install-cli) for
-setup and authentication.
+`plans/`, `procedures/`, `utils/`, and `devices.json` drive both, author in
+the app, run anywhere with the CLI. See [Install the CLI](/docs/running-tests/install-cli)
+for setup and authentication.
 
 ```bash
 askui run [<target>] [options]
 ```
 
-Run from your Project root (or pass `--project-root`). Without arguments,
-`askui run` executes the whole tests folder against your local desktop
-(`tests/`, or the folder `askui.json` names as the tests path).
+Run from your Project root, or pass `--project <dir>`. Without arguments,
+`askui run` executes the whole tests folder (`tests/`, or the folder
+`askui.json` names as the tests path) on the Project's device (see
+[Choosing the device](#choosing-the-device)).
+
+`askui --help` and `askui run --help` print every option, the environment
+variables, and the exit codes. `askui --version` prints the CLI version.
 
 ## What a run does
 
@@ -35,8 +39,9 @@ failing setup blocks the tests it guards.
 | A folder | Runs every test in the folder recursively, with per-folder setup/teardown lifecycle. |
 | A single file | Runs one test, its ancestor folders' setups still run first (top-down) and teardowns after (bottom-up). |
 
-Relative targets resolve against `--project-root`. Supported test file types:
-`.txt`, `.md`, `.pdf`, `.csv`, `.json`.
+Relative targets resolve against `--project`. Supported test file types:
+`.txt`, `.md`, `.pdf`, `.csv`, `.json`. A target that does not exist, or a
+file of another type, stops the run with exit code 3.
 
 ### Test plans
 
@@ -46,55 +51,126 @@ askui run --plan smoke
 
 `--plan <name>` loads `plans/<name>.yaml`, a
 [test plan](/docs/writing-tests/plans), and runs exactly the tests it
-selects, in plan order. The plan's device list is ignored — the CLI runs on
-the surface its flags configure and prints a note saying so. A plan that
-selects no tests, or does not exist, is a configuration error (exit code 2).
+selects, in plan order, on the plan's device. A plan that does not exist or
+does not parse is exit code 3. A plan that selects no tests is exit code 4:
+nothing ran, so the pipeline never shows green for nothing.
 
 ## Run options
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `--plan <name>` |, | [Test plan](/docs/writing-tests/plans) (without extension) from the Project's `plans/` directory; its device list is ignored. |
-| `--project-root <dir>` | current directory | The Project root (`tests/`, `procedures/`, `plans/`, `utils/`). |
-| `--workspace <dir>` | `<project-root>/agent_workspace/<UTC timestamp>` | Output directory for reports, screenshots and the conversation. |
+| `<target>` | `tests` | Test folder or single test file, relative to `--project`. |
+| `--plan <name>` | none | [Test plan](/docs/writing-tests/plans) from `<project>/plans/<name>.yaml` (name without extension). |
+| `--project <dir>` | current directory | The AskUI Project root (`tests/`, `procedures/`, `plans/`, `utils/`, `devices.json`). |
+| `--output <dir>` | `<project>/agent_workspace/<UTC timestamp>` | Results directory for reports, screenshots, and the HTML log. |
+| `--reporter <list>` | `html,md` | Report formats, comma-separated: `html`, `md`, `junit`. See [Reports](#reports). |
+| `--device <profile>` | the plan's device, or the only profile | Device profile from `devices.json`, by id or by a name only one profile has. |
+| `--surface <kind>` | none | Ad-hoc run without a profile: `agent-os`, `web`, `android`, or `ios`. Excludes `--device`. |
+| `--cache on\|off` | the Project's setting, else off | Trajectory caching for this run. See [Caching](#caching). |
+| `--cache-dir <dir>` | `<project>/.askui_cache` | Folder of the recorded trajectories. |
+| `--cache-set <name>=<value>` | the Project's setting | One caching setting for this run. Repeatable. |
 
-## Surface options
+## Choosing the device
 
-When the project's `devices.json` has exactly one profile matching the
-surface options, its name and [prompt text](/docs/writing-tests/agents-and-prompts#device-prompt)
-join the agent's system prompt, the same device knowledge as an in-app run.
+The CLI runs on the [device profiles](/docs/devices) your team keeps in the
+Project's `devices.json`, so a Project that runs in the app runs on the same
+device from the CLI. The profile's name and
+[prompt text](/docs/writing-tests/agents-and-prompts#device-prompt) join the
+agent's system prompt, the same device knowledge as an in-app run.
 
-| Option | Default | Description |
-| --- | --- | --- |
-| `--surface <s>` | `agent-os` | What the agent drives: `agent-os` (desktop), `web` (browser), or `android`. |
-| `--controller-host <host>` | `localhost` | [AgentOS](/docs/agentos) host (`agent-os` only). A local (loopback) AgentOS is started automatically; remote hosts are attached to. |
-| `--controller-port <port>` | `23000` | AgentOS gRPC port (`agent-os` only). |
-| `--display <n>` | `1` | Display to operate on (`agent-os` only). |
-| `--device-serial <serial>` | first `adb` device | Android device serial (`android` only). |
+The CLI picks the device in this order:
+
+1. **`--device <profile>`**: a profile by its id, or by its name when only one
+   profile has that name.
+2. **`--surface <kind>`**: an ad-hoc device with the defaults of its kind, no
+   profile needed (see below).
+3. **The plan's device**: with `--plan`, the profile the plan names. A device
+   id that is no longer in `devices.json` is skipped with a note.
+4. **The only profile**: when `devices.json` holds exactly one profile.
+
+When several profiles fit, the CLI asks you to pick one at a terminal. In a
+pipeline it never asks: it stops with exit code 3 and lists the profile ids,
+so you add `--device`. A Project without `devices.json` needs `--surface`.
 
 ```bash
-# Drive a remote machine's AgentOS on its second display
-askui run --controller-host 192.168.1.42 --display 2
+# The profile named "Staging browser"
+askui run --device "Staging browser"
 
-# Run the suite against a browser
+# A plan, on the device the plan names
+askui run --plan smoke
+
+# Ad-hoc: a browser, no profile needed
 askui run --surface web
-
-# Run against a specific Android device
-askui run --surface android --device-serial emulator-5554
 ```
+
+### Ad-hoc devices with `--surface`
+
+| Surface | What the agent drives |
+| --- | --- |
+| `agent-os` | This computer, through a local [AgentOS](/docs/agentos) on `localhost:23000`, display 1. The CLI starts it when it is not running. |
+| `web` | A Chromium browser in a visible window. |
+| `android` | The first device `adb devices` lists. |
+| `ios` | A booted simulator through an `idb_companion` you started, on `localhost:10882`. |
+
+For anything else, a remote AgentOS, a second display, a specific Android
+serial, a headless browser, or a start URL, create a profile in AskUI Desktop
+and select it with `--device`.
+
+### Environment variables in a profile
+
+A profile can leave its connection details to the machine that runs it. Write
+`${VAR}` in the **host**, **serial**, **udid**, **start URL**, or **browser**
+field, and the CLI fills it from the environment (or the Project's `.env`):
+
+```json title="devices.json (excerpt)"
+{
+  "id": "a1b2c3",
+  "name": "Test VM",
+  "type": "agent-os",
+  "host": "${AGENTOS_HOST}",
+  "port": 23000
+}
+```
+
+The profile travels with the test repository, and each runner supplies its
+own host or serial. A `${VAR}` that nothing sets stops the run with exit
+code 3, it never falls back to an empty value. A remote host is attached to;
+the CLI starts AgentOS only on `localhost`.
+
+### Profiles the CLI does not run
+
+The CLI connects to a device, it does not start one. These profiles stop the
+run with exit code 3 and a message that names the reason:
+
+- A profile that AskUI Desktop **provisions**: an emulator, a simulator, or a
+  VM the app starts for the run. Start the device first, then use a profile
+  that points at it, or `--surface`.
+- A **combined** profile of several devices. The CLI runs on one device per
+  run.
+- A **managed iOS simulator without a udid**.
+
+A web profile's start URL opens once the browser connects. A start URL that
+does not load stops the run with exit code 3, and the message names the URL.
 
 ## Model options
 
 By default, inference runs through the **AskUI hub**, billed to your
 workspace and authenticated with `ASKUI_WORKSPACE_ID`/`ASKUI_TOKEN`, nothing
-to configure. The hub serves more than one model.
+to configure. The hub serves more than one model. Missing credentials stop
+the run with exit code 3 before the first model call.
 
 | Option | Default | Description |
 | --- | --- | --- |
 | `--model-provider <p>` | `askui` | `askui`, `anthropic`, `openai`, or `openai-compatible`. |
 | `--model-id <id>` | provider default | The model to use. With `askui`, selects the hosted model, e.g. `gemini-3.5-flash`; default is the workspace's Claude model. |
-| `--api-key <key>` |, | API key (BYOM providers only). |
-| `--endpoint-url <url>` |, | Custom base/endpoint URL. Required for `openai-compatible`; a URL ending in `/chat/completions` is used as-is, a base URL gets the path appended. |
+| `--model-endpoint <url>` | none | Endpoint URL. Required for `openai-compatible`; a URL ending in `/chat/completions` is used as-is, a base URL gets the path appended. |
+| `--model-api-key <key>` | none | API key, sent as `x-api-key` or `Authorization`, per provider. |
+| `--model-token <token>` | none | Bearer token, e.g. an OAuth access token (Entra, gateways). |
+| `--model-headers <k=v,..>` | none | Authentication headers, comma-separated `name=value` pairs, sent instead of `--model-api-key` and `--model-token`. |
+
+`--model-endpoint`, `--model-api-key`, `--model-token`, and `--model-headers`
+work with your own provider only (`anthropic`, `openai`, or
+`openai-compatible`); with `askui` they are a usage error (exit code 2).
 
 ```bash
 # Hosted models on the AskUI hub
@@ -102,23 +178,54 @@ askui run                                   # workspace default (Claude)
 askui run --model-id gemini-3.5-flash       # hosted Gemini
 
 # Bring your own model
-askui run --model-provider anthropic --api-key $ANTHROPIC_API_KEY
+askui run --model-provider anthropic --model-api-key "$ANTHROPIC_API_KEY"
 askui run --model-provider openai-compatible \
-  --endpoint-url http://localhost:8000/v1 \
+  --model-endpoint http://localhost:8000/v1 \
   --model-id Qwen/Qwen3-VL-30B-A3B-Instruct
+askui run --model-provider openai-compatible \
+  --model-endpoint https://gateway.example.com/v1 \
+  --model-token "$GATEWAY_TOKEN"
 ```
+
+Pass keys and tokens from the environment, as above, so they never land in
+a pipeline file.
 
 <Callout type="warn">
 The agent drives the UI from **screenshots**, so BYOM models must be
 **vision-capable**: a text-only model will connect but can't see the screen.
 </Callout>
 
+## Output and modes
+
+The CLI talks in one of two modes. The mode changes only how it talks, never
+what it runs or which exit code it returns.
+
+- **Interactive** at a terminal: colored output, and a prompt when several
+  devices fit.
+- **CI** when the `CI` environment variable is set (any value), or stdin or
+  stdout is redirected: one plain line per event, and never a prompt.
+
+| Option | Description |
+| --- | --- |
+| `--ci` | Force CI mode. |
+| `--interactive` | Force interactive mode. |
+| `--no-color` | Disable colored output. The `NO_COLOR` environment variable (any value) does the same. |
+| `-v`, `--verbose` | More output: also the agent's messages. |
+| `-q`, `--quiet` | Errors only. |
+
+These options work before or after `run`. `--ci` with `--interactive`, and
+`--verbose` with `--quiet`, are usage errors. Errors always go to stderr.
+
 ## Credentials and `.env`
 
 The CLI loads a `.env` file from the Project root at the start of every run,
 variables already set in the environment win. This carries the hub
-credentials (`ASKUI_WORKSPACE_ID`, `ASKUI_TOKEN`) and anything your own
-[helper tools](#helper-tools) read.
+credentials (`ASKUI_WORKSPACE_ID`, `ASKUI_TOKEN`), the `${VAR}` values of your
+device profiles, and the values of your secrets.
+
+A new Project comes with a `.gitignore` that keeps `.env` and
+`agent_workspace/` out of git, so a commit carries no secret and no run
+results.
 
 <Callout type="warn">
 Treat access tokens like passwords: in CI, inject them from the secret store
@@ -126,54 +233,146 @@ instead of committing a `.env` file. See
 [Workspaces & access tokens](/docs/account-billing/workspaces).
 </Callout>
 
-## Helper tools
+### Secrets in a headless run
 
-The CLI extends the agent with your Project's custom tools: every `*.dll` in
-`<project-root>/helpers/` is loaded, and each public tool class in it becomes
-available to the agent next to the built-in ones. A broken assembly never
-takes down the run, the problem is reported and the rest keeps loading.
+A headless run has no secret store, the environment takes its place. A
+[secret](/docs/extending/secrets) the Project references as `${NAME}` (in a
+tool config or an MCP header) or as `os-keychain://NAME` resolves from the
+environment variable `NAME`. Set `QA_PASSWORD` in the pipeline's secret
+store, and a tool config that references `${QA_PASSWORD}` gets its value.
 
-## What a run produces
+The CLI does not yet give the agent secrets to type. A test that tells the
+agent to enter a secret (**Agent may use this secret** in the app) runs in
+AskUI Desktop only for now.
 
-Each run gets its own workspace folder (see `--workspace`), containing:
+## Custom tools and MCP servers
 
-- **Per-test artifacts**: `<test_name>/<test_name>_report.md` with the
-  result and step-by-step details, plus `step_<n>.png` screenshots.
-- **`summary_report.md`**: the run at a glance — totals with per-status
-  counts and run duration, one table over all tests with status and duration
-  each, and detail sections quoting every warned, failed, or broken test's
-  issues. Tests a plan selected but the run never reached appear as broken,
-  so nothing goes missing silently.
-- **`conversation.json`**: the full agent conversation, which AskUI Desktop
-  re-renders as the [conversation log](/docs/results#conversation-log).
+The CLI extends the agent exactly as the app does: the Project's
+[custom tools](/docs/extending/custom-tools) in `utils/custom_tools/`, the
+[tools](/docs/extending/tools) enabled in `utils/tools.json`, and the
+[MCP servers](/docs/extending/mcp) in `utils/mcp.json`. Custom tools compile
+at run start, so the runner needs NuGet access for their `#:package` lines.
+
+Two differences from the app, both so a broken runner never reads as a failed
+test: a custom tool that does not compile, and an enabled MCP server the CLI
+cannot reach, stop the run with exit code 3 before the first model call.
+
+## Caching
+
+The CLI caches as the Project says: **Extending → Caching**
+in the app writes `utils/caching.json`, and `askui run` reads the same file. A
+Project without that file caches nothing. Flags change the Project's setting for
+one run, and a flag you pass always wins:
+
+- `--cache on` or `--cache off` turns caching on or off.
+- `--cache-dir <dir>` moves the recordings out of `<project>/.askui_cache`.
+- `--cache-set <name>=<value>` changes one setting. Repeat it for more.
+
+`--cache-set` takes the names of `utils/caching.json`:
+
+| Name | Values |
+| --- | --- |
+| `delaySeconds` | Seconds between replayed actions, 0 to 30 |
+| `skipVisualValidation` | `true` or `false` |
+| `visualThreshold` | How much a screen may differ, 0 to 64 |
+| `visualRegionSize` | Pixels compared around each action, 1 to 1000 |
+| `visualMethod` | `phash`, `ahash`, or `none` |
+| `parameterStrategy` | `llm` or `preset` |
+
+```bash
+askui run --cache on --cache-set delaySeconds=2 --cache-set visualMethod=ahash
+```
+
+A wrong name or a value out of range is exit code 2. `--cache-set` alone does not
+turn caching on: only `--cache on` or the Project's setting do.
+
+## Reports
+
+Each run writes its results into the output directory (see `--output`).
+`--reporter` picks the formats, comma-separated, in any order:
+
+| Format | Writes |
+| --- | --- |
+| `html` | The HTML log of the run, with every step and screenshot. |
+| `md` | `summary_report.md`: the run at a glance, totals with per-status counts and run duration, one table over all tests with status and duration each, and detail sections quoting every warned, failed, or broken test's issues. |
+| `junit` | `junit.xml`, for the test report view of your CI system. |
+
+The default is `html,md`. For CI, add JUnit: `--reporter html,md,junit`.
+Every run also writes the per-test artifacts,
+`<test_name>/<test_name>_report.md` with the result and step-by-step details,
+plus `step_<n>.png` screenshots. After Ctrl+C, the reports cover what the run
+reached.
+
+### JUnit mapping
+
+AskUI has more outcomes than JUnit, so the mapping is fixed:
+
+| AskUI status | In `junit.xml` |
+| --- | --- |
+| `PASSED` | passed |
+| `WARNING` | passed, with the warning in `system-out` |
+| `FAILED` | `failure` |
+| `BROKEN` | `error`, with the reason |
+| Selected but not reached | `error` ("Not executed") |
+| `SKIPPED`, `DISCARDED`, `DEPRECATED` | `skipped` |
+
+`junit.xml` and `summary_report.md` count the same verdicts.
+
+### The console
 
 The console shows each phase as it starts and finishes
-(`[test] tests/login.md -> PASSED`) and ends with the totals.
+(`[test] tests/login.md -> PASSED`) and ends with one summary line that counts
+the passed, failed, broken, and warned tests. A test the run never reached is
+counted as not executed.
 
 ## Exit codes
 
-| Code | Meaning |
+| Code | Meaning | Who acts |
+| --- | --- | --- |
+| `0` | All tests passed. Warnings are allowed. | nobody |
+| `1` | The run completed, and at least one test failed, broke, or was never reached. | the product team |
+| `2` | Usage error: an unknown option, a missing or bad value, or two options that exclude each other. | the pipeline author |
+| `3` | Environment or configuration error: missing credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; an MCP server or device that cannot be reached; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load. | the pipeline author |
+| `4` | No tests ran: the selection was empty, or no verdict was produced. | the pipeline author |
+| `130` | Canceled (Ctrl+C). The results written so far are kept. | whoever pressed Ctrl+C |
+
+A usage error or a configuration error ends the CLI before the first model
+call, so it costs nothing. A warning never changes the exit code.
+
+<Callout title="Upgrading from an earlier CLI">
+Exit code `2` used to cover configuration errors too; those are exit code `3`
+now. Caching used to run by default. It now follows the Project and is off
+without `utils/caching.json`, so pass `--cache on` to keep the old behavior.
+Several flags were renamed or removed. An old flag is a usage error
+(exit code 2), so an old pipeline fails loudly instead of running something
+else:
+
+| Old | Now |
 | --- | --- |
-| `0` | All executed tests passed. |
-| `1` | At least one test failed or broke, or the run produced no result. |
-| `2` | Usage or configuration error (bad flags, missing project/target, unreachable surface). |
-| `130` | Interrupted (Ctrl+C), partial reports and the summary are preserved. |
+| `--project-root` | `--project` |
+| `--workspace` | `--output` |
+| `--api-key`, `--endpoint-url` | `--model-api-key`, `--model-endpoint` |
+| `--controller-host`, `--controller-port`, `--display`, `--device-serial` | a [device profile](#choosing-the-device), selected with `--device` |
+| `--cache-strategy auto\|none` | `--cache on\|off` |
+| `--cache-delay-between-actions`, `--cache-skip-visual-validation`, `--cache-visual-validation-threshold`, `--cache-visual-validation-region-size`, `--cache-visual-verification-method`, `--cache-parameter-identification-strategy` | `--cache-set` with `delaySeconds`, `skipVisualValidation`, `visualThreshold`, `visualRegionSize`, `visualMethod`, `parameterStrategy` |
+</Callout>
 
 ## Running in CI
 
 The exit codes make `askui run` CI-native: the job fails exactly when tests
-fail. A minimal GitHub Actions job:
+fail, and a broken runner fails with a different code than a failed test. A
+minimal GitHub Actions job:
 
 ```yaml title=".github/workflows/ui-tests.yml"
 jobs:
   ui-tests:
-    runs-on: [self-hosted, askui]   # a runner with AgentOS installed
+    runs-on: [self-hosted, askui]   # a runner with the CLI and the device it needs
     env:
       ASKUI_WORKSPACE_ID: ${{ vars.ASKUI_WORKSPACE_ID }}
       ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - run: askui run --plan smoke --workspace ./run-artifacts
+      - run: askui run --plan smoke --output ./run-artifacts --reporter html,md,junit
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -181,7 +380,8 @@ jobs:
           path: ./run-artifacts
 ```
 
-Pin `--workspace` to a fixed path so the artifact upload finds the reports,
+Pin `--output` to a fixed path so the artifact upload finds the reports,
 and upload with `if: always()` so failing runs keep their evidence. For
-setting up the machine under test, see
-[AgentOS CI deployment](/docs/agentos/deployment/ci).
+installing the CLI on a runner, publishing `junit.xml` as a test report, and
+what each device needs on the runner, see
+[AskUI in CI](/docs/guides/askui-in-ci).

@@ -24,11 +24,13 @@ Anthropic account, your Azure AI Foundry resource, or a host inside your own
 network. With **on-premise inference** no external model domain is needed at
 all.
 
-<Callout title="DNS, not firewall">
-Desktop's sign-in callback uses the hostname `desktop-auth.askui.com`, which
-resolves to `127.0.0.1`. No outbound connection is made to it, but the name
-must be **resolvable**: a DNS setup that blocks unknown external names breaks
-the callback even though nothing leaves the machine.
+<Callout title="The sign-in callback never leaves the machine">
+Sign-in opens your system browser, and Auth0 redirects back to
+`http://localhost:53420/callback`. AskUI Desktop answers that on `127.0.0.1`
+for the length of the sign-in, so there is **no domain to resolve and no
+firewall rule to add**. The port is fixed: another program already listening
+on 53420 blocks sign-in. [License-key mode](/docs/get-started/licensing) has
+no sign-in and no callback at all.
 </Callout>
 
 ## Outbound, from a test machine
