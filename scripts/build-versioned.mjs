@@ -57,7 +57,8 @@ function parseArgs(argv) {
 }
 
 function git(...a) {
-  return execFileSync('git', a, { cwd: root, encoding: 'utf8' }).trim();
+  // stderr stays quiet: several calls probe for refs that may not exist.
+  return execFileSync('git', a, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
 }
 
 function run(cmd, a, cwd) {
