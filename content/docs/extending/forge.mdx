@@ -71,8 +71,10 @@ tool** on **Extending → Custom Tools**.
   takes (name and type), what it returns, and which device it needs (desktop, web,
   Android, iOS, or none).
 - Optionally point it at an **Example source** folder — working code that already
-  does what the tool should do. ToolForge reads those files and then asks only about
-  the tool's contract and configuration, not about logic the code already shows.
+  does what the tool should do. ToolForge reads those files and **ports** them: the
+  commands, settings, timings and checks of your code carry over as they are. It
+  then asks only about the tool's contract and configuration, not about logic the
+  code already shows. A single source file can be attached instead (see below).
 - If the tool needs credentials, add them first under
   [**Extending → Secrets**](/docs/extending/secrets). ToolForge sees the **names**
   and descriptions of your secrets, never their values, and wires the tool to read
@@ -83,6 +85,9 @@ tool** on **Extending → Custom Tools**.
   - **Text files** such as a sample config, an API response or a data file: JSON,
     YAML, YML, CSV, TXT, MD, XML, TOML, INI or LOG, up to 200 KB each and 500 KB
     across all of them.
+  - **Source files** to port, for example a `.py`, `.cs`, `.ts` or `.ps1` file.
+    ToolForge treats one exactly like a file in the example source folder. The text
+    limits apply to it too.
   - Up to **30 files** in total.
 
   Each attachment shows as a chip with its name and size; the × removes it, and a
@@ -98,7 +103,12 @@ tool** on **Extending → Custom Tools**.
   **Accept** writes the tool at once and then shows its source: read it before
   your next run uses the tool.
   </Callout>
-- Run the Verify loop above. Once you have answered the model's first questions,
+- Run the Verify loop above. When you attached code, Verify lists what it carries
+  over — commands, connection settings, the order of steps and the waits — so you
+  can spot a gap before the tool is written. If your code calls another file you
+  did not attach, or the tool talks to a device and the exact commands are missing,
+  ToolForge asks for them instead of guessing.
+- Once you have answered the model's first questions,
   the description, the example source and the attachments are locked — they are
   what the conversation is about. To change them, start a new ToolForge.
 - Click **Accept & Forge Tool**. The `.cs` file is written into
@@ -123,6 +133,26 @@ request** and verify again.
 
 If the generated tools miss the mark, check the [Forge Model](#the-forge-model) —
 a stronger model helps most.
+
+### Migrate a tool from the Python SDK
+
+A custom tool you wrote for the AskUI Python SDK does not run in AskUI Desktop as
+it is: Desktop runs C# tools. ToolForge converts it for you.
+
+1. Click **Forge a tool** on **Extending → Custom Tools**.
+2. In the description, say which tool you are migrating and what it is for.
+3. Attach the tool's `.py` file. If it imports helpers from other files of yours,
+   attach those too, or point **Example source** at the folder that holds them all.
+4. Verify, check the list of what ToolForge carries over, and click **Accept &
+   Forge Tool**.
+
+ToolForge keeps the tool's name, inputs and behaviour. An exception your Python
+tool raised becomes a failed tool call, as before. ToolForge compiles the new tool
+but does not run it, because a trial run would act on your real setup. Run one test
+that uses the tool before you rely on it.
+
+Tools that ship with AskUI Desktop, such as reading files or saving a screenshot,
+don't need to be migrated: see the [Tool Store](/docs/extending/tools).
 
 ### Edit a custom tool
 
