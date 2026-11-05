@@ -16,13 +16,17 @@ import { useI18n } from 'fumadocs-ui/contexts/i18n';
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 import { searchTagOfPath } from '@/lib/versions';
+import { basePath } from '@/lib/shared';
 
 export default function DefaultSearchDialog(props: SharedProps) {
   const { locale } = useI18n(); // (optional) for i18n
-  // Search only the docs version being read: each index entry carries its
-  // version as tag (app/api/search/route.ts).
+  // Search only the docs version being read, and load only its index
+  // (app/api/search/[tag]/route.ts).
   const tag = searchTagOfPath(usePathname());
-  const client = useMemo(() => staticClient({ locale, tag }), [locale, tag]);
+  const client = useMemo(
+    () => staticClient({ locale, from: `${basePath}/api/search/${tag}` }),
+    [locale, tag],
+  );
   const { search, setSearch, query } = useDocsSearch({ client });
 
   return (
