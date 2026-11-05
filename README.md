@@ -1,81 +1,84 @@
 # AskUI Docs
 
-The user docs at [docs.askui.com](https://docs.askui.com), built with
-[Fumadocs](https://fumadocs.dev) as a static Next.js export.
+The user documentation of AskUI Desktop, the AskUI CLI and AgentOS, published at
+[docs.askui.com](https://docs.askui.com).
 
-## Versions and releases
+The site is a [Fumadocs](https://fumadocs.dev) app on Next.js, exported as static
+HTML and served by GitHub Pages. The pages are MDX files in `content/docs/`.
+
+## Versions
 
 The site shows the docs of every AskUI Desktop minor release behind a version
-dropdown. The newest version lives at `/docs/…`, every older one at
-`/docs/vX.Y/…`.
+dropdown in the sidebar:
 
-- **Write on `main` only.** `content/docs/` always holds the newest docs. Merge a
-  docs PR as soon as its app PR is merged. A merge publishes nothing.
-- **Release with a tag.** When an app version is released (`v0.11.0`), tag the
-  same version on `main` here and push the tag:
+| URL | Content |
+| --- | --- |
+| `/docs/…` | the newest released version |
+| `/docs/v0.10/…`, `/docs/v0.9/…`, … | each older minor release |
 
-  ```bash
-  git tag -a v0.11.0 -m "Docs for AskUI Desktop v0.11.0" origin/main
-  git push origin v0.11.0
-  ```
+Each version describes exactly what that app release shipped. A minor release
+whose docs did not change shares a version with the next one (`v0.9 – v0.10`).
 
-  `.github/workflows/deploy.yml` then builds and deploys the whole site.
-  Release candidates (`v0.11.0-rc1`) get no tag and no docs version.
-- **Older versions come from their tags.** `scripts/build-versioned.mjs` takes the
-  newest tag of each older minor (`v0.9.0`, `v0.8.2`, …) and builds it under
-  `/docs/vX.Y/`. Nothing is copied into the repository. A minor whose docs did
-  not change merges into the next one (`v0.9 – v0.10`).
-- **Fix an older version** on its branch (`release/v0.9`), tag the fix
-  (`v0.9.1`), push the tag, and run the deploy workflow by hand
-  (Actions → Deploy to GitHub Pages → Run workflow). The workflow always builds
-  from the newest release tag, so the fix never replaces the newest version.
-- **Preview locally**: `node scripts/build-versioned.mjs`, then `pnpm start`.
-  `pnpm dev` and `pnpm build` keep building `main` alone, without older versions.
+## Write the docs
 
-## Fumadocs starter notes
+1. Branch from `main` and edit `content/docs/`. `main` always holds the docs of
+   the next release.
+2. Run the site locally and check your pages:
 
-This is a Next.js application generated with
-[Create Fumadocs](https://github.com/fuma-nama/fumadocs).
+   ```bash
+   pnpm install
+   pnpm dev            # http://localhost:3000/docs-rewrite/docs
+   ```
 
-It is a Next.js app with [Static Export](https://nextjs.org/docs/app/guides/static-exports) configured.
+3. Before you open the PR, run both checks. `types:check` misses MDX parse
+   errors that only the build finds:
 
-Run development server:
+   ```bash
+   pnpm types:check
+   pnpm build
+   ```
+
+4. Merge the docs PR when its app PR is merged. A merge publishes nothing.
+
+## Release the docs
+
+When an AskUI Desktop version is released, tag the same version here and push
+the tag. That builds and deploys the whole site with every version:
 
 ```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
+git fetch origin
+git tag -a v0.11.0 -m "Docs for AskUI Desktop v0.11.0" origin/main
+git push origin v0.11.0
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+- Release candidates (`v0.11.0-rc1`) get no tag and no docs version.
+- The deploy always builds from the newest release tag.
+  [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) has the details.
 
-## Explore
+### Fix an older version
 
-In the project, you can see:
+Older versions live on branches: `release/v0.9`, `release/v0.10`, …
 
-- `lib/source.ts`: Code for content source adapter, [`loader()`](https://fumadocs.dev/docs/headless/source-api) provides the interface to access your content.
-- `lib/layout.shared.tsx`: Shared options for layouts, optional but preferred to keep.
+1. Commit the fix on the version's branch, e.g. `release/v0.9`.
+2. Tag it with the next patch number and push the tag:
+   `git tag -a v0.9.1 -m "…" release/v0.9`, then `git push origin v0.9.1`.
+3. Run the deploy by hand: Actions → **Deploy to GitHub Pages** → **Run workflow**.
+   The old branch does not carry the current workflow, so the tag alone starts
+   nothing.
 
-| Route                     | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| `app/(home)`              | The route group for your landing page and other pages. |
-| `app/docs`                | The documentation layout and pages.                    |
-| `app/api/search/route.ts` | The Route Handler for search.                          |
+A fix to the newest version goes on `main` and ships with the next release tag.
+For an urgent one, tag a patch on `main` (`v0.11.1`).
 
-### Fumadocs MDX
+## Preview the versioned site
 
-A `source.config.ts` config file has been included, you can customise different options like frontmatter schema.
+```bash
+NEXT_PUBLIC_BASE_PATH=ROOT node scripts/build-versioned.mjs   # every version into out/
+pnpm start                                                    # http://localhost:3000/docs
+```
 
-Read the [Introduction](https://fumadocs.dev/docs/mdx) for further details.
+`pnpm dev` and `pnpm build` build `main` alone, without the older versions.
 
-## Learn More
+## Screenshots
 
-To learn more about Next.js and Fumadocs, take a look at the following
-resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Fumadocs](https://fumadocs.dev) - learn about Fumadocs
+Screenshots of AskUI Desktop are captured by an AskUI agent, not by hand. See
+[`screenshots-capture/README.md`](screenshots-capture/README.md).
