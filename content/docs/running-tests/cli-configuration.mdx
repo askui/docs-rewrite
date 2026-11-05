@@ -282,7 +282,7 @@ These features run on the run's model unless you give them their own:
 | `dreaming.model.*` | [Dreaming](/docs/extending/dreaming) | `ASKUI_DREAMING_MODEL_*` |
 | `generation.model.*` | Generating tests and tools, with your own model | `ASKUI_GENERATION_MODEL_*` |
 
-Each has the fields of the model for runs except `askui`, such as
+Each has the fields of the model for runs except `askui` and `use-signed-in`, such as
 `reporting.model.id` (`ASKUI_REPORTING_MODEL_ID`) or
 `reporting.model.connection.api-key`. A feature that sets nothing uses the
 run's model whole. Set only `reporting.model.id`, and the report writer keeps
@@ -290,6 +290,14 @@ the run's provider and connection with its own model id. The provider and the
 connection go together: once a feature sets one of them, it takes neither from
 the run's model, so the run's API key never goes to the feature's host.
 Unsetting the feature's last value makes it use the run's model again.
+
+A feature runs on its own model only where your account allows one. The report
+writer needs a license. The reviewer, Dreaming, and generation need a license
+or an AskUI employee account; for an employee, the feature's own choice
+decides: the Project's setting for the reviewer and Dreaming, and
+`generation.choice` for generation. Signed in with any other account, every
+feature runs on AskUI Inference, and `askui config list` notes the feature's
+own model as not used.
 
 Generation picks its model with three more settings:
 
