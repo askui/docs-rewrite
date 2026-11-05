@@ -11,26 +11,19 @@ import {
   type SharedProps,
 } from 'fumadocs-ui/components/dialog/search';
 import { useDocsSearch } from 'fumadocs-core/search/client';
-import { oramaStaticClient } from 'fumadocs-core/search/client/orama-static';
-import { create } from '@orama/orama';
+import { staticClient } from 'fumadocs-core/search/client/orama-static';
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
-
-function initOrama() {
-  return create({
-    schema: { _: 'string' },
-    // https://docs.orama.com/docs/orama-js/supported-languages
-    language: 'english',
-  });
-}
+import { usePathname } from 'next/navigation';
+import { useMemo } from 'react';
+import { searchTagOfPath } from '@/lib/versions';
 
 export default function DefaultSearchDialog(props: SharedProps) {
   const { locale } = useI18n(); // (optional) for i18n
-  const { search, setSearch, query } = useDocsSearch({
-    client: oramaStaticClient({
-      initOrama,
-      locale,
-    }),
-  });
+  // Search only the docs version being read: each index entry carries its
+  // version as tag (app/api/search/route.ts).
+  const tag = searchTagOfPath(usePathname());
+  const client = useMemo(() => staticClient({ locale, tag }), [locale, tag]);
+  const { search, setSearch, query } = useDocsSearch({ client });
 
   return (
     <SearchDialog search={search} onSearchChange={setSearch} isLoading={query.isLoading} {...props}>
