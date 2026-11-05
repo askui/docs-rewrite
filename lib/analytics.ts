@@ -59,6 +59,12 @@ export const stopAnalytics = (): void => {
   posthog.set_config({ disable_persistence: true });
 };
 
+/** Send a named event, as the website's captureEvent; no-op before consent. */
+export const captureEvent = (name: string, props?: Record<string, unknown>): void => {
+  if (!started) return;
+  posthog.capture(name, props);
+};
+
 /** Count a page view. Called on every route change; no-op before consent. */
 export const capturePageview = (): void => {
   if (!started) return;
