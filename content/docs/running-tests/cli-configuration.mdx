@@ -1,0 +1,356 @@
+---
+title: Configure the CLI
+description: Set up a machine from the terminal with askui configure and askui config, which settings exist, their environment variables, and which value wins.
+---
+
+A machine has one configuration, and AskUI Desktop and the CLI share it: the
+model, the proxy, the AgentOS controller, the license key, and the other
+settings in the [table below](#settings). A value you set with `askui config`
+shows up in AskUI Desktop, and a value you set in the app is what
+`askui config` shows. The settings belong to this machine and your user on it;
+nothing is copied to another machine.
+
+Two commands set them up:
+
+- `askui configure` asks for what a run needs, one question at a time.
+- `askui config` reads and writes one setting or several, for scripts.
+
+Signing in stays [`askui login`](/docs/running-tests/cli#signing-in). Project
+settings, such as a Project's [secrets](/docs/extending/secrets) or its tools,
+live in the Project, not here.
+
+<Callout title="AskUI Desktop is running">
+AskUI Desktop reads some settings only when it starts: the proxy, the license
+key, the analytics consent, automatic updates, and the parallel run limit.
+When you change one of them with the CLI, the CLI says so, and the app uses
+the new value from its next start. A run of the CLI uses it right away.
+</Callout>
+
+### Settings from an earlier version
+
+The first start of AskUI Desktop or the CLI after the update carries the
+settings of the earlier version over, once. A value that cannot be carried
+over starts at its default, and AskUI tells you which: the CLI prints a
+warning once, and AskUI Desktop shows a card under **Settings → This machine**
+until you dismiss it. Set those values again. An older AskUI version does not
+see settings changed after the update.
+
+## Set up a machine with `askui configure`
+
+```bash
+askui configure
+```
+
+The wizard asks, in this order:
+
+1. **Account.** Without a sign-in and without a license key, it asks which
+   one this machine uses: it runs `askui login`, or asks for the license key.
+   In the last 14 days of a sign-in, it offers to sign in again. Signed in, it
+   asks for the workspace.
+2. **Model for runs.** When your account may run its own model, it asks for the
+   provider, then the model and its endpoint and API key, or for Vertex AI the
+   project, the location, and the path of the credentials file. Otherwise, or
+   with the provider `askui`, it asks for the hosted model on AskUI Inference.
+3. **Proxy.** The mode, and for a manual proxy its address, the hosts that
+   bypass it, and a user and password.
+4. **AgentOS controller.** The controller to start for a desktop on this
+   computer.
+
+Each question shows the current value in brackets; press Enter to keep it.
+Secrets are typed without being shown, and the current one shows masked. At
+the end, the wizard writes all answers together and prints the `askui config
+set` lines that do the same, so you can script the next machine. A secret's
+line never carries its value.
+
+`askui configure` needs a terminal. In a script or a pipeline it asks nothing
+and ends with exit code 2; use [`askui config set`](#askui-config-set) there.
+
+## `askui config`
+
+```bash
+askui config list [--json]
+askui config get <key> [--json]
+askui config set <key> <value> [<key> <value> ...]
+askui config unset <key> [<key> ...]
+```
+
+### `askui config list`
+
+Shows every setting that has a value, with its source, and a note where a run
+would not use it:
+
+```text
+KEY                              VALUE         SOURCE         NOTE
+workspace                        QA            askui login
+models.run.provider              anthropic     this machine   not used: signed in
+models.run.connection.api-key    ****p7dc      this machine   not used: signed in
+proxy.mode                       system        HTTPS_PROXY
+runs.parallel-limit              4             this machine
+```
+
+The source is the flag, the environment variable by name, `.env (<variable>)`,
+`this machine`, `askui login` for the workspace, `reused from models.run` for
+a feature's model (see [Models of other features](#models-of-other-features)),
+or `default`. Inside a Project folder, `askui config` reads the Project's
+`.env` as `askui run` does.
+
+### `askui config get`
+
+```bash
+askui config get models.run.provider
+```
+
+Prints the value a run would use. A secret prints masked. A setting with no
+value and no default prints that it is not set and ends with exit code 1, so
+a script can branch on it.
+
+### `askui config set`
+
+```bash
+askui config set proxy.mode manual proxy.address http://proxy:3128
+```
+
+Takes one key and value pair or several. Several pairs are written together:
+if one is refused, nothing is written, so a model is never half changed. Set a
+mode and its values in one command, as above. An unknown key ends with exit
+code 2 and lists the keys; a value the setting does not accept ends with exit
+code 2 and names the accepted values. The CLI warns when an environment
+variable overrides the setting in your shell, and when it stores a value no
+run reads.
+
+**Secrets never go on the command line**, where they would land in the shell's
+history. Give the key without a value, and the CLI asks for it without showing
+what you type, or pipe it with `--stdin`:
+
+```bash
+askui config set models.run.connection.api-key
+askui config set models.run.provider anthropic models.run.connection.api-key
+printf '%s' "$ANTHROPIC_API_KEY" | askui config set models.run.connection.api-key --stdin
+```
+
+The secrets are the API keys and Vertex AI credentials of each model,
+`proxy.auth.password`, and `license`. A secret given as an argument, or an
+empty one, ends with exit code 2 and keeps the stored value. For a
+`…vertex.credentials` key, the prompt asks for the path of the credentials
+file; `--stdin` takes the file's JSON. To rotate a key, set it again.
+
+**A credential stays with its host.** Moving a model to another host, by
+changing its endpoint, its target, its Vertex AI project or location, or its
+provider when it has no endpoint, removes the stored API key or credentials.
+Changing the proxy's mode or address removes the stored proxy password. Set the
+new credential in the same command to keep one:
+
+```bash
+askui config set models.run.connection.endpoint https://llm.example.com/v1 models.run.connection.api-key
+```
+
+After a change to an own model, the CLI checks it once, as the model form in
+AskUI Desktop does. A failed check keeps the values and says why; AskUI
+Desktop then asks you to set up the model until a check passes.
+
+**Environment variables as values.** A value can name an environment variable
+as `${NAME}`; it is read each time the configuration is loaded, so the variable
+must be set where the CLI or AskUI Desktop runs:
+
+```bash
+askui config set agent-os.controller-path '${AGENTOS_CONTROLLER}'
+```
+
+Quote it so your shell does not expand it first. `$${` is a literal `${`. A
+`${NAME}` that is not set leaves that one value at its default, with a note in
+`askui config list`. Secrets, hosts (endpoints, the proxy address, the Vertex
+AI project and location), and the analytics consent take no `${NAME}`: their
+text is used as typed, so a variable can never send a key to another host.
+
+**Switch the workspace** without signing in again, by name or id:
+
+```bash
+askui config set workspace Demo
+```
+
+Only a workspace your signed-in account belongs to is accepted; another ends
+with exit code 3.
+
+**Analytics consent.** `askui config set analytics.consent granted` shows the
+consent text AskUI Desktop shows and asks for your yes. Without a terminal,
+pass `--yes` to agree to the text. Answering no changes nothing.
+`askui config set analytics.consent denied` needs no confirmation. This is the
+only way to grant the consent from the CLI: no environment variable sets it.
+
+### `askui config unset`
+
+```bash
+askui config unset proxy.address runs.parallel-limit
+```
+
+The setting's default applies again; unsetting a setting that is not set is
+not an error. Unset a whole group by its key: `unset models.run` removes your
+own model, as **Reset** in AskUI Desktop does, and `unset reporting.model`
+makes the report writer use the run's model again. `unset analytics.consent`
+removes the decision, and AskUI Desktop asks again. The workspace cannot be
+unset: `askui logout` signs the CLI out.
+
+### `--json`
+
+`askui config get --json` prints one object and `askui config list --json` an
+array with every setting, including those without a value:
+
+```json
+{ "key": "models.run.connection.api-key", "value": "****p7dc", "source": "this machine", "secret": true, "used": false }
+```
+
+`value` is masked for a secret and `null` when the setting has none (source
+`not set`). `used` is `false` when a run would ignore the value, for example
+your own model while the CLI is signed in and runs on AskUI Inference.
+
+### Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| `0` | Done. Also when you decline the consent prompt or a model check fails: the values are stored. |
+| `1` | `get` of a setting without a value. |
+| `2` | Usage error: an unknown key, a value the setting does not accept, a secret as an argument, `askui configure` without a terminal. |
+| `3` | The machine or the account refused: AskUI Desktop was saving the configuration and did not let go within 5 seconds (try again), the macOS Keychain is locked (in an SSH session, run `security unlock-keychain` first), a newer AskUI version stored the configuration, or a workspace your account does not belong to. |
+| `130` | Canceled at a prompt (Ctrl+C). |
+
+## Which value wins
+
+For every setting, a run, `askui config`, and `askui status` take the first
+of:
+
+1. **A flag** of the command, such as `--model-provider`.
+2. **An environment variable**, such as `ASKUI_MODELS_RUN_CONNECTION_API_KEY`.
+3. **The Project's `.env`**, for a run or a command inside the Project.
+4. **This machine**: what you set with `askui config` or in AskUI Desktop.
+5. **The run's model**, for a feature's model that does not set the value
+   itself.
+6. **The default.**
+
+`askui config list` shows the source of each value, `askui status` shows it
+for the workspace, the model, and the proxy, and every run names it for its
+model and workspace in its first line. `--ignore-app-settings` skips only
+this machine's values; flags, environment variables, and `.env` still apply.
+
+An environment variable that moves your own model to another host hides the
+stored API key, unless the key's own variable is set too. `HTTPS_PROXY`,
+`HTTP_PROXY`, `ALL_PROXY`, or `NO_PROXY` (also in lower case) win over a
+stored manual proxy: the run uses the system proxy with the variables'
+settings, without the stored proxy's user and password.
+
+## Settings
+
+Every setting with its environment variable for a run. A key's variable is
+`ASKUI_` and the key in upper case with `_` for `.` and `-`: `runs.parallel-limit`
+is `ASKUI_RUNS_PARALLEL_LIMIT`. A few settings have a second, earlier name too.
+`askui run --help` lists every variable.
+
+### Account
+
+| Key | Values | Environment variables |
+| --- | --- | --- |
+| `workspace` | A workspace name or id of the signed-in account. | `ASKUI_WORKSPACE_ID`, only together with `ASKUI_TOKEN` |
+| `license` | The local license key. Secret. | `ASKUI_LICENSE`, `ASKUI_LICENSE_KEY` |
+
+### Model for runs
+
+| Key | Values | Environment variables |
+| --- | --- | --- |
+| `models.run.askui` | The hosted model on AskUI Inference: `claude-sonnet-5-5` (default), `claude-opus-5-5`, `claude-haiku-5-5`, `gemini-3.8-flash`. | `ASKUI_MODELS_RUN_ASKUI` |
+| `models.run.provider` | `askui` (AskUI Inference, default), or your own: `anthropic`, `openai`, `openai-compatible`, `vertex`. | `ASKUI_MODELS_RUN_PROVIDER` |
+| `models.run.id` | The model id. | `ASKUI_MODELS_RUN_ID` |
+| `models.run.use-signed-in` | `true` or `false` (default): signed in as an AskUI employee, run this model instead of AskUI Inference. | `ASKUI_MODELS_RUN_USE_SIGNED_IN` |
+| `models.run.connection.target` | Where the model runs, as the model form in AskUI Desktop names it: `airgap`, `azure`, `other` (default), `vertex`. | `ASKUI_MODELS_RUN_CONNECTION_TARGET` |
+| `models.run.connection.endpoint` | The base URL of the model's API. Host. | `ASKUI_MODELS_RUN_CONNECTION_ENDPOINT` |
+| `models.run.connection.api-key` | The API key. Secret. | `ASKUI_MODELS_RUN_CONNECTION_API_KEY` |
+| `models.run.connection.vertex.project` | The Google Cloud project. Host. | `ASKUI_MODELS_RUN_CONNECTION_VERTEX_PROJECT` |
+| `models.run.connection.vertex.location` | The Vertex AI location, where requests are processed. Host. | `ASKUI_MODELS_RUN_CONNECTION_VERTEX_LOCATION` |
+| `models.run.connection.vertex.credentials` | The Google credentials JSON; none uses this machine's Google login. Secret, shown as its service account. | `ASKUI_MODELS_RUN_CONNECTION_VERTEX_CREDENTIALS` |
+| `models.run.tuning.image.max-edge` | The longest image edge sent to the model, in pixels (1 or more). | `ASKUI_MODELS_RUN_TUNING_IMAGE_MAX_EDGE`, `ASKUI_VLM_MAX_IMAGE_EDGE` |
+| `models.run.tuning.image.native-screenshot` | `true` or `false` (default): send screenshots at their native size. | `ASKUI_MODELS_RUN_TUNING_IMAGE_NATIVE_SCREENSHOT` |
+| `models.run.tuning.image.coordinate-system` | The grid the model reports clicks in: `auto` (default), `pixel`, `grid1000`, `normalized`. | `ASKUI_MODELS_RUN_TUNING_IMAGE_COORDINATE_SYSTEM` |
+| `models.run.tuning.context.max-input-tokens` | The context window in tokens, for summarizing the conversation (1 or more). | `ASKUI_MODELS_RUN_TUNING_CONTEXT_MAX_INPUT_TOKENS` |
+| `models.run.tuning.context.truncation-threshold` | The share of the context window at which the conversation is summarized, from 0 to 1. | `ASKUI_MODELS_RUN_TUNING_CONTEXT_TRUNCATION_THRESHOLD` |
+
+### Models of other features
+
+These features run on the run's model unless you give them their own:
+
+| Keys | Feature | Environment variables |
+| --- | --- | --- |
+| `reporting.model.*` | The [execution report](/docs/extending/reporting) writer | `ASKUI_REPORTING_MODEL_*` |
+| `reviewer.model.*` | The In-Flight Guidance reviewer | `ASKUI_REVIEWER_MODEL_*` |
+| `dreaming.model.*` | [Dreaming](/docs/extending/dreaming) | `ASKUI_DREAMING_MODEL_*` |
+| `generation.model.*` | Generating tests and tools, with your own model | `ASKUI_GENERATION_MODEL_*` |
+
+Each has the fields of the model for runs except `askui` and `use-signed-in`, such as
+`reporting.model.id` (`ASKUI_REPORTING_MODEL_ID`) or
+`reporting.model.connection.api-key`. A feature that sets nothing uses the
+run's model whole. Set only `reporting.model.id`, and the report writer keeps
+the run's provider and connection with its own model id. The provider and the
+connection go together: once a feature sets one of them, it takes neither from
+the run's model, so the run's API key never goes to the feature's host.
+Unsetting the feature's last value makes it use the run's model again.
+
+A feature runs on its own model only where your account allows one. The report
+writer needs a license. The reviewer, Dreaming, and generation need a license
+or an AskUI employee account; for an employee, the feature's own choice
+decides: the Project's setting for the reviewer and Dreaming, and
+`generation.choice` for generation. Signed in with any other account, every
+feature runs on AskUI Inference, and `askui config list` notes the feature's
+own model as not used.
+
+Generation picks its model with three more settings:
+
+| Key | Values | Environment variable |
+| --- | --- | --- |
+| `generation.choice` | `best` (default), `same-as-tests`, `own-model`, `hosted`. | `ASKUI_GENERATION_CHOICE` |
+| `generation.hosted-model` | The hosted model id when the choice is `hosted`. | `ASKUI_GENERATION_HOSTED_MODEL` |
+| `generation.own-model-same-as-tests` | With your own model: generate on the run's model (`true`, default) or on `generation.model` (`false`). | `ASKUI_GENERATION_OWN_MODEL_SAME_AS_TESTS` |
+
+### Network
+
+| Key | Values | Environment variables |
+| --- | --- | --- |
+| `proxy.mode` | `system` (default), `manual`, `direct`. | `ASKUI_PROXY_MODE`; `HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY`, `NO_PROXY` mean `system` with the variables' proxy |
+| `proxy.address` | With `manual`: the proxy, such as `http://proxy:3128`. Host. | `ASKUI_PROXY_ADDRESS` |
+| `proxy.bypass` | With `manual`: hosts that skip the proxy, such as `*.corp.example; 10.0.0.*`. | `ASKUI_PROXY_BYPASS` |
+| `proxy.auth.kind` | How AskUI signs in to the proxy: `auto` (default), `none`, `windows-integrated`, `credentials`. | `ASKUI_PROXY_AUTH_KIND` |
+| `proxy.auth.username` | With `credentials`: the proxy user; `DOMAIN\user` works. | `ASKUI_PROXY_AUTH_USERNAME` |
+| `proxy.auth.password` | With `credentials`: the proxy password; none sends the user without one. Secret. | `ASKUI_PROXY_AUTH_PASSWORD` |
+
+### This machine
+
+| Key | Values | Environment variables |
+| --- | --- | --- |
+| `agent-os.controller-path` | The AgentOS controller to start for a desktop on this computer. | `ASKUI_AGENT_OS_CONTROLLER_PATH`, `ASKUI_CONTROLLER_PATH` |
+| `android.jdk-source` | The JDK of the Android SDK setup: `machine` (default, this machine's Java) or `downloaded`. | `ASKUI_ANDROID_JDK_SOURCE` |
+| `analytics.consent` | `undecided` (default), `granted`, `denied`. | none, see [Analytics consent](#askui-config-set) |
+| `updates.automatic` | `true` (default) or `false`: AskUI Desktop updates itself. | `ASKUI_UPDATES_AUTOMATIC` |
+| `runs.parallel-limit` | How many runs AskUI Desktop runs at the same time; default `2`. | `ASKUI_RUNS_PARALLEL_LIMIT` |
+
+`analytics.decided-at` and `analytics.prompt-version` record when and to which
+text the consent was given; AskUI sets them, you cannot. "Host" marks a field
+that takes no `${NAME}`, and whose change removes the stored credential.
+
+## In CI
+
+On a CI runner, set environment variables in the pipeline instead of running
+`askui config set`. They apply to the pipeline's runs only, come from the
+CI system's secret store, and leave the runner machine's settings as they
+are:
+
+```yaml title=".github/workflows/askui.yml (excerpt)"
+      - run: askui run --plan smoke --reporter html,md,junit
+        env:
+          ASKUI_WORKSPACE_ID: ${{ vars.ASKUI_WORKSPACE_ID }}
+          ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
+          ASKUI_MODELS_RUN_ASKUI: claude-sonnet-5-5
+          HTTPS_PROXY: http://proxy.corp.example:3128
+          NO_PROXY: localhost,127.0.0.1
+```
+
+To ignore everything stored on the runner, add `--ignore-app-settings` or set
+`ASKUI_IGNORE_APP_SETTINGS=1`; the variables still apply. Use
+`askui config set` for what a runner should keep for every pipeline, such as
+the AgentOS controller of a test machine. See
+[AskUI in CI](/docs/guides/askui-in-ci) for the whole pipeline.

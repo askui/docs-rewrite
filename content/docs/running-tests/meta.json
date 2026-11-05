@@ -1,1 +1,1 @@
-{ "title": "Running Tests", "icon": "CirclePlay", "pages": ["index", "scheduling", "install-cli", "cli"] }
+{ "title": "Running Tests", "icon": "CirclePlay", "pages": ["index", "scheduling", "install-cli", "cli", "cli-configuration"] }
