@@ -146,7 +146,12 @@ const clearTrackingStorage = (): void => {
 // Pings the same Zapier catch-hook (→ Slack channel / Google Sheet) as the
 // marketing site's notifyDownload (askui-website, src/lib/tracking.ts). Not
 // analytics: it fires on every download click, without the consent gate.
-const DOWNLOAD_WEBHOOK_URL = 'https://hooks.zapier.com/hooks/catch/26336845/4ta4esp/';
+// Off unless NEXT_PUBLIC_DOWNLOAD_WEBHOOK_URL is set at build time (the deploy
+// workflow reads it from 1Password, op://plat-tracking/Zapier Download
+// Webhook). The URL still ships in the public bundle, as on the website; the
+// build-time switch keeps local and preview builds from posting to the
+// production channel and lets the hook rotate without a code change.
+const DOWNLOAD_WEBHOOK_URL = process.env.NEXT_PUBLIC_DOWNLOAD_WEBHOOK_URL;
 
 // Berlin local time (not UTC), DST-aware.
 const berlinTimestamp = (): string => {
@@ -174,6 +179,7 @@ export const notifyDownload = (
   os: string,
   utm: Record<string, string> = {},
 ): void => {
+  if (!DOWNLOAD_WEBHOOK_URL || isLocalOrAutomated()) return;
   const data = new FormData();
   data.append('source', source);
   data.append('label', label);

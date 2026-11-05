@@ -31,8 +31,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       # PostHog project API key (public, write-only), the same project as
-      # www.askui.com. Read from 1Password with the repo's service account
-      # (sa-docs-rewrite, read-only on plat-tracking).
+      # www.askui.com, and the Zapier catch-hook for installer download pings
+      # (the same hook as www.askui.com's /start). Read from 1Password with the
+      # repo's service account (sa-docs-rewrite, read-only on plat-tracking).
       - name: Load secrets
         id: op
         uses: 1password/load-secrets-action@v5
@@ -41,6 +42,7 @@ jobs:
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           POSTHOG_KEY: "op://plat-tracking/Posthog Production/POSTHOG_KEY"
+          DOWNLOAD_WEBHOOK_URL: "op://plat-tracking/Zapier Download Webhook/url"
       - name: Build with Next (static export)
         run: pnpm build
         env:
@@ -52,6 +54,7 @@ jobs:
           # the sentinel the app maps to an empty base path.
           NEXT_PUBLIC_BASE_PATH: ${{ vars.DOCS_SERVE_AT_ROOT == 'true' && 'ROOT' || '/docs-rewrite' }}
           NEXT_PUBLIC_POSTHOG_KEY: ${{ steps.op.outputs.POSTHOG_KEY }}
+          NEXT_PUBLIC_DOWNLOAD_WEBHOOK_URL: ${{ steps.op.outputs.DOWNLOAD_WEBHOOK_URL }}
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
