@@ -126,9 +126,11 @@ came from writing without reading.
 
 ## 6. Unreleased work
 
-If the change is on a branch, the docs describing it must not go live before
-it merges. Say so in the PR description and keep the doc change on the same
-branch or a clearly-marked docs branch. Two failure modes to avoid:
+If the change is on a branch, the docs PR waits until the app PR is merged.
+Say so in the PR description. `main` here holds the docs of the next app
+release, and its pages go live only when that release is tagged (see "Versions
+and releases" in `AGENTS.md`). So merge the docs PR right after its app PR, not at
+the release. Two failure modes to avoid:
 - Documenting a feature users cannot use yet.
 - Leaving docs describing a feature that was removed (sweep on removal).
 
@@ -156,7 +158,7 @@ test against them`).
 
 ## 8. Ship it
 
-1. `npm run types:check` — catches MDX and route problems.
+1. `pnpm types:check` — catches MDX schema and route problems.
 2. Check the affected pages render: the dev server runs at
    `http://localhost:3000/docs-rewrite/docs/...` (note the base path).
 3. **Link and anchor check** — renamed headings silently break anchors:
@@ -166,7 +168,9 @@ test against them`).
    ```
 4. Diagrams: iterate with the `render-mermaid` skill, never ship a layout you
    have not looked at.
-5. `npm run build` before anything that touches routes, nav or components.
+5. `pnpm build`, always: it finds MDX parse errors that `types:check` misses.
+   Touching routes, layout or `lib/`? Run
+   `NEXT_PUBLIC_BASE_PATH=ROOT node scripts/build-versioned.mjs` too.
 6. Commit with a message that says *what changed for the reader*, not which
    files moved.
 
