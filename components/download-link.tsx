@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { Card } from 'fumadocs-ui/components/card';
+import { captureEvent } from '@/lib/analytics';
 import { notifyDownload } from '@/lib/tracking';
 
 const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
@@ -18,9 +19,12 @@ interface DownloadLinkProps {
 
 /**
  * Drop-in replacement for `<Card href=... />` / a plain Markdown link on an
- * installer download: fires the download-notification webhook on click
- * (lib/tracking.ts) and then behaves exactly like a normal link — it never
- * calls preventDefault, so the download/navigation is never blocked.
+ * installer download. A click sends two things, then behaves exactly like a
+ * normal link (it never calls preventDefault, so the download is never
+ * blocked):
+ *  - the download-notification webhook (lib/tracking.ts), on every click;
+ *  - PostHog's `download_click`, the same event www.askui.com's /start sends,
+ *    only after consent (lib/analytics.ts).
  */
 export function DownloadLink({ href, source, label, os, title, description, children }: DownloadLinkProps) {
   const handleClick = () => {
@@ -33,6 +37,7 @@ export function DownloadLink({ href, source, label, os, title, description, chil
       if (value) utm[key] = value;
     }
     notifyDownload(source, label, os, utm);
+    captureEvent('download_click', { label: `${source}_${label}`, kind: 'installer', os, channel: 'release' });
   };
 
   if (title) {
