@@ -85,8 +85,10 @@ VM for you.
     first run.
   </Tab>
   <Tab value="Android">
-    `adb` must be on your `PATH` and the device (or emulator) already
-    running and visible to `adb devices`. See the
+    The device (or emulator) must be running and visible to `adb devices`.
+    The CLI uses the first `adb` it finds: the file `ASKUI_ADB_PATH` names,
+    the Android SDK in `ANDROID_HOME` or `ANDROID_SDK_ROOT`, the SDK's default
+    folder, Homebrew, or your `PATH`. See the
     [ADB setup guide](/docs/agentos/deployment/local#android-setting-up-adb).
   </Tab>
   <Tab value="iOS">

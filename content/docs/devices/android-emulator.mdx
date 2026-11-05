@@ -20,12 +20,9 @@ machine. The app creates it, boots it, and connects it, you never touch
    - **Headless**: boot without an emulator window *(toggle, default off)*
 3. **Add device**.
 
-No Android SDK on this machine yet? The editor says **Android tools are not
-installed on this computer**, names what **Install** will fetch, and the button
-runs the setup right there: accept the licences, watch the download, stop it if
-you must. When it finishes, the device-type and system-image lists reload from
-the freshly installed SDK. You can also add the device first and set the SDK
-up from its card.
+No Android SDK on this machine yet? Add the device anyway. Until the SDK is
+there, the system-image list offers a built-in selection, and the new card reads
+**Set up** in place of **Start**, see below.
 
 <img
   src="/docs-rewrite/screenshots/desktop-profile-android-emulator.png"
@@ -62,15 +59,14 @@ The card shows each state while Start works:
 A Start that hangs in **Booting…** past ~8 minutes times out with an error,
 the emulator may still come up; Start again reconnects to it.
 
-**The card reads Set up instead of Start** — the Android SDK is not installed
-(or no longer complete). The card shows the same **Android tools are not
-installed on this computer** notice as the editor, with **Install**; that button
-and **Set up** open the same setup dialog, where one click installs everything
-missing, or the manual steps tell you what to run yourself. Nothing downloads
-before you confirm.
+**The card reads Set up instead of Start** — the Android platform-tools or the
+Android SDK is not installed (or no longer complete), and the card says
+**Tooling not ready — click Set up**. The setup dialog lists both, platform-tools
+first, and installs whatever is missing in that order with one click, or the
+manual steps tell you what to run yourself. Nothing downloads before you confirm.
 
-**Set up fails with "Install did not complete"** — open **Settings → Machine →
-Android SDK**. The **Dependencies** list shows every piece the emulator needs,
+**Set up fails with "Install did not complete"** — open **Settings → This
+machine → Android**. Its **Emulator** section lists every piece the emulator needs,
 which version was found and where it lives, so you can see which one is the
 problem. A piece that is there but cannot be used says why: a Java older than 17,
 a JRE rather than a full JDK, or on Windows a Java under a folder with parentheses
@@ -82,7 +78,7 @@ the app fetches its own JDK into the SDK folder and uses only that one, leaving 
 Java installed on your machine untouched. Then press **Set up** on the card, which
 installs whatever is missing.
 
-**Rebuilding the Android SDK from scratch** — the same card has **Delete…**. It
+**Rebuilding the Android SDK from scratch** — the Emulator section has **Delete…**. It
 removes the whole SDK folder, including the JDK inside it and the emulators created
 from it, whether or not AskUI installed them; the confirmation shows the exact
 folder. Afterwards every row reads *not installed* and **Set up** rebuilds it.
