@@ -19,6 +19,11 @@ dropdown in the sidebar:
 Each version describes exactly what that app release shipped. A minor release
 whose docs did not change shares a version with the next one (`v0.9 – v0.10`).
 
+The pages of every version, the newest included, come from release tags.
+Everything around them (layout, search, tracking, consent banner) comes from
+`main`. So a docs page goes live with its app release, while a change to the
+site itself goes live as soon as it is merged.
+
 ## Write the docs
 
 1. Branch from `main` and edit `content/docs/`. `main` always holds the docs of
@@ -38,12 +43,13 @@ whose docs did not change shares a version with the next one (`v0.9 – v0.10`).
    pnpm build
    ```
 
-4. Merge the docs PR when its app PR is merged. A merge publishes nothing.
+4. Merge the docs PR when its app PR is merged. The page goes live with the next
+   release tag, not with the merge.
 
 ## Release the docs
 
 When an AskUI Desktop version is released, tag the same version here and push
-the tag. That builds and deploys the whole site with every version:
+the tag. That deploys the site with the new version as the newest one:
 
 ```bash
 git fetch origin
@@ -52,8 +58,9 @@ git push origin v0.11.0
 ```
 
 - Release candidates (`v0.11.0-rc1`) get no tag and no docs version.
-- The deploy always builds from the newest release tag.
-  [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) has the details.
+- [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs on every
+  release tag, on every merge to `main` (site changes, released pages unchanged)
+  and by hand (Actions → **Deploy to GitHub Pages** → **Run workflow**).
 
 ### Fix an older version
 
@@ -66,14 +73,17 @@ Older versions live on branches: `release/v0.9`, `release/v0.10`, …
    The old branch does not carry the current workflow, so the tag alone starts
    nothing.
 
-A fix to the newest version goes on `main` and ships with the next release tag.
-For an urgent one, tag a patch on `main` (`v0.11.1`).
+A fix to the newest version also goes on its release branch, not on `main`:
+`main` already holds the pages of the next release.
 
 ## Preview the versioned site
 
 ```bash
-NEXT_PUBLIC_BASE_PATH=ROOT node scripts/build-versioned.mjs   # every version into out/
-pnpm start                                                    # http://localhost:3000/docs
+# exactly what the deploy publishes: released pages, site from your checkout
+NEXT_PUBLIC_BASE_PATH=ROOT node scripts/build-versioned.mjs --release
+# or: the pages of your checkout as the newest version, plus the released ones
+NEXT_PUBLIC_BASE_PATH=ROOT node scripts/build-versioned.mjs
+pnpm start                     # http://localhost:3000/docs
 ```
 
 `pnpm dev` and `pnpm build` build `main` alone, without the older versions.

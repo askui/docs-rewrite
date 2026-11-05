@@ -128,8 +128,8 @@ came from writing without reading.
 
 If the change is on a branch, the docs PR waits until the app PR is merged.
 Say so in the PR description. `main` here holds the docs of the next app
-release, and nothing goes live until that release is tagged (see "Versions and
-releases" in `AGENTS.md`). So merge the docs PR right after its app PR, not at
+release, and its pages go live only when that release is tagged (see "Versions
+and releases" in `AGENTS.md`). So merge the docs PR right after its app PR, not at
 the release. Two failure modes to avoid:
 - Documenting a feature users cannot use yet.
 - Leaving docs describing a feature that was removed (sweep on removal).

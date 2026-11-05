@@ -49,7 +49,8 @@ pnpm install
 pnpm dev                 # http://localhost:3000/docs-rewrite/docs (main only)
 pnpm types:check         # MDX schema, routes, TypeScript
 pnpm build               # static export of main into out/
-NEXT_PUBLIC_BASE_PATH=ROOT node scripts/build-versioned.mjs   # every version into out/
+NEXT_PUBLIC_BASE_PATH=ROOT node scripts/build-versioned.mjs --release   # what the deploy publishes
+NEXT_PUBLIC_BASE_PATH=ROOT node scripts/build-versioned.mjs             # main's pages as the newest version
 pnpm start               # serve out/
 python .claude/skills/docs-writing/linkcheck.py               # needs pnpm dev running
 ```
@@ -82,10 +83,18 @@ build finds. Run `build-versioned.mjs` too when you touch `app/`, `components/`,
 The site shows one docs version per AskUI Desktop minor release:
 `/docs/…` is the newest, `/docs/vX.Y/…` each older one.
 
+**Content and site shell come from different places.** The content of every
+version (`content/docs`, `content/_shared`, `public/screenshots`) comes from a
+release tag; the newest version from the newest tag. The site shell (`app/`,
+`components/`, `lib/`, `public/` apart from screenshots, dependencies) always
+comes from `main`. So unreleased pages on `main` never go live, while a shell
+change (tracking, layout, search) deploys with its merge.
+
 **How the build works** (`scripts/build-versioned.mjs`, all inside the ignored
 build copy `.versioned/`):
 
-1. Copy the site from the working tree.
+1. Copy the site from the working tree. With `--release` (the deploy always
+   passes it), replace its content by the newest release tag's.
 2. Move `content/docs/*` into the group folder `content/docs/(latest)/`. The
    parentheses keep it out of the URL.
 3. For every older minor, take its newest release tag (`v0.9.0`, `v0.8.2`, …) and
@@ -98,8 +107,7 @@ build copy `.versioned/`):
    merges into it, labelled `v0.9 – v0.10`.
 6. Run `fumadocs-mdx` and `next build`; copy `.versioned/out` to `out/`.
 
-The site shell (layout, search, analytics, SEO) always comes from the checked-out
-commit, so every version gets the same header, consent banner and tracking.
+Every version therefore gets the same header, consent banner and tracking.
 
 **Invariants:**
 
@@ -116,17 +124,22 @@ commit, so every version gets the same header, consent banner and tracking.
   The dialog loads only the index of the version being read.
 - `pnpm dev` and `pnpm build` must keep working on plain `main`, without versions.
   `lib/versions.json` as committed has no older versions.
+- **The shell on `main` must still build every released version's content.**
+  Never remove or rename an MDX component, a frontmatter field or a
+  `content/_shared` path that a released version still uses. The deploy builds
+  all versions, so a break fails the deploy; check with `--release` first.
 
 **Merge and release rules:**
 
 - Docs PRs target `main`. Merge a docs PR when its app PR is merged, never
   before. Documenting what is not merged is a bug (see the `docs-writing` skill).
-- A merge publishes nothing. `.github/workflows/deploy.yml` deploys only on a
-  release tag `v<major>.<minor>.<patch>`. A human sets it when the app version is
-  released. Do not push release tags unless asked to.
-- The deploy always builds from the **newest** release tag. A fix to an older
-  version is a commit on its `release/vX.Y` branch plus a patch tag (`v0.9.1`),
-  followed by a manual run of the deploy workflow.
+- `.github/workflows/deploy.yml` runs on a release tag `v<major>.<minor>.<patch>`,
+  on every merge to `main`, and by hand. A merge to `main` redeploys the shell
+  with the released content unchanged; new pages go live only with the next
+  release tag. A human sets that tag when the app version is released. Do not
+  push release tags unless asked to.
+- A fix to an older version is a commit on its `release/vX.Y` branch plus a
+  patch tag (`v0.9.1`), followed by a manual run of the deploy workflow.
 - Release candidates get no tag and no docs version.
 
 ## Base path and environment
