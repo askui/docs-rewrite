@@ -42,7 +42,7 @@ jobs:
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           POSTHOG_KEY: "op://plat-tracking/Posthog Production/POSTHOG_KEY"
-          DOWNLOAD_WEBHOOK_URL: "op://plat-tracking/Zapier Download Webhook/url"
+          DOWNLOAD_WEBHOOK_URL: "op://plat-tracking/Zapier/Download Webhook"
       - name: Build with Next (static export)
         run: pnpm build
         env:
