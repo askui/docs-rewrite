@@ -55,6 +55,13 @@ export const startAnalytics = (withConsent: boolean): void => {
     autocapture: true,
     disable_session_recording: true,
     ip: false,
+    // No remote config and no feature-flag request: the docs use neither, and
+    // both would reach PostHog before consent with more than a page view or a
+    // download (the flags request carries the visit's referrer and landing
+    // address). The same as www.askui.com. Web vitals were enabled by the
+    // remote config, so they are switched on here.
+    advanced_disable_flags: true,
+    capture_performance: { web_vitals: true },
     // Cookieless until opt_in_capturing(): the visitor's choice lives in
     // askui-cookie-consent, so PostHog starts opted out on every page load.
     cookieless_mode: 'on_reject',
