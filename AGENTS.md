@@ -148,13 +148,13 @@ Every version therefore gets the same header, consent banner and tracking.
 | --- | --- |
 | `NEXT_PUBLIC_BASE_PATH` | Unset: `/docs-rewrite` (GitHub project page, local dev). `ROOT`: no base path (docs.askui.com). The deploy sets `ROOT` from the repo variable `DOCS_SERVE_AT_ROOT=true`. |
 | `NEXT_PUBLIC_SITE_URL` | Overrides the public origin for canonical and og URLs. |
-| `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST` | PostHog (EU). |
-| `NEXT_PUBLIC_DOWNLOAD_WEBHOOK_URL` | Zapier hook that counts installer downloads. |
+| `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST` | PostHog (EU), through ingest.askui.com. Off when the key is unset. |
 
-The deploy reads the keys from 1Password through the repo's service account
-(`sa-docs-rewrite`). Google tag and PostHog load only after cookie consent
-(`components/cookie-consent.tsx`). Never put a key or a hook URL in a file or a
-commit.
+The deploy reads the PostHog key from 1Password through the repo's service
+account (`sa-docs-rewrite`). Before consent PostHog runs cookieless and sends
+only page views and download clicks; the Google tag and full PostHog load only
+after "Accept all" (`lib/analytics.ts`, `lib/tracking.ts`,
+`components/cookie-consent.tsx`). Never put a key in a file or a commit.
 
 ## Never
 
