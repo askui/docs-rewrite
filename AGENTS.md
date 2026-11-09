@@ -76,7 +76,10 @@ build finds. Run `build-versioned.mjs` too when you touch `app/`, `components/`,
   `Steps`/`Step`, `Cards`/`Card`, `Files`/`Folder`/`File`,
   `Accordions`/`Accordion`, `RunEmbed`, `Lucide`, `DownloadLink`. A ```` ```mermaid ````
   fence renders as a diagram; check its layout with the `render-mermaid` skill.
-- **Download links** to the installers use `<DownloadLink>`, so clicks are counted.
+- **Download links** to the installers can be plain links or `<DownloadLink>`. The
+  shell counts every click on an installer URL (`lib/downloads.ts`,
+  `components/analytics.tsx`), in every docs version. A new installer URL
+  pattern needs a change in `lib/downloads.ts`, not in the pages.
 
 ## Versions and releases
 
