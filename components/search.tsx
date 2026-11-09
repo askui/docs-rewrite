@@ -27,7 +27,10 @@ export default function DefaultSearchDialog(props: SharedProps) {
     () => staticClient({ locale, from: `${basePath}/api/search/${tag}` }),
     [locale, tag],
   );
-  const { search, setSearch, query } = useDocsSearch({ client });
+  // The version is a dependency too: switching versions in the dropdown is a
+  // client-side navigation, and without it the dialog keeps the previous
+  // version's index.
+  const { search, setSearch, query } = useDocsSearch({ client }, [tag]);
 
   return (
     <SearchDialog search={search} onSearchChange={setSearch} isLoading={query.isLoading} {...props}>
