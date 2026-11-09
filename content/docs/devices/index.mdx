@@ -16,12 +16,12 @@ describes how to reach one. Connected profiles appear in every test's
 
 | On the page | Meaning |
 | --- | --- |
-| **Windows Desktop** | This machine's desktop via the AskUI Agent OS, native applications |
+| **Windows Desktop** | This machine's desktop via AgentOS, native applications |
 | **Chrome Browser** | A local Chrome window the app launches itself, web tests |
 | **Pixel 9** | An Android emulator, created and booted by the app |
 | **Connect / Start** | Opens the session. Green dot = ready. Tests only run on connected devices |
 | **Probe** | Checks reachability without connecting |
-| **Force Restart** (next to Retry, Local profile only) | After a failed Connect: stops the standalone AgentOS controller on this PC and starts a fresh one, see [Remote computer](/docs/devices/remote-computer#restart-the-controller-on-this-pc) |
+| **Force Restart** (next to Retry, Local and AskUI Companion profiles only) | After a failed Connect: stops the standalone AgentOS controller on this PC and starts a fresh one, see [Remote computer](/docs/devices/remote-computer#restart-the-controller-on-this-pc) |
 
 A new project starts with a **Local** profile (this machine) and, where the
 machine supports it, a ready-made **Android Emulator** profile. Deleted
@@ -54,12 +54,50 @@ defaults stay deleted.
 | [**Multi computer**](/docs/devices/multi-computer) | Several desktops, one agent | The test names the machine per step ("on the server …, on the client …") |
 | [**Cross-platform**](/docs/devices/cross-platform) | Desktop + Android + web in one profile | Connect/status only, runs not supported yet |
 | [**Android phone**](/docs/devices/android-phone) | A physical device via USB or wireless | **An Android device** in the dialog lists the phones `adb` sees, **Add as device** adds one; also from the **Android devices** list below |
+| [**iPhone via AskUI Companion**](/docs/devices/askui-companion) | A physical iPhone behind an AskUI Companion | **Advanced setups** → **A device via Remote Companion Controller**; needs the AskUI Companion from AskUI and AssistiveTouch on the iPhone |
 
-Each kind has its own page with the exact fields and setup. Missing tooling
-(no Android SDK for an emulator, no `adb` for a phone) shows up while you add
-the device and on its profile card as **Android tools are not installed on this
-computer**, with an **Install** button: one click installs everything missing,
-or follow the manual steps with exact commands.
+Each kind has its own page with the exact fields and setup.
+
+## What a device needs on this computer
+
+Every device row says whether this computer has what the device needs. The
+button where **Connect** or **Start** sits reads one of four things:
+
+**Checking…** — AskUI Desktop is still looking for the device's tools, for a
+moment after the page opens.
+
+**Set up** — something is missing. The dialog lists the device's setups in the
+order they install, installs the next one with one click, and shows the manual
+steps with the exact commands if you prefer to do it yourself. Nothing downloads
+before you click.
+
+**A reason instead of a button** — the device cannot run on this computer, for
+example an iOS simulator in a Project opened on Windows.
+
+**Connect** or **Start** — everything is there.
+
+What each kind needs on this computer:
+
+**Web browser** — the browser build of its engine (Chromium, Firefox or WebKit),
+downloaded once and shared by every Project.
+
+**This computer's desktop** — [AgentOS](/docs/agentos).
+
+**Android phone** — `adb`, from Google's Android platform-tools, see
+[Android phone](/docs/devices/android-phone#no-adb-on-this-computer).
+
+**Android emulator** — the platform-tools and the Android SDK, see
+[Android emulator](/docs/devices/android-emulator).
+
+**iOS simulator** — Xcode and `idb_companion`, on a Mac, see
+[iOS simulator](/docs/devices/ios-simulator).
+
+The same setups have their own rows under **Settings → This machine**, one card
+per kind of device: **Web**, **Computer**, **Android** and **iOS Simulators**.
+**Set up** there installs the same thing the device row does, and a setup
+started in one place shows its progress in the other. **Remove** appears only
+for what AskUI Desktop installed itself; a tool you installed yourself is never
+removed.
 
 ## Android devices (discovery)
 
@@ -68,8 +106,8 @@ The **Android devices** section lists what `adb` sees: USB-connected phones
 turns a discovered device into a regular profile, see
 [Android phone](/docs/devices/android-phone). For a wireless device, enter
 its `ip:port` and click **Connect wireless**. Without `adb` the list stays
-empty; the Add-device dialog's **An Android device** entry says so and offers
-**Install**.
+empty; the Add-device dialog's **An Android device** entry says so, and
+**Settings → This machine → Android** installs it.
 
 ## How a test picks its device
 

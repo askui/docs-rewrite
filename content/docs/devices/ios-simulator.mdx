@@ -12,9 +12,19 @@ kind is greyed out in the Add-profile dialog, running AskUI Desktop on
 Windows cannot drive an iOS simulator, not even a remote one.
 </Callout>
 
-**Preconditions:** a Mac running AskUI Desktop, Xcode command-line tools
-(`simctl`), and `idb`, the profile card lists anything missing with the
-exact install commands.
+**Preconditions:** a Mac running AskUI Desktop, the full Xcode (the
+command-line tools alone are not enough), and `idb_companion`. Both come from
+Apple and Homebrew, so you install them yourself: Xcode from the App Store,
+then in a terminal:
+
+```bash
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer && sudo xcodebuild -license accept
+brew tap facebook/fb && brew trust facebook/fb && brew install idb-companion
+```
+
+While one is missing, the device row reads **Set up**, and its dialog shows
+these steps with a copy button. The **iOS Simulators** card under
+**Settings → This machine** shows them too.
 
 ## Create it
 

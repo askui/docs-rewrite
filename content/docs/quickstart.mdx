@@ -21,15 +21,21 @@ Grab the installer for your platform and run it. It's self-contained, no
 extra runtimes needed.
 
 <Cards>
-  <Card
+  <DownloadLink
     title="Windows (x64)"
     href="https://files.askui.com/releases/AskUIDesktop/latest/AskUI-Desktop-latest-Installer-Win-AMD64.exe"
     description="Signed, self-contained."
+    source="docs_desktop_download"
+    label="windows-amd64"
+    os="Windows"
   />
-  <Card
+  <DownloadLink
     title="macOS (Apple Silicon)"
     href="https://files.askui.com/releases/AskUIDesktop/latest/AskUI-Desktop-latest-Installer-Mac-ARM64.dmg"
     description="Notarized, Apple Silicon."
+    source="docs_desktop_download"
+    label="mac-arm64"
+    os="macOS"
   />
 </Cards>
 
@@ -146,7 +152,7 @@ single most important file for reliable runs. See
 <Callout title="Automating another computer?">
 For the computer AskUI Desktop runs on, the onboarding sets up **AgentOS**, the
 runtime that controls the screen, keyboard and mouse, when you tick **Desktop**
-(later: **Settings → This machine → AgentOS**). Install AgentOS yourself only to
+(later: **Settings → This machine → Computer**). Install AgentOS yourself only to
 automate a remote computer, a VM or a CI runner, to run with elevated rights, or to
 keep the session running on a machine that boots to the login screen. The
 [OS Service installer](/docs/agentos/installation/service) covers these on Windows.

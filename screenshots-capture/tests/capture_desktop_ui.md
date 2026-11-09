@@ -13,7 +13,10 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
    runs" rule — start exactly this demo run and let it finish:
    1. Open the **Devices** page. If the **Pixel 9** profile is not connected,
       click **Start** and wait until it shows Ready (a cold boot can take
-      several minutes — the card shows the phases).
+      several minutes — the card shows the phases). While its button reads
+      **Checking…**, wait for it. If it reads **Set up**, click it, install
+      what the dialog lists (Android platform-tools, then the Android SDK),
+      close the dialog, then click **Start**.
       Caution: Use the **Pixel 9 (for Mac)** profile if you are operating a Mac!
    2. Open the **Tests** page and select `enable_airplane_mode_android.md`. Run it
       on the **Pixel 9** device (Run-on picker or right-click → Run on).
@@ -82,7 +85,7 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     then call `save_screenshot[desktop-tests-forge-ui]`. Return to the Tests
     page afterwards — do NOT upload a screenshot, type a description, or click
     Verify. If the project has no `ui.md`, skip this step and say so in the
-    report.
+    reason of the result you record.
 
 10c. Still on the **Tests** page, close every open editor tab so the editor shows
     "No test open". Click its **Forge a test** button. Wait until the TestForge
@@ -131,11 +134,12 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     Tools** afterwards — do NOT type a description, pick a folder, or click
     Verify.
 
-15c. Switch to the **Report Format** tab. Wait until the `utils/format.md`
-    editor is shown (or, if the project has no format file yet, its
-    "Create utils/format.md" call-to-action), then call
-    `save_screenshot[desktop-utils-format]`. Do NOT edit the file or click
-    Create.
+15c. Switch to the **Reporting** tab. Wait until the "Create report" and
+    "Reporting model" cards and the collapsed **Report format** row are shown.
+    Click the collapsed **Report format** row at the bottom so the `utils/format.md` editor (or, if the project has no
+    format file yet, its "Create utils/format.md" call-to-action) opens, then
+    call `save_screenshot[desktop-utils-format]`. Do NOT change any setting,
+    edit a file, or click Create.
 
 15d. Switch to the **In-Flight Guidance** tab. Wait until the "In-Flight
     Guidance" card is shown (the "Enable In-Flight Guidance for this project"
@@ -148,6 +152,17 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     shown, then call `save_screenshot[desktop-utils-dreaming]`. Do NOT turn
     Dreaming on, click "Analyze now", or change any field.
 
+15f. Open the **Runs** page with no test selected. In the report pane on the
+    right, under "No test selected", click **Generate Management Report** so
+    the Management report dialog opens. Click
+    the **90 days** preset so the range includes the demo run from step 1.
+    Wait until the list of runs (each with a ticked checkbox) and the
+    "Additional information" section are shown — or, if there are no runs in
+    the range, the "No runs in this range." message. Then call
+    `save_screenshot[desktop-management-report]`. Do NOT untick a run, type a
+    software version, tick **Bundle the execution reports**, or click **Generate**. Close the
+    dialog with **Cancel** afterwards.
+
 16. With the demo project open, click the git branch chip in the top bar so
     the source-control flyout opens (changes list, commit field, sync row).
     Call `save_screenshot[desktop-git-chip]`, then press Escape — do NOT
@@ -159,5 +174,6 @@ heading) and wait a moment so no tooltip or hover highlight is visible.
     start a run this way.
 
 ## Done
-The capture is successful when each screen above was shown and saved. Report one
-line per screen per the report format.
+The capture is successful when each screen above was shown and saved. Record
+the result PASSED when every screen was saved. Otherwise record FAILED, and name
+the missing screens in the reason.
