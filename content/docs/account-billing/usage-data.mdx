@@ -1,0 +1,76 @@
+---
+title: Usage data
+description: What AskUI Desktop and the CLI share with AskUI when you agree, and how to stop it.
+---
+
+AskUI Desktop and the `askui` CLI can share usage data with AskUI. We use it
+only to improve the product: to see which features you rely on and where
+testing gets stuck. Never for sales or advertising. Sharing is optional, and
+AskUI works the same either way.
+
+Nothing is shared until you say yes.
+
+## What is shared
+
+- Features you use and how far the setup gets
+- How many tests pass or fail, and on which kind of device
+- App version, operating system and a random machine id
+- Your setup answers: where you test, how you heard of AskUI, your role
+
+When you are signed in, the data is linked to your AskUI account and workspace.
+
+## What is never shared
+
+- Your tests, prompts or results
+- The names of your tests, projects or devices
+- Screenshots or anything on your screen
+- Project files, secrets or credentials
+
+AskUI GmbH is responsible for this data. PostHog processes it for us on
+servers in the EU. See the [privacy policy](https://www.askui.com/privacy-policy).
+
+## Where you are asked
+
+- **AskUI Desktop setup:** right after the welcome screen. Neither answer is
+  picked for you, and the setup only continues once you choose.
+- **After an update:** if you set up AskUI Desktop before it asked, or the
+  text you agreed to changed, it asks once, on a full screen like the setup.
+  Neither answer is picked for you, and AskUI Desktop continues once you choose.
+- **The CLI:** the first `askui run` at a terminal asks once. A run in CI
+  mode never asks. Anything but `yes` counts as no.
+
+App and CLI share one answer per machine.
+
+## Change your answer
+
+<Tabs items={['AskUI Desktop', 'CLI']}>
+<Tab value="AskUI Desktop">
+Open **Settings → Account → Usage data** and turn **Share usage data with
+AskUI** on or off. It takes effect at once, also for data still waiting to be
+sent.
+</Tab>
+<Tab value="CLI">
+```bash
+askui config set analytics.consent denied
+```
+
+To share again, run `askui config set analytics.consent granted`, which shows
+the text and asks for your yes.
+</Tab>
+</Tabs>
+
+When you stop sharing, the machine's random id is forgotten. Data sent before
+stays with us. To have it deleted, copy the id from the Usage data card
+**before** you turn sharing off, and send it to us through [Get help](/docs/support/get-help).
+Sharing again starts with a new id.
+
+## Turn it off for a whole machine
+
+Set the environment variable `DO_NOT_TRACK` to any value but `0` (see
+[consoledonottrack.com](https://consoledonottrack.com)). AskUI Desktop and
+the CLI then share nothing and ask no one, whatever was answered before. The
+Usage data card says so and offers nothing to change.
+
+```bash
+export DO_NOT_TRACK=1
+```
