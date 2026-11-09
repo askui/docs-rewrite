@@ -9,7 +9,7 @@
 // measurement sends one on every client-side route change (history events),
 // so the docs send none by hand; doing both counts every page twice.
 
-import { startAnalytics, stopAnalytics } from '@/lib/analytics';
+import { grantAnalyticsConsent, startAnalytics, stopAnalytics } from '@/lib/analytics';
 
 declare global {
   interface Window {
@@ -52,6 +52,31 @@ export const storedConsent = (): ConsentType => {
 /** True once the consent-gated tags were loaded in this page. */
 export const trackingInPage = (): boolean => trackingLoaded;
 
+/**
+ * An installer download, for Google Analytics and Ads: the same events as
+ * www.askui.com's /start (`desktop_download`, label = platform key), plus
+ * `agentos_download` for the AgentOS service installer, which the website
+ * does not offer. Only once the Google tag runs after consent: before that,
+ * window.gtag is the Consent Mode stub from app/layout.tsx, which only queues,
+ * and the queue would reach Google after a later "Accept all".
+ */
+export const trackGoogleDownload = (event: 'desktop_download' | 'agentos_download', label: string): void => {
+  if (!trackingLoaded || isLocalOrAutomated() || !window.gtag) return;
+  window.gtag('event', event, {
+    event_category: 'funnel',
+    event_label: label,
+  });
+};
+
+/**
+ * Start PostHog on page load: cookieless, or with cookies for a stored
+ * "Accept all" (lib/analytics.ts). Never on localhost or in automated browsers.
+ */
+export const startPageAnalytics = (withConsent: boolean): void => {
+  if (isLocalOrAutomated()) return;
+  startAnalytics(withConsent);
+};
+
 /** Load the consent-gated tags. Safe to call more than once. */
 export const loadTrackingScripts = (): void => {
   if (trackingLoaded) return;
@@ -60,8 +85,9 @@ export const loadTrackingScripts = (): void => {
 
   loadGoogleTag();
 
-  // PostHog starts only now, never before consent (lib/analytics.ts)
-  startAnalytics();
+  // PostHog ran cookieless until now; it switches to cookies and sends every
+  // event (lib/analytics.ts). After a stored consent this is a no-op.
+  grantAnalyticsConsent();
 };
 
 const loadGoogleTag = (): void => {
@@ -137,7 +163,20 @@ const clearTrackingStorage = (): void => {
     for (const key of Object.keys(localStorage)) {
       if (TRACKING_NAME.test(key)) localStorage.removeItem(key);
     }
+    for (const key of Object.keys(sessionStorage)) {
+      if (TRACKING_NAME.test(key)) sessionStorage.removeItem(key);
+    }
   } catch {
     // Storage blocked: nothing was written there either.
   }
+};
+
+/**
+ * On a page load with "Necessary only": remove what a withdrawn "Accept all"
+ * left behind. Tags keep running until the reload and can write again after
+ * denyTrackingConsent() cleaned up, and PostHog's window markers live in
+ * sessionStorage, which survives the reload.
+ */
+export const clearLeftoverTracking = (): void => {
+  clearTrackingStorage();
 };

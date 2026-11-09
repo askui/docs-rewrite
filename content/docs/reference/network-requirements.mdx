@@ -39,7 +39,8 @@ A machine that only hosts the application under test needs **nothing from
 this list**. It talks to the application under test; the machine driving the
 run does the rest. Downloads are the exception, and only until the machine is
 provisioned: browser bundles for [web profiles](/docs/devices/web-browser),
-the Android SDK for [emulators](/docs/devices/android-emulator), and NuGet
+the Android platform-tools for [phones](/docs/devices/android-phone), the
+Android SDK for [emulators](/docs/devices/android-emulator), and NuGet
 packages for [custom tools](/docs/extending/custom-tools), all resolvable
 from an internal mirror.
 
@@ -56,7 +57,7 @@ machine.
 
 ## Proxy
 
-AskUI Desktop is configured **in the app**, under **Settings → Network
+AskUI Desktop is configured **in the app**, under **Settings → This machine → Network
 proxy** (system proxy, manual address with bypass list, NTLM/Kerberos or
 stored credentials). Setup and what to check when connections fail:
 [Network proxy](/docs/troubleshooting/network-proxy).

@@ -87,9 +87,11 @@ app does.
     first run.
   </Tab>
   <Tab value="Android">
-    `adb` must be on your `PATH`. A physical device must be connected and
-    visible to `adb devices`. An emulator profile starts the emulator with
-    the Android SDK that AskUI Desktop set up. See the
+    A physical device must be connected and visible to `adb devices`. An
+    emulator profile starts the emulator with the Android SDK that AskUI
+    Desktop set up. The CLI uses the first `adb` it finds: the file
+    `ASKUI_ADB_PATH` names, the Android SDK in `ANDROID_HOME` or
+    `ANDROID_SDK_ROOT`, the SDK's default folder, Homebrew, or your `PATH`. See the
     [ADB setup guide](/docs/agentos/deployment/local#android-setting-up-adb).
   </Tab>
   <Tab value="iOS">

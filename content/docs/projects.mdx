@@ -61,8 +61,19 @@ definitions, the tooling the agent may use: every artifact is a plain file.
 `.pdf` (an exported or scanned specification can be executed directly), and
 `.json`.
 
-A new Project comes pre-seeded with this scaffold, fill in the placeholders
-instead of starting blank.
+**Start from a template…** on the Home page creates a new Project in a folder you
+pick: `tests/` with `ui.md`, `rules.md`, `setup.md`, `teardown.md` and
+`my_first_test.md`, each a template with **FILL IN** placeholders for your
+application, plus the report format in `utils/` and a `.gitignore`. Fill in the
+placeholders instead of starting blank.
+
+**Open an existing project…** on a folder that is not an AskUI Project yet (it has
+no `tests` folder) asks first. **Yes, set it up** adds only what AskUI needs: the
+`tests` and `utils` folders, the device list and a `.gitignore`, and no tests. **No**
+leaves the folder unopened.
+
+The **demo project**, a ready-to-run test of the AskUI website, is offered only by
+the onboarding wizard.
 
 ## Git: Versioning & Sync
 
@@ -78,7 +89,14 @@ The app has Git built in, no terminal needed for the daily loop:
 **Start versioning**
 
 1. Click **Init git** in the top bar (shown when the project folder is not a
-   repository yet). This also writes the project's `.gitignore`.
+   repository yet), or under **Settings → Version control → Git**. There is no
+   off switch: a repository is not undone from the app.
+2. Keep the run results out of git: **Settings → Version control → Run results →
+   Add to .gitignore** adds `/agent_workspace/` to the project's `.gitignore`.
+   That folder holds every run's reports, screenshots and downloads; ignoring it
+   keeps your commits to the tests, and the results stay on your computer.
+   **Remove** takes the line out again. Results committed before stay in git
+   until you remove them there.
 
 **Commit and sync**
 
@@ -103,7 +121,7 @@ The app has Git built in, no terminal needed for the daily loop:
    mark resolved after editing.
 
 <Callout type="info" title="Commit message format">
-Suggestions follow the format set in **Settings → Account → Commit messages**:
+Suggestions follow the format set in **Settings → Version control → Commit messages**:
 **Conventional Commits** (the default), **Angular Commit**, **Ticket-Driven**
 (takes the ticket key from the branch name), **Git Standard Rules**, or
 **Emoji-Based Format**. Pick **Custom** to write your team's own rules in plain

@@ -1,8 +1,17 @@
 name: Deploy to GitHub Pages
 
+# Docs content is released, not merged: every version's pages come from a
+# release tag (v0.11.0, set when the app version is released), so unreleased
+# docs on main never go live. The site shell (layout, components, search,
+# tracking, SEO) always comes from main. Hence the triggers:
+#   - a release tag deploys a new docs version (release candidates, v*-*, do not);
+#   - a merge to main deploys shell changes, with the released content unchanged;
+#   - run it by hand to redeploy, e.g. after a fix tag on an older version's
+#     release branch, which does not carry this workflow.
 on:
   push:
     branches: [main]
+    tags: ['v*', '!v*-*']
   workflow_dispatch:
 
 permissions:
@@ -19,8 +28,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      # The site shell always comes from main, whatever triggered the run. The
+      # content of every version comes from the release tags (--release below),
+      # so a fix tag on an older version (v0.9.1) never makes it the newest one.
+      - name: Checkout main
         uses: actions/checkout@v5
+        with:
+          ref: main
+          # Every release tag: scripts/build-versioned.mjs builds the versions
+          # from them.
+          fetch-depth: 0
       - name: Install pnpm
         uses: pnpm/action-setup@v6
       - name: Setup Node
@@ -41,8 +58,8 @@ jobs:
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           POSTHOG_KEY: "op://plat-tracking/Posthog Production/POSTHOG_KEY"
-      - name: Build with Next (static export)
-        run: pnpm build
+      - name: Build the versioned site (static export)
+        run: pnpm build:versioned --release
         env:
           # Cutover toggle: set the repo variable DOCS_SERVE_AT_ROOT to "true"
           # (Settings → Secrets and variables → Actions → Variables) to build for

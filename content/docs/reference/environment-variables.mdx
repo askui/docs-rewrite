@@ -16,3 +16,20 @@ description: All environment variables recognised by AskUI Desktop, the CLI, and
 |----------|---------|-------------|
 | `ASKUI_CONTROLLER_CLIENT_SERVER_AUTOSTART` | `true` | Set to `false` to prevent the CLI from starting a local AgentOS instance automatically. Use this when connecting to a remote AgentOS. |
 | `ASKUI_CONTROLLER_CLIENT_SERVER_ADDRESS` | `localhost:23000` | Address of the AgentOS gRPC server to connect to. Override when using a remote AgentOS instance. |
+
+## Devices on this computer
+
+AskUI Desktop and the CLI read these when they look for a device's tools.
+`askui run --help` lists them under **Environment**.
+
+**`ASKUI_ADB_PATH`** — the `adb` to use, in place of the one in the Android SDK
+or on `PATH`. An `adb` found this way counts as installed, see
+[Android phone](/docs/devices/android-phone#no-adb-on-this-computer).
+
+**`ASKUI_IDP_API_KEY`** — the API key for remote VMs on the IDP platform, when
+the app's Settings hold none.
+
+**`ASKUI_IDP_BASE_URL`** — the IDP API, in place of the configured one.
+
+**`ASKUI_IDP_CONSOLE_URL`** — the IDP console the remote VMs open in, in place
+of the configured one.

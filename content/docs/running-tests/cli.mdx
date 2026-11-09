@@ -37,7 +37,7 @@ app shows.
 | Secrets | The Project's [secrets](/docs/extending/secrets) in the app, including the ones the agent may type | An environment variable of the same name |
 | Network proxy | The proxy of this machine | `HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY`, `NO_PROXY`, the `ASKUI_PROXY_*` variables |
 | Execution report model | With a license, the separate report model on the **Reporting** tab, else the run's model | the `ASKUI_REPORTING_MODEL_*` variables |
-| AgentOS controller | The controller path under **Settings → Agent OS** | `ASKUI_AGENT_OS_CONTROLLER_PATH`, `ASKUI_CONTROLLER_PATH` |
+| AgentOS controller | The controller path under **Settings → This machine → Computer** | `ASKUI_AGENT_OS_CONTROLLER_PATH`, `ASKUI_CONTROLLER_PATH` |
 
 A flag wins over an environment variable, which wins over the Project's
 `.env`, which wins over this machine's value
