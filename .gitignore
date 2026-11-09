@@ -32,3 +32,6 @@ next-env.d.ts
 
 # mermaid render preview (render-mermaid skill)
 public/_preview/
+
+# versioned build copy (scripts/build-versioned.mjs)
+/.versioned/
