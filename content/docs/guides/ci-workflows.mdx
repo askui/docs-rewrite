@@ -125,6 +125,7 @@ jobs:
           "$env:LOCALAPPDATA\Programs\AskUI Desktop\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
 
       - name: Run the smoke plan
+        shell: cmd # keeps askui's exit code; pwsh would report 1
         run: askui run --plan smoke --output run-artifacts --reporter html,md,junit
 
       - name: Upload the reports
@@ -143,6 +144,9 @@ jobs:
           reporter: java-junit
 ```
 
+- **`shell: cmd`**: keeps the exit code of `askui run` in the job log.
+  PowerShell, the default shell on Windows runners, reports every failure as
+  exit code `1`.
 - **`ASKUI_DESKTOP_VERSION`**: the AskUI Desktop version the job installs.
   Pin it, and raise it on purpose, as with any other tool in the pipeline.
 - **The first run of a job** downloads Chromium for the browser, about
@@ -283,6 +287,9 @@ jobs:
   run depends only on the pipeline.
 - **`plan` options**: list the plans of your project. Each needs its
   `plans/<name>.yaml`.
+- **A Windows runner**: add `shell: cmd` to the `Run the plan` step, as in
+  the workflow for the Windows runner hosted by GitHub, so the job log shows
+  the exit code of `askui run`.
 
 ### Tests in a Separate QA Repository
 
@@ -329,6 +336,7 @@ jobs:
           "$env:LOCALAPPDATA\Programs\AskUI Desktop\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
 
       - name: Run the QA team's smoke plan
+        shell: cmd # keeps askui's exit code; pwsh would report 1
         run: askui run --project qa-tests --plan smoke --output run-artifacts --reporter html,md,junit
 
       - name: Upload the reports
