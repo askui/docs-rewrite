@@ -1,7 +1,7 @@
 ---
 icon: Hammer
 title: Forge
-description: Let the model draft the pieces of your project you would otherwise write by hand — UI prompts from screenshots, custom tools from a description, and tests from recordings and specs.
+description: Let the model draft the pieces of your project you would otherwise write by hand — UI prompts from screenshots or a recording, custom tools from a description, and tests from recordings and specs.
 ---
 
 **Forge** is the family of features that lets the model draft parts of your
@@ -15,10 +15,11 @@ There are three Forges:
 
 - **[PromptForge](#promptforge--ui-prompts-from-screenshots)** drafts your
   [UI information](/docs/writing-tests/agents-and-prompts#ui-information) (`ui.md`)
-  from screenshots of the app under test.
+  from screenshots of the app under test, or from a recording in which you show and
+  explain it.
 - **[ToolForge](#toolforge--custom-tools-from-a-description)** drafts a
   [custom tool](/docs/extending/custom-tools) (a `.cs` file) from a plain-language
-  description.
+  description, which a recording can show.
 - **[TestForge](#testforge--tests-from-recordings-and-specs)** turns a narrated
   screencast or a written spec (PDF or CSV) into a test.
 
@@ -51,7 +52,13 @@ screenshots**.
 
 - Upload **screenshots** of the app (PNG or JPEG, up to 30) and write a short
   **bullet-point description** of what they show (at least 160 characters). Verify
-  stays disabled until both are there.
+  stays disabled until both are there. A large screenshot is scaled down to the size
+  your model takes before it is sent.
+- Or add a **narrated video** instead of, or next to, the screenshots: record yourself
+  walking through the app and explaining it (one `.mp4`, up to 200 MB). With a video
+  the description is optional, because your voiceover carries it. PromptForge shows
+  the transcript before the first question. A video needs an AskUI account and
+  [ffmpeg](#ffmpeg-for-videos), exactly as in TestForge.
 - Run the Verify loop above.
 - Click **Accept & Update ui.md** to write the section, or **Add another UI
   section** to describe another screen first — the finished sections wait until you
@@ -81,13 +88,19 @@ tool** on **Extending → Custom Tools**.
   them at run time.
 - Optionally **attach files** the tool should know:
   - **Images** of the device or app: PNG, JPEG, GIF, WebP or BMP, up to 15 MB each
-    and 20 MB across all of them.
+    and 20 MB across all of them. ToolForge scales a large image down to the size your
+    model takes before it sends it.
   - **Text files** such as a sample config, an API response or a data file: JSON,
     YAML, YML, CSV, TXT, MD, XML, TOML, INI or LOG, up to 200 KB each and 500 KB
     across all of them.
   - **Source files** to port, for example a `.py`, `.cs`, `.ts` or `.ps1` file.
     ToolForge treats one exactly like a file in the example source folder. The text
     limits apply to it too.
+  - A **narrated video** (`.mp4`, up to 200 MB) in which you show and explain what the
+    tool must do. ToolForge takes the steps, names and values from what you did and
+    said, and shows the transcript before the first question. One video at a time;
+    a second one replaces the first. It needs an AskUI account and
+    [ffmpeg](#ffmpeg-for-videos), exactly as in TestForge.
   - Up to **30 files** in total.
 
   Each attachment shows as a chip with its name and size; the × removes it, and a
@@ -195,8 +208,9 @@ retyping them.
 
 TestForge turns material you already have into tests. Record yourself walking
 through a flow and explaining it, or take a written spec as PDF or CSV. TestForge
-drafts **one test per file**. It needs an AskUI account: signed in to a workspace,
-the page works; with your own model it asks you to sign in.
+drafts **one test per file**. Videos need an AskUI account, because their voiceover
+is transcribed on the AskUI API. With your own model, TestForge turns PDF and CSV files
+into tests and lists a video as skipped, with the reason.
 
 Open the **Tests** page with no test open and click **Forge a test**.
 
@@ -236,8 +250,8 @@ be missing. Split a long recording into shorter ones, or choose a stronger
 
 ### ffmpeg for videos
 
-TestForge needs [ffmpeg](https://ffmpeg.org) to split a video into still frames and
-audio. PDF and CSV sources never need it. When you add a video and ffmpeg is not
+Every Forge needs [ffmpeg](https://ffmpeg.org) to split a video into still frames and
+audio. Screenshots, text files, PDF and CSV sources never need it. When you add a video and ffmpeg is not
 found, the page shows a setup card with the command that installs it:
 
 - **Windows:** `winget install --id Gyan.FFmpeg -e`
