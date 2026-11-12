@@ -34,12 +34,14 @@ models usably reliable without giving up on running them.
   the guidance cost. Hosted reviewer
   models are priced automatically.
 
-Settings are stored in your project at `utils/inflight.json`. A custom reviewer's
-endpoint, model and API key stay on your machine (like your other model
-providers); only the choice to use one is in the project file. The CLI (`askui
-run`) reads the same file and honors the cadence and a hosted reviewer model; a
-custom reviewer is a desktop-only choice, so headless runs review with the run's
-own model instead.
+Settings are stored in the `inFlightGuidance` section under `config` in your
+Project's `askui.json`: `enabled`, `cadence` and the reviewer's `model`. The
+model only names a provider; that provider's endpoint and API key stay on your
+machine, like your other model providers. The CLI (`askui run`) reads the same
+settings. A Project's older `utils/inflight.json` moves into `askui.json` the
+first time AskUI Desktop opens it or the CLI reads it. To set them from the
+terminal, see
+[Configure the CLI](/docs/running-tests/cli-configuration#reporting-and-in-flight-guidance).
 
 ## During a run
 

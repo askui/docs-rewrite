@@ -32,15 +32,16 @@ app shows.
 
 | Setting | From this machine | What overrides it |
 | --- | --- | --- |
-| Model | The model you chose in the app or with `askui config`: AskUI Inference with its hosted model, or, with a license, your own model (AskUI AirGap, AskUI ModelBridge), with its truncation settings | `--model-provider`, `--model-id`, the `ASKUI_MODELS_RUN_*` variables |
-| In-Flight Guidance reviewer | The reviewer model you chose, else the run's model | the `ASKUI_REVIEWER_MODEL_*` variables |
+| Model | The model you chose in the app or with `askui config`: AskUI Inference with its hosted model, or, with a license, your own model (AskUI AirGap, AskUI ModelBridge), with its truncation settings | `--model-provider`, `--model-id`, the `ASKUI_GLOBALMODEL__*`, `ASKUI_RUNS__MODEL__*` and `ASKUI_PROVIDERS__*` variables |
+| In-Flight Guidance reviewer | The reviewer model you chose, else the run's model | the `ASKUI_INFLIGHTGUIDANCE__MODEL__*` variables |
 | Secrets | The Project's [secrets](/docs/extending/secrets) in the app, including the ones the agent may type | An environment variable of the same name |
-| Network proxy | The proxy of this machine | `HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY`, `NO_PROXY`, the `ASKUI_PROXY_*` variables |
-| Execution report model | With a license, the separate report model on the **Reporting** tab, else the run's model | the `ASKUI_REPORTING_MODEL_*` variables |
-| AgentOS controller | The controller path under **Settings → This machine → Computer** | `ASKUI_AGENT_OS_CONTROLLER_PATH`, `ASKUI_CONTROLLER_PATH` |
+| Network proxy | The proxy of this machine | `HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY`, `NO_PROXY`, the `ASKUI_NETWORK__PROXY__*` variables |
+| Execution report model | With a license, the separate report model on the **Reporting** tab, else the run's model | the `ASKUI_REPORTING__MODEL__*` variables |
+| AgentOS controller | The controller path under **Settings → This machine → Computer** | `ASKUI_SETUP__AGENTOS__CONTROLLERPATH`, `ASKUI_CONTROLLER_PATH` |
 
-A flag wins over an environment variable, which wins over the Project's
-`.env`, which wins over this machine's value
+A flag wins over the file `--config` names, which wins over an environment
+variable, which wins over the Project's `.env`, which wins over the Project's
+settings and this machine's value
 ([Which value wins](/docs/running-tests/cli-configuration#which-value-wins)).
 
 The credentials come from the CLI's own `askui login` or from the environment
@@ -327,20 +328,22 @@ locked, so unlock it first with `security unlock-keychain`.
 | `ASKUI_WORKSPACE_ID` | Your AskUI workspace, for AskUI Inference. |
 | `ASKUI_TOKEN` | An access token of that workspace, from the AskUI Hub. |
 | `ASKUI_IGNORE_APP_SETTINGS` | `1` or `true`: as `--ignore-app-settings`, for a whole pipeline. |
-| `ASKUI_INFERENCE_ENDPOINT` | The AskUI Inference endpoint, instead of the CLI's settings. |
-| `ASKUI_CONTROLLER_PATH` | The AgentOS controller to start for a desktop on this computer, instead of the stored path. |
 | `ASKUI_COMPONENT_REGISTRY_FILE` | The AgentOS component registry that names the installed controller. |
 | `ASKUI_INSTALLATION_DIRECTORY` | The AgentOS installation folder to find the controller in. |
-| `ASKUI_ADB_PATH` | The adb binary, instead of the one on `PATH` or in the Android SDK. |
-| `ASKUI_NUGET_TIMEOUT_SECONDS` | How long the NuGet packages of the custom tools may take to resolve. |
 | `CI` | Any value forces CI mode. |
 | `NO_COLOR` | Any value turns colors off. |
 
-Every setting of the machine that a run uses has a variable too, such as
-`ASKUI_MODELS_RUN_CONNECTION_API_KEY` or `HTTPS_PROXY`, and wins over the stored value for the
-run. `askui run --help` lists them, and
-[Configure the CLI](/docs/running-tests/cli-configuration#settings) has the
-table.
+Every setting has a variable too, `ASKUI_` and its key in capitals with `__`
+between the levels, such as `ASKUI_GLOBALMODEL__MODELID` or
+`ASKUI_PROVIDERS__AZURE_PROD__APIKEY`. It wins over the stored value and the
+Project's `.env`. A few settings also answer to an earlier name:
+`ASKUI_INFERENCE_ENDPOINT`, `ASKUI_CONTROLLER_PATH`, `ASKUI_ADB_PATH`,
+`ASKUI_LICENSE_KEY`, and `HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY` and
+`NO_PROXY` for the system proxy. `ASKUI_NUGET_TIMEOUT_SECONDS` is gone: set
+`ASKUI_CUSTOMTOOLS__NUGETTIMEOUTMS` in milliseconds. `askui run --help` lists
+every variable, and
+[Configure the CLI](/docs/running-tests/cli-configuration#settings) lists the
+settings.
 
 ## Credentials and `.env`
 
@@ -538,7 +541,7 @@ jobs:
 Pin `--output` to a fixed path so the artifact upload finds the reports,
 and upload with `if: always()` so failing runs keep their evidence. Set
 other settings for the pipeline as environment variables too, such as
-`ASKUI_MODELS_RUN_ASKUI` or `HTTPS_PROXY`
+`ASKUI_GLOBALMODEL__MODELID` or `HTTPS_PROXY`
 ([In CI](/docs/running-tests/cli-configuration#in-ci)). For
 installing the CLI on a runner, publishing `junit.xml` as a test report, and
 what each device needs on the runner, see
