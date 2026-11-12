@@ -17,12 +17,17 @@ one that matches your CI system and runner into your repository.
 Every workflow below expects:
 
 - **The AskUI project at the repository root**, as AskUI Desktop saves it,
-  committed with git. Leave `agent_workspace/` and `.env` out of the
-  repository:
+  committed with git. A project created in AskUI Desktop comes with this
+  `.gitignore`, which keeps credentials and what a run writes on this machine
+  out of the repository:
 
   ```text title=".gitignore"
-  agent_workspace/
   .env
+
+  .askui/
+  .askui_cache/
+  agent_workspace/
+  reports/
   ```
 
 - **A plan named `smoke`** in `plans/smoke.yaml`
