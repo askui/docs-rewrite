@@ -47,18 +47,17 @@ Every report costs model tokens. With **Only for failed or broken tests** or
 
 ## Reporting model
 
-The model that writes the reports.
+The model that writes the reports, under **Reporting model**. A report reads
+one test, so the model of your test runs is usually enough. Pick a stronger one
+for more careful reports. The model must read screenshots.
 
-- **On the AskUI hub**, pick from the list:
-  - **Same as your test runs**: the default, and the recommended choice. A
-    report covers one test, so the model of your runs is usually enough.
-  - **Best available**: for more careful reports.
-  - **A named hosted model**: any other model the hub serves.
-- **With your own model provider**, the **Same as for my test runs**
-  checkbox is on by default. Clear it to set up a separate provider for
-  reports. The model must read screenshots.
+- **Use the global model**: on by default. The model under **Settings → AI
+  Settings → Global Model** writes the reports, shown in brackets beside the checkbox.
+- Clear it to pick another model in the same form as on Settings. Signed in to
+  AskUI, pick a hosted model, or **Best** or **Fastest**. With a license, set up
+  a provider of your own ([Your own model](/docs/extending/model-providers)).
 
-How to connect your own provider: [Model providers](/docs/extending/model-providers).
+The choice belongs to the Project.
 
 ## Status definitions
 

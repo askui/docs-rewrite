@@ -33,10 +33,10 @@ app shows.
 | Setting | From this machine | What overrides it |
 | --- | --- | --- |
 | Model | The model you chose in the app or with `askui config`: AskUI Inference with its hosted model, or, with a license, your own model (AskUI AirGap, AskUI ModelBridge), with its truncation settings | `--model-provider`, `--model-id`, the `ASKUI_GLOBALMODEL__*`, `ASKUI_RUNS__MODEL__*` and `ASKUI_PROVIDERS__*` variables |
-| In-Flight Guidance reviewer | The reviewer model you chose, else the run's model | the `ASKUI_INFLIGHTGUIDANCE__MODEL__*` variables |
+| In-Flight Guidance model | The Project's In-Flight Guidance model, else the global model | the `ASKUI_INFLIGHTGUIDANCE__MODEL__*` variables |
 | Secrets | The Project's [secrets](/docs/extending/secrets) in the app, including the ones the agent may type | An environment variable of the same name |
 | Network proxy | The proxy of this machine | `HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY`, `NO_PROXY`, the `ASKUI_NETWORK__PROXY__*` variables |
-| Execution report model | With a license, the separate report model on the **Reporting** tab, else the run's model | the `ASKUI_REPORTING__MODEL__*` variables |
+| Reporting model | The Project's reporting model on **Extending → Reporting**, else the global model | the `ASKUI_REPORTING__MODEL__*` variables |
 | AgentOS controller | The controller path under **Settings → This machine → Computer** | `ASKUI_SETUP__AGENTOS__CONTROLLERPATH`, `ASKUI_CONTROLLER_PATH` |
 
 A flag wins over the file `--config` names, which wins over an environment
@@ -338,7 +338,7 @@ between the levels, such as `ASKUI_GLOBALMODEL__MODELID` or
 `ASKUI_PROVIDERS__AZURE_PROD__APIKEY`. It wins over the stored value and the
 Project's `.env`. A few settings also answer to an earlier name:
 `ASKUI_INFERENCE_ENDPOINT`, `ASKUI_CONTROLLER_PATH`, `ASKUI_ADB_PATH`,
-`ASKUI_LICENSE_KEY`, and `HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY` and
+`ASKUI_LICENSE_KEY`, `ASKUI_IDP_BASE_URL`, `ASKUI_IDP_CONSOLE_URL`, `ASKUI_IDP_API_KEY`, and `HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY` and
 `NO_PROXY` for the system proxy. `ASKUI_NUGET_TIMEOUT_SECONDS` is gone: set
 `ASKUI_CUSTOMTOOLS__NUGETTIMEOUTMS` in milliseconds. `askui run --help` lists
 every variable, and

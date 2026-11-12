@@ -375,6 +375,11 @@ model the test runs use. Empty takes the global model's.
 A Project can choose the model, because a model only names a provider and
 holds no key. The provider with its key stays on each tester's machine.
 
+Your own providers run only with a [license key](/docs/get-started/licensing).
+Signed in to AskUI, the test runs use AskUI Inference. A feature whose model
+names your own provider then uses the run's model, and the run report says
+why.
+
 ### Providers
 
 ```bash
@@ -418,6 +423,11 @@ tokens, for summarizing the conversation.
 context window, from 0 to 1, at which the conversation is summarized.
 
 The tuning belongs to the provider, so every model on it is fed the same way.
+
+When you set up a model other than the global one in AskUI Desktop, the app
+saves its provider under that model's name and the kind, such as `runs-azure`
+or `forge-azure`. Changing it never touches the global model's provider or its
+key.
 
 ### Reporting and In-Flight Guidance
 
@@ -497,8 +507,10 @@ variable sets it, see [Analytics consent](#askui-config-set).
 answered and which text you answered. AskUI sets them, and a newer text asks
 you again.
 
-Automatic updates, the parallel run limit, Dreaming and the model for
-generating tests are set in AskUI Desktop. `askui config` does not list them.
+Automatic updates, the parallel run limit, Dreaming and the Forge Model are
+set in AskUI Desktop: the Forge Model under **Settings → AI Settings**,
+Dreaming's model on **Extending → Dreaming**. `askui config` does not list
+them.
 
 ## In CI
 
