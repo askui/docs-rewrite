@@ -1,0 +1,477 @@
+---
+icon: FileCode
+title: CI workflow files
+description: Copy-ready workflow files for GitHub Actions, GitLab CI and Azure DevOps that run an AskUI project with askui run and publish its results.
+---
+
+Each file on this page runs a plan of your AskUI project with `askui run`,
+fails the job when a test fails, keeps the reports as a build artifact, and
+publishes `junit.xml` so the CI system shows pass and fail per test. Copy the
+one that matches your CI system and runner into your repository.
+
+[AskUI in CI](/docs/guides/askui-in-ci) explains each step in depth. The
+[CLI reference](/docs/running-tests/cli) has every option.
+
+## Before You Start
+
+Every workflow below expects:
+
+- **The AskUI project at the repository root**, as AskUI Desktop saves it,
+  committed with git. A project created in AskUI Desktop comes with this
+  `.gitignore`, which keeps credentials and what a run writes on this machine
+  out of the repository:
+
+  ```text title=".gitignore"
+  .env
+
+  .askui/
+  .askui_cache/
+  agent_workspace/
+  reports/
+  ```
+
+- **A plan named `smoke`** in `plans/smoke.yaml`
+  ([Test plans](/docs/writing-tests/plans)).
+- **A device profile the runner can reach**, picked by the plan. For a
+  browser on a runner without a display, use a
+  [web browser](/docs/devices/web-browser) profile with **Headless** on. Leave
+  the start URL to the pipeline with `${APP_URL}`
+  ([Environment variables in a profile](/docs/running-tests/cli#environment-variables-in-a-profile)):
+
+  ```json title="devices.json"
+  {
+    "version": 6,
+    "profiles": [
+      {
+        "type": "web-browser",
+        "id": "web-ci",
+        "name": "Web (CI)",
+        "headless": true,
+        "startUrl": "${APP_URL}"
+      }
+    ]
+  }
+  ```
+
+- **Credentials in the CI system's secret store**: `ASKUI_WORKSPACE_ID` and
+  `ASKUI_TOKEN`, an access token of that workspace from the
+  [Hub](/docs/account-billing/workspaces). Every
+  [secret](/docs/extending/secrets) the project uses goes into the same store,
+  under its own name.
+- **`APP_URL`** as a CI variable: the address of the application under test.
+
+The project layout:
+
+<Files>
+  <Folder name="my-project" defaultOpen>
+    <Folder name=".github" defaultOpen>
+      <Folder name="workflows" defaultOpen>
+        <File name="askui.yml" />
+      </Folder>
+    </Folder>
+    <Folder name="plans" defaultOpen>
+      <File name="smoke.yaml" />
+    </Folder>
+    <Folder name="tests" defaultOpen>
+      <File name="add_todo.md" />
+    </Folder>
+    <File name="devices.json" />
+    <File name=".gitignore" />
+  </Folder>
+</Files>
+
+## GitHub Actions
+
+Add the secrets and the variable under **Settings → Secrets and variables →
+Actions**:
+
+1. On the **Secrets** tab, add `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`.
+2. On the **Variables** tab, add `APP_URL`.
+
+Save the workflow as `.github/workflows/askui.yml`.
+
+### Windows Runner Hosted by GitHub
+
+For browser tests. The job installs AskUI Desktop, which carries the CLI, on a
+fresh `windows-latest` runner, so you need no machine of your own. The
+installer runs silently (`/S`) into `%LOCALAPPDATA%\Programs\AskUI Desktop`.
+
+```yaml title=".github/workflows/askui.yml"
+name: AskUI tests (Windows, GitHub-hosted)
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  askui:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      checks: write
+    env:
+      ASKUI_DESKTOP_VERSION: 0.11.0
+      ASKUI_WORKSPACE_ID: ${{ secrets.ASKUI_WORKSPACE_ID }}
+      ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
+      APP_URL: ${{ vars.APP_URL }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install AskUI Desktop (brings the askui CLI)
+        shell: pwsh
+        run: |
+          $installer = "AskUI-Desktop-$env:ASKUI_DESKTOP_VERSION-Installer-Win-AMD64.exe"
+          Invoke-WebRequest "https://files.askui.com/releases/AskUIDesktop/$env:ASKUI_DESKTOP_VERSION/$installer" -OutFile $installer
+          $setup = Start-Process ".\$installer" -ArgumentList '/S' -Wait -PassThru
+          if ($setup.ExitCode -ne 0) { throw "AskUI Desktop setup exited with $($setup.ExitCode)" }
+          "$env:LOCALAPPDATA\Programs\AskUI Desktop\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - name: Run the smoke plan
+        shell: cmd # keeps askui's exit code; pwsh would report 1
+        run: askui run --plan smoke --output run-artifacts --reporter html,md,junit
+
+      - name: Upload the reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: askui-reports
+          path: run-artifacts/
+
+      - name: Publish the test results
+        if: ${{ !cancelled() && hashFiles('run-artifacts/junit.xml') != '' }}
+        uses: dorny/test-reporter@v3
+        with:
+          name: AskUI tests
+          path: run-artifacts/junit.xml
+          reporter: java-junit
+```
+
+- **`shell: cmd`**: keeps the exit code of `askui run` in the job log.
+  PowerShell, the default shell on Windows runners, reports every failure as
+  exit code `1`.
+- **`ASKUI_DESKTOP_VERSION`**: the AskUI Desktop version the job installs.
+  Pin it, and raise it on purpose, as with any other tool in the pipeline.
+- **The first run of a job** downloads Chromium for the browser, about
+  170 MB, since every hosted runner starts empty.
+- **`Publish the test results`** needs `checks: write`. A pull request from
+  a fork gets a read-only token, so this step fails there, and the job with
+  it. For pull requests from forks, see the
+  [test-reporter documentation](https://github.com/dorny/test-reporter#recommended-setup-for-public-repositories).
+
+### macOS Runner Hosted by GitHub
+
+The same job on `macos-latest`. The job copies the app from the disk image
+and links `askui` into `~/.local/bin`, as **Settings → This machine →
+Command line → Add to PATH** does in the app.
+
+```yaml title=".github/workflows/askui.yml"
+name: AskUI tests (macOS, GitHub-hosted)
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  askui:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      checks: write
+    env:
+      ASKUI_DESKTOP_VERSION: 0.11.0
+      ASKUI_WORKSPACE_ID: ${{ secrets.ASKUI_WORKSPACE_ID }}
+      ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
+      APP_URL: ${{ vars.APP_URL }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install AskUI Desktop (brings the askui CLI)
+        run: |
+          dmg="AskUI-Desktop-${ASKUI_DESKTOP_VERSION}-Installer-Mac-ARM64.dmg"
+          curl -fsSL -o "$dmg" "https://files.askui.com/releases/AskUIDesktop/${ASKUI_DESKTOP_VERSION}/${dmg}"
+          hdiutil attach "$dmg" -nobrowse -quiet -mountpoint /Volumes/AskUI
+          cp -R "/Volumes/AskUI/AskUI Desktop.app" /Applications/
+          hdiutil detach /Volumes/AskUI -quiet
+          mkdir -p "$HOME/.local/bin"
+          ln -sf "/Applications/AskUI Desktop.app/Contents/MacOS/askui" "$HOME/.local/bin/askui"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Run the smoke plan
+        run: askui run --plan smoke --output run-artifacts --reporter html,md,junit
+
+      - name: Upload the reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: askui-reports
+          path: run-artifacts/
+
+      - name: Publish the test results
+        if: ${{ !cancelled() && hashFiles('run-artifacts/junit.xml') != '' }}
+        uses: dorny/test-reporter@v3
+        with:
+          name: AskUI tests
+          path: run-artifacts/junit.xml
+          reporter: java-junit
+```
+
+### Your Own Runner
+
+For desktop applications, Android and iOS, and for any device in your
+network. Install AskUI Desktop on the machine once, register it as a
+[self-hosted runner](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners)
+with the extra label `askui`, and check that `askui --version` works in the
+runner's environment ([AskUI in CI](/docs/guides/askui-in-ci#1-get-the-cli-onto-the-runner)).
+
+This workflow runs on every pull request, every weekday night, and by hand
+with a choice of plan:
+
+```yaml title=".github/workflows/askui.yml"
+name: AskUI tests (self-hosted runner)
+
+on:
+  pull_request:
+  schedule:
+    - cron: '0 2 * * 1-5' # nightly, Monday to Friday, 02:00 UTC
+  workflow_dispatch:
+    inputs:
+      plan:
+        description: Test plan from plans/<name>.yaml
+        type: choice
+        options: [smoke, regression]
+        default: smoke
+
+concurrency:
+  group: askui-test-machine # one run at a time on the shared test machine
+  cancel-in-progress: false
+
+jobs:
+  askui:
+    runs-on: [self-hosted, askui]
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      checks: write
+    env:
+      ASKUI_WORKSPACE_ID: ${{ secrets.ASKUI_WORKSPACE_ID }}
+      ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
+      ASKUI_IGNORE_APP_SETTINGS: '1'
+      APP_URL: ${{ vars.APP_URL }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run the plan
+        run: askui run --plan ${{ inputs.plan || 'smoke' }} --output run-artifacts --reporter html,md,junit
+
+      - name: Upload the reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: askui-reports
+          path: run-artifacts/
+
+      - name: Publish the test results
+        if: ${{ !cancelled() && hashFiles('run-artifacts/junit.xml') != '' }}
+        uses: dorny/test-reporter@v3
+        with:
+          name: AskUI tests
+          path: run-artifacts/junit.xml
+          reporter: java-junit
+```
+
+- **`concurrency`**: one machine drives one device. A second run waits
+  instead of fighting the first one for the screen.
+- **`ASKUI_IGNORE_APP_SETTINGS`**: the run ignores the model, secrets and
+  proxy that someone set in AskUI Desktop on the runner machine, so every
+  run depends only on the pipeline.
+- **`plan` options**: list the plans of your project. Each needs its
+  `plans/<name>.yaml`.
+- **A Windows runner**: add `shell: cmd` to the `Run the plan` step, as in
+  the workflow for the Windows runner hosted by GitHub, so the job log shows
+  the exit code of `askui run`.
+
+### Tests in a Separate QA Repository
+
+The QA team keeps the AskUI project in its own repository, and the
+application's repository runs it on every pull request
+([Where the repository lives](/docs/concepts/team-setups#where-the-repository-lives)).
+The job checks out the QA repository into `qa-tests` and points `--project` at
+it. `QA_REPO_TOKEN` is a token with read access to the QA repository, such as
+a fine-grained personal access token with **Contents: Read**.
+
+```yaml title=".github/workflows/askui.yml"
+name: UI tests from the QA repository
+
+on:
+  pull_request:
+
+jobs:
+  askui:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      checks: write
+    env:
+      ASKUI_DESKTOP_VERSION: 0.11.0
+      ASKUI_WORKSPACE_ID: ${{ secrets.ASKUI_WORKSPACE_ID }}
+      ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
+      APP_URL: ${{ vars.APP_URL }}
+    steps:
+      - name: Check out the QA team's AskUI project
+        uses: actions/checkout@v7
+        with:
+          repository: your-org/qa-tests
+          token: ${{ secrets.QA_REPO_TOKEN }}
+          path: qa-tests
+
+      - name: Install AskUI Desktop (brings the askui CLI)
+        shell: pwsh
+        run: |
+          $installer = "AskUI-Desktop-$env:ASKUI_DESKTOP_VERSION-Installer-Win-AMD64.exe"
+          Invoke-WebRequest "https://files.askui.com/releases/AskUIDesktop/$env:ASKUI_DESKTOP_VERSION/$installer" -OutFile $installer
+          $setup = Start-Process ".\$installer" -ArgumentList '/S' -Wait -PassThru
+          if ($setup.ExitCode -ne 0) { throw "AskUI Desktop setup exited with $($setup.ExitCode)" }
+          "$env:LOCALAPPDATA\Programs\AskUI Desktop\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - name: Run the QA team's smoke plan
+        shell: cmd # keeps askui's exit code; pwsh would report 1
+        run: askui run --project qa-tests --plan smoke --output run-artifacts --reporter html,md,junit
+
+      - name: Upload the reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: askui-reports
+          path: run-artifacts/
+
+      - name: Publish the test results
+        if: ${{ !cancelled() && hashFiles('run-artifacts/junit.xml') != '' }}
+        uses: dorny/test-reporter@v3
+        with:
+          name: AskUI tests
+          path: run-artifacts/junit.xml
+          reporter: java-junit
+```
+
+## GitLab CI
+
+Runs on your own [GitLab Runner](https://docs.gitlab.com/runner/) with the
+shell executor and the tag `askui`, on a machine with AskUI Desktop
+installed.
+
+1. Go to **Settings → CI/CD → Variables**.
+2. Add `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`, with **Masked** on.
+
+```yaml title=".gitlab-ci.yml"
+stages:
+  - test
+
+askui-tests:
+  stage: test
+  tags:
+    - askui # a self-hosted runner (shell executor) on the machine with AskUI Desktop
+  resource_group: askui-test-machine # one run at a time on the shared test machine
+  timeout: 1h
+  variables:
+    ASKUI_IGNORE_APP_SETTINGS: '1'
+    APP_URL: https://demo.playwright.dev/todomvc/
+  script:
+    - askui run --plan smoke --output run-artifacts --reporter html,md,junit
+  artifacts:
+    when: always
+    paths:
+      - run-artifacts/
+    reports:
+      junit: run-artifacts/junit.xml
+    expire_in: 14 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+```
+
+- **`resource_group`**: one run at a time on the test machine.
+- **`rules`**: runs on merge requests, on
+  [pipeline schedules](https://docs.gitlab.com/ci/pipelines/schedules/), and
+  on the default branch.
+- **`reports: junit`**: the merge request and the pipeline's **Tests** tab
+  show pass and fail per test.
+
+## Azure DevOps
+
+Runs on a
+[self-hosted agent](https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/agents)
+in the pool `askui`, on a machine with AskUI Desktop installed.
+
+1. Open the pipeline and click **Edit → Variables**.
+2. Add `ASKUI_WORKSPACE_ID` and `ASKUI_TOKEN`, with **Keep this value
+   secret** on.
+
+Azure DevOps hands a secret variable to a script only through `env`, as in
+the step below.
+
+```yaml title="azure-pipelines.yml"
+trigger:
+  - main
+
+pr:
+  - main
+
+schedules:
+  - cron: '0 2 * * 1-5'
+    displayName: Nightly
+    branches:
+      include:
+        - main
+    always: true
+
+pool:
+  name: askui # a self-hosted agent pool on the machine with AskUI Desktop
+
+variables:
+  APP_URL: https://demo.playwright.dev/todomvc/
+  ASKUI_IGNORE_APP_SETTINGS: '1'
+
+steps:
+  - checkout: self
+
+  - script: askui run --plan smoke --output run-artifacts --reporter html,md,junit
+    displayName: Run the smoke plan
+    env:
+      ASKUI_WORKSPACE_ID: $(ASKUI_WORKSPACE_ID)
+      ASKUI_TOKEN: $(ASKUI_TOKEN)
+
+  - task: PublishTestResults@2
+    displayName: Publish the test results
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: JUnit
+      testResultsFiles: run-artifacts/junit.xml
+      testRunTitle: AskUI tests
+
+  - task: PublishPipelineArtifact@1
+    displayName: Upload the reports
+    condition: succeededOrFailed()
+    inputs:
+      targetPath: run-artifacts
+      artifact: askui-reports
+```
+
+## When the Job Fails
+
+The exit code of `askui run` says who acts:
+
+- **`1`**: a test failed or broke. The run report in the artifact shows why.
+- **`3`**: the runner or the project is wrong: missing or rejected
+  credentials, an unset `${APP_URL}`, a device that cannot be reached. No
+  test ran, so there is no `junit.xml`, and the publish step is skipped.
+- **`4`**: no test ran, for example an empty plan.
+
+All codes: [Exit codes](/docs/running-tests/cli#exit-codes).
