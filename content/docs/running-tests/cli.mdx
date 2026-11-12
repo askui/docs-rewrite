@@ -190,6 +190,12 @@ askui run --model-provider openai-compatible \
 Pass keys and tokens from the environment, as above, so they never land in
 a pipeline file.
 
+Without a credential flag, `--model-provider anthropic` takes its key from
+`ANTHROPIC_API_KEY`, and `--model-provider openai` from `OPENAI_API_KEY`.
+Without `--model-id`, your own provider takes its model from
+`VLM_PROVIDER_MODEL_ID`. A flag always wins, see
+[Environment variables](/docs/reference/environment-variables#model-of-a-cli-run).
+
 <Callout type="warn">
 The agent drives the UI from **screenshots**, so BYOM models must be
 **vision-capable**: a text-only model will connect but can't see the screen.

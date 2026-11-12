@@ -10,6 +10,26 @@ description: All environment variables recognised by AskUI Desktop, the CLI, and
 | `ASKUI_WORKSPACE_ID` | Your workspace identifier. Required when using the AskUI Hub as the model provider. |
 | `ASKUI_TOKEN` | Your workspace access token. Required when using the AskUI Hub as the model provider. See [Workspaces](/docs/account-billing/workspaces). |
 
+## Model of a CLI run
+
+The CLI reads these for a run with [your own model](/docs/running-tests/cli#model-options).
+A flag wins over each of them, and so does a setting of AskUI Desktop.
+`askui run --help` lists them under **Environment**. AskUI Desktop does not
+read them: it takes the model from its Settings.
+
+**`VLM_PROVIDER_MODEL_ID`** — the model of your own provider, when neither
+`--model-id` nor the app's Settings name one.
+
+**`ANTHROPIC_API_KEY`** — the API key for `--model-provider anthropic`, when
+no credential flag is set.
+
+**`OPENAI_API_KEY`** — the API key for `--model-provider openai`, when no
+credential flag is set. A run against an endpoint of your own takes no key
+from this variable.
+
+**`ASKUI_VLM_MAX_IMAGE_EDGE`** — the longest edge of a screenshot sent to the
+model, in pixels. The default is 1024.
+
 ## AgentOS connection
 
 | Variable | Default | Description |
