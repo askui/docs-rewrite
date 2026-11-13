@@ -1,18 +1,17 @@
 ---
 icon: Layers
 title: Cross-platform
-description: Desktop, Android, and web bundled in one profile. Connect and status only, runs are not supported yet.
+description: Desktop, Android, and web bundled in one profile, driven by one agent in a single test.
 ---
 
 A **Cross-platform** profile bundles a desktop, an Android device, and a web
-browser into one profile, for scenarios that will span all three (start a
-flow on the phone, finish it on the desktop).
+browser into one profile, for scenarios that span them (start a flow on the
+phone, finish it on the desktop). The test names the device per step:
 
-<Callout type="warn" title="Runs not supported yet">
-The profile connects and reports the status of each surface, but running
-tests against it is not supported yet. Until it is, split the scenario across
-single-surface profiles and run the parts separately.
-</Callout>
+```md
+1. On the **Android phone**, place an order and note its order number.
+2. On the **Windows Desktop**, open the order list and search for that number.
+```
 
 ## Create it
 
@@ -33,3 +32,14 @@ Editing a source profile later doesn't change the copy: open the Cross-platform
 profile again and save it to pick the change up. It remembers which device each
 surface was built from, so re-saving keeps the same three devices even when you
 have several computers, phones or browsers.
+
+## Run it
+
+1. **Connect**: one session covering every surface.
+2. Pick the profile in the test's **Run on** dropdown and press **Run**.
+
+One agent works on one device at a time. It lists the devices by name
+(`list_targets`) and switches when a step names another one
+(`switch_target`). After a switch it acts with that device's tools: the
+desktop's, the browser's or the phone's. A
+[Multi computer](/docs/devices/multi-computer) profile runs the same way.
