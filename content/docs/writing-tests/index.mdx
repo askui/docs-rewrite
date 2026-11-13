@@ -136,15 +136,19 @@ syntax in ten minutes.
 
 ### Target multiple platforms
 
-A first line `platforms: desktop, android` marks a case cross-platform, it
-then runs only on a [Cross-platform profile](/docs/devices/cross-platform),
-and single-platform tests never run there. The steps name the surface, like
-a [multi-computer test](/docs/devices/multi-computer) names machines.
+A test can use more than one device. Run it on a
+[Cross-platform profile](/docs/devices/cross-platform) that holds them, and
+name the device in each step that uses it, like a
+[multi-computer test](/docs/devices/multi-computer) names machines:
 
-<Callout type="warn" title="Authoring only, for now">
-Cross-platform profiles connect and report status, but runs against them are
-not supported yet, the case is ready for when they are.
-</Callout>
+```md
+1. On the **Windows Desktop**, read the most recent order number.
+2. On the **Android phone**, open the order list and search for that number.
+```
+
+The agent works on one device at a time and switches when a step names
+another one. A test does not declare its platforms: any test runs on any
+profile, and the profile says which devices the run has.
 
 ## Use secrets in a test
 
