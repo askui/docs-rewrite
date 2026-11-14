@@ -242,7 +242,6 @@ found, the page shows a setup card with the command that installs it:
 
 - **Windows:** `winget install --id Gyan.FFmpeg -e`
 - **macOS:** `brew install ffmpeg`
-- **Linux:** `sudo apt install ffmpeg`
 
 Run it in a terminal, then click **Check again**. You do not need to restart the app.
 Your package manager installs ffmpeg under its own license; AskUI downloads nothing.
@@ -257,17 +256,17 @@ Model. The video file itself is never uploaded.
 
 ## The Forge Model
 
-Every Forge runs on the model you choose under **Settings → AI Settings → Forge
-Model**.
+Every Forge runs on the model under **Settings → AI Settings → Forge Model**.
 
-- On the AskUI hub the default is the **best available** model. Forge runs only
-  occasionally, so the stronger model is worth it. You can instead pick the **same
-  model as your test runs** or any other hosted model.
-- If you **bring your own model**, untick **Same as for my test runs** to
-  configure a separate provider for Forge (endpoint, model, API key). See
-  [Model providers](/docs/extending/model-providers).
-  TestForge is the exception: it transcribes a voiceover on a model hosted by
-  AskUI, so it needs you signed in to a workspace.
+- **Use the global model**: on by default. Forge then runs on the **Global
+  Model** of the same page.
+- Clear it to pick another model. Signed in to AskUI, pick a hosted model, or
+  **Best**: Forge runs only occasionally, so the stronger model is often worth
+  it. With a license, set up a provider of your own, see
+  [Your own model](/docs/extending/model-providers).
+
+TestForge is the exception: it transcribes a voiceover on a model hosted by
+AskUI, so it needs you signed in to a workspace.
 
 The **Cost so far** line adds up every Verify and every generation on the page
 as an estimated cost and token count; with your own model the token cost is

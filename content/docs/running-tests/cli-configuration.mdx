@@ -1,0 +1,539 @@
+---
+title: Configure the CLI
+description: Set up a machine or a Project from the terminal with askui configure and askui config, which settings exist, their environment variables, and which value wins.
+---
+
+```bash
+askui config set reporting.createReport failures --scope project
+askui config get reporting.createReport --json
+```
+
+```json
+{ "key": "reporting.createReport", "value": "failures", "source": "project", "secret": false, "used": true }
+```
+
+The first command tells every run of the Project to write an Execution Report
+only for failed or broken tests. The second shows the value a run uses and
+where it comes from.
+
+AskUI keeps its settings in three places. AskUI Desktop and the CLI share all
+three.
+
+**Your user on this machine (`user`).** The model, the providers and their
+API keys, the proxy, the AgentOS Controller, the license key. A value you set
+with `askui config` shows up in AskUI Desktop, and a value you set in the app
+is what `askui config` shows. The values are in `askui.json` in AskUI's app
+data folder: `%LOCALAPPDATA%\AskUI\` on Windows,
+`~/.config/AskUI/` on macOS. An earlier version's
+`AskUIDesktop` folder is moved there on the first start of this version. API
+keys and passwords are
+not in that file. On Windows they are encrypted for your user, on macOS the
+Keychain holds them.
+
+**The Project (`project`).** What the team decides: the model its tests run
+on, when a test gets an Execution Report, In-Flight Guidance. The values are in
+the `config` member of the Project's `askui.json` and travel with it through
+git.
+
+**The Project on this machine (`project-local`).** Your own override of a
+Project setting, in `.askui/config.json` inside the Project. Git ignores it.
+
+An API key or a password is never stored in a Project. Signing in stays
+[`askui login`](/docs/running-tests/cli#signing-in). A Project's
+[secrets](/docs/extending/secrets) and its tools have their own pages.
+
+### Settings from an earlier version
+
+The first start of AskUI Desktop or the CLI after the update carries the
+settings of the earlier version over, once. A value that cannot be carried
+over starts at its default. The CLI prints a warning once, and AskUI Desktop
+shows a card under **Settings → This machine** until you dismiss it. Set those
+values again. An older AskUI version does not find the settings again after
+the update.
+
+A Project's `utils/reporting.json` and `utils/inflight.json` move into its
+`askui.json` the first time AskUI Desktop opens the Project or the CLI reads
+it. Commit the changed `askui.json` and the deleted files, so the move does not
+repeat on every CI checkout.
+
+## Set up a machine with `askui configure`
+
+```bash
+askui configure
+```
+
+The wizard asks, in this order:
+
+1. **Account.** Without a sign-in and without a license key, it asks which
+   one this machine uses: it runs `askui login`, or asks for the license key.
+   In the last 14 days of a sign-in, it offers to sign in again. Signed in, it
+   asks for the workspace.
+2. **Model.** When your account may run its own model, it asks for the
+   provider, then the model, its endpoint and API key, or for Vertex AI the
+   project, the location and the credentials file. Otherwise it asks for the
+   hosted model on AskUI Inference.
+3. **Proxy.** The mode, and for a manual proxy its address, the hosts that
+   bypass it, and a user and password.
+4. **AgentOS Controller.** The controller to start for a desktop on this
+   computer.
+
+Each question shows the current value in brackets. Press Enter to keep it.
+Secrets are typed without being shown. At the end, the wizard writes all
+answers together and prints the `askui config set` lines that do the same, so
+you can script the next machine. A secret's line never carries its value.
+
+`askui configure` needs a terminal. In a script or a pipeline it asks nothing
+and ends with exit code 2. Use [`askui config set`](#askui-config-set) there.
+
+## `askui config`
+
+```bash
+askui config get <key> [--json] [--scope <scope>] [--config <file>] [--project <dir>]
+askui config list [--json] [--scope <scope>] [--config <file>] [--project <dir>]
+askui config set <key> <value> [<key> <value> ...] [--scope <scope>] [--stdin] [--project <dir>]
+askui config unset <key> [<key> ...] [--scope <scope>] [--project <dir>]
+```
+
+`askui config` finds the Project as `askui run` does: the folder you give with
+`--project`, or the current folder. A folder without an `askui.json` is no
+Project, and the commands then read and write your user's settings only.
+
+### `askui config get`
+
+```bash
+askui config get globalModel.modelId
+```
+
+Prints the value a run would use. A secret prints masked: an API key by its
+last four characters, Vertex AI credentials by their service account. A
+setting with no value ends with exit code 1, so a script can branch on it.
+
+### `askui config list`
+
+```text
+KEY                           VALUE              SOURCE                                        NOTE
+globalModel.provider          azure-prod         user
+globalModel.modelId           gpt-5              project
+providers.azure-prod.apiKey   ****p7dc           user
+inference.endpoint            https://inferen…   appsettings (AskUi:InferenceEndpoint)
+reporting.createReport        failures           environment (ASKUI_REPORTING__CREATEREPORT)
+setup.android.jdkSource       downloaded         user
+```
+
+Shows every setting that has a value, with its source, and a note where a run
+does not use the value. The sources are listed under
+[Which value wins](#which-value-wins).
+
+### `askui config set`
+
+```bash
+askui config set network.proxy.mode manual network.proxy.address http://proxy:3128
+```
+
+Takes the key and the value as two arguments, one pair or several.
+`network.proxy.mode=manual` is no key. Several pairs are written together: if
+one is refused, nothing is written, so a proxy or a model is never half
+changed. An unknown key ends with exit code 2 and names the sections. A value
+the setting does not accept ends with exit code 2 and names the values it
+takes.
+
+**Where the value goes.** `--scope user`, `--scope project` or
+`--scope project-local`. Without `--scope`, a value goes where it is stored
+now, and a new one where its setting belongs by default: the model and the
+network to `user`, reporting and In-Flight Guidance to `project`. A setting
+goes only where it is allowed:
+
+```text
+'network.proxy' cannot be written to project: it allows only machine, user.
+```
+
+When a scope or a variable still wins over the value you wrote, the CLI stores
+it and warns.
+
+**Secrets.** A secret is never a command-line argument, where it would land in
+the shell's history. Give the key without a value, and the CLI asks for it
+without showing what you type, or pipe it with `--stdin`:
+
+```bash
+askui config set providers.azure-prod.apiKey
+printf '%s' "$AZURE_API_KEY" | askui config set providers.azure-prod.apiKey --stdin
+```
+
+The secrets are each provider's `apiKey` and `credentials`,
+`network.proxy.auth.password`, `idp.apiKey` and `license`. A secret given as an
+argument, or an empty one, ends with exit code 2 and keeps the stored value.
+For `credentials`, the prompt asks for the path of the credentials file, and
+`--stdin` takes the file's JSON. To rotate a key, set it again.
+
+**A key stays with its host.** Moving a provider to another endpoint, Vertex
+AI project or location, or another kind removes its stored key. Changing the
+proxy's mode or address removes the stored proxy password. Set the new one in
+the same command to keep one:
+
+```bash
+askui config set providers.azure-prod.endpoint https://llm.example.com/openai/v1 providers.azure-prod.apiKey
+```
+
+**The model check.** After a change to the model, the CLI checks it once, as
+the model form in AskUI Desktop does. A failed check keeps the values and says
+why. AskUI Desktop then asks you to set up the model until a check passes.
+
+**Environment variables as values.** A value can name a variable as
+`${NAME}`, read each time the settings load. Quote it so your shell does not
+expand it first. `$${` is a literal `${`. Secrets, endpoints, the proxy
+address, the Vertex AI project and location, and the analytics consent take
+no `${NAME}`, so a variable can never send a key to another host.
+
+```bash
+askui config set setup.agentOs.controllerPath '${AGENTOS_CONTROLLER}'
+```
+
+**The workspace.** `askui config set workspace Demo` switches the CLI's
+workspace, by name or id, without signing in again. A workspace your account
+does not belong to ends with exit code 3.
+
+**Analytics consent.** `askui config set analytics.consent granted` shows the
+consent text AskUI Desktop shows and asks for your yes. Without a terminal,
+`--yes` agrees to the text. `denied` needs no confirmation. No variable and no
+file grants the consent.
+
+**AskUI Desktop is running.** AskUI Desktop reads some settings, such as the
+proxy and the license key, only when it starts. When you change one, the CLI
+says that the app uses it from its next start. A run of the CLI uses it right
+away.
+
+### `askui config unset`
+
+```bash
+askui config unset network.proxy.address
+askui config unset inFlightGuidance.cadence --scope project
+```
+
+Removes the value from where it is stored, or from the scope `--scope` names,
+and the next value in line applies again. Unsetting a setting that is not set
+is no error. A section's key unsets the whole section:
+`askui config unset providers.azure-prod` removes that provider with its key,
+and `askui config unset reporting.model` makes the report writer use the
+global model again. The workspace cannot be unset: `askui logout` signs the
+CLI out.
+
+### One scope with `--scope`
+
+```bash
+askui config get globalModel.modelId --scope user --json
+```
+
+```json
+{ "key": "globalModel.modelId", "value": "claude-haiku-5-5", "source": "user", "secret": false, "used": false, "note": "not used: environment (ASKUI_GLOBALMODEL__MODELID) wins over it" }
+```
+
+On `get` and `list`, `--scope` shows only what that scope holds. `used` is
+`true` only while that scope's value is the one in effect; otherwise the note
+names what wins over it. `get` of a key the scope does not hold ends with exit
+code 1. `list` of a scope that holds nothing says so.
+
+### A configuration file with `--config`
+
+```bash
+askui config list --config ci.json
+askui run --plan smoke --config ci.json
+```
+
+```json title="ci.json"
+{
+  "globalModel": { "modelId": "claude-opus-5-5" },
+  "reporting": { "createReport": "failures" }
+}
+```
+
+`--config` lays a file over the stored settings. It wins over your user's and
+the Project's values, over `.env` and over environment variables. Only a flag
+wins over it. The file
+holds the settings as the `config` member of an `askui.json` holds them, or a
+whole `askui.json`. It is read only: `set` and `unset` refuse `--config`, and
+nothing of the file is ever stored. Its values show the source `config-flag`
+with the file's name.
+
+A file that is no JSON, names a key its section does not have, or holds a
+secret is refused, with exit code 3. A secret comes from its variable or from
+`askui config set`, never from a file.
+
+### `--json`
+
+`askui config get --json` prints one object and `askui config list --json` an
+array with every setting, including those without a value:
+
+```json
+{ "key": "inference.endpoint", "value": "https://inference.askui.com/", "source": "appsettings", "secret": false, "used": true, "sourceLocation": "AskUi:InferenceEndpoint" }
+```
+
+**`key`**: the setting.
+
+**`value`**: the value as text, masked for a secret, `null` when there is
+none.
+
+**`source`**: one of `default`, `appsettings`, `user`, `project`,
+`project-local`, `dotenv`, `environment`, `config-flag`, `flag`. A setting
+without a value shows `not set`, and the workspace from your sign-in
+`askui login`.
+
+**`sourceLocation`**: what set the value: the appsettings key, the variable,
+the file name or the flag. Only there when something named set it.
+
+**`secret`**: whether the value is a secret.
+
+**`used`**: `false` when a run ignores the value, for example your own model
+when your account has no license.
+
+**`note`**: why the value is not used, or what wins over it. Only there when
+there is a reason.
+
+### Exit codes
+
+**`0`**: done. Also when you decline the consent prompt or a model check
+fails: the values are stored.
+
+**`1`**: `get` of a setting without a value.
+
+**`2`**: a usage error: an unknown key, a value the setting does not accept, a
+scope the setting does not allow, a secret as an argument, `--config` on `set`
+or `unset`, `askui configure` without a terminal.
+
+**`3`**: the machine or the account refused: AskUI Desktop was saving the
+settings and did not let go within 5 seconds (try again), the macOS Keychain
+is locked (in an SSH session, run `security unlock-keychain` first), a newer
+AskUI version stored the settings, a workspace your account does not belong
+to, or a refused `--config` file.
+
+**`130`**: canceled at a prompt (Ctrl+C).
+
+## Which value wins
+
+For every setting, the sources are laid over each other, lowest first. The
+later one wins:
+
+1. **`default`**: the setting's default.
+2. **`appsettings`**: a value the AskUI build ships, such as the AskUI
+   Inference endpoint.
+3. **`user`**: your user's settings, from `askui config` or AskUI Desktop.
+4. **`project`**: the Project's `askui.json`.
+5. **`project-local`**: the Project's `.askui/config.json`.
+6. **`dotenv`**: the Project's `.env`.
+7. **`environment`**: an environment variable, such as
+   `ASKUI_GLOBALMODEL__MODELID`.
+8. **`config-flag`**: the file `--config` names.
+9. **`flag`**: a flag of the command, such as `--model-id`.
+
+AskUI Desktop uses the same order, without `.env`, `--config` and flags. So a
+variable set for your user also wins over what you set in Settings.
+
+`askui config list` shows the source of each value. `askui status` shows it
+for the workspace, the model and the proxy, and every run names it for its
+model and workspace in its first line. `--ignore-app-settings` skips your
+user's stored values; everything else still applies.
+
+`HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY` and `NO_PROXY` (also in lower case)
+set `network.proxy.mode` to `system`, so they win over a stored manual proxy.
+A variable that moves a provider to another host hides its stored API key,
+unless the key's own variable is set too.
+
+## Settings
+
+Each setting's variable is `ASKUI_` and its key in capitals, with `__` between
+the levels and `_` for `-`: `network.proxy.address` is
+`ASKUI_NETWORK__PROXY__ADDRESS`, and `providers.azure-prod.apiKey` is
+`ASKUI_PROVIDERS__AZURE_PROD__APIKEY`. A few settings answer to a second,
+earlier name too, given below. `askui run --help` lists every variable.
+
+In brackets after a key: the scopes it may be stored in, its default scope
+first.
+
+### Account
+
+**`workspace`**: the CLI's workspace, a name or id of a workspace your
+account belongs to. It is kept with the CLI's sign-in. `ASKUI_WORKSPACE_ID`
+sets it, only together with `ASKUI_TOKEN`.
+
+**`license`** (`user`): the local license key. Secret. Also
+`ASKUI_LICENSE_KEY`.
+
+### Model
+
+A model is a provider and a model id. The provider `askui` is AskUI Inference
+and always there. Your own providers are under `providers`, each by a name you
+choose in kebab case, such as `azure-prod`.
+
+**`globalModel.provider`**, **`globalModel.modelId`** (`user`, `project`): the
+model every other model takes what it does not set from. Unset, it is AskUI
+Inference with `claude-sonnet-5-5`. On AskUI Inference the model ids are
+`claude-sonnet-5-5`, `claude-opus-5-5`, `claude-haiku-5-5` and
+`gemini-3.8-flash`. An empty model id takes the provider's default model.
+
+**`runs.model.provider`**, **`runs.model.modelId`** (`user`, `project`): the
+model the test runs use. Empty takes the global model's.
+
+A Project can choose the model, because a model only names a provider and
+holds no key. The provider with its key stays on each tester's machine.
+
+Your own providers run only with a [license key](/docs/get-started/licensing).
+Signed in to AskUI, the test runs use AskUI Inference. A feature whose model
+names your own provider then uses the run's model, and the run report says
+why.
+
+### Providers
+
+```bash
+askui config set providers.azure-prod.kind openai-compatible providers.azure-prod.endpoint https://llm.corp.example/v1 providers.azure-prod.apiKey
+askui config set globalModel.provider azure-prod globalModel.modelId gpt-5
+```
+
+Providers are stored in `user` only.
+
+**`providers.<name>.kind`**: `airgap`, `azure`, `vertex`, `anthropic`,
+`openai` or `openai-compatible`.
+
+**`providers.<name>.endpoint`**: the base URL of the provider's API. Required
+for `airgap`, `azure` and `openai-compatible`. For `openai` and `anthropic`,
+none uses the vendor's own.
+
+**`providers.<name>.apiKey`**: the API key. Secret. Not for `vertex`.
+
+**`providers.<name>.protocol`**: for `airgap` and `azure`, the API the models
+speak: `anthropic` for Claude, `openai-compatible` (default) for the others.
+
+**`providers.<name>.project`**, **`providers.<name>.location`**: for `vertex`,
+the Google Cloud project with Claude enabled and the Vertex AI location.
+
+**`providers.<name>.credentials`**: for `vertex`, the Google credentials JSON.
+Secret. None uses this computer's Google login.
+
+**`providers.<name>.tuning.image.maxEdge`**: the longest image edge in pixels
+sent to the model.
+
+**`providers.<name>.tuning.image.nativeScreenshot`**: `true` sends screenshots
+at their native size. Default `false`.
+
+**`providers.<name>.tuning.image.coordinateSystem`**: the grid the model
+reports clicks in: `auto` (default), `pixel`, `grid1000`, `normalized`.
+
+**`providers.<name>.tuning.context.maxInputTokens`**: the context window in
+tokens, for summarizing the conversation.
+
+**`providers.<name>.tuning.context.truncationThreshold`**: the share of the
+context window, from 0 to 1, at which the conversation is summarized.
+
+The tuning belongs to the provider, so every model on it is fed the same way.
+
+When you set up a model other than the global one in AskUI Desktop, the app
+saves its provider under that model's name and the kind, such as `runs-azure`
+or `forge-azure`. Changing it never touches the global model's provider or its
+key.
+
+### Reporting and In-Flight Guidance
+
+**`reporting.createReport`** (`project`, `user`, `project-local`): when a test
+gets an [Execution Report](/docs/extending/reporting): `always` (default),
+`failures` (failed or broken tests), `never`.
+
+**`reporting.model.provider`**, **`reporting.model.modelId`** (`project`,
+`user`, `project-local`): the report writer's model. Empty takes the global
+model's.
+
+**`inFlightGuidance.enabled`** (`project`, `user`, `project-local`): `true`
+turns on [In-Flight Guidance](/docs/extending/in-flight-guidance), a reviewer
+that inspects the run and may correct it once. Default `false`.
+
+**`inFlightGuidance.cadence`** (`project`, `user`, `project-local`): the
+reviewer inspects the run every this many steps. Default `20`.
+
+**`inFlightGuidance.model.provider`**, **`inFlightGuidance.model.modelId`**
+(`project`, `user`, `project-local`): the reviewer's model. Empty takes the
+global model's.
+
+Set only `reporting.model.modelId`, and the report writer uses that model at
+the global model's provider.
+
+### Network
+
+The proxy is stored in `user` only.
+
+**`network.proxy.mode`**: `system` (default), `manual`, `direct`.
+
+**`network.proxy.address`**: with `manual`, the proxy, such as
+`http://proxy:3128`.
+
+**`network.proxy.bypass`**: with `manual`, hosts that skip the proxy, such as
+`*.corp.example; 10.0.0.*`.
+
+**`network.proxy.auth.kind`**: how AskUI signs in to the proxy: `auto`
+(default), `none`, `windows-auth`, `credentials`.
+
+**`network.proxy.auth.username`**: with `credentials`, the proxy user.
+`DOMAIN\user` works.
+
+**`network.proxy.auth.password`**: with `credentials`, the proxy password.
+Secret. None sends the user without one.
+
+### This machine
+
+These settings are stored in `user` only.
+
+**`inference.endpoint`**: the AskUI Inference API. The AskUI build ships it,
+so its source is `appsettings` until you or a variable set another. Also
+`ASKUI_INFERENCE_ENDPOINT`.
+
+**`setup.agentOs.controllerPath`**: the AgentOS Controller to start for a
+desktop on this computer. Also `ASKUI_CONTROLLER_PATH`.
+
+**`setup.android.jdkSource`**: the JDK of the Android SDK setup: `machine`
+(default, this machine's Java) or `downloaded`.
+
+**`setup.android.adbPath`**: the `adb` to use, instead of the one in the
+Android SDK, a package manager's or the one on `PATH`. Also `ASKUI_ADB_PATH`.
+
+**`customTools.nugetTimeoutMs`**: how long the NuGet packages of the
+[custom tools](/docs/extending/custom-tools) may take to resolve, in
+milliseconds. Default `120000`. `ASKUI_NUGET_TIMEOUT_SECONDS` no longer
+works; set `ASKUI_CUSTOMTOOLS__NUGETTIMEOUTMS` in milliseconds.
+
+**`idp.endpoint`**, **`idp.consoleUrl`**, **`idp.apiKey`**: the IDP API, the
+IDP console the cloud VMs open in, and its API key (secret). An empty endpoint
+or console takes the one the AskUI build ships. Also `ASKUI_IDP_BASE_URL`,
+`ASKUI_IDP_CONSOLE_URL` and `ASKUI_IDP_API_KEY`.
+
+**`analytics.consent`**: `undecided` (default), `granted`, `denied`. No
+variable sets it, see [Analytics consent](#askui-config-set).
+`analytics.answeredAt` and `analytics.consentTextVersion` record when you
+answered and which text you answered. AskUI sets them, and a newer text asks
+you again.
+
+Automatic updates, the parallel run limit, Dreaming and the Forge Model are
+set in AskUI Desktop: the Forge Model under **Settings → AI Settings**,
+Dreaming's model on **Extending → Dreaming**. `askui config` does not list
+them.
+
+## In CI
+
+On a CI runner, set environment variables in the pipeline instead of running
+`askui config set`. They apply to the pipeline's runs only, come from the CI
+system's secret store, and leave the runner's stored settings as they are. The
+Project's own settings come with the checkout:
+
+```yaml title=".github/workflows/askui.yml (excerpt)"
+      - run: askui run --plan smoke --reporter html,md,junit
+        env:
+          ASKUI_WORKSPACE_ID: ${{ vars.ASKUI_WORKSPACE_ID }}
+          ASKUI_TOKEN: ${{ secrets.ASKUI_TOKEN }}
+          ASKUI_GLOBALMODEL__MODELID: claude-sonnet-5-5
+          HTTPS_PROXY: http://proxy.corp.example:3128
+          NO_PROXY: localhost,127.0.0.1
+```
+
+Settings that are no secrets can also sit in a file in the repository, passed
+with `--config`.
+
+To ignore everything stored for the runner's user, add `--ignore-app-settings`
+or set `ASKUI_IGNORE_APP_SETTINGS=1`. The variables, the file and the Project's
+settings still apply. Use `askui config set` for what a runner keeps for every
+pipeline, such as the AgentOS Controller of a test machine. See
+[AskUI in CI](/docs/guides/askui-in-ci) for the whole pipeline.
