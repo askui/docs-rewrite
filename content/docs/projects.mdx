@@ -61,8 +61,11 @@ definitions, the tooling the agent may use: every artifact is a plain file.
 `.pdf` (an exported or scanned specification can be executed directly), and
 `.json`.
 
-**Start from a template** on the Home page asks which template you want, then for a
-folder:
+**Start from a template** on the Home page asks which template you want, then where to
+create the project: a **Project name** and a **Location** (type or paste a path, or
+pick the folder with **Browse…**). **Create project** makes a new folder with that name
+in that location. If the folder already exists and has files, AskUI adds only the
+project files that are missing and changes nothing else. The templates:
 
 - **Blank project**: `tests/` with `ui.md`, `rules.md`, `setup.md`, `teardown.md` and
   `my_first_test.md`, each a template with **FILL IN** placeholders for your
@@ -73,7 +76,8 @@ folder:
   Getting started) for that project.
 
 Once you have opened a project, the Home page shows your **Recent projects** first,
-with both templates as cards below them; a template card goes straight to the folder.
+with both templates as cards below them; a template card asks straight away where to
+create the project.
 
 **Open a folder** on a folder that is not an AskUI Project yet (it has
 no `tests` folder) asks first. **Yes, set it up** adds only what AskUI needs: the
