@@ -75,6 +75,82 @@ leaves the folder unopened.
 The **demo project**, a ready-to-run test of the AskUI website, is offered only by
 the onboarding wizard.
 
+## The project menu
+
+Click the project name in the top bar to open the project menu. It shows the
+open project with its path and three actions:
+
+- **Apply update**: bring changes from a ZIP file into this project.
+- **Export project**: save this project as one ZIP file.
+- **Close project**: go back to the Home page.
+
+Below the actions, **Switch to a recent project** lists the projects you opened
+before. A click closes the open project and opens the other one.
+
+To open another folder or clone a repository, close the project first. The
+Home page then offers **Open an existing project…** and **Clone from Git**.
+
+### Apply an update
+
+A teammate can send you changes to a project as a ZIP file. The update adds new
+files and replaces files that changed. It can also remove files.
+
+1. In the project menu, click **Apply update**.
+2. Paste the path of the ZIP file, or click **Browse…** and pick it.
+3. Check the line under the field. It counts the project files and the
+   deletions in the update.
+4. Click **Review changes**.
+5. Read the lists **Added**, **Changed** and **Deleted**.
+6. Click **Apply**. The button shows the number of changes. The dialog closes
+   and the project shows the new files.
+
+Nothing changes in the project before you click **Apply**. If the project is
+a Git repository with uncommitted changes, the review warns you. Commit them
+first if you want to be able to undo the update.
+
+**What the ZIP holds**
+
+- The project files, at the top of the ZIP or inside one folder. The app
+  removes that folder from the paths, for example
+  `my_project/tests/login.md` becomes `tests/login.md`.
+- Optionally a file `deleted.txt` at the top of the ZIP. Each line names one
+  file to remove, relative to the project. A leading `- ` and the folder name
+  are allowed, for example `- my_project/device_profiles/old_bench.md`. The app
+  ignores empty lines and lines that start with `#`.
+
+A file in the ZIP that is the same as in the project counts as up to date. The
+review does not list it. The app removes a folder that is empty after the
+deletions.
+
+**What an update never changes**
+
+The update leaves your runs, reports, app settings, secrets and Git history as
+they are: `agent_workspace/`, `reports/`, `.askui/`, `.env` and `.git/`. The app
+never writes a path that points outside the project either. The review lists
+every entry it leaves alone, with the reason.
+
+<Callout type="warn">
+An update replaces `devices.json` like any other file. Device settings that
+belong to your computer, for example a device's address, are then the ones in
+the update. Check your devices after you apply an update that contains
+`devices.json`.
+</Callout>
+
+### Export a project
+
+1. In the project menu, click **Export project**.
+2. To add runs, switch on **Include agent workspace**. Then choose **Runs from
+   the last N days** or **All runs**.
+3. Click **Export…** and choose where to save the ZIP file.
+
+The project files are always in the export. Secrets, app settings and Git
+history are never in it. The dialog shows how many files and runs go in, and
+the approximate size.
+
+The ZIP holds the project inside a folder with the project's name. A teammate
+can open that folder as a project, or apply the ZIP as an update to their copy
+of the project.
+
 ## Git: Versioning & Sync
 
 Every artifact above is a plain text file, deliberately. A Project is
