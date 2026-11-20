@@ -104,10 +104,13 @@ What the example uses, and what else a tool file can do:
 - **Secrets**: implement `ISecretsConsumer` and the run hands the tool the
   project's [named secrets](/docs/extending/secrets); `ADMIN_API_KEY` above
   comes from Extending → Secrets, not from the file.
-- **Device access**: a constructor asking for `IAgentOs` (desktop),
-  `IWebAgentOs` (browser), `IAndroidAgentOs`, or `IIosAgentOs` gets the
-  run's device layer injected. Parameterless (like above) works on every
-  run; a tool whose device isn't part of the run is skipped with a warning.
+- **Device access**: a constructor asking for `AgentOSDriver` (computer),
+  `WebBrowserDriver` (browser), `AndroidDeviceDriver`, or `IosSimulatorDriver`
+  gets the run's device injected. A constructor asking for `ISurface` gets
+  every device of the run, whatever its kind. Parameterless (like above) works
+  on every run; a tool whose device isn't part of the run is skipped with a
+  warning. A tool written for an earlier version may need
+  [one change](#update-a-tool-from-an-earlier-version).
 - **The .NET standard library**: available without any package: ZIP
   archives (`System.IO.Compression`), cryptography, regular expressions,
   XML, sockets, starting processes. Namespaces beyond the injected common
@@ -131,15 +134,15 @@ What the example uses, and what else a tool file can do:
   with a platform-specific build or a native part, such as `System.IO.Ports`
   for serial ports or `Microsoft.Data.Sqlite`, get the build for the machine
   the run is on.
-- **Nothing else is injected.** A constructor takes either nothing or exactly
-  one device layer; a constructor that asks for anything else (a logger, an
+- **Nothing else is injected.** A constructor takes nothing, `ISurface`, or
+  exactly one device; a constructor that asks for anything else (a logger, an
   `HttpClient`, configuration) is never called. Create what you need inside the
   tool.
 
 ## A tool using all of it
 
-A visual reference check, it pulls a screenshot through the run's device
-layer (`IAgentOs` in the constructor), compares pixels with ImageSharp (shipped
+A visual reference check, it pulls a screenshot through the run's computer
+(`AgentOSDriver` in the constructor), compares pixels with ImageSharp (shipped
 with the app, so no `#:package` line), and returns an **image** the agent can
 look at, not just text:
 
@@ -150,9 +153,9 @@ using SixLabors.ImageSharp.Processing;
 
 public sealed class CompareWithReferenceTool : Tool
 {
-    private readonly IAgentOs _agentOs;
+    private readonly AgentOSDriver _computer;
 
-    public CompareWithReferenceTool(IAgentOs agentOs)
+    public CompareWithReferenceTool(AgentOSDriver computer)
         : base(
             name: "compare_with_reference",
             description: "Compares the current screen against a reference image. "
@@ -172,13 +175,13 @@ public sealed class CompareWithReferenceTool : Tool
                 ["required"] = new JsonArray("reference"),
             })
     {
-        _agentOs = agentOs;
+        _computer = computer;
     }
 
     public override async ValueTask<ToolResult> InvokeAsync(
         JsonObject input, CancellationToken cancellationToken = default)
     {
-        var screenshot = await _agentOs.ScreenshotAsync(cancellationToken);
+        var screenshot = await _computer.ScreenshotAsync(cancellationToken);
         using var actual = Image.Load<Rgba32>(screenshot.PngBytes);
         using var expected = Image.Load<Rgba32>(input["reference"]!.GetValue<string>());
         expected.Mutate(e => e.Resize(actual.Width, actual.Height));
@@ -208,8 +211,34 @@ public sealed class CompareWithReferenceTool : Tool
    at most 1% of the pixels may deviate.
 ```
 
-Because the constructor requires `IAgentOs`, this tool exists only on
-computer and web runs, on an Android run it is skipped with a warning.
+Because the constructor requires `AgentOSDriver`, this tool exists only on
+computer runs, on a browser or an Android run it is skipped with a warning.
+
+## Update a tool from an earlier version
+
+A tool whose constructor asks for `IAgentOs`, `IWebAgentOs`, `IAndroidAgentOs`
+or `IIosAgentOs` no longer compiles. The run stops before the first test with
+the error `ASKUI001`, which names the type to use. Change the constructor
+parameter and the field, the calls stay as they are:
+
+```csharp
+// before
+public MyTool(IAgentOs agentOs)
+
+// after
+public MyTool(AgentOSDriver computer)
+```
+
+**`IAgentOs`** becomes `AgentOSDriver`.
+
+**`IWebAgentOs`** becomes `WebBrowserDriver`.
+
+**`IAndroidAgentOs`** becomes `AndroidDeviceDriver`.
+
+**`IIosAgentOs`** becomes `IosSimulatorDriver`.
+
+A tool that took `IAgentOs` to run on browser runs too now needs
+`WebBrowserDriver`, or `ISurface` to act on whichever device the run has.
 
 ## Keep results small
 
