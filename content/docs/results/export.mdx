@@ -63,8 +63,12 @@ ran a web test downloads nothing.
 
 Every JSON document starts with two fields:
 
-- `schemaVersion`: the version of the document's layout, currently `1`. A
-  new version means a field changed meaning or was removed.
+- `schemaVersion`: the version of the document's layout. A new version
+  means a field changed meaning or was removed. Currently `1` for
+  `execution-report` and `2` for `run-summary` and `management-report`.
+  Version `2` came with [INCONCLUSIVE and BLOCKED](/docs/results/test-statuses):
+  the counts have no `executed` any more, a Management Report run's `skipped`
+  is now `notRun`, and a day's `executed` is now `tests`.
 - `kind`: `execution-report`, `run-summary`, or `management-report`.
 
 Read `kind` first, then the fields of that kind. Times are ISO 8601 with a
