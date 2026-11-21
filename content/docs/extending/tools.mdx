@@ -94,6 +94,36 @@ Android).
 6. Scan the QR code on the invoice — it encodes the order number from step 2.
 ```
 
+### Reading the page
+
+#### <Lucide name="file-code" /> Read web page [#read-web-page]
+
+Let the agent read the web page instead of only looking at it (web device).
+
+- **Use it when:** a test checks an exact value, a field, a price, a table
+  cell, an ID, or the agent has to find an element that is small,
+  low-contrast or outside the visible area.
+- **What the agent can read:**
+  - **Structure**: the page's elements with their roles, labels, values and
+    states, for example `textbox "Email": tester@example.com` or
+    `checkbox "Newsletter" [checked]`. Hidden elements are left out.
+  - **Text**: the text of the page or of one part of it, such as one table.
+  - **Source search**: the agent searches the page's HTML for a few words and
+    gets each match with its surroundings. This also finds values the page
+    holds but never shows, such as an order ID in the page's data.
+- **Max characters per read:** the most one read returns, 20,000 by default
+  (about 5,000 tokens), between 1,000 and 200,000. A longer result is cut, and
+  the agent then reads a smaller part of the page. Raise it with care:
+  everything a read returns stays in the agent's context for the rest of the
+  run, so large reads make runs slower and more expensive.
+- **Leave it off for visual tests:** a value the agent read from the page
+  need not be visible on screen. When a test is about what the user sees,
+  keep the tool off for that project.
+
+```md
+6. Read the order ID from the confirmation page — it starts with "ORD-".
+```
+
 ### Evidence
 
 #### <Lucide name="camera" /> Save screenshot [#save-screenshot]
