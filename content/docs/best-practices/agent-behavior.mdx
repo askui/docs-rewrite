@@ -40,8 +40,10 @@ system prompt and take precedence over the built-in instructions.
 ## Device prompt: only what the agent can't see
 
 Each device profile carries a **Prompt** field (Devices page → Edit) with
-quirks of **this machine** that the screen doesn't show. The agent sees the
-screen, OS and display basics rarely need describing.
+quirks of **this machine** that the screen doesn't show. The agent already
+knows the device's operating system, model and displays, and how its platform
+behaves ([device knowledge](/docs/writing-tests/agents-and-prompts#device-knowledge)),
+so describe only what is particular to this machine.
 
 ```md title="Prompt field of the device profile"
 * Always execute on display 1 — display 2 shows the corporate dashboard.

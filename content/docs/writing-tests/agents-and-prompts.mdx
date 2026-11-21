@@ -11,6 +11,7 @@ belongs, versioned with your testware:
 | Part | Lives in | You edit it? |
 | --- | --- | --- |
 | Capabilities and error discipline | Built into the app | No, it keeps runs honest |
+| Device knowledge | Built into the app, plus what the connected device reports | No, it comes with every device |
 | Device prompt | Each device profile (`devices.json`) | Only when the machine has quirks |
 | UI information | `tests/ui.md` | Yes, the file you invest the most in |
 | Status definitions | `utils/status.md`, written at the first run | No, every project uses AskUI's definitions |
@@ -33,15 +34,51 @@ the real value is substituted at execution time, hidden from the model. \
 **Scratchpad**: the agent can persist notes across phases with the
 scratchpad tools, but only when a test explicitly instructs it to.
 
+**Slow devices**: the agent acts at full speed and adds no fixed waits. When
+it notices that a device reacts slowly (any device can: a sluggish emulator,
+an overloaded computer, slow test hardware), it checks that the screen changed before it
+interacts again, so it never taps twice. You don't need a "wait between
+steps" rule for that. Waiting is no cover for a slow application: when the
+app under test takes more than about 5 seconds to respond, the agent says so
+in the test's result.
+
 When the built-in behaviour doesn't fit your suite, don't look for a file to
 edit, write a [rule](#rules): rules are appended last and take precedence
 over the built-in instructions on conflicts.
 
+## Device knowledge
+
+The agent knows the device it drives before its first action, without you
+writing it down.
+
+**What the device reports.** When a run starts, the app asks the connected
+device what it is:
+
+| Device | The agent learns |
+| --- | --- |
+| Computer | Operating system, version, architecture and every display |
+| Android phone or emulator | Model, Android version, screen size and whether the build is a car's head unit or a tablet |
+| iOS simulator | Model (for example iPhone 17 Pro), iOS version and screen size |
+
+A device that doesn't answer within 10 seconds runs anyway, without these
+facts. The run's report then shows a notice that says so.
+
+**How the platform behaves.** The app adds what a tester knows about the
+platform: the menu bar and Cmd shortcuts on macOS, the taskbar and UAC
+prompts on Windows, Back and Home on Android, the head unit's own system bar
+and its hardware buttons, pressed through adb, on an Android HMI, the Dynamic Island and the missing Back button on an
+iPhone, the hidden address bar in a browser, and how the
+[AskUI Companion](/docs/devices/askui-companion) operates a phone. On a
+computer with several displays the agent looks on every display before it
+decides that a window did not open.
+
 ## Device prompt
 
 Machine quirks the agent can't see for itself live on the device profile,
-keep it small. The agent already sees the screen, so OS and display basics
-rarely need describing.
+keep it small. The agent already knows the device and its platform (see
+[Device knowledge](#device-knowledge)), so OS, model and display basics
+don't need describing. Your prompt adds to that knowledge: it comes after it
+and wins where the two disagree.
 
 1. Open **Devices** and click **Edit** on the profile.
 2. Fill the **Prompt** field:
@@ -58,16 +95,20 @@ with it.
 
 A [Multi computer](/docs/devices/multi-computer) or
 [Cross-platform](/docs/devices/cross-platform) profile has members, and each
-member has a prompt of its own. The agent gets the profile's prompt first
-(what the members share), then each member's prompt under the member's name;
-a member without a prompt is skipped:
+member has a prompt of its own. After the device knowledge, the agent gets the
+profile's prompt first (what the members share), then each member's prompt
+under the member's name; a member without a prompt is skipped:
 
 ```markdown
-### Fleet
+#### Operator notes on this environment
 Both machines share one domain account.
-- Computer "server": Windows Server 2022; the service log is in the Event Viewer.
-- Computer "client": Windows 11; always execute on display 1.
+- Computer "server": the service log is in the Event Viewer.
+- Computer "client": always execute on display 1.
 ```
+
+An Android device that is a car's head unit but doesn't report itself as
+Android Automotive gets the head-unit knowledge when you set its
+**Form factor** to **HMI** (Devices → Edit).
 
 ## UI information
 
