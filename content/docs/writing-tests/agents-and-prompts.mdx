@@ -38,7 +38,9 @@ scratchpad tools, but only when a test explicitly instructs it to.
 it notices that a device reacts slowly, such as a sluggish emulator, slow test
 hardware or a car's head unit, it checks that the screen changed before it
 interacts again, so it never taps twice. You don't need a "wait between
-steps" rule for that.
+steps" rule for that. Waiting is no cover for a slow application: when the
+app under test takes more than about 5 seconds to respond, the agent says so
+in the test's result.
 
 When the built-in behaviour doesn't fit your suite, don't look for a file to
 edit, write a [rule](#rules): rules are appended last and take precedence
