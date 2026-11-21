@@ -59,6 +59,14 @@ The card shows each state while Start works:
 A Start that hangs in **Booting…** past ~8 minutes times out with an error,
 the emulator may still come up; Start again reconnects to it.
 
+**An Android emulator is greyed out** — this computer cannot run the emulator,
+because it offers no hardware virtualization. That is usually a virtual machine
+without nested virtualization. Onboarding, **Add device** and **Settings → This
+machine → Android** say so before anything is downloaded. Turn on nested
+virtualization for the virtual machine, or test on a
+[physical Android phone](/docs/devices/android-phone), which works in any virtual
+machine.
+
 **The card reads Set up instead of Start** — the Android platform-tools or the
 Android SDK is not installed (or no longer complete), and the card says
 **Tooling not ready — click Set up**. The setup dialog lists both, platform-tools
