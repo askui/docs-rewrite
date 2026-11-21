@@ -31,10 +31,10 @@ slightly between phone makers.
 4. Click **Add as device** next to the phone, the device becomes a regular
    profile card, bound to its serial, and the dialog closes.
 
-A car's head unit or another embedded screen that runs Android: open the card's
-**Edit** and set **Form factor** to **HMI** when the device doesn't report
-itself as Android Automotive. The agent then treats it as a head unit, not a
-phone. The default, **Detect from the device**, trusts what the device reports.
+A car's head unit or another embedded screen that runs Android: an Android
+Automotive build reports itself as one, and the agent treats it as a head unit.
+A build that doesn't is treated like a phone; describe the head unit in the
+device's **Prompt** (see [Device prompt](/docs/writing-tests/agents-and-prompts#device-prompt)).
 
 The same phone also appears under **Android devices** on the
 [Devices](/docs/devices) page, where **Details** shows what was discovered
