@@ -1,6 +1,6 @@
 ---
 title: Run failures
-description: Debug FAILED and BROKEN run statuses, and fix runs that produce no results.
+description: Debug FAILED, INCONCLUSIVE, and BROKEN run statuses, and fix runs that produce no results.
 ---
 
 ### Debugging a failing run
@@ -9,11 +9,13 @@ The fastest way to debug a failing run:
 
 1. Open the failing test's [execution report](/docs/results/run-report#execution-report) (the `.md` file in
    the run's folder, or inline in AskUI Desktop).
-2. Find the first step with status `FAILED` or `BROKEN`, that is where to
-   focus.
-3. Check the screenshot for that step. `FAILED` means the expected outcome
-   didn't match; `BROKEN` means an infrastructure problem (connection lost,
-   session expired) stopped the run.
+2. Find the first step with status `FAILED`, `INCONCLUSIVE`, or `BROKEN`,
+   that is where to focus.
+3. Check the screenshot for that step. `FAILED` means the application
+   behaved wrongly; `INCONCLUSIVE` means the agent could not tell, and the
+   reason names what it did not find; `BROKEN` means an infrastructure
+   problem (connection lost, session expired) stopped the run. All statuses:
+   [Test statuses](/docs/results/test-statuses).
 4. For AgentOS issues, check the [logs](/docs/troubleshooting#logs) for more
    detail.
 

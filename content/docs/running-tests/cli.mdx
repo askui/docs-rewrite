@@ -69,7 +69,7 @@ the test file, drives the UI, and records the test's result. When you
 target a nested folder tree, setups run top-down, teardowns bottom-up, and
 `rules.*` and `ui.*` accumulate per level, always starting at the tests
 root, so `tests/rules.md` and `tests/ui.md` apply to every run shape; a
-failing setup blocks the tests it guards, they show as `SKIPPED`.
+setup that does not pass blocks the tests it guards, they show as `BLOCKED`.
 
 ### The target
 
@@ -461,30 +461,38 @@ AskUI has more outcomes than JUnit, so the mapping is fixed:
 | `PASSED` | passed |
 | `WARNING` | passed, with the warning in `system-out` |
 | `FAILED` | `failure` |
-| `BROKEN` | `error`, with the reason |
+| `INCONCLUSIVE`, `BROKEN`, `BLOCKED` | `error`, with the reason |
 | `SKIPPED`, `DISCARDED`, `DEPRECATED` | `skipped` |
 
-A test that never started is `SKIPPED`, so it appears as `skipped`.
+A test the run never finished is `BLOCKED`, so it appears as `error`.
 
 `junit.xml` and `summary_report.md` count the same recorded results.
 
 ### The console
 
 The console shows each phase as it starts and finishes
-(`[test] tests/login.md -> passed`), with each test's recorded result, and ends with one summary line that counts
-the passed, failed, broken, and warned tests. A test the run never started
-is `SKIPPED`; when the run stopped before all its tests started, the line adds
-how many as `not executed`, and the run does not pass.
+(`[test] tests/login.md -> passed`), with each test's recorded result, and ends with one summary line. It always
+counts the passed, failed, and broken tests, then every other status that
+occurred (inconclusive, blocked, skipped, warned), then the pass rate and
+the conclusive share. The line is green when the run passed, red when a
+test failed, and yellow otherwise:
+
+```text
+6 passed · 1 failed · 0 broken · 1 inconclusive · 1 blocked · 21 skipped · pass rate 86 % · conclusive 28/30 (93 %)
+```
+
+A test the run never finished is `BLOCKED`, with the reason.
 
 ## Exit codes
 
 | Code | Meaning | Who acts |
 | --- | --- | --- |
-| `0` | All tests passed. Warnings are allowed. | nobody |
-| `1` | At least one test failed or broke, a setup failed, or the run stopped before all its tests started. Tests a failed setup kept from starting are `SKIPPED` and add nothing beyond the setup's failure. | the product team |
+| `0` | Nothing failed, and every test is conclusive. Warnings are allowed. A run where every test was `SKIPPED` is `0`. | nobody |
+| `1` | At least one test is `FAILED`: a proven defect. This wins over every other code from a finished run. | the product team |
 | `2` | Usage error: an unknown option, a missing or bad value, or two options that exclude each other. | the pipeline author |
 | `3` | Environment or configuration error: missing or rejected credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; a device that cannot be reached; a test that declares several platforms; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load; a provisioned device that AskUI Desktop holds. | the pipeline author |
-| `4` | No tests ran: the selection was empty, or no test result was produced. | the pipeline author |
+| `4` | No tests ran: the selection was empty, or the runner failed before any test counted. | the pipeline author |
+| `5` | No test failed, but at least one is `INCONCLUSIVE`, `BROKEN`, or `BLOCKED`, a setup did not pass, or the runner failed after tests were counted. | the bench or test owner |
 | `130` | Canceled (Ctrl+C). The results written so far are kept. | whoever pressed Ctrl+C |
 
 A usage error or a configuration error ends the CLI before the first model
@@ -492,10 +500,23 @@ call, or at it when the provider rejects the credentials, so it costs nothing.
 A warning never changes the exit code.
 
 Of the [setups and teardowns](/docs/writing-tests/setup-teardown-rules#how-a-setup-or-teardown-ends),
-only a failed or broken setup counts: it fails the run, and exit code `1`
-follows. A teardown's result and a setup's warning appear in
+only a setup that did not pass counts: its tests are `BLOCKED`, the setup
+counts as broken, and exit code `5` follows, unless a test failed. A setup that records `SKIPPED`
+makes its tests `SKIPPED` and changes nothing. A teardown's result and a setup's warning appear in
 `summary_report.md` but never change the exit code. A failed teardown never
 stops the run, it goes on with the next folder.
+
+What each status means, and which are conclusive:
+[Test statuses](/docs/results/test-statuses).
+
+<Callout title="Exit codes 1 and 5">
+Exit code `1` used to cover broken tests and failed setups too. Those are
+exit code `5` now, so `1` always means a defect. A runner failure used to be
+`1` too; it is `5` now. A run where every test was `SKIPPED` used to be `4`,
+and an agent that ended without a result too; they are `0` and `5` now. A
+pipeline that only checks for a non-zero code behaves as before, except
+that a run where every test was `SKIPPED` now passes.
+</Callout>
 
 <Callout title="Upgrading from an earlier CLI">
 Exit code `2` used to cover configuration errors too; those are exit code `3`

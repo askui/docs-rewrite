@@ -48,14 +48,21 @@ result decides what happens next:
 | --- | --- | --- |
 | `PASSED`, or nothing recorded | Passed. The tests run. | Passed. |
 | `WARNING` | Passed. Its reason appears in the [summary report](/docs/results/run-report#summary-report). | Its reason appears in the summary report. |
-| `FAILED` or `BROKEN` | Failed. The tests beneath it do not run and show as `SKIPPED`. | Its reason appears in the summary report. The run goes on, also with the next folder. |
+| `SKIPPED` | What it prepares is not available on this system. The tests beneath it do not run and show as `SKIPPED`, with the setup's reason. | Its reason appears in the summary report. |
+| `FAILED`, `INCONCLUSIVE`, or `BROKEN` | Did not pass. The tests beneath it do not run and show as `BLOCKED`. | Its reason appears in the summary report. The run goes on, also with the next folder. |
 
-Only a failed or broken setup counts towards the run's result: the run
-fails. A setup's warning and every teardown result appear in the summary
-but never count, so they never change the pass rate. The
-[Management Report](/docs/results/management-report) does not count
-setups and teardowns either, but it names every one that failed or broke
-([details](/docs/results/management-report#failed-setups-and-teardowns)).
+A setup whose act crashes did not pass either, even when it recorded
+`PASSED` before the crash: its tests are `BLOCKED`.
+
+Only a setup that did not pass counts towards the run's result: it counts
+as one broken test, so the run does not pass, and the
+[CLI](/docs/running-tests/cli#exit-codes) exits with `5` unless a test
+failed. A setup's
+`SKIPPED` or warning and every teardown result appear in the summary but
+never count, so they never change the pass rate. The
+[Management Report](/docs/results/management-report) counts a setup that
+did not pass the same way, and names every setup and teardown that did not
+pass ([details](/docs/results/management-report#failed-setups-and-teardowns)).
 
 The result is saved directly in the run folder, as
 `<folder>_setup_result.json` or `<folder>_teardown_result.json`. The agent

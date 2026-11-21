@@ -98,9 +98,11 @@ the test last.
 
 ## Status definitions: what passed means
 
-AskUI's status definitions say when a test is `PASSED`, `FAILED`,
-`WARNING`, `BROKEN`, or `SKIPPED`, and the agent picks the result it records
-by them. The first run writes them to `utils/status.md`. They are the same
+AskUI's status definitions say when a test is `PASSED`, `WARNING`,
+`FAILED`, `SKIPPED`, `INCONCLUSIVE`, or `BROKEN`, and the agent picks the
+result it records by them. A `FAILED` needs evidence of a defect; when the
+agent cannot tell, it records `INCONCLUSIVE`
+([Test statuses](/docs/results/test-statuses)). The first run writes them to `utils/status.md`. They are the same
 in every project and not editable in the app, so a `PASSED` means the same
 thing everywhere: [Status definitions](/docs/extending/reporting#status-definitions).
 
@@ -108,8 +110,8 @@ thing everywhere: [Status definitions](/docs/extending/reporting#status-definiti
 
 `utils/format.md` defines the
 [execution report](/docs/results/run-report#execution-report): the
-Markdown structure and the step vocabulary (`PASSED`, `FAILED`, `SKIPPED`,
-`WARNING`, `BROKEN`). A separate agent writes the report after each test and
+Markdown structure and the step vocabulary (`PASSED`, `WARNING`, `FAILED`,
+`SKIPPED`, `INCONCLUSIVE`, `BROKEN`). A separate agent writes the report after each test and
 follows this file. Edit it under **Extending → Reporting**, in the
 **Report format** section.
 

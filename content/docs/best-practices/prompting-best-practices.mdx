@@ -21,7 +21,7 @@ misbehaves, you know which file to open.
 | Agent identity and error discipline | Built into the app, not editable |
 | Facts about the test machine the screen doesn't show | The device profile's **Prompt** field (`devices.json`) |
 | App knowledge: navigation, state indicators, quirks | `tests/ui.md` |
-| When a test is PASSED, FAILED, WARNING, BROKEN, or SKIPPED | AskUI's [status definitions](/docs/extending/reporting#status-definitions), written to `utils/status.md` at the first run, not editable |
+| When a test is PASSED, WARNING, FAILED, SKIPPED, INCONCLUSIVE, or BROKEN | AskUI's [status definitions](/docs/extending/reporting#status-definitions), written to `utils/status.md` at the first run, not editable |
 | Execution report structure | `utils/format.md` (**Extending → Reporting**), read by the report writer after each test |
 | Standing corrections that override everything | `tests/rules.md` |
 | Behaviour for one suite only | `<folder>/rules.md` (and `<folder>/ui.md` for suite-specific app knowledge) |

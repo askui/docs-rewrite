@@ -18,39 +18,41 @@ all count it.
 
 The agent picks the status by AskUI's
 [status definitions](/docs/extending/reporting#status-definitions). The
-status is one of:
-
-- `PASSED`: the actual result matches the expected one.
-- `FAILED`: the test executed, but the result didn't match.
-- `WARNING`: the expected outcome was observed, but something noteworthy
-  went wrong on the way (slow response, minor visual deviation).
-- `SKIPPED`: not executed: the agent skipped it on purpose (e.g. a
-  precondition was not met), or the test never started (see
-  [Tests that never started](#tests-that-never-started)).
-- `BROKEN`: the test ran and could not finish: a crash or an
-  infrastructure failure.
+status is one of `PASSED`, `WARNING`, `FAILED`, `SKIPPED`, `INCONCLUSIVE`,
+`BROKEN`, or `BLOCKED`. What each one means, which are conclusive, and how
+they count: [Test statuses](/docs/results/test-statuses).
 
 The reason names what was expected and what was observed. A test that ends
-without a recorded result is `BROKEN`, with the reason "No result recorded".
-A test that stops on an error is `BROKEN`, with the error as the reason. If
-the agent records more than once, the last result counts. The result is
-saved next to the test as `<test_name>_result.json`.
+normally without a recorded result is `INCONCLUSIVE`, with the reason "The
+test ended without recording a result.". A test that crashes before it
+recorded anything is `BROKEN`, with the error as the reason. If the agent
+records more than once, the last result counts. The result is saved next to
+the test as `<test_name>_result.json`.
 
-### Tests that never started
+### Tests that never finished
 
-A test that never started is `SKIPPED`, never `BROKEN`. Its note in the
+A test the run never finished is `BLOCKED`, never `SKIPPED`. Its note in the
 summary report names the reason:
 
 | Note | When |
 | --- | --- |
-| Not run: a setup it depends on failed. | A [setup](/docs/writing-tests/setup-teardown-rules#how-a-setup-or-teardown-ends) of its folder failed or broke. |
-| Not run: `<test>` broke the run before this test. | An earlier test broke, and the run ended there. |
-| Not run: the run ended before this test. | The run was stopped, or the runner failed. |
+| Not run: a setup it depends on failed. | A [setup](/docs/writing-tests/setup-teardown-rules#how-a-setup-or-teardown-ends) of its folder ended `FAILED`, `INCONCLUSIVE`, or `BROKEN`, or it crashed. |
+| Not run: `<test>` broke the run before this test. | An earlier test crashed, and the run ended there. |
+| Not run: the run was stopped before this test. | You stopped the run before this test started. |
+| The run was stopped during this test. | You stopped the run while this test ran. |
+| Not run: the run ended before this test. | The runner failed before this test started. |
+| The run ended during this test. | The runner failed while this test ran. |
 
-A skipped test counts as nothing, so it changes neither the pass rate nor
-the totals. The run still fails, because it did not reach every test it
-was started for ([when a run passes](/docs/results#results-and-execution-reports)). For runs from older versions, the app shows a test that the
-summary listed as broken without a duration as `SKIPPED`.
+A `BLOCKED` test is not conclusive: it lowers the conclusive share, never
+the pass rate.
+
+A setup that records `SKIPPED` is different: what it prepares is not
+available, so its tests are `SKIPPED`, with the setup's reason, or with
+"Not run: a setup it depends on found what it prepares not available." when
+it gave none. They are conclusive.
+
+For runs from older versions, the app shows a test that the summary listed
+as broken without a duration as `SKIPPED`.
 
 ## Execution report
 
@@ -181,8 +183,8 @@ Section by section:
     check this when a step surprises you.
   - **Expected** / **Actual**: the step's contract and what was actually
     observed.
-  - **Status**: the step's own status: `PASSED`, `FAILED`, `SKIPPED`,
-    `WARNING`, or `BROKEN`.
+  - **Status**: the step's own status: `PASSED`, `WARNING`, `FAILED`,
+    `SKIPPED`, `INCONCLUSIVE`, or `BROKEN`.
   - **Screenshot**: the step's evidence, exactly one per step: the
     screenshot that shows the step's outcome. A second one appears only as
     a rare exception, for example to compare before and after. This holds
@@ -216,49 +218,71 @@ Each test has its own folder in the run folder:
 
 ## Summary report
 
-`summary_report.md` in the run folder summarizes the whole run: a totals head
-(test-case count, per-status counts, run duration), one Markdown table across
-all tests with status and execution time per test, and detail sections that
-quote the recorded reason of each warned, failed, broken, or skipped test.
-Broken tests are listed under **💥 Broken**, tests that never started
-under **⏭️ Skipped**.
+`summary_report.md` in the run folder summarizes the whole run: a totals head,
+one Markdown table across all tests with status and execution time per test,
+and detail sections that quote the recorded reason of every test that did
+not end `PASSED`.
+
+The totals head holds the test-case count, the pass rate and the conclusive
+share, one count per status that occurred, and the run duration. The detail
+sections follow the table in this order: **⚠️ Warnings**, **❌ Fails**,
+**❔ Inconclusive**, **💥 Broken**, **⛔ Blocked**, and **⏭️ Skipped**. A
+section appears only when a test ended with its status.
 
 ```markdown
 # Summary Report
 
-**Date:** 2026-08-06
+**Date:** 2026-11-21
 
-**Total:** 3 Test Cases
-- **✅ Passed:** 2
+**Total:** 4 Test Cases
+- **Pass rate:** 50 % · **Conclusive:** 3/4 (75 %)
+- **✅ Passed:** 1
 - **❌ Failed:** 1
+- **⏭️ Skipped:** 1
+- **⛔ Blocked:** 1
 - **⏱️ Duration:** 00:04:03
 
 | Test Case ID | Test Case Name | Status | Duration |
 | --- | --- | --- | --- |
 | login_test | login_test | ✅ Passed | 00:01:12 |
-| settings_test | settings_test | ✅ Passed | 00:00:48 |
 | checkout_test | checkout_test | ❌ Failed | 00:02:03 |
+| navigation_test | navigation_test | ⏭️ Skipped | 00:00:48 |
+| settings_test | settings_test | ⛔ Blocked | — |
 
 # ❌ Fails
 
 ## checkout_test
 The pay button never appeared after entering the voucher code.
+
+# ⛔ Blocked
+
+## settings_test
+Not run: the run was stopped before this test.
+
+# ⏭️ Skipped
+
+## navigation_test
+No navigation app on this head unit.
 ```
 
 The summary comes from the recorded results, not from the execution
-reports, so it is complete even for tests without a report. A test that ran
-but recorded no result reads "No result recorded". Tests that a
-[test plan](/docs/writing-tests/plans) selected but the run never started
-are listed under **⏭️ Skipped** with their
-[reason](#tests-that-never-started), so nothing goes missing silently. The
+reports, so it is complete even for tests without a report. A test whose
+result cannot be read is `BROKEN`, with the note "No result recorded". Tests
+that a [test plan](/docs/writing-tests/plans) selected but the run never
+finished are listed under **⛔ Blocked** with their
+[reason](#tests-that-never-finished), so nothing goes missing silently. The
 summary report pane exports the run as PDF, JSON, or JUnit XML:
 [Export](/docs/results/export).
 
 <Callout title="Counting rules">
-`WARNING` counts as passed (tracked separately in the warning total).
-`SKIPPED` tests are excluded from the total, they show in the table but
-don't affect the pass rate. The Runs page, the Dashboard, and the
-Management Report count with this one rule, so their figures always agree.
+Every status has its own count. `WARNING` counts as passed, and also in its
+own warning count. The pass rate is passed ÷ (passed + failed). The
+conclusive share is the conclusive tests out of every counted test.
+`DISCARDED` and `DEPRECATED` tests show in the table but count as nothing.
+A setup that did not pass counts as one broken test. The Runs page, the
+Dashboard, the CLI, and the Management Report count with these rules, so
+their figures always agree. Details:
+[Test statuses](/docs/results/test-statuses#pass-rate-and-conclusive-share).
 </Callout>
 
 In CI, upload the whole workspace folder as a build artifact so the reports

@@ -159,7 +159,7 @@ separate agent writes the report after the test and follows this file. So
 the format shapes the report, never the result:
 
 - The report states the status that the test recorded.
-- The step statuses (PASSED / FAILED / SKIPPED / WARNING / BROKEN) are the
+- The step statuses (PASSED / WARNING / FAILED / SKIPPED / INCONCLUSIVE / BROKEN) are the
   vocabulary for each step. When the test itself passes or fails is set by
   the status definitions (below).
 - Screenshots are embedded as `![Step 1](screenshot_3.png)`, with the file
@@ -171,9 +171,10 @@ Customize the sections when your organization needs different evidence:
 
 ## Status definitions
 
-AskUI's status definitions say when a test is PASSED, FAILED, WARNING,
-BROKEN, or SKIPPED. The testing agent gets them in its instructions and
-picks the status it records by them. The first run of a project writes them
+AskUI's status definitions say when a test is PASSED, WARNING, FAILED,
+SKIPPED, INCONCLUSIVE, or BROKEN. The testing agent gets them in its
+instructions and picks the status it records by them. AskUI itself sets
+BLOCKED for a test the run never finished. The first run of a project writes them
 to `utils/status.md`. Every project uses the same definitions, and the app
 does not offer them for editing:
 [Status definitions](/docs/extending/reporting#status-definitions).

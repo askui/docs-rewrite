@@ -1,1 +1,1 @@
-{ "title": "Results & Reports", "icon": "ChartColumn", "pages": ["index", "run-report", "management-report", "export", "dashboard"] }
+{ "title": "Results & Reports", "icon": "ChartColumn", "pages": ["index", "test-statuses", "run-report", "management-report", "export", "dashboard"] }
