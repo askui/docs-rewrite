@@ -20,8 +20,10 @@ description: Remove AskUI Desktop from Windows or macOS.
 
     The uninstaller removes the application, its Start-menu and desktop
     shortcuts, and its registry entries. Your settings and sign-in data under
-    `%LOCALAPPDATA%\AskUIDesktop` stay on disk, delete that folder too for a
-    complete removal.
+    `%LOCALAPPDATA%\AskUI` stay on disk. Delete that folder too for a
+    complete removal. An earlier version's `%LOCALAPPDATA%\AskUIDesktop`
+    folder is moved to `%LOCALAPPDATA%\AskUI` on the first start of this
+    version.
 
     **Silent uninstall:**
 
@@ -42,5 +44,11 @@ description: Remove AskUI Desktop from Windows or macOS.
     Empty the Trash to complete the removal.
     </Step>
     </Steps>
+
+    Two folders stay on disk: your settings and sign-in data in
+    `~/.config/AskUI`, and the AgentOS installation in
+    `~/Library/Application Support/AskUI`. Delete both for a complete removal.
+    An earlier version's `AskUIDesktop` folders in both places are moved to
+    `AskUI` on the first start of this version.
   </Tab>
 </Tabs>

@@ -33,13 +33,13 @@ definitions, the tooling the agent may use: every artifact is a plain file.
     <Folder name="utils" defaultOpen>
       <File name="format.md" />
       <File name="status.md" />
-      <File name="reporting.json" />
       <File name="tools.json" />
       <File name="mcp.json" />
       <Folder name="custom_tools" defaultOpen>
         <File name="query_admin_api.cs" />
       </Folder>
     </Folder>
+    <File name="askui.json" />
     <File name="devices.json" />
     <File name="schedules.json" />
     <Folder name="agent_workspace" />
@@ -51,7 +51,8 @@ definitions, the tooling the agent may use: every artifact is a plain file.
 | `tests/` | Test suites and test cases. A file is a case (steps, expected results); a sub-folder is a suite with its own `setup.md` / `teardown.md` (entry criteria and cleanup); `rules.md` = standing test instructions; [`ui.md`](/docs/writing-tests/agents-and-prompts#ui-information) = how the application under test works | `checkout/pay_with_card.md` |
 | `plans/` | Test plans: which cases make up the smoke set, the regression pack, and on which device they run | [`smoke.yaml`](/docs/writing-tests/plans) |
 | `procedures/` | Keywords, as in keyword-driven testing: write a sequence once, call it from any case with parameters | [`login_to_ui.md`](/docs/writing-tests/procedures) |
-| `utils/` | The permitted tooling and output conventions: [built-in tools](/docs/extending/tools), [MCP servers](/docs/extending/mcp), [custom C# tools](/docs/extending/custom-tools), the [report format and reporting settings](/docs/extending/reporting), and the [status definitions](/docs/extending/reporting#status-definitions) (written at the first run) | `format.md`, `status.md`, `reporting.json`, `custom_tools/query_admin_api.cs` |
+| `utils/` | The permitted tooling and output conventions: [built-in tools](/docs/extending/tools), [MCP servers](/docs/extending/mcp), [custom C# tools](/docs/extending/custom-tools), the [report format](/docs/extending/reporting), and the [status definitions](/docs/extending/reporting#status-definitions) (written at the first run) | `format.md`, `status.md`, `custom_tools/query_admin_api.cs` |
+| `askui.json` | The Project's settings the team shares: the model, when a test gets an [Execution Report](/docs/extending/reporting), [In-Flight Guidance](/docs/extending/in-flight-guidance), see [Configure the CLI](/docs/running-tests/cli-configuration#settings) | `"reporting": { "createReport": "failures" }` |
 | `devices.json` | The test environments, each with its own [prompt text](/docs/writing-tests/agents-and-prompts#device-prompt), see [Devices](/docs/devices) |, |
 | `schedules.json` | The execution schedule, [recurring runs](/docs/running-tests/scheduling) |, |
 | `agent_workspace/` | Test evidence: [execution logs, results, reports, screenshots](/docs/results). Generated per run, not versioned |, |
@@ -61,19 +62,106 @@ definitions, the tooling the agent may use: every artifact is a plain file.
 `.pdf` (an exported or scanned specification can be executed directly), and
 `.json`.
 
-**Start from a template…** on the Home page creates a new Project in a folder you
-pick: `tests/` with `ui.md`, `rules.md`, `setup.md`, `teardown.md` and
-`my_first_test.md`, each a template with **FILL IN** placeholders for your
-application, plus the report format in `utils/` and a `.gitignore`. Fill in the
-placeholders instead of starting blank.
+**Start from a template** on the Home page asks which template you want, then where to
+create the project: a **Project name** and a **Location** (type or paste a path, or
+pick the folder with **Browse…**). **Create project** makes a new folder with that name
+in that location. If the folder already exists and has files, AskUI adds only the
+project files that are missing and changes nothing else. The templates:
 
-**Open an existing project…** on a folder that is not an AskUI Project yet (it has
+- **Blank project**: `tests/` with `ui.md`, `rules.md`, `setup.md`, `teardown.md` and
+  `my_first_test.md`, each a template with **FILL IN** placeholders for your
+  application, plus the report format in `utils/` and a `.gitignore`. Fill in the
+  placeholders instead of starting blank.
+- **First steps** (Guided tour): a tutorial project with a ready test of the AskUI
+  website and its devices. Creating it starts the guided walkthrough (the tour and
+  Getting started) for that project.
+
+Once you have opened a project, the Home page shows your **Recent projects** first,
+with both templates as cards below them; a template card asks straight away where to
+create the project.
+
+**Open existing project** on a folder that is not an AskUI Project yet (it has
 no `tests` folder) asks first. **Yes, set it up** adds only what AskUI needs: the
 `tests` and `utils` folders, the device list and a `.gitignore`, and no tests. **No**
 leaves the folder unopened.
 
-The **demo project**, a ready-to-run test of the AskUI website, is offered only by
-the onboarding wizard.
+The onboarding wizard offers the same tutorial project in one click.
+
+## The project menu
+
+Click the project name in the top bar to open the project menu. It shows the
+open project with its path and three actions:
+
+- **Apply update**: bring changes from a ZIP file into this project.
+- **Export project**: save this project as one ZIP file.
+- **Close project**: go back to the Home page.
+
+Below the actions, **Switch to a recent project** lists the projects you opened
+before. A click closes the open project and opens the other one.
+
+To open another folder or clone a repository, close the project first. The
+Home page then offers **Open an existing project…** and **Clone from Git**.
+
+### Apply an update
+
+A teammate can send you changes to a project as a ZIP file. The update adds new
+files and replaces files that changed. It can also remove files.
+
+1. In the project menu, click **Apply update**.
+2. Paste the path of the ZIP file, or click **Browse…** and pick it.
+3. Check the line under the field. It counts the project files and the
+   deletions in the update.
+4. Click **Review changes**.
+5. Read the lists **Added**, **Changed** and **Deleted**.
+6. Click **Apply**. The button shows the number of changes. The dialog closes
+   and the project shows the new files.
+
+Nothing changes in the project before you click **Apply**. If the project is
+a Git repository with uncommitted changes, the review warns you. Commit them
+first if you want to be able to undo the update.
+
+**What the ZIP holds**
+
+- The project files, at the top of the ZIP or inside one folder. The app
+  removes that folder from the paths, for example
+  `my_project/tests/login.md` becomes `tests/login.md`.
+- Optionally a file `deleted.txt` at the top of the ZIP. Each line names one
+  file to remove, relative to the project. A leading `- ` and the folder name
+  are allowed, for example `- my_project/device_profiles/old_bench.md`. The app
+  ignores empty lines and lines that start with `#`.
+
+A file in the ZIP that is the same as in the project counts as up to date. The
+review does not list it. The app removes a folder that is empty after the
+deletions.
+
+**What an update never changes**
+
+The update leaves your runs, reports, app settings, secrets and Git history as
+they are: `agent_workspace/`, `reports/`, `.askui/`, `.env` and `.git/`. The app
+never writes a path that points outside the project either. The review lists
+every entry it leaves alone, with the reason.
+
+<Callout type="warn">
+An update replaces `devices.json` like any other file. Device settings that
+belong to your computer, for example a device's address, are then the ones in
+the update. Check your devices after you apply an update that contains
+`devices.json`.
+</Callout>
+
+### Export a project
+
+1. In the project menu, click **Export project**.
+2. To add runs, switch on **Include agent workspace**. Then choose **Runs from
+   the last N days** or **All runs**.
+3. Click **Export…** and choose where to save the ZIP file.
+
+The project files are always in the export. Secrets, app settings and Git
+history are never in it. The dialog shows how many files and runs go in, and
+the approximate size.
+
+The ZIP holds the project inside a folder with the project's name. A teammate
+can open that folder as a project, or apply the ZIP as an update to their copy
+of the project.
 
 ## Git: Versioning & Sync
 

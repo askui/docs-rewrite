@@ -17,11 +17,19 @@ reports are identical.
 
 ## Where to configure it
 
-Configure it under **Settings → AI Settings → Testing Model**, switch an
-already‑running install to BYOM, or edit/remove an existing configuration. The
-same form appears in the License setup wizard and wherever a feature has its own
-model ([Forge](/docs/extending/forge), [Dreaming](/docs/extending/dreaming),
-[In-Flight Guidance](/docs/extending/in-flight-guidance)).
+**Settings → AI Settings** has three model cards:
+
+- **Global Model**: the model every feature uses unless it picks its own.
+- **Testing Model**: the model your test runs use.
+- **Forge Model**: the model of [Forge](/docs/extending/forge).
+
+Every card but the Global Model starts with **Use the global model**, on by
+default. Clear it to give that feature a model of its own. The same form
+appears in the License setup wizard and on the pages of
+[Reporting](/docs/extending/reporting),
+[In-Flight Guidance](/docs/extending/in-flight-guidance) and
+[Dreaming](/docs/extending/dreaming). So connecting your model once, on the
+Global Model card, is enough for every feature.
 
 ## Choose where your model runs
 
@@ -189,7 +197,7 @@ what to watch: [Performance & cost](/docs/troubleshooting/performance-cost).
 
 <Steps>
 <Step>
-Open **Settings → AI Settings → Testing Model** (or reach it via license activation).
+Open **Settings → AI Settings → Global Model** (or reach it via license activation).
 </Step>
 
 <Step>
@@ -266,6 +274,6 @@ rules, your project owns them.
 
 ## Switching back to the AskUI hub
 
-In **Settings → AI Settings → Testing Model**, choose **Remove key**. This reverts to the
-AskUI hub default and forgets the stored key. (In License mode there is no hub
-default, so you replace the provider rather than removing it.)
+Signed in to AskUI, pick **AskUI Inference** on the model's card. In License
+mode there is no AskUI hub: **Remove key** on the **Global Model** card forgets
+the stored key, and you connect another provider.

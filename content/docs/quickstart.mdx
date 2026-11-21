@@ -95,11 +95,16 @@ flips green automatically once granted.
 </Step>
 <Step>
 **Where do you want to test?** Tick **Web**, **Desktop** and/or **Android**.
-Whatever this computer already has is ticked for you. Ticking a kind starts
-setting up what it needs right away, in the background, with its progress on the
-card: the Chromium browser for Web (about 170 MB), AgentOS for Desktop, and, once
-you accept Google's licenses, the Android SDK and an emulator (about 1–1.5 GB). You
-can continue while it downloads.
+Whatever this computer already has is ticked for you. Ticking only picks a kind:
+nothing downloads until you click **Continue**. Then AskUI Desktop sets up what each
+picked kind needs, in the background, with its progress on the card: the Chromium
+browser for Web (about 170 MB), AgentOS for Desktop, and, once you accept Google's
+licenses, the Android SDK and an emulator (about 1–1.5 GB). You can go on with the
+next steps while it downloads.
+
+On a Mac you can also tick **iOS**. An iOS simulator needs Xcode and idb_companion,
+which you install yourself: the card lists the steps, with the command to copy, and
+**Check again** turns it ready once both are there.
 </Step>
 <Step>
 **Which model runs your tests?** Signed in with an AskUI account, pick one of the
@@ -108,6 +113,28 @@ least and runs the demo test well. With a license, check the model you connected
 during license setup, or connect another one. The
 [AskUI model guide](https://www.askui.com/downloads/askui-ai-models-inference-guide.pdf)
 helps you choose. Change it any time under **Settings → AI Settings → Testing Model**.
+</Step>
+<Step>
+**Your workspace** *(AskUI account only).* A workspace holds your plan, credits and
+billing; teammates you invite share it, and your access tokens belong to it. The step
+names your workspace, or lets you pick one if you belong to several, and shows its plan.
+Every new account starts on a free trial with full access to every feature; the step
+shows its credits and when it ends. When the credits run out, runs stop with a billing
+error until you upgrade on the AskUI Hub. **Manage on AskUI Hub** opens the workspace's
+settings there.
+</Step>
+<Step>
+**Invite your teammates** *(AskUI account only).* Type their email addresses and click
+**Send invites** to work on tests together in the workspace you picked. Each address
+shows whether its invite went out; **Try again** resends one that failed. Teammates
+join as members once they accept the invite on the AskUI Hub. **Skip this step** if
+you want to do it later.
+</Step>
+<Step>
+**How should AskUI Desktop update?** Keep **Install updates automatically** to get
+new versions as they come out, or choose **Only tell me when an update is
+available** to decide yourself when the app changes. Change it any time under
+**Settings → This machine → App updates**.
 </Step>
 <Step>
 **You're ready to test.** Watch the short quick start video, or open the tutorial
@@ -139,7 +166,7 @@ The dashboard walks you to your first passing test:
   with the time left, and **Retry** or **Resume** when one stopped. The same
   downloads show under **Settings → This machine**.
 
-To walk the wizard and Getting started again, open **Settings → This machine →
+To walk the wizard and Getting started again, open **Settings → About →
 Setup assistant**.
 
 <Callout title="Make it yours">
