@@ -13,7 +13,7 @@ All examples assume:
   [device profile](/docs/running-tests/cli#choosing-the-device) the run uses
   in its `devices.json`.
 
-Each example writes JUnit XML next to the HTML and Markdown reports
+Each example writes JUnit XML next to the Developer Report (HTML) and the Markdown reports
 (`--reporter html,md,junit`), so the CI system shows pass and fail per test,
 and keeps the whole output folder as an artifact, also when tests fail.
 
@@ -127,7 +127,7 @@ steps:
 
 Every example fails the job on a non-zero exit code. The code tells you who
 has to act: `1` is a failed or broken test, `3` is a runner or project
-problem (credentials, device, MCP server, an unset `${VAR}`), `4` means no
+problem (credentials, device, custom tool, an unset `${VAR}`), `4` means no
 test ran. All codes: [Exit codes](/docs/running-tests/cli#exit-codes).
 
 ## Connecting to a remote AgentOS
