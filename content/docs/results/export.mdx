@@ -63,8 +63,12 @@ ran a web test downloads nothing.
 
 Every JSON document starts with two fields:
 
-- `schemaVersion`: the version of the document's layout, currently `1`. A
-  new version means a field changed meaning or was removed.
+- `schemaVersion`: the version of the document's layout. A new version
+  means a field changed meaning or was removed. Currently `1` for
+  `execution-report` and `2` for `run-summary` and `management-report`.
+  Version `2` came with [INCONCLUSIVE and BLOCKED](/docs/results/test-statuses):
+  the counts have no `executed` any more, a Management Report run's `skipped`
+  is now `notRun`, and a day's `executed` is now `tests`.
 - `kind`: `execution-report`, `run-summary`, or `management-report`.
 
 Read `kind` first, then the fields of that kind. Times are ISO 8601 with a
@@ -92,20 +96,34 @@ Management Report, and `totals` at the top of the Management Report. Every
 counts object has the same fields:
 
 ```json
-{ "passed": 11, "failed": 1, "broken": 0, "warnings": 2, "notCounted": 3,
-  "executed": 12, "passRate": 92, "allGreen": false }
+{ "passed": 11, "failed": 1, "broken": 0, "warnings": 2, "notCounted": 1,
+  "skipped": 3, "inconclusive": 1, "blocked": 1,
+  "conclusive": 15, "notConclusive": 2, "total": 17, "decided": 12,
+  "passRate": 92, "conclusiveShare": 88,
+  "hasDefect": true, "needsAttention": true, "allGreen": false }
 ```
 
 | Field | Holds |
 | --- | --- |
 | `passed` | Tests that passed, warnings included |
 | `failed` | Tests that failed |
-| `broken` | Tests that broke |
+| `broken` | Tests that broke, and setups that did not pass |
 | `warnings` | Tests that passed with a warning |
-| `notCounted` | Rows that do not count: skipped tests, discarded and deprecated tests, and setup or teardown rows |
-| `executed` | Tests that count: passed, failed, and broken |
-| `passRate` | Passed out of executed, in percent, or `null` when nothing ran |
-| `allGreen` | `true` when something executed and nothing failed or broke |
+| `skipped` | Tests whose feature is not available |
+| `inconclusive` | Tests the agent could not decide |
+| `blocked` | Tests the run never finished |
+| `notCounted` | Rows that do not count: discarded and deprecated tests, and setup and teardown rows that count as nothing |
+| `conclusive` | Passed, failed, and skipped |
+| `notConclusive` | Inconclusive, broken, and blocked |
+| `total` | Every counted test: conclusive and not conclusive |
+| `decided` | Passed and failed: what the pass rate is over |
+| `passRate` | Passed out of decided, in percent, or `null` when nothing passed or failed |
+| `conclusiveShare` | Conclusive out of total, in percent, or `null` when no test counted |
+| `hasDefect` | `true` when a test failed |
+| `needsAttention` | `true` when a test is not conclusive |
+| `allGreen` | `true` when something counted, nothing failed, and every test is conclusive |
+
+What the statuses mean: [Test statuses](/docs/results/test-statuses).
 
 ### Execution report
 
@@ -152,7 +170,7 @@ counts object has the same fields:
 | --- | --- |
 | `run` | [The run](#the-run) |
 | `counts` | [Counts](#counts) over the run's tests |
-| `tests` | One entry per row of the summary: `id`, `name`, `status`, `duration`. It lists every test, the setup and teardown rows that recorded something to report, and the tests that never started as `SKIPPED` |
+| `tests` | One entry per row of the summary: `id`, `name`, `status`, `duration`. It lists every test, the setup and teardown rows that recorded something to report, and the tests the run never finished as `BLOCKED` |
 
 ### Management Report
 
@@ -168,7 +186,7 @@ counts object has the same fields:
 | `tests` | One entry per test: `name`, `runs`, `counts`, `lastStatus`, `lastRunAt` |
 | `runs` | One entry per run in the range: `folder`, `startedAt`, `title`, `plan`, `device`, `counts`, and `excluded` (`true` for a run you unticked) |
 | `executions` | One entry per test execution of the counted runs: `runFolder`, `startedAt`, `run`, `test`, `status`, `duration`, `hasReport` (`true` when the execution has an execution report), and `canHaveReport` (`true` when a report can be written for it: it recorded a test result and its run kept its conversation) |
-| `days` | One entry per day: `date`, `executed`, `passed` |
+| `days` | One entry per day: `date`, `tests` (every counted test), `passed` |
 
 The same runs and the same choices give the same Management Report JSON,
 byte for byte. It has no timestamp of its own and no text from a model.
@@ -199,8 +217,10 @@ The statuses map to JUnit like this:
 | --- | --- |
 | `PASSED`, `WARNING` | passed |
 | `FAILED` | `<failure>` |
-| `BROKEN` | `<error>` |
-| `SKIPPED`, `DISCARDED`, `DEPRECATED`, and tests that never ran | `<skipped>`, with the reason |
+| `INCONCLUSIVE`, `BROKEN`, `BLOCKED` | `<error>`, with the reason |
+| `SKIPPED`, `DISCARDED`, `DEPRECATED` | `<skipped>`, with the reason |
+
+What each status means: [Test statuses](/docs/results/test-statuses).
 
 Each `<testcase>` has the test file as its `classname`. Each `<testsuite>`
 carries the plan, the device, the model, and the app version as properties.

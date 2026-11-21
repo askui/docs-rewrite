@@ -32,7 +32,9 @@ costs nothing to build.
    that have no report yet, also tick
    **Generate missing execution reports first**.
 8. Click **Generate**. After a few seconds, the dialog shows
-   **The report is ready.**
+   **The report is ready.**, with the runs, the tests, the pass rate, and
+   the conclusive share, for example
+   `12 runs · 360 tests · 86% passed · conclusive 334/360 (93 %)`.
 9. Click **Download PDF**, **Download JSON**, or **Download JUnit XML**
    to save the report. On the desktop, **Open** shows the PDF in your
    default PDF viewer.
@@ -60,15 +62,15 @@ Fields you leave empty do not appear.
 The PDF starts with a dark navy **cover page**. It shows the AskUI logo,
 `Management Report · <period>`, the project name with
 **Management Report** below it, and a row of headline facts: the test
-period, the software version, the runs, the pass rate, the devices, the
-plans, the tests executed, and the size of the appendix. The other
+period, the software version, the runs, the pass rate, the conclusive
+share, the devices, the plans, the tests, and the size of the appendix. The other
 [additional information](#additional-information) you entered joins
 them.
 
 Numbered sections follow:
 
 1. **Overview**: a table of facts, including your additional
-   information, five key-figure cards, and your **Remarks**. With a
+   information, the key-figure cards, and your **Remarks**. With a
    **Run name** filter, the table has a row `Runs named — containing “<text>”`.
 2. **Results**: the two charts.
 3. **Tests**: the table of tests.
@@ -91,8 +93,9 @@ and the end page has a header and a footer:
 
 What the sections hold:
 
-- **Key figures**: runs, tests executed, passed, failed and broken, and the
-  pass rate.
+- **Key figures**: one card each for the tests, the pass rate, the
+  conclusive share, and every status: passed, warnings, failed, skipped,
+  inconclusive, broken, and blocked.
 - **Test period**: the first and the last run in the range.
 - **Software version**: the version you entered, or `—` when the field is
   empty. It belongs to the report, not to the runs.
@@ -100,37 +103,48 @@ What the sections hold:
   name.
 - **Charts**: two, in this order.
   - **Pass rate per test**, the main chart: one stacked bar per test
-    (passed, failed, broken), with its pass rate and passed out of executed
-    beside it. The test with the lowest pass rate comes first.
-  - **Tests executed per day**: stacked lines, passed below and failed or
-    broken on top, so the upper line is everything that ran.
+    (passed, failed, not conclusive), with its pass rate and passed out of
+    passed and failed beside it. The test with the lowest pass rate comes
+    first. A test that never passed or failed has no pass rate and no bar.
+  - **Tests per day**: stacked lines, passed below and not passed on top,
+    so the upper line is every counted test.
 
-  Green means passed, navy failed, and pale lavender broken. The `FAILED`
-  marker in the tables is navy too.
-- **Tests**: one row per test, with its runs, passed, failed, broken, pass
-  rate, and the status of its last run.
-- **Runs**: every run in the range, with its start time, device, and passed
-  out of executed tests.
+  Green means passed, navy failed, and pale lavender not conclusive
+  (`INCONCLUSIVE`, `BROKEN`, or `BLOCKED`).
+- **Tests**: one row per test, with its runs, passed, failed, skipped,
+  inconclusive, broken, and blocked, its pass rate, and the status of its
+  last run.
+- **Runs**: every run in the range, with its start time, device, passed,
+  failed, not conclusive, and all counted tests.
+
+The status markers in the tables each have their own colour: `FAILED` navy,
+`INCONCLUSIVE` amber-grey, `BROKEN` lavender, `BLOCKED` slate, `SKIPPED`
+grey.
 
 The counting rules are the same as in the
-[summary report](/docs/results/run-report#summary-report).
+[summary report](/docs/results/run-report#summary-report). The pass rate is
+passed ÷ (passed + failed). The conclusive share is the conclusive tests out
+of every counted test: [Test statuses](/docs/results/test-statuses).
 
 ### Failed setups and teardowns
 
-Setups and teardowns do not count towards the figures, but the report
-names every one that ended `FAILED` or `BROKEN`, so tests skipped because
-of a setup never go unexplained:
+A setup that did not pass counts as one broken test, as on every other
+surface. It gets no row in the **Tests** table. A teardown counts as
+nothing. The report names every setup and teardown that ended `FAILED`,
+`INCONCLUSIVE`, or `BROKEN`, so tests blocked by a setup never go
+unexplained:
 
 - **Runs**: the run's row is marked with a short note, for example
   *Setup `login` failed* **F1**. The reference leads to the **Setup and
   teardown failures** block below the table, which holds the status, the
   run, and the full recorded reason. For a setup, it also says how many
   tests of the run did not run.
-- **Overview**: a warning below the key-figure cards.
+- **Overview**: a warning below the key-figure cards. It says how many
+  tests did not run and are shown as blocked.
 - **Important notes**: one extra note.
 
-All three appear only when a counted run had a failed or broken setup or
-teardown. A setup's `WARNING` is not a failure, because its tests ran.
+All three appear only when a counted run had a setup or teardown that did
+not pass. A setup's `WARNING` is not a failure, because its tests ran.
 
 ## Leave out a run
 

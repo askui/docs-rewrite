@@ -23,11 +23,26 @@ Section by section:
   something is active.
 - **Upcoming schedules**: the next few [schedules](/docs/running-tests/scheduling)
   by their due time. Shown only when schedules exist.
-- **The verdict**: one sentence on the latest run — did it pass, and when.
-- **Needs attention**: the failing or broken tests of the latest run, each
-  a link into its report.
-- **Trend**: pass-rate over the recent runs, once there are at least two.
-- **Recent runs**: the run history, newest first.
+- **Latest run**: the pass rate of the latest run as a ring, one sentence
+  on how it ended, and its conclusive share, for example
+  **Conclusive 28/30 (93 %)**. The sentence names every failed or not
+  conclusive status, for example "1 failed, 1 inconclusive of 30 tests".
+  When nothing needs a look, it reads "All 12 tests passed", or
+  "6 passed, 21 skipped of 27 tests" when tests were skipped. A run where
+  every test was `SKIPPED` counts as passed, not as broken.
+- **Test suite**: the latest run as one bar, a segment per status: passed,
+  failed, skipped, inconclusive, broken, blocked. The legend below counts
+  passed and failed, and every other status that occurred.
+- **Needs attention**: the tests of the latest run that ended `FAILED`,
+  `INCONCLUSIVE`, `BROKEN`, or `BLOCKED`, each a link into its report.
+- **Trend**: pass-rate over the recent runs, once at least two runs have a
+  pass rate. A run where no test passed or failed has none and is left out.
+- **Recent runs**: the run history, newest first, each with its passed
+  tests out of the passed and failed ones, and its pass rate.
+
+The pass rate is passed ÷ (passed + failed); skipped and not conclusive
+tests are left out of it. What each status means and how the conclusive
+share is computed: [Test statuses](/docs/results/test-statuses).
 
 The numbers derive from each run's
 [summary report](/docs/results/run-report#summary-report), the counting

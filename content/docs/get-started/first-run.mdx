@@ -358,12 +358,18 @@ status is the result the agent recorded at the end of the test:
 a test to reach a pass.\
 **`WARNING`**: passed, but with a caveat worth your attention (slow response, minor
 visual deviation).\
-**`FAILED`**: the step executed, but the actual result didn't match the
-expected one.\
-**`SKIPPED`**: intentionally not executed, e.g. a precondition wasn't met.\
-**`BROKEN`**: the test ran but couldn't finish: a crash or an
-infrastructure problem, not a functional result. A test that never started
-is `SKIPPED`, not `BROKEN`.
+**`FAILED`**: a proven defect: the agent's action reached the right
+target, and the application answered wrongly or not at all.\
+**`SKIPPED`**: what the test needs is not available on this system.\
+**`INCONCLUSIVE`**: the agent could not tell whether the application behaved
+as expected. The reason names what was missing and where it looked.\
+**`BROKEN`**: the test system failed: a crash or an infrastructure problem,
+not a functional result.\
+**`BLOCKED`**: the run never finished the test, for example after a failed
+setup or because you stopped the run.
+
+What each status means in detail, and which ones are conclusive:
+[Test statuses](/docs/results/test-statuses).
 
 For details and the cross-run summary report, see
 [Test results and reports](/docs/results/run-report).

@@ -10,12 +10,20 @@ page is the loop for **why**, and where the fix belongs.
 ## Find the cause
 
 1. Start at the [summary report](/docs/results/run-report#summary-report):
-   which cases didn't pass, and with which status?
-   - **`FAILED`**: two possible truths, step 2 decides which:
+   which cases didn't pass, and with which status? What each status means:
+   [Test statuses](/docs/results/test-statuses).
+   - **`FAILED`**: a proven defect. The agent records it only when its
+     action reached the right target and the system answered wrongly. Two
+     possible truths remain, step 2 decides which:
      - **The test told the agent the wrong thing** → fix the test
        ([Fix it](#fix-it), below).
      - **The application misbehaved** → report it as a defect, with the
        execution report and its screenshots attached as evidence.
+   - **`INCONCLUSIVE`**: the agent could not tell whether the system behaved
+     as expected. The reason names what was missing and where the agent
+     looked. Usually a path or an element the agent could not find: name
+     it in the [device profile](/docs/devices) or in the test, and the
+     next run can decide.
    - **`BROKEN`**: infrastructure, not the application. The recorded reason
      and the report already carry the agent's diagnosis hint, which kind of problem it saw
      and what to check, so start there. The usual kinds:
@@ -54,11 +62,14 @@ page is the loop for **why**, and where the fix belongs.
      - **A genuine anomaly**? Keep an eye on it across the next runs, and
        if it persists or worsens, report it as a defect, with the reports
        as evidence.
-   - **`SKIPPED`**: an entry criterion wasn't met, or an
-     [optional step](/docs/writing-tests/step-constructs#optional) didn't
-     apply. Check the **Preconditions** section. A test whose note starts
-     with "Not run:" never started: look at the setup or the test it
-     [names](/docs/results/run-report#tests-that-never-started).
+   - **`SKIPPED`**: what the test needs does not exist on this system, as
+     the device profile or the device's capabilities say. That is a known
+     fact, not a failure. If the feature should be there, check the device
+     profile.
+   - **`BLOCKED`**: the run never finished the test. Its note
+     [names why](/docs/results/run-report#tests-that-never-finished): a
+     setup that did not pass, an earlier test that broke the run, or a
+     stopped run. Fix that cause, then rerun.
 2. Open the failing case's [execution report](/docs/results/run-report#execution-report) and read
    the failed step (no report yet? Right-click the case on the **Runs** page
    and pick **Generate execution report**):

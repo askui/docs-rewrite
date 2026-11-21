@@ -7,7 +7,8 @@ description: CI/CD, model providers, virtual machines, proxy, and installation r
 
 Yes. CI execution runs through the AskUI CLI (`askui run`), which ships with
 AskUI Desktop. It fails the pipeline by its exit code, keeps a broken runner
-(exit code 3) apart from a failed test (exit code 1), and writes JUnit XML
+(exit code 3) apart from a failed test (exit code 1) and from a test that is
+not conclusive (exit code 5), and writes JUnit XML
 for your CI system's test report. See
 [AskUI in CI](/docs/guides/askui-in-ci) and
 [CI workflow files](/docs/guides/ci-workflows).
