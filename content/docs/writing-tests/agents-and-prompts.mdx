@@ -35,8 +35,8 @@ the real value is substituted at execution time, hidden from the model. \
 scratchpad tools, but only when a test explicitly instructs it to.
 
 **Slow devices**: the agent acts at full speed and adds no fixed waits. When
-it notices that a device reacts slowly, such as a sluggish emulator, slow test
-hardware or a car's head unit, it checks that the screen changed before it
+it notices that a device reacts slowly (any device can: a sluggish emulator,
+an overloaded computer, slow test hardware), it checks that the screen changed before it
 interacts again, so it never taps twice. You don't need a "wait between
 steps" rule for that. Waiting is no cover for a slow application: when the
 app under test takes more than about 5 seconds to respond, the agent says so
@@ -66,7 +66,7 @@ facts. The run's report then shows a notice that says so.
 **How the platform behaves.** The app adds what a tester knows about the
 platform: the menu bar and Cmd shortcuts on macOS, the taskbar and UAC
 prompts on Windows, Back and Home on Android, the head unit's own system bar
-on an Android HMI, the Dynamic Island and the missing Back button on an
+and its hardware buttons, pressed through adb, on an Android HMI, the Dynamic Island and the missing Back button on an
 iPhone, the hidden address bar in a browser, and how the
 [AskUI Companion](/docs/devices/askui-companion) operates a phone. On a
 computer with several displays the agent looks on every display before it
