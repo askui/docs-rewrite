@@ -15,13 +15,13 @@ There are three Forges:
 
 - **[PromptForge](#promptforge--ui-prompts-from-screenshots)** drafts your
   [UI information](/docs/writing-tests/agents-and-prompts#ui-information) (`ui.md`)
-  from screenshots of the app under test, or from a recording in which you show and
-  explain it.
+  from screenshots of the app under test, from a recording in which you show and
+  explain it, or from a description alone.
 - **[ToolForge](#toolforge--custom-tools-from-a-description)** drafts a
   [custom tool](/docs/extending/custom-tools) (a `.cs` file) from a plain-language
   description, which a recording can show.
 - **[TestForge](#testforge--tests-from-recordings-and-specs)** turns a narrated
-  screencast or a written spec (PDF or CSV) into a test.
+  screencast, a written spec (PDF or CSV) or a plain description into a test.
 
 All of them run on the same **Forge Model** (below).
 
@@ -49,10 +49,13 @@ not saved anywhere.
 writing it, open a `ui.md` in the Tests editor and click **Forge from
 screenshots**.
 
-- Upload **screenshots** of the app (PNG or JPEG, up to 30) and write a short
-  **bullet-point description** of what they show (at least 160 characters). Verify
-  stays disabled until both are there. A large screenshot is scaled down to the size
-  your model takes before it is sent.
+- Write a short **bullet-point description** of the screens (at least 160
+  characters). Verify stays disabled until the description is long enough, unless
+  you add a narrated video.
+- Optionally upload **screenshots** of the app (PNG or JPEG, up to 30). They are not
+  required, but they improve the result: the model takes labels and layout from
+  them. A large screenshot is scaled down to the size your model takes before it is
+  sent.
 - Or add a **narrated video** instead of, or next to, the screenshots: record yourself
   walking through the app and explaining it (one `.mp4`, up to 200 MB). With a video
   the description is optional, because your voiceover carries it. PromptForge shows
@@ -207,13 +210,15 @@ retyping them.
 
 TestForge turns material you already have into tests. Record yourself walking
 through a flow and explaining it, or take a written spec as PDF or CSV. TestForge
-drafts **one test per file**. Videos need an AskUI account, because their voiceover
-is transcribed on the AskUI API. With your own model, TestForge turns PDF and CSV files
-into tests and lists a video as skipped, with the reason.
+drafts **one test per file**. Without any file, it drafts one test from your
+description alone. Videos need an AskUI account, because their voiceover is
+transcribed on the AskUI API. With your own model, TestForge turns PDF and CSV files
+and descriptions into tests and lists a video as skipped, with the reason.
 
 Open the **Tests** page with no test open and click **Forge a test**.
 
-1. **Add the sources.** Choose files or a `.zip`, or **pick a folder**:
+1. **Add the sources**, or skip this step and only write a description (step 2).
+   Choose files or a `.zip`, or **pick a folder**:
    - **Videos** (`.mp4`, up to 200 MB) with a spoken explanation. The voiceover is
      transcribed automatically; English and German are supported.
    - **PDF** (up to 25 MB) and **CSV** files.
@@ -224,15 +229,21 @@ Open the **Tests** page with no test open and click **Forge a test**.
    Anything TestForge won't turn into a test — another file type, a file that is too
    large, a file beyond the 50 — is listed as **skipped** before any model call,
    with the reason. Nothing is dropped silently.
-2. Optionally add a **Description**: what the app is, what the sources cover, which
-   conventions to follow.
+2. Write a **Description**.
+   - **With sources**, it adds context to each of them: what the app is, what the
+     sources cover, which conventions to follow.
+   - **Without sources**, it is the source. Describe the flow and what must be true
+     at the end. TestForge then drafts one test, and the button reads
+     **Start forging 1 test**.
 3. Click **Start forging**. TestForge works through the sources one at a time, each
    with the [Verify loop](#the-verify-loop) (the button is called **Continue**
    here). For a video it first shows the length, how many still frames it took and
    how much of the voiceover it transcribed, so you can tell when part of a long
    recording is missing.
-4. Click **Accept & write test**. The test is written under `tests/`. If the name is
-   taken, TestForge appends `_1`, `_2`, … and never overwrites a test. Then **Edit**
+4. Click **Accept & write test**. The test is written under `tests/`. A test from a
+   description alone is named after its title: `# Log in with a valid account`
+   becomes `log_in_with_a_valid_account.md`. If the name is taken, TestForge appends
+   `_1`, `_2`, … and never overwrites a test. Then **Edit**
    the result in place, or go on with **Next test**.
 
 **Skip this source** moves past a source that the model rejected or that could not
