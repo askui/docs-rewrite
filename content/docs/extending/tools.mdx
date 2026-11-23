@@ -212,6 +212,9 @@ you give it.
   resetting the test database.
 - **Parameters:** **Tool name**, **Script path**, **Description**.
 
+Deleting the tool's last script switches the tool off, because it has nothing
+left to run. To switch it on again, add a script.
+
 ```md title="tests/rules.md"
 - If the scanner stops responding, run the restart_scanner tool and repeat the step.
 ```
