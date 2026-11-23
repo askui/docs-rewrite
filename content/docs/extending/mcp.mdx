@@ -16,7 +16,7 @@ a custom tool. Register it; its tools join the agent's toolbox.
    line, e.g. `Authorization: Bearer ${MCP_TOKEN}`.
 4. Leave **Runs go on without this server when it cannot be connected** checked,
    unless your tests cannot run without the server (see
-   [A server the tests need](#a-server-the-tests-need)).
+   [Require an MCP server for a run](#require-an-mcp-server-for-a-run)).
 5. Click **Add server**.
 
 <img
@@ -55,28 +55,15 @@ goes on **without** that server's tools, and a warning in the conversation (a
 drops during the run is reconnected once; if that fails, the tool call returns
 an error and the run continues.
 
-## A server the tests need
+## Require an MCP server for a run
 
-Some tests are meaningless without their server: a test that reads tickets
-from an issue tracker, for example. Mark such a server as required, so a run
-stops at once instead of running every test without its tools.
+When your tests cannot run without a server, clear **Runs go on without this
+server when it cannot be connected** in its dialog. The row then shows
+**required for runs**, and `utils/mcp.json` gets `"ignoreFailure": false`.
 
-1. Open **Extending → MCP Servers**.
-2. Click the pencil next to the server.
-3. Clear **Runs go on without this server when it cannot be connected**.
-4. Click **Edit server**.
-
-The row now shows **required for runs**. In `utils/mcp.json` the server gets
-`"ignoreFailure": false`. Without the key, a run goes on without the server.
-
-When a required server cannot be connected, the run does not start:
-
-- **Conversation**: the server's line in **Surface setup** did not finish, and
-  the error names the server, its URL, the reason, and what to check.
-- **Tests**: none ran. Each is listed as not run, "because the Extending
-  settings could not be loaded".
-- **Device**: released again, so the next run can use it.
-- **CLI**: exit code `3`, a configuration error, with the same message.
+If a required server cannot be connected, the run stops before its first
+test. The error names the server, its URL and what to check, every test is
+listed as not run, and the CLI exits with code `3`.
 
 ## Edit a server
 

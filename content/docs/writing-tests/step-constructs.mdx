@@ -154,7 +154,7 @@ one; the agent carries what it saw through the whole test:
 15. Open the user list and click the entry with the user ID noted in step 12.
 ```
 
-The seeded cross-platform example uses the same pattern across devices: read
+The seeded multiple-devices example uses the same pattern across devices: read
 the most recent order number on the desktop, then search for exactly that
 number on the phone.
 
@@ -254,17 +254,6 @@ Tool names are listed under **Extending → Tool Store**, each card carries the 
 the agent knows it by. A [custom tool](/docs/extending/custom-tools)'s name
 is the `name:` in its C# file.
 
-## Targeting machines and platforms
-
-In a [multi-computer](/docs/devices/multi-computer) test, name the machine
-per step; in a
-[cross-platform test](/docs/writing-tests#target-multiple-platforms), name
-the device the same way:
-
-```md
-25. On the **server**, start the message service.
-26. On the **client**, send a message to the server.
-```
 ## Beyond steps
 
 Some things don't belong in any step, they're the manual tester's tribal

@@ -104,9 +104,9 @@ What the example uses, and what else a tool file can do:
 - **Secrets**: implement `ISecretsConsumer` and the run hands the tool the
   project's [named secrets](/docs/extending/secrets); `ADMIN_API_KEY` above
   comes from Extending → Secrets, not from the file.
-- **Device access**: a constructor asking for `AgentOSDriver` (computer),
-  `WebBrowserDriver` (browser), `AndroidDeviceDriver`, or `IosSimulatorDriver`
-  gets the run's device injected. A constructor asking for `ISurface` gets
+- **Device access**: a constructor asking for `ComputerTarget` (computer),
+  `WebTarget` (browser), `AndroidTarget`, or `IosTarget` gets the run's
+  device injected. A constructor asking for `ISurface` gets
   every device of the run, whatever its kind. Parameterless (like above) works
   on every run; a tool whose device isn't part of the run is skipped with a
   warning. A tool written for an earlier version may need
@@ -142,7 +142,7 @@ What the example uses, and what else a tool file can do:
 ## A tool using all of it
 
 A visual reference check, it pulls a screenshot through the run's computer
-(`AgentOSDriver` in the constructor), compares pixels with ImageSharp (shipped
+(`ComputerTarget` in the constructor), compares pixels with ImageSharp (shipped
 with the app, so no `#:package` line), and returns an **image** the agent can
 look at, not just text:
 
@@ -153,9 +153,9 @@ using SixLabors.ImageSharp.Processing;
 
 public sealed class CompareWithReferenceTool : Tool
 {
-    private readonly AgentOSDriver _computer;
+    private readonly ComputerTarget _computer;
 
-    public CompareWithReferenceTool(AgentOSDriver computer)
+    public CompareWithReferenceTool(ComputerTarget computer)
         : base(
             name: "compare_with_reference",
             description: "Compares the current screen against a reference image. "
@@ -211,34 +211,33 @@ public sealed class CompareWithReferenceTool : Tool
    at most 1% of the pixels may deviate.
 ```
 
-Because the constructor requires `AgentOSDriver`, this tool exists only on
+Because the constructor requires `ComputerTarget`, this tool exists only on
 computer runs, on a browser or an Android run it is skipped with a warning.
 
 ## Update a tool from an earlier version
 
-A tool whose constructor asks for `IAgentOs`, `IWebAgentOs`, `IAndroidAgentOs`
-or `IIosAgentOs` no longer compiles. The run stops before the first test with
-the error `ASKUI001`, which names the type to use. Change the constructor
-parameter and the field, the calls stay as they are:
+A tool acts on a **target** now, the device as the agent sees it. A tool
+written for an earlier version stops the run before the first test, and the
+error names the type to take instead. Change the constructor parameter and
+the field, the calls stay as they are:
 
 ```csharp
 // before
-public MyTool(IAgentOs agentOs)
+public MyTool(IAgentOs agentOs)        // or: MyTool(AgentOSDriver computer)
 
 // after
-public MyTool(AgentOSDriver computer)
+public MyTool(ComputerTarget computer)
 ```
 
-**`IAgentOs`** becomes `AgentOSDriver`.
+| The constructor takes | Error | Take instead |
+| --- | --- | --- |
+| `IAgentOs` or `AgentOSDriver` | `ASKUI001` / `ASKUI003` | `ComputerTarget` |
+| `IWebAgentOs` or `WebBrowserDriver` | `ASKUI001` / `ASKUI003` | `WebTarget` |
+| `IAndroidAgentOs` or `AndroidDeviceDriver` | `ASKUI001` / `ASKUI003` | `AndroidTarget` |
+| `IIosAgentOs` or `IosSimulatorDriver` | `ASKUI001` / `ASKUI003` | `IosTarget` |
 
-**`IWebAgentOs`** becomes `WebBrowserDriver`.
-
-**`IAndroidAgentOs`** becomes `AndroidDeviceDriver`.
-
-**`IIosAgentOs`** becomes `IosSimulatorDriver`.
-
-A tool that took `IAgentOs` to run on browser runs too now needs
-`WebBrowserDriver`, or `ISurface` to act on whichever device the run has.
+A tool that took `IAgentOs` to run on browser runs too now takes
+`ISurface`, to act on whichever device the run has.
 
 ## Keep results small
 

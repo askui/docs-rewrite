@@ -134,12 +134,11 @@ as-is. New to Markdown? The
 [Markdown Guide](https://www.markdownguide.org/basic-syntax/) covers the
 syntax in ten minutes.
 
-### Target multiple platforms
+### Target multiple devices
 
 A test can use more than one device. Run it on a
-[Cross-platform profile](/docs/devices/cross-platform) that holds them, and
-name the device in each step that uses it, like a
-[multi-computer test](/docs/devices/multi-computer) names machines:
+[Multiple devices profile](/docs/devices/multiple-devices) that holds them,
+and name the device in each step that uses it:
 
 ```md
 1. On the **Windows Desktop**, read the most recent order number.
@@ -147,7 +146,7 @@ name the device in each step that uses it, like a
 ```
 
 The agent works on one device at a time and switches when a step names
-another one. A test does not declare its platforms: any test runs on any
+another one. A test does not declare its devices: any test runs on any
 profile, and the profile says which devices the run has.
 
 ## Use secrets in a test

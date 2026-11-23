@@ -1,0 +1,53 @@
+---
+icon: Layers
+title: Multiple devices
+description: One agent drives several of your devices in a single test, such as a client and a server, or a phone and a desktop.
+---
+
+A **Multiple devices** profile groups devices the project already has,
+for scenarios that span them: a client and a server, a sender and a receiver,
+an order placed on the phone and found on the desktop. Any kinds mix: remote
+computers, browsers, Android devices and emulators, iOS simulators.
+
+The test names the device per step:
+
+```md
+1. On the **Android phone**, place an order and note its order number.
+2. On the **Windows Desktop**, open the order list and search for that number.
+```
+
+## Create it
+
+1. Add each device on its own first, as [any other device](/docs/devices).
+2. **Add device** → **Advanced setups** → **Multiple devices**.
+3. Under **Devices, in order**, click each device to add it. **Move up** and
+   **Move down** change the order, **Leave out** removes a device. The first
+   one is active when a run starts.
+4. **Add device**.
+
+The profile names the devices, it copies nothing from them. A change to a
+device, its connection or its **Prompt**, reaches every profile that names it.
+
+The profile's own **Prompt** field is for what the devices share (one domain
+account, say). The agent gets it first, then each device's prompt under the
+device's name. A device without a prompt adds nothing.
+
+Name each device the way the tests refer to it: role names (`server`,
+`client`, `Android phone`), not host names.
+
+## Run it
+
+1. **Connect**: one session covering every device.
+2. Pick the profile in the test's **Run on** dropdown and press **Run**.
+
+One agent works on one device at a time. It lists the devices by name
+(`list_targets`) and switches when a step names another one
+(`switch_target`). After a switch it acts with that device's tools: the
+desktop's, the browser's or the phone's.
+
+A test does not declare which devices it needs: any test runs on any
+profile, and the profile says which devices the run has.
+
+**Preconditions:** every remote computer runs
+[AgentOS as a service](/docs/agentos/installation/service) and is reachable
+over the network.
