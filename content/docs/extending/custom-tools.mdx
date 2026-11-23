@@ -255,9 +255,17 @@ stays beside it as `<name>.cs.bak`, which a run does not load. Fix changes only
 type names, never a comment or a string.
 
 If a row shows any other error, click **Fix with ToolForge**.
-[ToolForge](/docs/extending/forge#edit-a-custom-tool) opens on that file with the errors as
-the request. Press **Verify** to let it repair the tool. ToolForge uses the
-model, so this costs tokens.
+[ToolForge](/docs/extending/forge#edit-a-custom-tool) opens on that file with
+the errors as the request:
+
+1. Click **Verify**, and answer ToolForge's questions if it asks any.
+2. Click **Accept & Update Tool**.
+
+ToolForge replaces the file and keeps no `.bak`. It uses the model, so this
+costs tokens.
+
+A file can need both. Click **Fix** first: it renames the old types, and the row
+then shows only the errors that are left. Fix those with ToolForge.
 
 ## Keep results small
 
