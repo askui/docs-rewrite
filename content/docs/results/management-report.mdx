@@ -95,7 +95,7 @@ What the sections hold:
 
 - **Key figures**: one card each for the tests, the pass rate, the
   conclusive share, and every status: passed, warnings, failed, skipped,
-  inconclusive, broken, and blocked.
+  unclear, broken, and blocked.
 - **Test period**: the first and the last run in the range.
 - **Software version**: the version you entered, or `—` when the field is
   empty. It belongs to the report, not to the runs.
@@ -110,15 +110,15 @@ What the sections hold:
     so the upper line is every counted test.
 
   Green means passed, navy failed, and pale lavender not conclusive
-  (`INCONCLUSIVE`, `BROKEN`, or `BLOCKED`).
+  (`UNCLEAR`, `BROKEN`, or `BLOCKED`).
 - **Tests**: one row per test, with its runs, passed, failed, skipped,
-  inconclusive, broken, and blocked, its pass rate, and the status of its
+  unclear, broken, and blocked, its pass rate, and the status of its
   last run.
 - **Runs**: every run in the range, with its start time, device, passed,
   failed, not conclusive, and all counted tests.
 
 The status markers in the tables each have their own colour: `FAILED` navy,
-`INCONCLUSIVE` amber-grey, `BROKEN` lavender, `BLOCKED` slate, `SKIPPED`
+`UNCLEAR` amber-grey, `BROKEN` lavender, `BLOCKED` slate, `SKIPPED`
 grey.
 
 The counting rules are the same as in the
@@ -131,7 +131,7 @@ of every counted test: [Test statuses](/docs/results/test-statuses).
 A setup that did not pass counts as one broken test, as on every other
 surface. It gets no row in the **Tests** table. A teardown counts as
 nothing. The report names every setup and teardown that ended `FAILED`,
-`INCONCLUSIVE`, or `BROKEN`, so tests blocked by a setup never go
+`UNCLEAR`, or `BROKEN`, so tests blocked by a setup never go
 unexplained:
 
 - **Runs**: the run's row is marked with a short note, for example

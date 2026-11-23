@@ -66,7 +66,7 @@ Every JSON document starts with two fields:
 - `schemaVersion`: the version of the document's layout. A new version
   means a field changed meaning or was removed. Currently `1` for
   `execution-report` and `2` for `run-summary` and `management-report`.
-  Version `2` came with [INCONCLUSIVE and BLOCKED](/docs/results/test-statuses):
+  Version `2` came with [UNCLEAR and BLOCKED](/docs/results/test-statuses):
   the counts have no `executed` any more, a Management Report run's `skipped`
   is now `notRun`, and a day's `executed` is now `tests`.
 - `kind`: `execution-report`, `run-summary`, or `management-report`.
@@ -97,7 +97,7 @@ counts object has the same fields:
 
 ```json
 { "passed": 11, "failed": 1, "broken": 0, "warnings": 2, "notCounted": 1,
-  "skipped": 3, "inconclusive": 1, "blocked": 1,
+  "skipped": 3, "unclear": 1, "blocked": 1,
   "conclusive": 15, "notConclusive": 2, "total": 17, "decided": 12,
   "passRate": 92, "conclusiveShare": 88,
   "hasDefect": true, "needsAttention": true, "allGreen": false }
@@ -110,11 +110,11 @@ counts object has the same fields:
 | `broken` | Tests that broke, and setups that did not pass |
 | `warnings` | Tests that passed with a warning |
 | `skipped` | Tests whose feature is not available |
-| `inconclusive` | Tests the agent could not decide |
+| `unclear` | Tests the agent could not decide |
 | `blocked` | Tests the run never finished |
 | `notCounted` | Rows that do not count: discarded and deprecated tests, and setup and teardown rows that count as nothing |
 | `conclusive` | Passed, failed, and skipped |
-| `notConclusive` | Inconclusive, broken, and blocked |
+| `notConclusive` | Unclear, broken, and blocked |
 | `total` | Every counted test: conclusive and not conclusive |
 | `decided` | Passed and failed: what the pass rate is over |
 | `passRate` | Passed out of decided, in percent, or `null` when nothing passed or failed |
@@ -217,7 +217,7 @@ The statuses map to JUnit like this:
 | --- | --- |
 | `PASSED`, `WARNING` | passed |
 | `FAILED` | `<failure>` |
-| `INCONCLUSIVE`, `BROKEN`, `BLOCKED` | `<error>`, with the reason |
+| `UNCLEAR`, `BROKEN`, `BLOCKED` | `<error>`, with the reason |
 | `SKIPPED`, `DISCARDED`, `DEPRECATED` | `<skipped>`, with the reason |
 
 What each status means: [Test statuses](/docs/results/test-statuses).

@@ -12,15 +12,15 @@ Read a status as an answer to one question: **what do we now know?**
 
 ## The seven statuses
 
-| Status | What it means | Who sets it | Conclusive |
-| --- | --- | --- | --- |
-| `PASSED` | The expected outcome was observed. | The agent | Yes |
-| `WARNING` | The expected outcome was observed, but something noteworthy happened on the way, for example a slow response or a small visual deviation. Counts as passed. | The agent | Yes |
-| `FAILED` | **A proven defect.** The agent's action reached the right target, and the system answered wrongly or not at all. | The agent | Yes |
-| `SKIPPED` | The feature or capability the test needs does not exist on this system. | The agent, or a setup that records `SKIPPED` | Yes |
-| `INCONCLUSIVE` | The agent could not tell whether the system behaved as expected. The reason names what was missing and where the agent looked. | The agent, or AskUI when the agent ended without a status | No |
-| `BROKEN` | The test system failed: a crash, a tool or infrastructure error, a device that stopped answering. Nothing is known about the system under test. | The agent, or AskUI when the test crashed | No |
-| `BLOCKED` | The run never finished this test: a setup it depends on did not pass, an earlier test broke the run, or the run was stopped. | AskUI only | No |
+| Status | What it means | Who sets it | Conclusive | Who acts |
+| --- | --- | --- | --- | --- |
+| `PASSED` | The expected outcome was observed. | The agent | Yes | — |
+| `WARNING` | The expected outcome was observed, but something noteworthy happened on the way, for example a slow response or a small visual deviation. Counts as passed. | The agent | Yes | — |
+| `FAILED` | **A proven defect.** The agent's action reached the right target, and the system answered wrongly or not at all. | The agent | Yes | The product team |
+| `SKIPPED` | The feature or capability the test needs does not exist on this system. | The agent, or a setup that records `SKIPPED` | Yes | — |
+| `UNCLEAR` | The agent could not tell whether the system behaved as expected. The reason names what was missing and where the agent looked. | The agent, or AskUI when the agent ended without a status | No | The owner of the test or the device profile |
+| `BROKEN` | The test system failed: a crash, a tool or infrastructure error, a device that stopped answering. Nothing is known about the system under test. | The agent, or AskUI when the test crashed | No | The owner of the bench or environment |
+| `BLOCKED` | The run never finished this test: a setup it depends on did not pass, an earlier test broke the run, or the run was stopped. | AskUI only | No | Follow its reason |
 
 ### PASSED
 
@@ -61,7 +61,7 @@ reason. When the setup gave no reason, the note reads "Not run: a setup it
 depends on found what it prepares not available." Those tests are conclusive
 too.
 
-### INCONCLUSIVE
+### UNCLEAR
 
 The agent could not tell whether the system behaved as expected. Typical
 causes:
@@ -71,15 +71,18 @@ causes:
 - the agent's action may not have registered;
 - the screen stayed in a state the agent could not interpret.
 
-`INCONCLUSIVE` is the last resort. The agent records it only after it tried
+`UNCLEAR` is the last resort. The agent records it only after it tried
 the paths the device profile and the test name suggest, made a second
 attempt, and took a fresh screenshot after waiting. The reason always names
 what was missing and where the agent looked. That reason is your to-do: most
-`INCONCLUSIVE` tests turn conclusive once the device profile names the
+`UNCLEAR` tests turn conclusive once the device profile names the
 missing path.
 
-A test that ends normally without recording any status is `INCONCLUSIVE`
+A test that ends normally without recording any status is `UNCLEAR`
 too, with the reason "The test ended without recording a result."
+
+**Who acts:** the owner of the test or the device profile. Add the missing
+path to the device profile, or sharpen the test.
 
 ### BROKEN
 
@@ -87,6 +90,9 @@ The test system failed, not the system under test: the device stopped
 answering, a tool or the controller returned an infrastructure error, a
 custom tool threw an exception, the test crashed. A `BROKEN` test tells you
 nothing about your product. Fix the environment and run it again.
+
+**Who acts:** the owner of the bench or environment. Fix the device, the
+tool, or the connection.
 
 If the agent recorded a status before the crash, that status stands, and the
 conversation shows a notice about the crash.
@@ -98,7 +104,7 @@ says why:
 
 | Reason | When |
 | --- | --- |
-| Not run: a setup it depends on failed. | A setup of its folder ended `FAILED`, `INCONCLUSIVE`, or `BROKEN`, or it crashed. |
+| Not run: a setup it depends on failed. | A setup of its folder ended `FAILED`, `UNCLEAR`, or `BROKEN`, or it crashed. |
 | Not run: `<test>` broke the run before this test. | An earlier test crashed, and the run ended there. |
 | Not run: the run was stopped before this test. | You stopped the run before this test started. |
 | The run was stopped during this test. | You stopped the run while this test ran. |
@@ -106,6 +112,9 @@ says why:
 | The run ended during this test. | The runner failed while this test ran. |
 
 A `BLOCKED` test is not a skipped one: nothing was learned about it.
+
+**Who acts:** follow its reason. Fix the setup or the test that broke the
+run, or run the tests again.
 
 <Callout type="info" title="Tests marked in the test file">
 A test whose file marks it `DISCARDED` or `DEPRECATED` keeps that status. It
@@ -121,12 +130,16 @@ So AskUI groups the statuses into two classes:
 - **Conclusive:** `PASSED`, `WARNING`, `FAILED`, `SKIPPED`. The run learned
   something about the system: it works, it is broken, or the feature is not
   there.
-- **Not conclusive:** `INCONCLUSIVE`, `BROKEN`, `BLOCKED`. The run learned
+- **Not conclusive:** `UNCLEAR`, `BROKEN`, `BLOCKED`. The run learned
   nothing about the system for this test. Something in the test setup, the
   device profile, or the environment needs attention.
 
 Aim for as few not-conclusive tests as possible. They point at work on your
 side, not at defects in the product.
+
+Environment problems are meant to be visible and owned. AskUI does not hide a
+broken bench behind a failed or skipped test, so the owner of the bench sees
+the problem and can fix it.
 
 ## Pass rate and conclusive share
 
@@ -142,7 +155,7 @@ figures:
   you how much of the run produced knowledge.
 
 Example: a run of 30 tests on a head unit without navigation. 6 passed,
-1 failed, 21 skipped (the navigation tests among them), 1 inconclusive,
+1 failed, 21 skipped (the navigation tests among them), 1 unclear,
 1 blocked.
 
 - Pass rate: 6 ÷ (6 + 1) = **86 %**.
@@ -157,13 +170,13 @@ exit code, so a pipeline can stop on defects only:
 | --- | --- | --- |
 | `0` | Nothing failed, and every test is conclusive. A run where every test was `SKIPPED` is `0`: "not available" is a result. | Nothing. |
 | `1` | At least one test is `FAILED`. This wins over everything else. | File the defect. |
-| `5` | No test failed, but at least one is `INCONCLUSIVE`, `BROKEN`, or `BLOCKED`, a setup did not pass, or the runner failed. | Fix the test environment, the device profile, or the test. |
+| `5` | No test failed, but at least one is `UNCLEAR`, `BROKEN`, or `BLOCKED`, a setup did not pass, or the runner failed. | Fix the test environment, the device profile, or the test. |
 
 A run you cancel with Ctrl+C ends with `130`, whatever the statuses. The
 other exit codes are in the [CLI reference](/docs/running-tests/cli#exit-codes).
 
 In [JUnit XML](/docs/results/export#junit-xml), `FAILED` is a `failure`.
-`INCONCLUSIVE`, `BROKEN`, and `BLOCKED` are an `error`. `SKIPPED`,
+`UNCLEAR`, `BROKEN`, and `BLOCKED` are an `error`. `SKIPPED`,
 `DISCARDED`, and `DEPRECATED` are `skipped`.
 
 ## How the agent picks a status
@@ -173,7 +186,7 @@ In [JUnit XML](/docs/results/export#junit-xml), `FAILED` is a `failure`.
 3. The device profile or the capabilities say the feature is not available
    → `SKIPPED`.
 4. There is evidence that the system behaved wrongly → `FAILED`.
-5. Otherwise, after the known paths were tried twice → `INCONCLUSIVE`, with
+5. Otherwise, after the known paths were tried twice → `UNCLEAR`, with
    what was missing and where it looked.
 
 The agent reads these rules from AskUI's
@@ -181,7 +194,7 @@ The agent reads these rules from AskUI's
 
 ## Runs from earlier versions
 
-Runs recorded before AskUI knew `INCONCLUSIVE` and `BLOCKED` keep their
+Runs recorded before AskUI knew `UNCLEAR` and `BLOCKED` keep their
 statuses. In those runs, `SKIPPED` can also mean "never started", and a
 setup that failed counts as broken. Their pass rate is now computed as
 passed ÷ (passed + failed), so a run with broken tests shows a higher pass

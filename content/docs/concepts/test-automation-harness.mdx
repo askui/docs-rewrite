@@ -102,7 +102,7 @@ What it hands each phase, what it enforces, and what it leaves behind:
   - **The feature is not available on this system**, as the device profile
     or the capabilities say → `SKIPPED`. It can't count as a failure.
   - **The agent can't tell** (a path or an element not found after two
-    attempts) → `INCONCLUSIVE`, with what was missing and where it looked.
+    attempts) → `UNCLEAR`, with what was missing and where it looked.
     Without evidence of a defect, it is never `FAILED`.
   - **Infrastructure broke** (device connection, session, peripheral) →
     `BROKEN` with a diagnosis hint, and the run aborts instead of grinding

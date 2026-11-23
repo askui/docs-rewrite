@@ -57,12 +57,12 @@ Each test has two things:
 The recorded results also decide whether the whole run passed. A run
 passes when no test `FAILED` and every counted test is conclusive: `PASSED`,
 `WARNING`, or `SKIPPED`. A run where every test was `SKIPPED` passes, because
-"not available" is a result. A test that is `INCONCLUSIVE`, `BROKEN`, or
+"not available" is a result. A test that is `UNCLEAR`, `BROKEN`, or
 `BLOCKED`, or a setup that did not pass, keeps the run from passing. What
 each status means: [Test statuses](/docs/results/test-statuses).
 
 The run's result line counts its tests, for example
-`6 passed · 1 failed · 0 broken · 1 inconclusive · 1 blocked · 21 skipped`.
+`6 passed · 1 failed · 0 broken · 1 unclear · 1 blocked · 21 skipped`.
 Passed, failed, and broken always appear, every other status only when a
 test ended with it. In a run from an earlier version, a test the run never
 reached still fails the run, and the line ends with `· N not executed`.
@@ -75,7 +75,7 @@ A run without any counted test fails, with the error's text or with
 
 Whether a test gets a report depends on the **Create report** setting under
 [Extending → Reporting](/docs/extending/reporting#create-report): always,
-only for failed or broken tests (`FAILED`, `INCONCLUSIVE`, or `BROKEN`), or
+only for failed or broken tests (`FAILED`, `UNCLEAR`, or `BROKEN`), or
 never. A
 [test plan](/docs/writing-tests/plans#build-a-plan) can override it for its
 runs.
@@ -157,13 +157,13 @@ Once history grows past a screen, search it instead:
   - **Kind**: plan run, test run.
   - **Trigger**: only the triggers your history actually holds are offered.
     A project that has never had a scheduled run gets no Scheduled box.
-  - **Outcome**: Passed, Failures, Broken, Warnings, Inconclusive,
+  - **Outcome**: Passed, Failures, Broken, Warnings, Unclear,
     Blocked, Skipped. These are not alternatives, a run is found by every
     box that is true of it: one that passed *with* warnings answers to
     Passed and Warnings, and one holding both a failed and a broken test
     answers to Failures and Broken. Each status has its own box because
     each leads to different work: a failed test found a defect, an
-    inconclusive, broken, or blocked one found nothing, each for its own
+    unclear, broken, or blocked one found nothing, each for its own
     reason, and a skipped one found its feature not available
     ([Test statuses](/docs/results/test-statuses)).
 
@@ -189,7 +189,7 @@ Right-click a run in the sidebar:
   it repeats the run, not the plan. It appears in the history as
   `<plan> (Rerun)`.
 - **Rerun only failed** runs only the tests of that run whose result was
-  `FAILED`, `INCONCLUSIVE`, `BROKEN`, or `BLOCKED`, as a single run on the
+  `FAILED`, `UNCLEAR`, `BROKEN`, or `BLOCKED`, as a single run on the
   device it used. For a test plan
   it appears as `<plan> (Rerun Failed)`. It is greyed out, with the reason,
   when nothing failed or when none of the failed tests' files can be found.

@@ -21,7 +21,7 @@ The agent ends each test by recording a **result**: a status and a short
 reason. It picks the status by AskUI's
 [status definitions](#status-definitions). That recorded result decides
 whether the test passed. A test that ends without recording anything is
-`INCONCLUSIVE`; a test that crashes before it recorded anything is
+`UNCLEAR`; a test that crashes before it recorded anything is
 `BROKEN`.
 
 The **execution report** is written after the test, by a separate agent. It
@@ -35,7 +35,7 @@ What a report contains: [Execution report](/docs/results/run-report#execution-re
 | Option | What it does |
 | --- | --- |
 | **Always** | Every finished test gets a report. This is the default, also for projects that existed before this setting. |
-| **Only for failed or broken tests** | Only tests that ended `FAILED`, `INCONCLUSIVE`, or `BROKEN` get a report. This is the cheapest way to keep the reports you read. |
+| **Only for failed or broken tests** | Only tests that ended `FAILED`, `UNCLEAR`, or `BROKEN` get a report. This is the cheapest way to keep the reports you read. |
 | **Never** | No report is written during runs. |
 
 A [test plan](/docs/writing-tests/plans#build-a-plan) can override this
@@ -64,7 +64,7 @@ The choice belongs to the Project.
 ## Status definitions
 
 Every project uses AskUI's status definitions. They define when a test is
-`PASSED`, `WARNING`, `FAILED`, `SKIPPED`, `INCONCLUSIVE`, or `BROKEN`. The
+`PASSED`, `WARNING`, `FAILED`, `SKIPPED`, `UNCLEAR`, or `BROKEN`. The
 testing agent gets them in its instructions and picks the status it records
 by them. Setups and teardowns use them too. A seventh status, `BLOCKED`, is
 never recorded by the agent: AskUI sets it for a test the run never finished.
@@ -83,9 +83,9 @@ Record exactly one of these statuses when a test ends.
 
 - **PASSED** — every step ran and the expected outcome was observed.
 - **WARNING** — the expected outcome was observed, but something noteworthy went wrong on the way (e.g. a slow response, a minor visual deviation).
-- **FAILED** — the system under test behaved wrongly, and you have the evidence: your action reached the right target, and the system answered wrongly or not at all. A path or an element you could not find is no evidence; that is INCONCLUSIVE.
+- **FAILED** — the system under test behaved wrongly, and you have the evidence: your action reached the right target, and the system answered wrongly or not at all. A path or an element you could not find is no evidence; that is UNCLEAR.
 - **SKIPPED** — the feature or capability the test needs does not exist on this system, as the device profile or the system's capabilities say. Say what is not available.
-- **INCONCLUSIVE** — you cannot tell whether the system behaved as expected. The last resort: only after you tried the paths the device profile and the test name suggest, made a second attempt, and took a fresh screenshot after waiting. Say what was missing and where you looked.
+- **UNCLEAR** — you cannot tell whether the system behaved as expected. The last resort: only after you tried the paths the device profile and the test name suggest, made a second attempt, and took a fresh screenshot after waiting. Say what was missing and where you looked.
 - **BROKEN** — the test could not be executed because of an error that is not the system under test (crash, infrastructure or tool failure, exception).
 - **BLOCKED** — never recorded by you: AskUI sets it for a test the run never finished (a setup it depends on failed, an earlier test broke the run, or the run was stopped).
 ```
@@ -110,7 +110,7 @@ It starts from the default format.
 The format instructs the report writer, not the testing agent. Keep these
 parts:
 
-- **The step statuses** (`PASSED`, `WARNING`, `FAILED`, `SKIPPED`, `INCONCLUSIVE`, `BROKEN`):
+- **The step statuses** (`PASSED`, `WARNING`, `FAILED`, `SKIPPED`, `UNCLEAR`, `BROKEN`):
   the default format asks the writer to judge each step like the
   [status definitions](#status-definitions).
 - **The overall status**: the report states the status that the test
@@ -146,7 +146,7 @@ first two settings:
 [test plan](/docs/writing-tests/plans#build-a-plan) can override it.
 
 - `always`: after every test.
-- `failures`: only for tests that ended `FAILED`, `INCONCLUSIVE`, or `BROKEN`.
+- `failures`: only for tests that ended `FAILED`, `UNCLEAR`, or `BROKEN`.
 - `never`: none during the run. You can still write them later from the
   **Runs** page.
 

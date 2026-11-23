@@ -49,7 +49,7 @@ result decides what happens next:
 | `PASSED`, or nothing recorded | Passed. The tests run. | Passed. |
 | `WARNING` | Passed. Its reason appears in the [summary report](/docs/results/run-report#summary-report). | Its reason appears in the summary report. |
 | `SKIPPED` | What it prepares is not available on this system. The tests beneath it do not run and show as `SKIPPED`, with the setup's reason. | Its reason appears in the summary report. |
-| `FAILED`, `INCONCLUSIVE`, or `BROKEN` | Did not pass. The tests beneath it do not run and show as `BLOCKED`. | Its reason appears in the summary report. The run goes on, also with the next folder. |
+| `FAILED`, `UNCLEAR`, or `BROKEN` | Did not pass. The tests beneath it do not run and show as `BLOCKED`. | Its reason appears in the summary report. The run goes on, also with the next folder. |
 
 A setup whose act crashes did not pass either, even when it recorded
 `PASSED` before the crash: its tests are `BLOCKED`.

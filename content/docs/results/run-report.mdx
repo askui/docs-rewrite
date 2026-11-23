@@ -18,12 +18,12 @@ all count it.
 
 The agent picks the status by AskUI's
 [status definitions](/docs/extending/reporting#status-definitions). The
-status is one of `PASSED`, `WARNING`, `FAILED`, `SKIPPED`, `INCONCLUSIVE`,
+status is one of `PASSED`, `WARNING`, `FAILED`, `SKIPPED`, `UNCLEAR`,
 `BROKEN`, or `BLOCKED`. What each one means, which are conclusive, and how
 they count: [Test statuses](/docs/results/test-statuses).
 
 The reason names what was expected and what was observed. A test that ends
-normally without a recorded result is `INCONCLUSIVE`, with the reason "The
+normally without a recorded result is `UNCLEAR`, with the reason "The
 test ended without recording a result.". A test that crashes before it
 recorded anything is `BROKEN`, with the error as the reason. If the agent
 records more than once, the last result counts. The result is saved next to
@@ -36,7 +36,7 @@ summary report names the reason:
 
 | Note | When |
 | --- | --- |
-| Not run: a setup it depends on failed. | A [setup](/docs/writing-tests/setup-teardown-rules#how-a-setup-or-teardown-ends) of its folder ended `FAILED`, `INCONCLUSIVE`, or `BROKEN`, or it crashed. |
+| Not run: a setup it depends on failed. | A [setup](/docs/writing-tests/setup-teardown-rules#how-a-setup-or-teardown-ends) of its folder ended `FAILED`, `UNCLEAR`, or `BROKEN`, or it crashed. |
 | Not run: `<test>` broke the run before this test. | An earlier test crashed, and the run ended there. |
 | Not run: the run was stopped before this test. | You stopped the run before this test started. |
 | The run was stopped during this test. | You stopped the run while this test ran. |
@@ -184,7 +184,7 @@ Section by section:
   - **Expected** / **Actual**: the step's contract and what was actually
     observed.
   - **Status**: the step's own status: `PASSED`, `WARNING`, `FAILED`,
-    `SKIPPED`, `INCONCLUSIVE`, or `BROKEN`.
+    `SKIPPED`, `UNCLEAR`, or `BROKEN`.
   - **Screenshot**: the step's evidence, exactly one per step: the
     screenshot that shows the step's outcome. A second one appears only as
     a rare exception, for example to compare before and after. This holds
@@ -226,7 +226,7 @@ not end `PASSED`.
 The totals head holds the test-case count, the pass rate and the conclusive
 share, one count per status that occurred, and the run duration. The detail
 sections follow the table in this order: **⚠️ Warnings**, **❌ Fails**,
-**❔ Inconclusive**, **💥 Broken**, **⛔ Blocked**, and **⏭️ Skipped**. A
+**❔ Unclear**, **💥 Broken**, **⛔ Blocked**, and **⏭️ Skipped**. A
 section appears only when a test ended with its status.
 
 ```markdown

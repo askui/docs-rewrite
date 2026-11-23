@@ -93,7 +93,7 @@ Gate the pipeline on the exit code:
 | `2` | The command line is wrong. |
 | `3` | The runner or the project is wrong: missing or rejected credentials, the device, an unset `${VAR}`, a custom tool that does not compile. No test result was produced. |
 | `4` | No test ran, for example an empty plan. |
-| `5` | No test failed, but a test is inconclusive, broken, or blocked, or a setup did not pass: the bench or test owner acts. |
+| `5` | No test failed, but a test is unclear, broken, or blocked, or a setup did not pass: the bench or test owner acts. |
 | `130` | Canceled. |
 
 Gate the build on `1` to stop on defects only, and alert the bench owner on
@@ -106,7 +106,7 @@ included; the [CLI reference](/docs/running-tests/cli) has every option.
 ## 4: Publish the test report
 
 With `--reporter` including `junit`, the run writes `<output>/junit.xml`, and
-your CI system shows pass and fail per test. `FAILED` is a failure; `INCONCLUSIVE`,
+your CI system shows pass and fail per test. `FAILED` is a failure; `UNCLEAR`,
 `BROKEN`, and `BLOCKED` are an error; `SKIPPED` is skipped; and a `WARNING` passes with its
 notes in the test output ([JUnit mapping](/docs/running-tests/cli#junit-mapping)).
 

@@ -109,7 +109,7 @@ screen is open, which user is logged out, which data exists. The agent
 checks them before the first step and records whether they were met; a test
 whose preconditions aren't met is never reported `FAILED`, because it never
 ran. It is `SKIPPED` when what it needs is not available on this system, and
-`INCONCLUSIVE` otherwise. Shared preparation work
+`UNCLEAR` otherwise. Shared preparation work
 belongs in [setup](/docs/writing-tests/setup-teardown-rules), not here.
 
 **Steps**: numbered actions, each paired with what to expect. The agent

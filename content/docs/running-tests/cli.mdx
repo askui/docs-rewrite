@@ -461,7 +461,7 @@ AskUI has more outcomes than JUnit, so the mapping is fixed:
 | `PASSED` | passed |
 | `WARNING` | passed, with the warning in `system-out` |
 | `FAILED` | `failure` |
-| `INCONCLUSIVE`, `BROKEN`, `BLOCKED` | `error`, with the reason |
+| `UNCLEAR`, `BROKEN`, `BLOCKED` | `error`, with the reason |
 | `SKIPPED`, `DISCARDED`, `DEPRECATED` | `skipped` |
 
 A test the run never finished is `BLOCKED`, so it appears as `error`.
@@ -473,12 +473,12 @@ A test the run never finished is `BLOCKED`, so it appears as `error`.
 The console shows each phase as it starts and finishes
 (`[test] tests/login.md -> passed`), with each test's recorded result, and ends with one summary line. It always
 counts the passed, failed, and broken tests, then every other status that
-occurred (inconclusive, blocked, skipped, warned), then the pass rate and
+occurred (unclear, blocked, skipped, warned), then the pass rate and
 the conclusive share. The line is green when the run passed, red when a
 test failed, and yellow otherwise:
 
 ```text
-6 passed · 1 failed · 0 broken · 1 inconclusive · 1 blocked · 21 skipped · pass rate 86 % · conclusive 28/30 (93 %)
+6 passed · 1 failed · 0 broken · 1 unclear · 1 blocked · 21 skipped · pass rate 86 % · conclusive 28/30 (93 %)
 ```
 
 A test the run never finished is `BLOCKED`, with the reason.
@@ -492,7 +492,7 @@ A test the run never finished is `BLOCKED`, with the reason.
 | `2` | Usage error: an unknown option, a missing or bad value, or two options that exclude each other. | the pipeline author |
 | `3` | Environment or configuration error: missing or rejected credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; a device that cannot be reached; a test that declares several platforms; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load; a provisioned device that AskUI Desktop holds. | the pipeline author |
 | `4` | No tests ran: the selection was empty, or the runner failed before any test counted. | the pipeline author |
-| `5` | No test failed, but at least one is `INCONCLUSIVE`, `BROKEN`, or `BLOCKED`, a setup did not pass, or the runner failed after tests were counted. | the bench or test owner |
+| `5` | No test failed, but at least one is `UNCLEAR`, `BROKEN`, or `BLOCKED`, a setup did not pass, or the runner failed after tests were counted. | the bench or test owner |
 | `130` | Canceled (Ctrl+C). The results written so far are kept. | whoever pressed Ctrl+C |
 
 A usage error or a configuration error ends the CLI before the first model
