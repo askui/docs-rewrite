@@ -11,9 +11,13 @@ a custom tool. Register it; its tools join the agent's toolbox.
 ## Add a server
 
 1. Open **Extending → MCP Servers**.
-2. Click **Add MCP server**.
+2. Click **Add MCP**. The dialog **Add MCP server** opens.
 3. Enter **Name**, **URL** (SSE or HTTP), and optional **Headers**, one per
    line, e.g. `Authorization: Bearer ${MCP_TOKEN}`.
+4. Leave **Runs go on without this server when it cannot be connected** checked,
+   unless your tests cannot run without the server (see
+   [Require an MCP server for a run](#require-an-mcp-server-for-a-run)).
+5. Click **Add server**.
 
 <img
   src="/docs-rewrite/screenshots/desktop-utils-mcp.png"
@@ -26,27 +30,45 @@ This writes `utils/mcp.json` in the project, the whole team and the
 
 ```json title="utils/mcp.json"
 {
-  "servers": {
-    "issue-tracker": {
+  "servers": [
+    {
+      "name": "issue-tracker",
       "url": "https://mcp.example.com/sse",
+      "transport": "sse",
+      "enabled": true,
       "headers": { "Authorization": "Bearer ${TRACKER_TOKEN}" }
     }
-  }
+  ]
 }
 ```
 
 `${VAR}` values resolve at run start, from the project's [secrets](/docs/extending/secrets) first and the environment second, the token never
 lands in the file.
 
-Servers connect when a run starts. An unreachable server is retried once,
-then the run continues **without** it. An unavailable helper doesn't fail the
-suite: a notice in the run's Developer Report (a `Warning:` line in the CLI) explains
-any missing tool.
+Servers connect when a run starts, before the first test. Each server is one
+line of the run's **Surface setup** block: it shows that the server is loading,
+then that it loaded or did not finish, and how long it took.
+
+By default, a server that cannot be connected does not stop the run. The run
+goes on **without** that server's tools, and a warning in the conversation (a
+`Warning:` line in the CLI) names the server and why it failed. A server that
+drops during the run is reconnected once; if that fails, the tool call returns
+an error and the run continues.
+
+## Require an MCP server for a run
+
+When your tests cannot run without a server, clear **Runs go on without this
+server when it cannot be connected** in its dialog. The row then shows
+**required for runs**, and `utils/mcp.json` gets `"ignoreFailure": false`.
+
+If a required server cannot be connected, the run stops before its first
+test. The error names the server, its URL and what to check, every test is
+listed as not run, and the CLI exits with code `3`.
 
 ## Edit a server
 
-Click the pencil next to a registered server to change its **Name**, **URL**
-or **Headers**. The dialog opens with the current values; **Edit server**
+Click the pencil next to a registered server to change its **Name**, **URL**,
+**Headers**, or whether runs go on without it. The dialog opens with the current values; **Edit server**
 saves them and checks the connection again, **Cancel** leaves the server as
 it was. Editing keeps the server's on/off state.
 

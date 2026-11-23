@@ -186,7 +186,7 @@ iOS simulator gets it started for the run, and the CLI prints each phase
 setting decides whether the device stops or keeps running. A device that is
 already running is reused when the profile says so.
 
-[Multi computer](/docs/devices/multi-computer) profiles and phones driven
+[Multiple devices](/docs/devices/multiple-devices) profiles and phones driven
 through the AskUI Remote Companion run as in the app.
 
 A provisioned device that AskUI Desktop holds right now stops the run with
@@ -200,7 +200,6 @@ reason:
 
 - A profile that provisions a **remote VM**. Connect it in AskUI Desktop,
   then run on a profile that points at its host.
-- A **multi-surface** profile that combines several kinds of device.
 - A **managed iOS simulator without a udid**.
 
 A web profile's start URL opens once the browser connects. A start URL that
@@ -268,6 +267,12 @@ askui run --model-provider vertex --model-id claude-sonnet-5-5 \
 
 Pass keys and tokens from the environment, as above, so they never land in
 a pipeline file.
+
+Without a credential flag, `--model-provider anthropic` takes its key from
+`ANTHROPIC_API_KEY`, and `--model-provider openai` from `OPENAI_API_KEY`.
+Without `--model-id`, your own provider takes its model from
+`VLM_PROVIDER_MODEL_ID`. A flag always wins, see
+[Environment variables](/docs/reference/environment-variables#model-of-a-cli-run).
 
 <Callout type="warn">
 The agent drives the UI from **screenshots**, so BYOM models must be
@@ -483,7 +488,7 @@ how many as `not executed`, and the run does not pass.
 | `0` | All tests passed. Warnings are allowed. | nobody |
 | `1` | At least one test failed or broke, a setup failed, or the run stopped before all its tests started. Tests a failed setup kept from starting are `SKIPPED` and add nothing beyond the setup's failure. | the product team |
 | `2` | Usage error: an unknown option, a missing or bad value, or two options that exclude each other. | the pipeline author |
-| `3` | Environment or configuration error: missing or rejected credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; a device that cannot be reached; a test that declares several platforms; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load; a provisioned device that AskUI Desktop holds. | the pipeline author |
+| `3` | Environment or configuration error: missing or rejected credentials; a project, target, or plan that cannot be read; a custom tool that does not compile; a [required MCP server](/docs/extending/mcp#require-an-mcp-server-for-a-run) that cannot be connected; a device that cannot be reached; a profile the CLI cannot run; an unset `${VAR}`; a start URL that does not load; a provisioned device that AskUI Desktop holds. | the pipeline author |
 | `4` | No tests ran: the selection was empty, or no test result was produced. | the pipeline author |
 | `130` | Canceled (Ctrl+C). The results written so far are kept. | whoever pressed Ctrl+C |
 
