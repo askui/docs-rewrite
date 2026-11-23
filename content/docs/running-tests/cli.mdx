@@ -200,7 +200,6 @@ reason:
 
 - A profile that provisions a **remote VM**. Connect it in AskUI Desktop,
   then run on a profile that points at its host.
-- A **multi-surface** profile that combines several kinds of device.
 - A **managed iOS simulator without a udid**.
 
 A web profile's start URL opens once the browser connects. A start URL that
@@ -268,6 +267,12 @@ askui run --model-provider vertex --model-id claude-sonnet-5-5 \
 
 Pass keys and tokens from the environment, as above, so they never land in
 a pipeline file.
+
+Without a credential flag, `--model-provider anthropic` takes its key from
+`ANTHROPIC_API_KEY`, and `--model-provider openai` from `OPENAI_API_KEY`.
+Without `--model-id`, your own provider takes its model from
+`VLM_PROVIDER_MODEL_ID`. A flag always wins, see
+[Environment variables](/docs/reference/environment-variables#model-of-a-cli-run).
 
 <Callout type="warn">
 The agent drives the UI from **screenshots**, so BYOM models must be
