@@ -27,8 +27,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      artifact_id: ${{ steps.artifact.outputs.artifact_id }}
     steps:
       # The site shell always comes from main, whatever triggered the run. The
       # content of every version comes from the release tags (--release below),
@@ -72,7 +70,6 @@ jobs:
           NEXT_PUBLIC_BASE_PATH: ${{ vars.DOCS_SERVE_AT_ROOT == 'true' && 'ROOT' || '/docs-rewrite' }}
           NEXT_PUBLIC_POSTHOG_KEY: ${{ steps.op.outputs.POSTHOG_KEY }}
       - name: Upload Pages artifact
-        id: artifact
         uses: actions/upload-pages-artifact@v5
         with:
           # Next static export output. basePath (/docs-rewrite) is set in next.config.mjs.
@@ -85,35 +82,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # Not actions/deploy-pages: it names every deployment after the commit
-      # (GITHUB_SHA), and Pages keeps serving the old files when a deployment
-      # reuses a name. A release tag is set on the main commit that was deployed
-      # last, so its deployment changed nothing (v0.11.0, 2026-11-23). The same
-      # API calls, with a name unique to this run.
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/github-script@v9
-        env:
-          ARTIFACT_ID: ${{ needs.build.outputs.artifact_id }}
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const version = `${context.sha}-${context.runId}-${process.env.GITHUB_RUN_ATTEMPT}`;
-            const { data: created } = await github.request('POST /repos/{owner}/{repo}/pages/deployments', {
-              owner, repo,
-              artifact_id: Number(process.env.ARTIFACT_ID),
-              pages_build_version: version,
-              oidc_token: await core.getIDToken(),
-            });
-            const id = created.id ?? created.status_url.split('/').pop();
-            core.info(`Created deployment ${version}, ID: ${id}`);
-            core.setOutput('page_url', created.page_url);
-            const failed = ['deployment_failed', 'deployment_content_failed', 'deployment_cancelled', 'deployment_lost'];
-            for (let i = 0; i < 120; i++) {
-              await new Promise(r => setTimeout(r, 5000));
-              const { data } = await github.request('GET /repos/{owner}/{repo}/pages/deployments/{id}', { owner, repo, id });
-              core.info(`Current status: ${data.status}`);
-              if (data.status === 'succeed') return;
-              if (failed.includes(data.status)) return core.setFailed(`Pages deployment ended with ${data.status}`);
-            }
-            core.setFailed('Pages deployment did not finish within 10 minutes');
+        uses: actions/deploy-pages@v5
