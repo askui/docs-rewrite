@@ -239,6 +239,26 @@ public MyTool(ComputerTarget computer)
 A tool that took `IAgentOs` to run on browser runs too now takes
 `ISurface`, to act on whichever device the run has.
 
+## Check and fix your tools
+
+Check your tools before a run, for example after an upgrade:
+
+1. Open **Extending → Custom Tools**.
+2. Click **Check tools**.
+
+AskUI Desktop compiles every file as a run would, and runs none of them. Each
+row shows **Compiles**, or the errors with their line numbers.
+
+If a row shows an error from the table above, click **Fix**. AskUI Desktop
+replaces the old type names in the file and checks it again. The file as it was
+stays beside it as `<name>.cs.bak`, which a run does not load. Fix changes only
+type names, never a comment or a string.
+
+If a row shows any other error, click **Fix with ToolForge**.
+[ToolForge](/docs/extending/forge#edit-a-custom-tool) opens on that file with the errors as
+the request. Press **Verify** to let it repair the tool. ToolForge uses the
+model, so this costs tokens.
+
 ## Keep results small
 
 Everything a tool returns goes into the agent's conversation and is sent to
