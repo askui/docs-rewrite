@@ -38,9 +38,9 @@ summary report names the reason:
 | --- | --- |
 | Not run: a setup it depends on failed. | A [setup](/docs/writing-tests/setup-teardown-rules#how-a-setup-or-teardown-ends) of its folder ended `FAILED`, `UNCLEAR`, or `BROKEN`, or it crashed. |
 | Not run: `<test>` broke the run before this test. | An earlier test crashed, and the run ended there. |
-| Not run: the run was stopped before this test. | You stopped the run before this test started. |
+| Not run: the operator stopped the run before this test. | You stopped the run before this test started. |
 | The run was stopped during this test. | You stopped the run while this test ran. |
-| Not run: the run ended before this test. | The runner failed before this test started. |
+| Not run: the run failed before this test. | The runner failed before this test started. |
 | The run ended during this test. | The runner failed while this test ran. |
 
 A `BLOCKED` test is not conclusive: it lowers the conclusive share, never
@@ -257,7 +257,7 @@ The pay button never appeared after entering the voucher code.
 # ⛔ Blocked
 
 ## settings_test
-Not run: the run was stopped before this test.
+Not run: the operator stopped the run before this test.
 
 # ⏭️ Skipped
 
