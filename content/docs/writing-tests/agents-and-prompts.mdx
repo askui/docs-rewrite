@@ -56,16 +56,19 @@ device what it is:
 
 | Device | The agent learns |
 | --- | --- |
-| Computer | Operating system, version, architecture and every display |
+| Computer | Every display and its size |
 | Android phone or emulator | Model, Android version, screen size and whether the build is a car's head unit or a tablet |
 | iOS simulator | Model (for example iPhone 17 Pro), iOS version and screen size |
 
 A device that doesn't answer within 10 seconds runs anyway, without these
 facts. The run's report then shows a notice that says so.
 
+A computer does not report its operating system. If the agent needs to know
+whether it drives macOS or Windows, write it in the device prompt.
+
 **How the platform behaves.** The app adds what a tester knows about the
-platform: the menu bar and Cmd shortcuts on macOS, the taskbar and UAC
-prompts on Windows, Back and Home on Android, the head unit's own system bar
+platform: how to work with windows, menus and keyboard shortcuts on a
+computer, Back and Home on Android, the head unit's own system bar
 and its hardware buttons, pressed through adb, on an Android HMI, the Dynamic Island and the missing Back button on an
 iPhone, the hidden address bar in a browser, and how the
 [AskUI Companion](/docs/devices/askui-companion) operates a phone. On a
