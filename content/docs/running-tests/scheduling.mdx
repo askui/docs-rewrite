@@ -1,6 +1,6 @@
 ---
 title: Scheduling
-description: Run a test or plan automatically, daily at a time or every N minutes, while AskUI Desktop is open.
+description: Run a test or plan automatically, daily at a time, every N minutes or when watched files change, while AskUI Desktop is open.
 ---
 
 A schedule runs a test or [test plan](/docs/writing-tests/plans)
@@ -63,3 +63,42 @@ The dialog lists every schedule in the project:
 
 There is no edit: to change the cadence or device, delete the schedule and
 add it again.
+
+## Run When a File or Folder Changes
+
+A **File trigger** starts a test plan when files it watches change on disk,
+for example when an export or a build drops new files into a folder. Like a
+schedule, it fires only while AskUI Desktop is open.
+
+1. On **Test Plans**, click the plan's trigger button (the lightning bolt).
+2. Click **Add trigger** and set **Trigger type** to **Files**.
+3. Click **Add folder…** or **Add file…** and pick it in your system's dialog.
+   A folder counts as changed when any file inside it, at any depth, is added,
+   changed or deleted. Add as many entries as you need, one per line.
+4. Pick **Fire when**: **Any watched file or folder changes**, or **All
+   watched files and folders have changed**. With All, the plan starts once
+   every entry that is switched on has changed since the last run, in any
+   order.
+5. Click **Add trigger**. The plan's row shows **File Trigger**.
+
+Files that already exist when you add an entry never start a run. Only
+changes made after that count. The trigger checks for changes every 30
+seconds.
+
+### Manage the Watched Files and Folders
+
+Each line shows the file or folder's name. Hover it to see the full path.
+
+- **Pencil**: picks another file or folder in its place. On Windows, the
+  dialog opens with the current entry selected.
+- **Switch**: pauses the entry without removing it. A change made while an
+  entry is paused never starts a run, even after you switch it back on.
+- **Trash**: removes the entry.
+
+When you edit a File trigger that already exists, each of these changes is
+saved at once, so **Done** keeps exactly what the list shows.
+
+A run started by a File trigger shows a folder icon in the **Runs** list. Its
+tooltip names the files or folders that changed. Watched paths are absolute,
+so a teammate who opens the project on another computer sees the entries,
+but they start nothing until those paths exist there.
