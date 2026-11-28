@@ -30,3 +30,29 @@ The run started but found no test files to execute.
    (`.md`, `.txt`, `.pdf`, `.csv`, `.json`).
 3. If you used `--plan`, check that the plan file exists in `plans/` and
    references valid test paths.
+
+### Run stops with "has the same id as"
+
+Two device profiles in `devices.json` share one id. The app never writes such a
+list, so it comes from a hand edit or a merge. Every lookup by id would take the
+first of the two: a run on the second device would get the first device's
+prompt. So AskUI Desktop refuses to connect either device, and no test of the
+run starts.
+
+The run names both profiles, for example:
+
+```text
+'Porsche HIL Bench' has the same id 'hil-bench' as 'Audi HIL Bench'. Press Fix it on the Devices page, then start the run again.
+```
+
+1. Open **Devices**. The page shows **Duplicated ID. Should we fix this for you?**
+   with one line per profile.
+2. Click **Fix it**. The first profile keeps its id, so test plans that name it
+   still find the same device. Each later one gets its own id (`hil-bench-2`, …),
+   and a message names the new ids.
+3. Start the run again.
+
+The AskUI CLI stops before the run with exit code 3. Its message names the file
+instead of the button, for example
+`'Porsche HIL Bench' has the same id 'hil-bench' as 'Audi HIL Bench'. Give each profile its own id in <project>/devices.json.`
+Change the `id` of the later profile there, or press **Fix it** in AskUI Desktop.

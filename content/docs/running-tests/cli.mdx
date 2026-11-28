@@ -202,6 +202,8 @@ reason:
   then run on a profile that points at its host.
 - A **multi-surface** profile that combines several kinds of device.
 - A **managed iOS simulator without a udid**.
+- A profile whose **id another profile has too**. Give each its own id in
+  `devices.json`, see [Run stops with "has the same id as"](/docs/troubleshooting/run-failures#run-stops-with-has-the-same-id-as).
 
 A web profile's start URL opens once the browser connects. A start URL that
 does not load stops the run with exit code 3, and the message names the URL.
